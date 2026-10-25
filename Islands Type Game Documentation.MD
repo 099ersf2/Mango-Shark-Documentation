@@ -1,6 +1,6 @@
 # Kits, Abilities & Items
 
-A data-driven framework for kits, abilities and items in a Roblox game. Kits and items are plain definition modules; abilities are small server modules with optional client specs; all player kit state lives in a shared [Scribe](https://github.com/) store that the server writes and the client reads. The HUD builds itself from those definitions, so adding content never requires editing HUD code.
+A data-driven framework for kits, abilities and items in a Roblox game. Kits and items are plain definition modules; abilities are small server modules with optional client specs; all player kit state lives in a shared [Scribe](https://scribe.ericplane.dev/) store that the server writes and the client reads. The HUD builds itself from those definitions, so adding content never requires editing HUD code.
 
 ---
 
