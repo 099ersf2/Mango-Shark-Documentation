@@ -1,6 +1,11 @@
 # Kits, Abilities & Items
 
-A data-driven framework for kits, abilities and items in a Roblox game. Kits and items are plain definition modules; abilities are small server modules with optional client specs; all player kit state lives in a shared [Scribe](https://scribe.ericplane.dev/) store that the server writes and the client reads. The HUD builds itself from those definitions, so adding content never requires editing HUD code.
+A data-driven framework for kits, abilities, items and effects in a Roblox game.
+
+- **Definitions:** kits and items are plain definition modules. Abilities are small server modules with optional client specs. Effects are entries in one registry.
+- **Kit state:** all player kit state lives in a shared [Scribe](https://scribe.ericplane.dev/) store. The server writes it and the client reads it.
+- **HUD:** the HUD builds itself from the definitions, so adding content never requires editing HUD code.
+- **Effects:** the server never creates sounds or visuals. It sends an effect name, and every client plays it.
 
 ---
 
@@ -13,12 +18,21 @@ A data-driven framework for kits, abilities and items in a Roblox game. Kits and
   - [Items](#items)
   - [Abilities](#abilities)
   - [Kit State](#kit-state)
+  - [Effects](#effects)
 - [Guides](#guides)
   - [Adding a Kit](#adding-a-kit)
   - [Adding an Item](#adding-an-item)
   - [Adding an Ability](#adding-an-ability)
+  - [Adding an Effect](#adding-an-effect)
   - [Custom UI](#custom-ui)
   - [Setting a Player's Kits](#setting-a-players-kits)
+- [Effects & Sound](#effects--sound)
+  - [Effect Registry](#effect-registry)
+  - [Playing Effects](#playing-effects)
+  - [Replication](#replication)
+  - [Sound Groups](#sound-groups)
+  - [Volume Settings](#volume-settings)
+  - [Writing a New Visual Kind](#writing-a-new-visual-kind)
 - [HUD](#hud)
 - [Input](#input)
 - [API Reference](#api-reference)
@@ -39,6 +53,7 @@ A data-driven framework for kits, abilities and items in a Roblox game. Kits and
 | **Item** | A Tool with a definition: abilities, held-item HUD info, server hooks | `Classes.Items.<Item>` |
 | **Ability** | Server behaviour plus an optional client spec | `Systems.Abilities.Library.<Ability>` + `Client.Abilities.Library.<Ability>` |
 | **Kit state** | Per-player, per-kit data replicated to the owning client | `Shared.KitState` (built on Scribe) |
+| **Effect** | A named sound, visual and/or animation, played on clients | `Classes.Effects` (registry) + `Client.Effects` (player) |
 
 Key rules:
 
@@ -46,6 +61,8 @@ Key rules:
 - **Item abilities** are granted by the **held** item, and work with **no kit equipped**.
 - A player can have **several kits at once**.
 - The server is the only writer of kit state. The client's view is **read-only** and errors on writes.
+- The server **never** creates, plays or tweens effects. It calls `EffectService.Play`, and clients play the effect.
+- Every client sound sits in a **sound group** under `SoundService.Master`.
 
 ---
 
@@ -54,8 +71,12 @@ Key rules:
 ```text
 ReplicatedStorage
 ├── Assets
+│   ├── Sounds                        Effect sounds (Hit, Swing, SwordUpgrade, Werewolf…)
+│   ├── Vfx                           Particle Attachments (HitFX, SwingR, SwingL, Heal)
+│   ├── Music/Primary                 Background songs
 │   └── Models
 │       ├── Items/<Item>              Tool models, named after the item definition
+│       ├── CapsuleSplashModels       Capsule puddle parts (Fire/Poison/Speed/ShockSplash)
 │       └── GolemBoulder
 ├── Inputs
 │   └── Default                       InputContext: Ability1–Ability5 slot keys
@@ -63,17 +84,27 @@ ReplicatedStorage
     ├── Classes
     │   ├── Kits/<Kit>                Kit definitions
     │   ├── Items/<Item>              Item definitions
+    │   ├── Effects                   Effect registry: every sound and visual
     │   └── SwordLevels               Barbarian rage levels
     ├── Shared
     │   ├── Data                      Scribe template (Kits + Abilities session roots)
     │   ├── KitState                  Active kits and kit state
     │   ├── Items                     Item helper (definitions + item ability wiring)
     │   └── Packets                   Every network packet
+    ├── Handlers
+    │   └── AnimationHandler          Loads and tracks animations (used by the Animation part)
     └── Client
         ├── Core
         │   ├── Abilities             Client ability framework
         │   ├── Inputs                Slot keys and key labels
+        │   ├── Music                 Background music (plays through the Music effect)
         │   └── ToolSync              Server-side equip sync
+        ├── Effects                   Client effect player: Play / Stop
+        │   ├── Context               One playing effect: placement, timing, cleanup
+        │   └── Parts/<Kind>          Sound, Animation and visual parts
+        ├── Audio
+        │   ├── SoundGroups           Group lookup and assignment
+        │   └── AudioSettings         Group volumes (Store = saved values)
         ├── Abilities/Library/<Ability>   Client ability specs
         ├── Hud
         │   ├── KitPanel              Kit information panel
@@ -81,8 +112,8 @@ ReplicatedStorage
         │   ├── ItemPanel             Held item information panel
         │   ├── InfoRows              Shared row renderer
         │   └── CustomUI              Hand-made UI support
-        ├── Kits/<Kit>                Kit-only client code (visuals, overlays)
-        └── Items/<Item>              Item-only client code (aim arcs, effects)
+        ├── Kits/<Kit>                Kit-only client code (overlays, highlights)
+        └── Items/<Item>              Item-only client code (aim arcs)
 
 ServerScriptService
 └── Modules
@@ -94,9 +125,23 @@ ServerScriptService
         ├── Items
         │   ├── ItemService           Gives items, runs item hooks, server-side equips
         │   └── Hooks/<Hook>          Per-item server hooks
-        └── Abilities
-            ├── AbilityService        Validates and runs ability requests
-            └── Library/<Ability>     Server ability modules
+        ├── Abilities
+        │   ├── AbilityService        Validates and runs ability requests
+        │   └── Library/<Ability>     Server ability modules
+        ├── Effects
+        │   └── EffectService         Sends effects to clients
+        └── Werewolf
+            ├── Appearance            Claw models, werewolf body and head
+            └── Claws                 Overview + Config, Session, Rest, Moon, Hunt,
+                                      Attack, Lunge, Hit, Effects
+
+SoundService
+└── Master                            Master sound group
+    ├── Music
+    ├── Abilities
+    ├── Effects
+    ├── UI
+    └── Ambient
 
 StarterGui
 └── Main
@@ -108,7 +153,9 @@ StarterGui
 
 ServerStorage
 ├── README                            In-Studio copy of these docs (disabled Script)
-└── UIBackup                          Backups of the original UI
+├── WerewolfClaws                     Claw and eye models (server welds them on)
+├── UIBackup                          Backups of the original UI
+└── EffectsBackup_2026_10_25          Scripts and assets from before the effects rework
 ```
 
 ---
@@ -227,6 +274,22 @@ KitState.Of(player, "Golem").Rocks.Set(99)
 
 > ⚠️ Don't name a state field after a Scribe accessor method (`Active`, `Get`, `Set`, `Count`, `Remove`, …). The method shadows the field.
 
+### Effects
+
+An effect is a named entry in `Classes.Effects`. It can have a sound, one or more visual parts, an animation, a sound group, and a replication rule. The same registry is read by both sides:
+
+- **Server:** `EffectService.Play(name, options)` sends the name and options to the right clients.
+- **Client:** `Effects.Play(name, options)` plays it, either because the server asked or locally (UI, music, own animations).
+
+Each play gets a **Context** that places the effect, times it, and destroys everything it created when it ends. An effect ends when:
+
+- all of its parts finish, or
+- it is stopped, or
+- its `Target` leaves the game, or
+- its `Tool` leaves the `Target` (e.g. the claws are unequipped).
+
+See [Effects & Sound](#effects--sound) for the full reference.
+
 ---
 
 ## Guides
@@ -280,7 +343,8 @@ KitState.Of(player, "Golem").Rocks.Set(99)
    ```
 
 3. **Add each new ability** — see [Adding an Ability](#adding-an-ability).
-4. **Add kit-only client code** *(optional)* — `Client.Kits.Ninja/...`
+4. **Add its effects** — see [Adding an Effect](#adding-an-effect).
+5. **Add kit-only client code** *(optional)* — `Client.Kits.Ninja/...`
 
 No HUD changes are needed: the kit panel reads `Info`, and the ability bar reads `Abilities`.
 
@@ -313,10 +377,14 @@ No HUD changes are needed: the kit panel reads `Info`, and the ability bar reads
 
    ```lua
    --!strict
+   local EffectService = require(script.Parent.Parent.Parent.Effects.EffectService)
+
    return {
    	Name = "Vanish",
    	Cooldown = 8,
    	Activate = function(player: Player, aim: Vector3, tool: Tool?)
+   		-- gameplay here, then ask clients for the visuals
+   		EffectService.Play("NinjaVanish", { Target = player.Character })
    		-- return false if nothing happened, or a number to set the cooldown
    	end,
    }
@@ -347,6 +415,31 @@ No HUD changes are needed: the kit panel reads `Info`, and the ability bar reads
    ```
 
 3. **Grant it** by listing it in a kit's or item's `Abilities`.
+
+### Adding an Effect
+
+Adding an effect only needs an entry in `Classes.Effects`.
+
+1. **Put its assets** in `ReplicatedStorage.Assets` — sounds in `Sounds`, particle Attachments in `Vfx`, models in `Models`.
+2. **Add the entry**:
+
+   ```lua
+   -- Classes.Effects
+   NinjaVanish = {
+   	Group = "Abilities",                    -- sound group
+   	Replicate = "Nearby",                   -- All, Nearby or Local
+   	Range = 150,                            -- studs, for Nearby
+   	Sound = { Asset = "Poof", Volume = 0.8, Pitch = { 0.9, 1.1 } },
+   	Visual = {
+   		{ Kind = "Particles", Asset = "SmokeFX", Count = 20, Lifetime = 1 },
+   		{ Kind = "Highlight", FillTransparency = 0.5, Lifetime = 0.3 },
+   	},
+   },
+   ```
+
+3. **Play it** from the server with `EffectService.Play("NinjaVanish", { Target = character })`, or from the client with `Effects.Play(...)`.
+
+If no existing visual kind fits, see [Writing a New Visual Kind](#writing-a-new-visual-kind).
 
 ### Custom UI
 
@@ -404,6 +497,201 @@ When kits change:
 - Removed kits run `OnRemoved` and lose their items.
 - Added kits get stats, items and `OnGranted`.
 - If a removed kit changed the character's look, the character respawns.
+
+---
+
+## Effects & Sound
+
+### Effect Registry
+
+`ReplicatedStorage.Modules.Classes.Effects` returns a table of effects by name. It's the **only** place to add, change or remove an effect, or to choose its sound group.
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `Group` | `string` | `"Effects"` | Sound group: `Music`, `Abilities`, `Effects`, `UI`, `Ambient` |
+| `Replicate` | `"All" \| "Nearby" \| "Local"` | `"All"` | How the server sends it. See [Replication](#replication) |
+| `Range` | `number` | `200` | Studs, for `Nearby` |
+| `Persistent` | `boolean` | `false` | Runs until stopped (e.g. a looping snore). Playing it again on the same target restarts it |
+| `Sound` | part or `{ part }` | — | Sound part(s) |
+| `Visual` | part or `{ part }` | — | Visual part(s). `Kind` names a module in `Client.Effects.Parts` |
+| `Animation` | part | — | Animation part, played through `AnimationHandler` |
+| `Variants` | `{ [any]: fields }` | — | Fields that replace the ones above when played with that `Variant` (e.g. a combo step or capsule type) |
+
+All `Delay` and timing values are divided by the `Speed` the effect is played at.
+
+#### Sound part
+
+| Field | Description |
+|---|---|
+| `Asset` | Name of a Sound in `Assets.Sounds`. Without `Asset` or `Id`, the `Sound` in the play options is used |
+| `Id` | A sound id, instead of `Asset` |
+| `Volume` | Sound volume |
+| `Pitch` | A `PlaybackSpeed`, or `{ min, max }` for a random one |
+| `RollOff` | `{ Min = studs, Max = studs, Mode = Enum.RollOffMode }` |
+| `Looped` | Loop the sound |
+| `Attach` | Name of a part in the target to play from, e.g. `"Head"`. Defaults to the root part |
+| `Global` | Play without a position, heard the same everywhere |
+| `Delay` | Seconds before it plays |
+| `Lifetime` | Seconds before it's removed. Defaults to when the sound ends |
+
+#### Animation part
+
+| Field | Description |
+|---|---|
+| `Id` | Animation id |
+| `Type` | The `AnimationHandler` type. Defaults to the effect's name |
+| `Markers` | Marker names that call the play options' `OnMarker` |
+| `Looped` | Loop until the effect stops |
+| `FadeTime` | Fade-in time |
+
+#### Visual kinds
+
+| Kind | Fields | What it does |
+|---|---|---|
+| `Particles` | `Asset`, `Count`, `Lifetime` | Copies an Attachment from `Assets.Vfx` and bursts every emitter once |
+| `Highlight` | `FillColor`, `FillTransparency`, `OutlineColor`, `OutlineTransparency`, `DepthMode`, `Lifetime` | Flashes a Highlight on the target |
+| `Template` | `Folder`, `Asset`, `FadeDelay`, `FadeTime`, `Lifetime` | Places a copy of a part or model from `Assets.Models` at the effect's CFrame, then fades it |
+| `Shards` | `Count`, `Size = { min, max }`, `Color`, `Material`, `Time`, `Lifetime` | Small parts that fly out and fade |
+| `JointSwing` | `Joint`, `Keys = { { At, Time, Angles } }` | Swings one joint through rotations (degrees from rest) |
+| `ClawSwing` | — | The werewolf combo swipe. `Variant` = combo step, `Speed` = attack speed, `Tool` = claws |
+| `SleepSymbols` | `Interval`, `MaxDistance` | Zs rising from the head until stopped |
+| `ColorFade` | `Time` | Fades body parts using `Data.Colors = { [partName] = { From, To } }` |
+| `SamuraiPose` | `Phase = "Charge" \| "Release"` | IK sword pose. `Tool` = sword. Stop with `{ Instant = true }` to snap back |
+
+### Playing Effects
+
+**Client** — `ReplicatedStorage.Modules.Client.Effects`:
+
+```lua
+local Effects = require(ReplicatedStorage.Modules.Client.Effects)
+
+Effects.Play("Hit", { Target = character })
+Effects.Play("GolemShatter", { Position = position })
+
+local handle = Effects.Play("Music", { Sound = song, OnFinished = nextSong })
+handle:Stop()
+
+Effects.Stop("WerewolfSleep", character)
+```
+
+**Server** — `ServerScriptService.Modules.Systems.Effects.EffectService`:
+
+```lua
+local EffectService = require(ServerScriptService.Modules.Systems.Effects.EffectService)
+
+EffectService.Play("WerewolfClawSwing", { Target = character, Tool = claws, Variant = combo, Speed = 1.5 })
+EffectService.Play("CapsuleSplash", { CFrame = cframe, Variant = "Fire" })
+EffectService.Stop("SamuraiCharge", character, { Instant = true })
+```
+
+#### Play options
+
+| Option | Type | Description |
+|---|---|---|
+| `Target` | `Instance?` | The character, model or part the effect is on. It ends if the target leaves the game |
+| `Parent` | `Instance?` | Where sounds and particles go, instead of the target's root part |
+| `Position` | `Vector3?` | Where it plays, for effects without a target |
+| `CFrame` | `CFrame?` | Position and rotation, e.g. a puddle on a slope |
+| `Tool` | `Tool?` | The effect ends when this Tool leaves the target |
+| `Variant` | `any?` | Picks one of the effect's `Variants` |
+| `Speed` | `number?` | Timing multiplier. `2` plays twice as fast |
+| `Sound` | `Sound?` | The sound for sound parts with no `Asset` or `Id` |
+| `Data` | `table?` | Anything else a part reads |
+| `OnMarker` | `(name, track) -> ()` | Animation marker callback. **Client only** |
+| `OnFinished` | `() -> ()` | Runs when the effect ends. **Client only** |
+
+> Options sent from the server must be plain values: instances, numbers, strings, booleans, vectors, CFrames, colors and tables of them. Callbacks aren't sent.
+
+### Replication
+
+Who receives a server-sent effect comes from its `Replicate` field:
+
+| Replicate | Sent to | Used for |
+|---|---|---|
+| `All` | Every client | `Hit`, `SwordUpgrade`, `WerewolfSleep`, `WerewolfTransform`, `WerewolfTransformHowl`, `CapsuleSplash`, `SamuraiCharge`, `SamuraiRelease` |
+| `Nearby` | Clients whose character is within `Range` studs | `SwordSwing` (200), `WerewolfClawSwing` (300), `WerewolfHuntHowl` (150), `GolemThrow` (300), `GolemShatter` (300) |
+| `Local` | Not sent — only the client plays it | `SwordSlash`, `ButtonHover`, `ButtonClick`, `Music` |
+
+Why each one:
+
+- **All:** persistent effects and effects with gameplay meaning (players must see a capsule puddle to avoid it).
+- **Nearby:** short sounds and motion that can't be seen or heard much further away.
+- **Local:** the owner's own animations (they replicate through the Animator), UI sounds and music.
+
+### Sound Groups
+
+```text
+SoundService
+└── Master
+    ├── Music        background music
+    ├── Abilities    ability sounds: swings, claw swipes, howls, snore
+    ├── Effects      hits and impacts (also the default group)
+    ├── UI           button hover and click
+    └── Ambient      reserved for world ambience
+```
+
+- SoundGroups **nest** in Roblox: a sound's volume is multiplied by its group's volume, then by `Master`'s. Changing `Master` scales everything.
+- `Client.Effects` puts every sound it plays into the effect's `Group` automatically.
+- `Client.Audio.SoundGroups` also puts any sound that appears **without** a group into `Effects`. This covers Roblox's character sounds and sounds placed in the map, so no sound is left out of `Master`.
+- Every group starts at volume `1`, so current loudness is unchanged. New SoundGroups default to `0.5`.
+
+### Volume Settings
+
+`Client.Audio.AudioSettings` is ready for a settings menu:
+
+```lua
+local AudioSettings = require(ReplicatedStorage.Modules.Client.Audio.AudioSettings)
+
+AudioSettings.Get("Music")              --> 1
+AudioSettings.Set("Music", 0.4)         -- heard right away
+AudioSettings.Set("Master", 0.8)        -- scales every group
+AudioSettings.GetAll()                  --> { Master = 0.8, Music = 0.4, ... }
+AudioSettings.Changed:Connect(function(group, volume) end)
+```
+
+Volumes go from `0` to `1`. `Set` changes the SoundGroup's `Volume` directly.
+
+Saved values come from `AudioSettings.Store`, which only has `Load()` and `Save(volumes)`. Today it keeps them for the session. To save volumes in player data, change `Store` only — `AudioSettings` and `Client.Effects` need no changes.
+
+### Writing a New Visual Kind
+
+Add a ModuleScript to `Client.Effects.Parts`, named after the kind, with `Play(spec, context)`:
+
+```lua
+--!strict
+-- Client.Effects.Parts.Ring
+local Ring = {}
+
+function Ring.Play(spec: any, context: any)
+	local ring = Instance.new("Part")
+	ring.Anchored = true
+	ring.CanCollide = false
+	ring.CFrame = context.CFrame
+	ring.Parent = workspace
+	context:Add(ring, spec.Lifetime or 1)   -- destroyed after 1s, or when the effect stops
+end
+
+return Ring
+```
+
+Then use it from the registry: `Visual = { Kind = "Ring", Lifetime = 0.5 }`.
+
+#### Context API
+
+| Member | Description |
+|---|---|
+| `Target`, `Parent`, `CFrame` | Where the effect is |
+| `Speed`, `Variant`, `Data`, `Options` | How it was played |
+| `Alive` | `false` once it has ended |
+| `:Delay(seconds, fn)` | Run `fn` later unless the effect stopped. Seconds are divided by `Speed` |
+| `:Add(instance, lifetime?)` | Destroy the instance after `lifetime`, or when the effect stops |
+| `:Keep(seconds)` | Keep the effect running at least this long |
+| `:Hold() -> release` | Keep it running until `release()` is called |
+| `:OnStop(fn)` | Run `fn(data)` when it ends (e.g. restore joints) |
+| `:Anchor()` | An Attachment at `CFrame`, for effects with only a position |
+| `:Group()` | The effect's SoundGroup |
+
+A part that errors is warned once; it never breaks the other parts.
 
 ---
 
@@ -504,6 +792,37 @@ Used by kit and item `Info` tables:
 | `:GetCooldown(player, abilityName) -> number` | Seconds left |
 | `:SetCooldown(player, abilityName, seconds)` | Start or replace a cooldown (replicates to the client) |
 
+#### `EffectService` — `Systems.Effects.EffectService`
+
+| Function | Description |
+|---|---|
+| `.Play(name, options?)` | Send an effect to the clients its `Replicate` names. `Local` effects warn and are not sent |
+| `.Stop(name, target?, data?)` | Stop an effect on every client, e.g. a persistent one. `data` is passed to the parts' stop functions |
+
+#### `Claws` — `Systems.Werewolf.Claws`
+
+| Function | Description |
+|---|---|
+| `.Setup(player, tool)` | Wire up a claws Tool (called by the `WerewolfClaws` item hook) |
+| `.Remove(player)` | Take the claws away (called when the Werewolf kit is removed) |
+| `.Attack(player) -> number \| false` | One swipe (the Claw ability) |
+| `.ToggleRest(player) -> boolean` | Lie down or get up (the Rest ability) |
+| `.Hunt(player) -> number \| false` | Start a hunt (the Hunt ability) |
+
+Each claws Tool gets a session (`Claws.Session`), and each child module adds its part:
+
+| Module | Job |
+|---|---|
+| `Config` | Tuning constants and `MoonStats(charge)` |
+| `Session` | Shared state for one Tool, `:IsActive()`, `:MoonActive()`, `:Charge()`, `:OnDispose(fn)` |
+| `Rest` | Lying down, waking on damage, sleep effect |
+| `Moon` | Moon speed, growth, the full-moon transform, passive charge |
+| `Hunt` | The full-moon hunt and its cooldown |
+| `Attack` | The three-swipe combo and damage |
+| `Lunge` | The double swipe's forward dash |
+| `Hit` | Strike-frame hit detection, lifesteal, charge on hit |
+| `Effects` | Every claw effect request, through `EffectService` |
+
 ### Shared
 
 #### `KitState` — `Shared.KitState`
@@ -556,6 +875,32 @@ Used by kit and item `Info` tables:
 |---|---|
 | `:GetKeyLabel(slot?) -> string` | Key text for a slot on the current device (`nil` = click action) |
 
+#### `Effects` — `Client.Effects`
+
+| Function | Description |
+|---|---|
+| `.Play(name, options?) -> Handle?` | Play an effect on this client. `nil` if the name isn't in the registry |
+| `.Stop(name, target?, data?)` | Stop every running copy of an effect on a target |
+| `handle:Stop(data?)` | Stop one play |
+
+#### `AudioSettings` — `Client.Audio.AudioSettings`
+
+| Member | Description |
+|---|---|
+| `.Get(group) -> number` | A group's volume, 0 to 1. `"Master"` is a group name too |
+| `.Set(group, volume)` | Set and save a group's volume. Heard right away |
+| `.GetAll() -> { [string]: number }` | Every group's volume, including Master |
+| `.Changed` | Signal: `(group, volume)` |
+
+#### `SoundGroups` — `Client.Audio.SoundGroups`
+
+| Member | Description |
+|---|---|
+| `.Get(name?) -> SoundGroup` | A group by name. Unknown names warn once and return `Effects` |
+| `.Assign(sound, name?)` | Put a sound in a group |
+| `.Master() -> SoundGroup` | The Master group (created with its children if missing) |
+| `.NAMES` / `.DEFAULT` | The child group names / the default group |
+
 ---
 
 ## Packets
@@ -564,10 +909,12 @@ All packets live in `Shared.Packets`.
 
 | Packet | Direction | Payload | Purpose |
 |---|---|---|---|
+| `Effects.Play` | S → clients | `name, options` | Play an effect (All or Nearby clients) |
+| `Effects.Stop` | S → all | `name, { Target, Data }` | Stop an effect |
 | `Abilities.Use` | C → S | `name, x, y, z` | Use any kit or item ability |
 | `Items.Equip` | C → S | `tool` | Equip a Backpack Tool on the server |
 | `Items.Unequip` | C → S | — | Put away the held Tool |
-| `Combat.Hit` | S → all | `character, damage` | Hit feedback |
+| `Combat.Hit` | S → all | `character, damage` | Hit feedback (damage popups, health bars) |
 | `Werewolf.Rest` | C → S | `boolean` | Set resting directly (wake on move) |
 | `Werewolf.HuntTargets` | S → C | `tool, { targets }, expires` | Highlight hunt targets |
 | `Golem.ConsumeStone` | C → S | `stone` | Eat an ancient stone |
@@ -617,6 +964,27 @@ All packets live in `Shared.Packets`.
 | Claw | Werewolf Claws | Click | 0.55s (faster while hunting) |
 | Consume | Meat, Ham, Eye | Click | 0.3s |
 
+### Effects
+
+| Effect | Group | Replicate | Parts | Played by |
+|---|---|---|---|---|
+| `Hit` | Effects | All | Sound, Highlight, Particles | `Combat.ApplyHit` |
+| `SwordSwing` | Abilities | Nearby 200 | Sound, Particles | `SwordCombat:Attack` |
+| `SwordUpgrade` | Abilities | All | Sound | `Rage.Gain` |
+| `SwordSlash` | — | Local | Animation (2 Variants) | `Client.Abilities.Library.Slash` |
+| `WerewolfClawSwing` | Abilities | Nearby 300 | ClawSwing, Sound (3 Variants) | `Claws.Attack` |
+| `WerewolfSleep` | Abilities | All, persistent | Sound, SleepSymbols | `Claws` rest |
+| `WerewolfTransform` | — | All | ColorFade | `Claws` transform |
+| `WerewolfTransformHowl` | Abilities | All | Sound (global) | `Claws` transform |
+| `WerewolfHuntHowl` | Abilities | Nearby 150 | Sound | `Claws.Hunt` |
+| `GolemThrow` | — | Nearby 300 | JointSwing | `Rocks.Throw` |
+| `GolemShatter` | — | Nearby 300 | Shards | `Rocks.Throw` impact |
+| `CapsuleSplash` | — | All | Template (4 Variants) | `Capsules:Throw` landing |
+| `SamuraiCharge` | — | All, persistent | SamuraiPose | `SwordPose.Begin` |
+| `SamuraiRelease` | — | All | SamuraiPose | `SwordPose.Release` |
+| `ButtonHover` / `ButtonClick` | UI | Local | Sound | `Packages.UI.ButtonHover` |
+| `Music` | Music | Local | Sound | `Client.Core.Music` |
+
 ---
 
 ## Notes & Gotchas
@@ -627,3 +995,8 @@ All packets live in `Shared.Packets`.
 - **Knockback vs. reach.** Sword hits knock targets ~2 studs back; the sword reaches 7 studs, so keep moving forward in a fight.
 - **Custom UI starts hidden.** Elements named in any `CustomUI` table are hidden when the HUD starts, then shown only while in use.
 - **Multiple kits.** Stats take the highest value; appearances apply in list order; abilities fill slot keys in order.
+- **Gameplay stays on the server.** Body-scale growth (Werewolf moon, Golem rocks, the hunt), the werewolf lunge, knockback, and the thrown capsule and boulder are gameplay, so the server still runs them. Only cosmetic effects moved to clients.
+- **Capsule puddles have no server part.** The server keeps a `{ Position, Radius, Expires }` table for damage and speed; clients draw the puddle with `CapsuleSplash`. The puddle timings (5s fade delay, 2s fade, 7s lifetime) are in both `Capsules` and the registry — change both together.
+- **Late joiners miss running effects.** A player who joins while a persistent effect is running (a sleeping werewolf, a charging Samurai) won't see it until it plays again.
+- **Claws are shown by the client.** The server keeps claw parts hidden; `ClawSwing` shows them locally during a swipe, using each part's `VisibleTransparency` attribute (set by the server for the hunt look).
+- **The old handlers are gone.** `SoundHandler` and `VisualEffectsHandler` were removed. `AnimationHandler` is unchanged and is used by the Animation part.
