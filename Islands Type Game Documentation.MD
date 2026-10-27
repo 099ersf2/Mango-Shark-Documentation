@@ -1,3 +1,129 @@
+# Kits, Abilities, Items, Effects, Blocks & Matches
+
+A data-driven framework for kits, abilities, items, effects, block building and Bedwars-style matches in a Roblox game.
+
+- **Content, not code:** kits, items, blocks, abilities, effects and modes live in two `Content` folders, apart from the core systems. Core code never names a kit or item; it finds content by folder and lets content change its behaviour through **extension points**. Removing a kit's folders removes the kit.
+- **Definitions:** kits, items and blocks are plain definition modules. Abilities are small server modules with optional client specs. Effects are entries in one registry.
+- **Kit state:** all player kit state lives in a shared [Scribe](https://scribe.ericplane.dev/) store. The server writes it and the client reads it.
+- **Inventory:** every player has 36 slots, the first 9 are the hotbar. One server API (`ItemService`) gives, takes and moves items; the client only asks.
+- **HUD:** the HUD builds itself from the definitions, so adding content never requires editing HUD code.
+- **Effects:** the server never creates sounds or visuals. It sends an effect name, and every client plays it.
+- **Blocks:** Bedwars-style building on a 3-stud grid. The server owns every block; clients only ask, then predict so building feels instant.
+- **Matches:** a drop-in match system (`ReplicatedStorage.Match`): lobby, sky platform, teams, beds, generators, an item shop, team upgrades, kill feed, tab list and timed or random events.
+- **Admin commands:** Cmdr commands to give items, kits and abilities, move teams, and change the match shop.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Project Layout](#project-layout)
+- [Content & Extensions](#content--extensions)
+  - [The Two Content Folders](#the-two-content-folders)
+  - [Finding Content](#finding-content)
+  - [Extension Points](#extension-points)
+  - [Adding an Extension Point](#adding-an-extension-point)
+  - [Removing a Kit](#removing-a-kit)
+  - [The Base Template](#the-base-template)
+- [Core Concepts](#core-concepts)
+  - [Kits](#kits)
+  - [Items](#items)
+  - [Abilities](#abilities)
+  - [Kit State](#kit-state)
+  - [Effects](#effects)
+  - [Blocks](#blocks)
+  - [Matches](#matches)
+- [Guides](#guides)
+  - [Adding a Kit](#adding-a-kit)
+  - [Adding an Item](#adding-an-item)
+  - [Adding an Ability](#adding-an-ability)
+  - [Adding an Effect](#adding-an-effect)
+  - [Adding a Block](#adding-a-block)
+  - [Adding a Special Block](#adding-a-special-block)
+  - [Adding a Shop Entry](#adding-a-shop-entry)
+  - [Adding a Team Upgrade](#adding-a-team-upgrade)
+  - [Adding a Mode, Team, Event or Currency](#adding-a-mode-team-event-or-currency)
+  - [Custom UI](#custom-ui)
+  - [Setting a Player's Kits](#setting-a-players-kits)
+- [Inventory & Hotbar](#inventory--hotbar)
+- [Effects & Sound](#effects--sound)
+  - [Effect Registry](#effect-registry)
+  - [Playing Effects](#playing-effects)
+  - [Replication](#replication)
+  - [Sound Groups](#sound-groups)
+  - [Volume Settings](#volume-settings)
+  - [Writing a New Visual Kind](#writing-a-new-visual-kind)
+- [Blocks & Building](#blocks--building)
+  - [The Grid](#the-grid)
+  - [Block Definitions](#block-definitions)
+  - [Tool Types & Breaking](#tool-types--breaking)
+  - [Placing](#placing)
+  - [Map Blocks](#map-blocks)
+  - [Block Hooks](#block-hooks)
+  - [Generators, Beds & Shop Keepers](#generators-beds--shop-keepers)
+  - [How a Request Flows](#how-a-request-flows)
+  - [Grid Settings](#grid-settings)
+- [Matches](#matches-1)
+  - [Dropping It Into a Place](#dropping-it-into-a-place)
+  - [Lifecycle](#lifecycle)
+  - [Bedwars Rules](#bedwars-rules)
+  - [Deaths & Kill Credit](#deaths--kill-credit)
+  - [The Item Shop](#the-item-shop)
+  - [Team Upgrades](#team-upgrades)
+  - [Events](#events)
+  - [Match HUD](#match-hud)
+  - [Match State](#match-state)
+  - [Mode Rules](#mode-rules)
+  - [Match Settings](#match-settings)
+- [Admin Commands](#admin-commands)
+- [HUD](#hud)
+- [Input](#input)
+- [API Reference](#api-reference)
+  - [Server](#server)
+  - [Shared](#shared)
+  - [Client](#client)
+  - [Match](#match)
+- [Packets](#packets)
+- [Built-in Content](#built-in-content)
+- [Notes & Gotchas](#notes--gotchas)
+
+---
+
+## Overview
+
+In these docs, `Content.X` means `ReplicatedStorage.Content.X` and `SSS.Content.X` means `ServerScriptService.Content.X`. Other short paths start under `ReplicatedStorage.Modules` (`Shared`, `Client`, `Classes`) or `ServerScriptService.Modules` (`Systems`, `Services`).
+
+| Concept | What it is | Where it lives |
+|---|---|---|
+| **Kit** | A loadout: stats, starting items, kit abilities, kit state, HUD info and shop changes | `Content.Kits.<Kit>.Definition` |
+| **Item** | A Tool with a definition: abilities, HUD info, server hooks, block/tool data, death rules | `Content.Items.Definitions.<Item>` |
+| **Ability** | Server behaviour plus an optional client spec | `SSS.Content.Abilities.<Ability>` + `Content.Abilities.<Ability>` |
+| **Kit state** | Per-player, per-kit data replicated to the owning client | `Shared.KitState` (built on Scribe) |
+| **Inventory** | 36 slots of `{ Item, Count }`, the first 9 are the hotbar | `Shared.Inventory` + `Systems.Items.ItemService` |
+| **Effect** | A named sound, visual and/or animation, played on clients | `Content.Effects.Registry` (registry) + `Client.Effects` (player) |
+| **Block** | A grid block type: hardness, preferred tool, model, sounds, hooks | `Content.Blocks.Definitions.<Block>` + `Shared.Blocks` |
+| **Tool type** | How an item breaks blocks: Pickaxe, Axe, Shovel, Sword, Hand | `Shared.ToolTypes` |
+| **Match** | Lifecycle, teams, deaths, shop, upgrades, events and the match HUD | `ReplicatedStorage.Match` |
+| **Mode** | A match's data (teams, upgrades, events) plus its rules module | `Content.Modes.<Mode>` + `Match.Server.Modes.<Rules>` |
+| **Currency** | A stack item spent at the shop (Iron, Diamond, Emerald) | `Classes.Currencies` |
+| **Upgrade** | A team upgrade sold in tiers by the upgrade keeper | `Classes.Upgrades` |
+| **Extension point** | A named question a core system asks, which content answers | `Shared.Extensions` |
+
+Key rules:
+
+- **Core never names content.** Core systems find kits, items, blocks, abilities and effects through their folders (`Shared.Content`), and content changes core behaviour through `Shared.Extensions`.
+- **Server code stays on the server.** Anything in ReplicatedStorage can be read by exploiters, so each kit's server code lives in `SSS.Content.Kits.<Kit>`, apart from its data in `Content.Kits.<Kit>`.
+- **Kit abilities** are granted by a player's active kits. Some abilities can also be **given on their own**, without a kit (see [Granted abilities](#granted-abilities)).
+- **Item abilities** are granted by the **held** item, and work with **no kit equipped**.
+- A player can have **several kits at once**.
+- The server is the only writer of kit state, the inventory, block damage and match state. Client views are **read-only** and error on writes.
+- The server **never** creates, plays or tweens effects. It calls `EffectService.Play`, and clients play the effect.
+- Every client sound sits in a **sound group** under `SoundService.Master`.
+- The server is the **only** place blocks are placed, broken or changed. Clients send requests and draw predictions.
+- Every purchase is checked on the server. Clients never build shop listings.
+
+---
+
 ## Project Layout
 
 ```text
