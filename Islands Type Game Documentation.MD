@@ -1,289 +1,163 @@
-# Kits, Abilities, Items, Effects, Blocks & Matches
-
-A data-driven framework for kits, abilities, items, effects, block building and Bedwars-style matches in a Roblox game.
-
-- **Content, not code:** kits, items, blocks, abilities, effects and modes live in two `Content` folders, apart from the core systems. Core code never names a kit or item; it finds content by folder and lets content change its behaviour through **extension points**. Removing a kit's folders removes the kit.
-- **Definitions:** kits, items and blocks are plain definition modules. Abilities are small server modules with optional client specs. Effects are entries in one registry.
-- **Kit state:** all player kit state lives in a shared [Scribe](https://scribe.ericplane.dev/) store. The server writes it and the client reads it.
-- **Inventory:** every player has 36 slots, the first 9 are the hotbar. One server API (`ItemService`) gives, takes and moves items; the client only asks.
-- **HUD:** the HUD builds itself from the definitions, so adding content never requires editing HUD code.
-- **Effects:** the server never creates sounds or visuals. It sends an effect name, and every client plays it.
-- **Blocks:** Bedwars-style building on a 3-stud grid. The server owns every block; clients only ask, then predict so building feels instant.
-- **Matches:** a drop-in match system (`ReplicatedStorage.Match`): lobby, sky platform, teams, beds, generators, an item shop, team upgrades, kill feed, tab list and timed or random events.
-- **Admin commands:** Cmdr commands to give items, kits and abilities, move teams, and change the match shop.
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Project Layout](#project-layout)
-- [Content & Extensions](#content--extensions)
-  - [The Two Content Folders](#the-two-content-folders)
-  - [Finding Content](#finding-content)
-  - [Extension Points](#extension-points)
-  - [Adding an Extension Point](#adding-an-extension-point)
-  - [Removing a Kit](#removing-a-kit)
-  - [The Base Template](#the-base-template)
-- [Core Concepts](#core-concepts)
-  - [Kits](#kits)
-  - [Items](#items)
-  - [Abilities](#abilities)
-  - [Kit State](#kit-state)
-  - [Effects](#effects)
-  - [Blocks](#blocks)
-  - [Matches](#matches)
-- [Guides](#guides)
-  - [Adding a Kit](#adding-a-kit)
-  - [Adding an Item](#adding-an-item)
-  - [Adding an Ability](#adding-an-ability)
-  - [Adding an Effect](#adding-an-effect)
-  - [Adding a Block](#adding-a-block)
-  - [Adding a Special Block](#adding-a-special-block)
-  - [Adding a Shop Entry](#adding-a-shop-entry)
-  - [Adding a Team Upgrade](#adding-a-team-upgrade)
-  - [Adding a Mode, Team, Event or Currency](#adding-a-mode-team-event-or-currency)
-  - [Custom UI](#custom-ui)
-  - [Setting a Player's Kits](#setting-a-players-kits)
-- [Inventory & Hotbar](#inventory--hotbar)
-- [Effects & Sound](#effects--sound)
-  - [Effect Registry](#effect-registry)
-  - [Playing Effects](#playing-effects)
-  - [Replication](#replication)
-  - [Sound Groups](#sound-groups)
-  - [Volume Settings](#volume-settings)
-  - [Writing a New Visual Kind](#writing-a-new-visual-kind)
-- [Blocks & Building](#blocks--building)
-  - [The Grid](#the-grid)
-  - [Block Definitions](#block-definitions)
-  - [Tool Types & Breaking](#tool-types--breaking)
-  - [Placing](#placing)
-  - [Map Blocks](#map-blocks)
-  - [Block Hooks](#block-hooks)
-  - [Generators, Beds & Shop Keepers](#generators-beds--shop-keepers)
-  - [How a Request Flows](#how-a-request-flows)
-  - [Grid Settings](#grid-settings)
-- [Matches](#matches-1)
-  - [Dropping It Into a Place](#dropping-it-into-a-place)
-  - [Lifecycle](#lifecycle)
-  - [Bedwars Rules](#bedwars-rules)
-  - [Deaths & Kill Credit](#deaths--kill-credit)
-  - [The Item Shop](#the-item-shop)
-  - [Team Upgrades](#team-upgrades)
-  - [Events](#events)
-  - [Match HUD](#match-hud)
-  - [Match State](#match-state)
-  - [Mode Rules](#mode-rules)
-  - [Match Settings](#match-settings)
-- [Admin Commands](#admin-commands)
-- [HUD](#hud)
-- [Input](#input)
-- [API Reference](#api-reference)
-  - [Server](#server)
-  - [Shared](#shared)
-  - [Client](#client)
-  - [Match](#match)
-- [Packets](#packets)
-- [Built-in Content](#built-in-content)
-- [Notes & Gotchas](#notes--gotchas)
-
----
-
-## Overview
-
-In these docs, `Content.X` means `ReplicatedStorage.Content.X` and `SSS.Content.X` means `ServerScriptService.Content.X`. Other short paths start under `ReplicatedStorage.Modules` (`Shared`, `Client`, `Classes`) or `ServerScriptService.Modules` (`Systems`, `Services`).
-
-| Concept | What it is | Where it lives |
-|---|---|---|
-| **Kit** | A loadout: stats, starting items, kit abilities, kit state, HUD info and shop changes | `Content.Kits.<Kit>.Definition` |
-| **Item** | A Tool with a definition: abilities, HUD info, server hooks, block/tool data, death rules | `Content.Items.Definitions.<Item>` |
-| **Ability** | Server behaviour plus an optional client spec | `SSS.Content.Abilities.<Ability>` + `Content.Abilities.<Ability>` |
-| **Kit state** | Per-player, per-kit data replicated to the owning client | `Shared.KitState` (built on Scribe) |
-| **Inventory** | 36 slots of `{ Item, Count }`, the first 9 are the hotbar | `Shared.Inventory` + `Systems.Items.ItemService` |
-| **Effect** | A named sound, visual and/or animation, played on clients | `Content.Effects.Registry` (registry) + `Client.Effects` (player) |
-| **Block** | A grid block type: hardness, preferred tool, model, sounds, hooks | `Content.Blocks.Definitions.<Block>` + `Shared.Blocks` |
-| **Tool type** | How an item breaks blocks: Pickaxe, Axe, Shovel, Sword, Hand | `Shared.ToolTypes` |
-| **Match** | Lifecycle, teams, deaths, shop, upgrades, events and the match HUD | `ReplicatedStorage.Match` |
-| **Mode** | A match's data (teams, upgrades, events) plus its rules module | `Content.Modes.<Mode>` + `Match.Server.Modes.<Rules>` |
-| **Currency** | A stack item spent at the shop (Iron, Diamond, Emerald) | `Classes.Currencies` |
-| **Upgrade** | A team upgrade sold in tiers by the upgrade keeper | `Classes.Upgrades` |
-| **Extension point** | A named question a core system asks, which content answers | `Shared.Extensions` |
-
-Key rules:
-
-- **Core never names content.** Core systems find kits, items, blocks, abilities and effects through their folders (`Shared.Content`), and content changes core behaviour through `Shared.Extensions`.
-- **Server code stays on the server.** Anything in ReplicatedStorage can be read by exploiters, so each kit's server code lives in `SSS.Content.Kits.<Kit>`, apart from its data in `Content.Kits.<Kit>`.
-- **Kit abilities** are granted by a player's active kits. Some abilities can also be **given on their own**, without a kit (see [Granted abilities](#granted-abilities)).
-- **Item abilities** are granted by the **held** item, and work with **no kit equipped**.
-- A player can have **several kits at once**.
-- The server is the only writer of kit state, the inventory, block damage and match state. Client views are **read-only** and error on writes.
-- The server **never** creates, plays or tweens effects. It calls `EffectService.Play`, and clients play the effect.
-- Every client sound sits in a **sound group** under `SoundService.Master`.
-- The server is the **only** place blocks are placed, broken or changed. Clients send requests and draw predictions.
-- Every purchase is checked on the server. Clients never build shop listings.
-
----
-
 ## Project Layout
 
 ```text
 ReplicatedStorage
-âââ Content                           CONTENT: data, configs and client code (see Content & Extensions)
-â   âââ Kits/<Kit>
-â   â   âââ Definition                The kit's data
-â   â   âââ Shared/                   The kit's configs (SwordLevels, GolemConfig, BoulderPath, ChickenRushConfig,
-â   â   â                             OwlVisionConfig, OwlVisionTargets, SatelliteHackConfig)
-â   â   âââ Client/                   The kit's client modules (WerewolfRest, StoneVisibility, BoulderAim,
-â   â                                 Cauldron, CauldronVisuals)
-â   âââ Items
-â   â   âââ Definitions/<Item>        Item definitions
-â   â   âââ Client/                   Item client code (Capsules/CapsuleAim, Eye/EyeReveal)
-â   âââ Blocks
-â   â   âââ Definitions/<Block>       Block definitions
-â   â   âââ Client/<Hook>             Client block hooks (ShopKeeper)
-â   âââ Abilities/<Ability>           Client ability specs
-â   âââ Effects
-â   â   âââ Registry                  Effect registry: every sound and visual
-â   â   âââ Parts/<Kind>              Sound, Animation and visual parts
-â   âââ Modes/<Mode>                  Match mode data (Bedwars)
-âââ Assets
-â   âââ Sounds                        Effect sounds (Hit, Swing, BlockPlace, BlockBreak, Werewolfâ¦, ChickenClucking)
-â   âââ Vfx                           Particle Attachments (HitFX, SwingR, SwingL, Heal, ChickenFeathers)
-â   âââ Music/Primary                 Background songs
-â   âââ Models
-â       âââ Items/<Item>              Tool models, named after the item definition
-â       âââ Blocks/<Model>            Block parts and models, named by a block's Model (ShopKeeper, UpgradeKeeperâ¦)
-â       âââ WerewolfClaws             Claw and eye models (the server welds them on)
-â       âââ CapsuleSplashModels       Capsule puddle parts (Fire/Poison/Speed/ShockSplash)
-â       âââ GolemBoulder, ChickenStampede, TurtleShield, OwlVision, SatelliteHack
-âââ Inputs
-â   âââ Default                       InputContext: Ability1âAbility5, Swing and Sprint
-âââ Match                             The match system (see below)
-âââ ModuleLoader                      Loads Modules and both Content folders (search depth 5)
-âââ Modules                           CORE
-    âââ Classes                       Game-wide data that isn't one kit, item or block
-    â   âââ MatchEvents               Shared timed and random match events
-    â   âââ Currencies                Shop currencies
-    â   âââ Shop                      The default shop listing
-    â   âââ Upgrades                  Team upgrades and their tiers
-    â   âââ Admins                    User ids that may run Cmdr commands
-    â   âââ HealthUI
-    âââ Shared
-    â   âââ Content                   Finds kits and kit hooks in the Content folders
-    â   âââ Extensions                Extension points content plugs into
-    â   âââ Data                      Scribe template (Kits, Abilities, Inventory roots + ServerStore + ScribeFragments)
-    â   âââ KitState                  Active kits, granted abilities and kit state
-    â   âââ Items                     Item helper (definitions + item ability wiring)
-    â   âââ Inventory                 Inventory slots, unlocks and death categories
-    â   âââ Blocks                    Block helper: definitions, grid math, break rules
-    â   â   âââ Config                Grid and building settings
-    â   âââ ToolTypes                 Pickaxe, Axe, Shovel, Sword, Hand
-    â   âââ BlockState                Block damage (ServerStore), read-only on clients
-    â   âââ ReadOnly                  Read-only wrapper for client Scribe views
-    â   âââ Packets                   Every network packet (UnreliablePackets for footprints)
-    âââ Handlers
-    â   âââ AnimationHandler          Loads and tracks animations (used by the Animation part)
-    â   âââ HitPopup, StateHandler
-    âââ Utilities
-    â   âââ Cmdr                      Cmdr command bar
-    â   âââ Packet, Signal, Zone, CameraShakerâ¦
-    âââ Client
-        âââ Core
-        â   âââ Abilities             Client ability framework
-        â   âââ Inputs                Slot keys and key labels
-        â   âââ Music                 Background music (plays through the Music effect)
-        â   âââ CmdrClient            Opens Cmdr with F2
-        â   âââ ToolSync              Server-side equip sync
-        âââ Effects                   Client effect player: Play / Stop (parts come from Content.Effects.Parts)
-        â   âââ Context               One playing effect: placement, timing, cleanup
-        âââ Combat                    CharacterHurt
-        âââ Audio
-        â   âââ SoundGroups           Group lookup and assignment
-        â   âââ AudioSettings         Group volumes (Store = saved values)
-        âââ Blocks
-        â   âââ BlockMap              Client copy of the occupancy map
-        â   âââ BlockInput            Mouse â break / place actions
-        â   âââ Targeting             Hover target and predictive placement
-        â   âââ BlockVisuals          Hover outline, preview, placeholders, cracks
-        â   âââ BlockController       Ties the above together every frame
-        â   âââ GeneratorBillboards   Generator billboards: what each drops and how fast
-        âââ Hud
-            âââ Hotbar                Hotbar slots, kit info line, currency balances
-            âââ Inventory             Full inventory window (E)
-            âââ ItemIcon              Item icons: image, model view or initials
-            âââ AbilityBar            Ability buttons
-            âââ KitUI / ItemUI        Kit and held-item CustomUI
-            âââ CustomUI              Hand-made UI support
-            âââ InfoRows              Info row renderer
-            âââ PersonalHealth, HealthBillboards
+├── Content                           CONTENT: data, configs and client code (see Content & Extensions)
+│   ├── Kits/<Kit>
+│   │   ├── Definition                The kit's data
+│   │   ├── Shared/                   The kit's configs (SwordLevels, GolemConfig, BoulderPath, ChickenRushConfig,
+│   │   │                             OwlVisionConfig, OwlVisionTargets, SatelliteHackConfig)
+│   │   └── Client/                   The kit's client modules (WerewolfRest, StoneVisibility, BoulderAim,
+│   │                                 Cauldron, CauldronVisuals)
+│   ├── Items
+│   │   ├── Definitions/<Item>        Item definitions
+│   │   └── Client/                   Item client code (Capsules/CapsuleAim, Eye/EyeReveal)
+│   ├── Blocks
+│   │   ├── Definitions/<Block>       Block definitions
+│   │   └── Client/<Hook>             Client block hooks (ShopKeeper)
+│   ├── Abilities/<Ability>           Client ability specs
+│   ├── Effects
+│   │   ├── Registry                  Effect registry: every sound and visual
+│   │   └── Parts/<Kind>              Sound, Animation and visual parts
+│   └── Modes/<Mode>                  Match mode data (Bedwars)
+├── Assets
+│   ├── Sounds                        Effect sounds (Hit, Swing, BlockPlace, BlockBreak, Werewolf…, ChickenClucking)
+│   ├── Vfx                           Particle Attachments (HitFX, SwingR, SwingL, Heal, ChickenFeathers)
+│   ├── Music/Primary                 Background songs
+│   └── Models
+│       ├── Items/<Item>              Tool models, named after the item definition
+│       ├── Blocks/<Model>            Block parts and models, named by a block's Model (ShopKeeper, UpgradeKeeper…)
+│       ├── WerewolfClaws             Claw and eye models (the server welds them on)
+│       ├── CapsuleSplashModels       Capsule puddle parts (Fire/Poison/Speed/ShockSplash)
+│       └── GolemBoulder, ChickenStampede, TurtleShield, OwlVision, SatelliteHack
+├── Inputs
+│   └── Default                       InputContext: Ability1–Ability5, Swing and Sprint
+├── Match                             The match system (see below)
+├── ModuleLoader                      Loads Modules and both Content folders (search depth 5)
+└── Modules                           CORE
+    ├── Classes                       Game-wide data that isn't one kit, item or block
+    │   ├── MatchEvents               Shared timed and random match events
+    │   ├── Currencies                Shop currencies
+    │   ├── Shop                      The default shop listing
+    │   ├── Upgrades                  Team upgrades and their tiers
+    │   ├── Admins                    User ids that may run Cmdr commands
+    │   └── HealthUI
+    ├── Shared
+    │   ├── Content                   Finds kits and kit hooks in the Content folders
+    │   ├── Extensions                Extension points content plugs into
+    │   ├── Data                      Scribe template (Kits, Abilities, Inventory roots + ServerStore + ScribeFragments)
+    │   ├── KitState                  Active kits, granted abilities and kit state
+    │   ├── Items                     Item helper (definitions + item ability wiring)
+    │   ├── Inventory                 Inventory slots, unlocks and death categories
+    │   ├── Blocks                    Block helper: definitions, grid math, break rules
+    │   │   └── Config                Grid and building settings
+    │   ├── ToolTypes                 Pickaxe, Axe, Shovel, Sword, Hand
+    │   ├── BlockState                Block damage (ServerStore), read-only on clients
+    │   ├── ReadOnly                  Read-only wrapper for client Scribe views
+    │   └── Packets                   Every network packet (UnreliablePackets for footprints)
+    ├── Handlers
+    │   ├── AnimationHandler          Loads and tracks animations (used by the Animation part)
+    │   └── HitPopup, StateHandler
+    ├── Utilities
+    │   ├── Cmdr                      Cmdr command bar
+    │   └── Packet, Signal, Zone, CameraShaker…
+    └── Client
+        ├── Core
+        │   ├── Abilities             Client ability framework
+        │   ├── Inputs                Slot keys and key labels
+        │   ├── Music                 Background music (plays through the Music effect)
+        │   ├── CmdrClient            Opens Cmdr with F2
+        │   └── ToolSync              Server-side equip sync
+        ├── Effects                   Client effect player: Play / Stop (parts come from Content.Effects.Parts)
+        │   └── Context               One playing effect: placement, timing, cleanup
+        ├── Combat                    CharacterHurt
+        ├── Audio
+        │   ├── SoundGroups           Group lookup and assignment
+        │   └── AudioSettings         Group volumes (Store = saved values)
+        ├── Blocks
+        │   ├── BlockMap              Client copy of the occupancy map
+        │   ├── BlockInput            Mouse → break / place actions
+        │   ├── Targeting             Hover target and predictive placement
+        │   ├── BlockVisuals          Hover outline, preview, placeholders, cracks
+        │   ├── BlockController       Ties the above together every frame
+        │   └── GeneratorBillboards   Generator billboards: what each drops and how fast
+        └── Hud
+            ├── Hotbar                Hotbar slots, kit info line, currency balances
+            ├── Inventory             Full inventory window (E)
+            ├── ItemIcon              Item icons: image, model view or initials
+            ├── AbilityBar            Ability buttons
+            ├── KitUI / ItemUI        Kit and held-item CustomUI
+            ├── CustomUI              Hand-made UI support
+            ├── InfoRows              Info row renderer
+            └── PersonalHealth, HealthBillboards
 
 ReplicatedStorage.Match
-âââ Shared                            Config, Deps (paths to the place's systems), Store (Scribe roots), State, Packets
-âââ Server                            Core, Events, Shop, Commands, Integrations, Modes/<Rules>
-â                                     (moved into ServerScriptService as MatchServer by Match.Start)
-âââ Client                            Main, Hud, TabList, KillFeed, Shop, Upgrades, Spectate, Messages, Icons, Ui
-â   âââ Gui                           UI templates: MatchTop, MatchResult, KillFeed, TabList, MatchShop,
-â                                     MatchUpgrades, Spectating, TabButton
-âââ ClientLoader                      Installed in StarterPlayerScripts by Match.Start
+├── Shared                            Config, Deps (paths to the place's systems), Store (Scribe roots), State, Packets
+├── Server                            Core, Events, Shop, Commands, Integrations, Modes/<Rules>
+│                                     (moved into ServerScriptService as MatchServer by Match.Start)
+├── Client                            Main, Hud, TabList, KillFeed, Shop, Upgrades, Spectate, Messages, Icons, Ui
+│   └── Gui                           UI templates: MatchTop, MatchResult, KillFeed, TabList, MatchShop,
+│                                     MatchUpgrades, Spectating, TabButton
+└── ClientLoader                      Installed in StarterPlayerScripts by Match.Start
 
 ServerScriptService
-âââ Start                             Server ModuleLoader start (Modules + Content)
-âââ MatchSetup                        require(ReplicatedStorage.Match).Start("Bedwars")
-âââ Content                           CONTENT: server code
-â   âââ Kits/<Kit>
-â   â   âââ Hook                      The kit's hook (OnGranted, OnSpawned, OnRemoved, ShopChanges, Start)
-â   â   âââ <System>                  The kit's server systems (see Built-in Content)
-â   âââ Items/Hooks/<Hook>            Item server hooks (WerewolfClaws)
-â   âââ Blocks/Hooks/<Hook>           Block server hooks (Generator, Bed, ShopKeeper, HackerConnection)
-â   âââ Abilities/<Ability>           Server ability modules
-âââ Modules                           CORE
-    âââ Services
-    â   âââ CmdrSetup                 Registers Cmdr hooks, types and commands
-    â       âââ Hooks/BeforeRun       Who may run commands (Classes.Admins)
-    â       âââ Types/<type>          item, kit, ability, shopitem, currency
-    â       âââ Commands/<Command>    Definition + <Command>Server
-    âââ Systems
-        âââ Kits
-        â   âââ KitService            Sets kits, stats, items, hooks, granted abilities
-        â   âââ Appearance            Applies kit rig looks
-        âââ Items/ItemService         The inventory API, hotbar Tools, item hooks, server-side equips
-        âââ Abilities/AbilityService  Validates and runs ability requests
-        âââ Effects/EffectService     Sends effects to clients
-        âââ Combat                    Combat (hits, knockback), SwordCombat, DamageLog (kill credit)
-        âââ Blocks/BlockService       Places, breaks and changes blocks
-        â   âââ World                 Occupancy map: which block fills each cell
-        â   âââ Rules                 Build area, free cells, NoBuild, reach, players in the way
-        â   âââ Damage                Break progress and healing
-        âââ Player, Enemies           Health regen, consumables, stationary attackers
+├── Start                             Server ModuleLoader start (Modules + Content)
+├── MatchSetup                        require(ReplicatedStorage.Match).Start("Bedwars")
+├── Content                           CONTENT: server code
+│   ├── Kits/<Kit>
+│   │   ├── Hook                      The kit's hook (OnGranted, OnSpawned, OnRemoved, ShopChanges, Start)
+│   │   └── <System>                  The kit's server systems (see Built-in Content)
+│   ├── Items/Hooks/<Hook>            Item server hooks (WerewolfClaws)
+│   ├── Blocks/Hooks/<Hook>           Block server hooks (Generator, Bed, ShopKeeper, HackerConnection)
+│   └── Abilities/<Ability>           Server ability modules
+└── Modules                           CORE
+    ├── Services
+    │   └── CmdrSetup                 Registers Cmdr hooks, types and commands
+    │       ├── Hooks/BeforeRun       Who may run commands (Classes.Admins)
+    │       ├── Types/<type>          item, kit, ability, shopitem, currency
+    │       └── Commands/<Command>    Definition + <Command>Server
+    └── Systems
+        ├── Kits
+        │   ├── KitService            Sets kits, stats, items, hooks, granted abilities
+        │   └── Appearance            Applies kit rig looks
+        ├── Items/ItemService         The inventory API, hotbar Tools, item hooks, server-side equips
+        ├── Abilities/AbilityService  Validates and runs ability requests
+        ├── Effects/EffectService     Sends effects to clients
+        ├── Combat                    Combat (hits, knockback), SwordCombat, DamageLog (kill credit)
+        ├── Blocks/BlockService       Places, breaks and changes blocks
+        │   ├── World                 Occupancy map: which block fills each cell
+        │   ├── Rules                 Build area, free cells, NoBuild, reach, players in the way
+        │   └── Damage                Break progress and healing
+        └── Player, Enemies           Health regen, consumables, stationary attackers
 
 Workspace
-âââ World                             Map blocks, tagged Block (beds, shop keepers, upgrade keepersâ¦)
-âââ Generators                        Generator blocks, tagged Block
-âââ PlacedBlocks                      Blocks placed by players (created by the server)
+├── World                             Map blocks, tagged Block (beds, shop keepers, upgrade keepers…)
+├── Generators                        Generator blocks, tagged Block
+└── PlacedBlocks                      Blocks placed by players (created by the server)
 
 SoundService
-âââ Master                            Master sound group
-    âââ Music
-    âââ Abilities
-    âââ Effects
-    âââ UI
-    âââ Ambient
+└── Master                            Master sound group
+    ├── Music
+    ├── Abilities
+    ├── Effects
+    ├── UI
+    └── Ambient
 
 StarterGui
-âââ Main
-    âââ Hotbar                        Hotbar slots, kit info line, balances (restyle via its Templates folder)
-    âââ Inventory                     Inventory window
-    âââ AbilityBar                    Ability bar (restyle via its Templates folder)
-    âââ Rage, DashCharge, MoonPower,  Custom UI used by kits and abilities
-    â   SatelliteTargets
-    âââ Health, HitPopup, KitSelect, Mobile, WerewolfHuntTint, RestDarkness
-    (the match adds MatchTop, KillFeed, TabList, MatchShop, MatchUpgradesâ¦ at runtime)
+└── Main
+    ├── Hotbar                        Hotbar slots, kit info line, balances (restyle via its Templates folder)
+    ├── Inventory                     Inventory window
+    ├── AbilityBar                    Ability bar (restyle via its Templates folder)
+    ├── Rage, DashCharge, MoonPower,  Custom UI used by kits and abilities
+    │   SatelliteTargets
+    └── Health, HitPopup, KitSelect, Mobile, WerewolfHuntTint, RestDarkness
+    (the match adds MatchTop, KillFeed, TabList, MatchShop, MatchUpgrades… at runtime)
 
 ServerStorage
-âââ README                            In-Studio copy of these docs (disabled Script)
-âââ BaseTemplate                      The same hierarchy with no kits, items, blocks or abilities (see The Base Template)
-âââ RefactorBackup                    A copy of everything from before the Content split. Delete once you're happy
-âââ UIBackup                          Backups of the original UI
+├── README                            In-Studio copy of these docs (disabled Script)
+├── BaseTemplate                      The same hierarchy with no kits, items, blocks or abilities (see The Base Template)
+├── RefactorBackup                    A copy of everything from before the Content split. Delete once you're happy
+└── UIBackup                          Backups of the original UI
 ```
 
 ---
@@ -303,10 +177,10 @@ A kit has a folder **with the same name on both sides**, and that name is the ki
 
 ```text
 ReplicatedStorage.Content.Kits.Golem         ServerScriptService.Content.Kits.Golem
-âââ Definition                               âââ Hook
-âââ Shared/  GolemConfig, BoulderPath        âââ Rocks
-âââ Client/  StoneVisibility, BoulderAim     âââ StoneSpawner
-                                             âââ Heart
+├── Definition                               ├── Hook
+├── Shared/  GolemConfig, BoulderPath        ├── Rocks
+└── Client/  StoneVisibility, BoulderAim     ├── StoneSpawner
+                                             └── Heart
 ```
 
 - `Shared/` holds configs both sides read. `Client/` holds client-only modules (they carry the `ClientOnly` attribute so the server's ModuleLoader skips them).
@@ -354,7 +228,7 @@ Points the core uses today (all server):
 | `Shop.Purchased(entry, player)` | Fire: after a purchase is given | `Match.Server.Shop` | leo `HackService` (stores the tax) |
 | `Generator.Rate(block)` | Product: speed of a generator's drops | `Generator` block hook | leo `HackService` (hacked generators run at 85%) |
 
-Example â a kit that makes its players immune to hits while they're resting:
+Example — a kit that makes its players immune to hits while they're resting:
 
 ```lua
 -- ServerScriptService.Content.Kits.Sleeper.Hook
@@ -403,7 +277,7 @@ Its extension handlers go with it, so the core runs as if it never existed.
 
 ### The Base Template
 
-`ServerStorage.BaseTemplate` is the game's hierarchy with every kit, item, block and ability removed â only the core systems are left. Use it to see what the base game is, and to decide what content to add.
+`ServerStorage.BaseTemplate` is the game's hierarchy with every kit, item, block and ability removed — only the core systems are left. Use it to see what the base game is, and to decide what content to add.
 
 - `ReplicatedStorage/Content` has empty `Kits`, `Items`, `Blocks` and `Abilities`; `Effects` keeps only the generic parts (Animation, Highlight, Shards, JointSwing, Template, Sound, Particles, ColorFade, Banner); `Modes/Bedwars` is kept. `Assets` has the item, block and kit models removed.
 - `ServerScriptService/Content` has empty `Kits`, `Items/Hooks`, `Blocks/Hooks` and `Abilities`.
@@ -427,17 +301,17 @@ A kit is a folder in `Content.Kits`, named after the kit. Its `Definition` Modul
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `DisplayName` | `string` | â | Shown to players |
-| `Description` | `string` | â | Shown to players |
-| `MaxHealth` | `number` | â | Applied on kit set and every spawn. With several kits, the highest wins |
-| `WalkSpeed` | `number` | â | Same as `MaxHealth` |
-| `Items` | `{ string }` | â | Item names given on kit set and every spawn (unlocked for the match) |
-| `Abilities` | `{ string }` | â | Abilities this kit grants |
-| `Icon` | `string` | â | Image shown next to the player in the tab list. Without one, the kit's initials |
-| `State` | `{ [string]: Scribe field }` | â | Kit state, declared with Scribe |
-| `Info` | `{ InfoRow }` | â | Rows shown on the hotbar's kit line |
-| `Shop` | `{ Add?, Remove?, Price? }` | â | Changes to this kit's players' match shop |
-| `CustomUI` | `{ [string]: (gui, state) -> boolean? }` | â | Hand-made UI in `StarterGui.Main` |
+| `DisplayName` | `string` | ✅ | Shown to players |
+| `Description` | `string` | ✅ | Shown to players |
+| `MaxHealth` | `number` | ✅ | Applied on kit set and every spawn. With several kits, the highest wins |
+| `WalkSpeed` | `number` | ✅ | Same as `MaxHealth` |
+| `Items` | `{ string }` | ✅ | Item names given on kit set and every spawn (unlocked for the match) |
+| `Abilities` | `{ string }` | ✅ | Abilities this kit grants |
+| `Icon` | `string` | ❌ | Image shown next to the player in the tab list. Without one, the kit's initials |
+| `State` | `{ [string]: Scribe field }` | ❌ | Kit state, declared with Scribe |
+| `Info` | `{ InfoRow }` | ❌ | Rows shown on the hotbar's kit line |
+| `Shop` | `{ Add?, Remove?, Price? }` | ❌ | Changes to this kit's players' match shop |
+| `CustomUI` | `{ [string]: (gui, state) -> boolean? }` | ❌ | Hand-made UI in `StarterGui.Main` |
 
 Server hooks go in `SSS.Content.Kits.<Kit>.Hook` (all optional):
 
@@ -457,21 +331,21 @@ An item is a ModuleScript in `ReplicatedStorage.Content.Items.Definitions`. Its 
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `DisplayName` | `string` | â | Shown to players |
-| `Image` | `string` | â | Its icon. Without one, the UI shows a small view of its model, then its initials. Generator billboards need it for a real picture |
-| `Abilities` | `{ string }` | â | Abilities granted while held. **The first one is the click action** |
-| `Info` | `{ InfoRow }` | â | Rows in the inventory's item details |
-| `CustomUI` | `{ [string]: (gui, context) -> boolean? }` | â | Hand-made UI shown while held |
-| `Hooks` | `string` | â | Name of a module in `SSS.Content.Items.Hooks` |
-| `Stack` | `boolean` | â | Piles into one inventory slot with no stack limit (blocks, resources). Anything else takes one slot each |
-| `KeepOnDeath` | `"Sword" \| "Tool" \| "KitGear"` | â | Its death category. Unlocked items in a kept category survive death in a match |
-| `Block` | `string` | â | The block in `Content.Blocks.Definitions` this item places |
-| `ToolType` | `string` | â | `Pickaxe`, `Axe`, `Shovel` or `Sword`. No `ToolType` = held like an empty hand |
-| `Speed` | `number` | â | Breaking speed multiplier, with `ToolType` |
-| `CanBreakBlocks` | `boolean` | â | `false` for swords. With `ToolType` |
-| `RequiredKit` | `string` | â | Only players with this kit can buy it at the match shop |
-| `MaxOwned` | `number` | â | The shop refuses to sell more than this many |
-| *anything else* | `any` | â | Item data, e.g. `Damage`, `Cooldown`, `Capsule`, `HealAmount`, `Brewed` |
+| `DisplayName` | `string` | ✅ | Shown to players |
+| `Image` | `string` | ❌ | Its icon. Without one, the UI shows a small view of its model, then its initials. Generator billboards need it for a real picture |
+| `Abilities` | `{ string }` | ✅ | Abilities granted while held. **The first one is the click action** |
+| `Info` | `{ InfoRow }` | ❌ | Rows in the inventory's item details |
+| `CustomUI` | `{ [string]: (gui, context) -> boolean? }` | ❌ | Hand-made UI shown while held |
+| `Hooks` | `string` | ❌ | Name of a module in `SSS.Content.Items.Hooks` |
+| `Stack` | `boolean` | ❌ | Piles into one inventory slot with no stack limit (blocks, resources). Anything else takes one slot each |
+| `KeepOnDeath` | `"Sword" \| "Tool" \| "KitGear"` | ❌ | Its death category. Unlocked items in a kept category survive death in a match |
+| `Block` | `string` | ❌ | The block in `Content.Blocks.Definitions` this item places |
+| `ToolType` | `string` | ❌ | `Pickaxe`, `Axe`, `Shovel` or `Sword`. No `ToolType` = held like an empty hand |
+| `Speed` | `number` | ❌ | Breaking speed multiplier, with `ToolType` |
+| `CanBreakBlocks` | `boolean` | ❌ | `false` for swords. With `ToolType` |
+| `RequiredKit` | `string` | ❌ | Only players with this kit can buy it at the match shop |
+| `MaxOwned` | `number` | ❌ | The shop refuses to sell more than this many |
+| *anything else* | `any` | ❌ | Item data, e.g. `Damage`, `Cooldown`, `Capsule`, `HealAmount`, `Brewed` |
 
 Item hooks (`SSS.Content.Items.Hooks.<Hook>`, all optional):
 
@@ -484,7 +358,7 @@ Item hooks (`SSS.Content.Items.Hooks.<Hook>`, all optional):
 
 An ability has two halves:
 
-**Server** â `SSS.Content.Abilities.<Ability>`:
+**Server** — `SSS.Content.Abilities.<Ability>`:
 
 | Field | Type | Description |
 |---|---|---|
@@ -497,13 +371,13 @@ An ability has two halves:
 
 | Return | Effect |
 |---|---|
-| `false` | Nothing happened â no cooldown starts |
+| `false` | Nothing happened — no cooldown starts |
 | a `number` | Use this as the cooldown instead of `Cooldown` |
-| anything else | Success â `Cooldown` applies |
+| anything else | Success — `Cooldown` applies |
 
 A request runs only if the ability exists, the **held item, an active kit, or a granted ability** allows it, and its cooldown has passed. Cooldowns are stored in the `Abilities` session root (`ReadyAt`, server time) and replicate to the client automatically.
 
-**Client** (optional) â `Content.Abilities.<Ability>` calls `Abilities:Register(name, spec)` in `Init`. Every field is optional:
+**Client** (optional) — `Content.Abilities.<Ability>` calls `Abilities:Register(name, spec)` in `Init`. Every field is optional:
 
 | Field | Type | Description |
 |---|---|---|
@@ -558,7 +432,7 @@ KitState.Of(player, "Golem").Rocks.Set(99)
 
 The `Kits` session root also holds `Equipped` (active kits) and `Granted` (granted abilities).
 
-> â ï¸ Don't name a state field after a Scribe accessor method (`Active`, `Get`, `Set`, `Count`, `Remove`, â¦). The method shadows the field, and Scribe errors with `API_NAME_COLLISION`.
+> ⚠️ Don't name a state field after a Scribe accessor method (`Active`, `Get`, `Set`, `Count`, `Remove`, …). The method shadows the field, and Scribe errors with `API_NAME_COLLISION`.
 
 ### Effects
 
@@ -607,8 +481,8 @@ See [Matches](#matches-1) for the full reference.
 
 ### Adding a Kit
 
-1. **Make the kit's folders** â a Folder named `Ninja` in `Content.Kits` and another in `SSS.Content.Kits`. The folder name is the kit's name.
-2. **Create the definition** â `Content.Kits.Ninja.Definition`:
+1. **Make the kit's folders** — a Folder named `Ninja` in `Content.Kits` and another in `SSS.Content.Kits`. The folder name is the kit's name.
+2. **Create the definition** — `Content.Kits.Ninja.Definition`:
 
    ```lua
    --!strict
@@ -638,7 +512,7 @@ See [Matches](#matches-1) for the full reference.
    }
    ```
 
-3. **Add server hooks** *(optional)* â `SSS.Content.Kits.Ninja.Hook`:
+3. **Add server hooks** *(optional)* — `SSS.Content.Kits.Ninja.Hook`:
 
    ```lua
    --!strict
@@ -657,17 +531,17 @@ See [Matches](#matches-1) for the full reference.
    return Ninja
    ```
 
-4. **Add each new ability** â see [Adding an Ability](#adding-an-ability).
-5. **Add its effects** â see [Adding an Effect](#adding-an-effect).
-6. **Add its other code** *(optional)* â server systems next to the hook in `SSS.Content.Kits.Ninja`, configs in `Content.Kits.Ninja.Shared`, client modules in `Content.Kits.Ninja.Client` (set the `ClientOnly` attribute on each).
-7. **Change core behaviour** *(optional)* â add handlers to [extension points](#extension-points), or add a new point. Never put the kit's name in a core system.
+4. **Add each new ability** — see [Adding an Ability](#adding-an-ability).
+5. **Add its effects** — see [Adding an Effect](#adding-an-effect).
+6. **Add its other code** *(optional)* — server systems next to the hook in `SSS.Content.Kits.Ninja`, configs in `Content.Kits.Ninja.Shared`, client modules in `Content.Kits.Ninja.Client` (set the `ClientOnly` attribute on each).
+7. **Change core behaviour** *(optional)* — add handlers to [extension points](#extension-points), or add a new point. Never put the kit's name in a core system.
 
 No HUD changes are needed: the hotbar's kit line reads `Info`, the ability bar reads `Abilities`, and the tab list reads `Icon`. The `givekit` command picks up the new kit automatically.
 
 ### Adding an Item
 
 1. **Add the Tool** to `ReplicatedStorage.Assets.Models.Items`, named after the item.
-2. **Create the definition** â `Content.Items.Definitions.Smoke Bomb`:
+2. **Create the definition** — `Content.Items.Definitions.Smoke Bomb`:
 
    ```lua
    --!strict
@@ -685,7 +559,7 @@ No HUD changes are needed: the hotbar's kit line reads `Info`, the ability bar r
    }
    ```
 
-3. **Add a server hook** *(optional)* â `SSS.Content.Items.Hooks.<Name>` with `OnGiven(player, tool)`, and set `Hooks = "<Name>"` in the definition.
+3. **Add a server hook** *(optional)* — `SSS.Content.Items.Hooks.<Name>` with `OnGiven(player, tool)`, and set `Hooks = "<Name>"` in the definition.
 4. **Give it** with `ItemService.Give(player, "Smoke Bomb", 3)`, sell it in `Classes.Shop`, list it in a kit's `Items`, or use `give me "Smoke Bomb"` in Cmdr.
 
 A block-breaking tool needs `ToolType`, `Speed` and `CanBreakBlocks`. Give it `KeepOnDeath = "Tool"` so players keep it after dying, and so the shop sells it only once a match:
@@ -704,7 +578,7 @@ return {
 
 ### Adding an Ability
 
-1. **Server** â `SSS.Content.Abilities.Vanish`:
+1. **Server** — `SSS.Content.Abilities.Vanish`:
 
    ```lua
    --!strict
@@ -721,7 +595,7 @@ return {
    }
    ```
 
-2. **Client** *(optional)* â `Content.Abilities.Vanish`:
+2. **Client** *(optional)* — `Content.Abilities.Vanish`:
 
    ```lua
    --!strict
@@ -751,7 +625,7 @@ return {
 
 Adding an effect only needs an entry in `Content.Effects.Registry`.
 
-1. **Put its assets** in `ReplicatedStorage.Assets` â sounds in `Sounds`, particle Attachments in `Vfx`, models in `Models`.
+1. **Put its assets** in `ReplicatedStorage.Assets` — sounds in `Sounds`, particle Attachments in `Vfx`, models in `Models`.
 2. **Add the entry**:
 
    ```lua
@@ -774,8 +648,8 @@ If no existing visual kind fits, see [Writing a New Visual Kind](#writing-a-new-
 
 ### Adding a Block
 
-1. **Add the model** â a part or model in `ReplicatedStorage.Assets.Models.Blocks`, sized to the block's cells (3 studs per cell).
-2. **Create the definition** â `Content.Blocks.Definitions.Glass`:
+1. **Add the model** — a part or model in `ReplicatedStorage.Assets.Models.Blocks`, sized to the block's cells (3 studs per cell).
+2. **Create the definition** — `Content.Blocks.Definitions.Glass`:
 
    ```lua
    --!strict
@@ -793,7 +667,7 @@ If no existing visual kind fits, see [Writing a New Visual Kind](#writing-a-new-
    }
    ```
 
-3. **Make it placeable by players** â add a stack item with `Block` pointing at it, and its Tool model in `Assets.Models.Items`:
+3. **Make it placeable by players** — add a stack item with `Block` pointing at it, and its Tool model in `Assets.Models.Items`:
 
    ```lua
    -- Content.Items.Definitions.Glass
@@ -805,14 +679,14 @@ If no existing visual kind fits, see [Writing a New Visual Kind](#writing-a-new-
    }
    ```
 
-4. **Sell it** *(optional)* â add an entry to `Classes.Shop` (see [Adding a Shop Entry](#adding-a-shop-entry)).
+4. **Sell it** *(optional)* — add an entry to `Classes.Shop` (see [Adding a Shop Entry](#adding-a-shop-entry)).
 
 `Shared.Blocks` checks every definition when it loads and **errors right away** on a missing or wrong field, or a duplicate `Id`.
 
 ### Adding a Special Block
 
 1. Set `Hooks = "Trap"` on the block definition, plus any data the hook reads (e.g. `Damage = 10`).
-2. **Server hook** â `SSS.Content.Blocks.Hooks.Trap`:
+2. **Server hook** — `SSS.Content.Blocks.Hooks.Trap`:
 
    ```lua
    --!strict
@@ -838,8 +712,8 @@ If no existing visual kind fits, see [Writing a New Visual Kind](#writing-a-new-
    return Trap
    ```
 
-3. **Client hook** *(optional)* â `Content.Blocks.Client.Trap` with `OnHover(entry, hovering)` and/or `OnInteract(entry)`.
-4. **A prompt** *(optional)* â `Interact = { ActionText = "Arm" }` on the definition gives the block a ProximityPrompt (on **F**) that runs `OnInteract`.
+3. **Client hook** *(optional)* — `Content.Blocks.Client.Trap` with `OnHover(entry, hovering)` and/or `OnInteract(entry)`.
+4. **A prompt** *(optional)* — `Interact = { ActionText = "Arm" }` on the definition gives the block a ProximityPrompt (on **F**) that runs `OnInteract`.
 
 See [Block Hooks](#block-hooks) for every hook.
 
@@ -872,7 +746,7 @@ Kits and modes change the listing with **changes**: `{ Add = { entries }, Remove
    Haste = {
    	DisplayName = "Haste",
    	Icon = "",             -- image id; without one the Glyph shows
-   	Glyph = "ð¨",
+   	Glyph = "💨",
    	Order = 5,             -- card position in the upgrades window
    	Tiers = {
    		{ Price = { Diamond = 4 }, Text = "+10% speed" },
@@ -920,7 +794,7 @@ CustomUI = {
 | Item | the item is held | an item `Context` |
 | Ability spec | the ability is usable | an ability `Context` |
 
-The function runs **every frame**. **Return `false` to hide** the element for that frame â useful for UI that only appears while something is happening:
+The function runs **every frame**. **Return `false` to hide** the element for that frame — useful for UI that only appears while something is happening:
 
 ```lua
 -- Dash ability: the charge bar only shows while charging
@@ -970,7 +844,7 @@ Every player has `Inventory.SLOTS` (36) slots of `{ Item, Count }`. The first `I
 - **Tools are only a view of the hotbar.** `ItemService.SyncTools` makes one Tool per filled hotbar slot after every change (each Tool carries an `InventorySlot` value). Roblox's own backpack is off.
 - **Unlocked** items are the ones a player bought at the shop, got from their kit, or started with this match. The match's death rules keep unlocked items in a kept `KeepOnDeath` category.
 
-**One API** â `Systems.Items.ItemService` is the only place the inventory changes. The shop, kits, the match and blocks all use it:
+**One API** — `Systems.Items.ItemService` is the only place the inventory changes. The shop, kits, the match and blocks all use it:
 
 ```lua
 ItemService.Give(player, "Iron", 10)                         -- returns how many fit
@@ -995,7 +869,7 @@ Inventory.KeepOnDeath("Wooden Pickaxe") --> "Tool"
 
 | Element | What it does |
 |---|---|
-| `Hud.Hotbar` (`Main.Hotbar`) | The 9 hotbar slots with icons and counts. Keys **1â9** or a click use a slot: the server equips it, or puts it away if it's held. Above the slots, the **kit line** shows your kits' `Info` rows, and **Balances** show your currencies |
+| `Hud.Hotbar` (`Main.Hotbar`) | The 9 hotbar slots with icons and counts. Keys **1–9** or a click use a slot: the server equips it, or puts it away if it's held. Above the slots, the **kit line** shows your kits' `Info` rows, and **Balances** show your currencies |
 | `Hud.Inventory` (`Main.Inventory`) | **E** opens the full grid. Click an item, then a slot, to move it (same items merge, others swap). Right-click splits a stack. The details show the item's name, `Info` rows, and its death rule. E does nothing while the item shop or upgrades window is open |
 | `Hud.ItemIcon` | Draws an item's icon everywhere (hotbar, inventory, shop, kill feed): its `Image`, else a small 3D view of its model, else its initials |
 
@@ -1015,10 +889,10 @@ Clients only ask: `Items.MoveSlot`, `Items.SplitSlot` and `Items.UseSlot` name t
 | `Replicate` | `"All" \| "Nearby" \| "Local"` | `"All"` | How the server sends it. See [Replication](#replication) |
 | `Range` | `number` | `200` | Studs, for `Nearby` |
 | `Persistent` | `boolean` | `false` | Runs until stopped (e.g. a looping snore). Playing it again on the same target restarts it |
-| `Sound` | part or `{ part }` | â | Sound part(s) |
-| `Visual` | part or `{ part }` | â | Visual part(s). `Kind` names a module in `Content.Effects.Parts` |
-| `Animation` | part | â | Animation part, played through `AnimationHandler` |
-| `Variants` | `{ [any]: fields }` | â | Fields that replace the ones above when played with that `Variant` (e.g. a combo step, capsule type, or block sound category) |
+| `Sound` | part or `{ part }` | — | Sound part(s) |
+| `Visual` | part or `{ part }` | — | Visual part(s). `Kind` names a module in `Content.Effects.Parts` |
+| `Animation` | part | — | Animation part, played through `AnimationHandler` |
+| `Variants` | `{ [any]: fields }` | — | Fields that replace the ones above when played with that `Variant` (e.g. a combo step, capsule type, or block sound category) |
 
 All `Delay` and timing values are divided by the `Speed` the effect is played at.
 
@@ -1056,18 +930,18 @@ All `Delay` and timing values are divided by the `Speed` the effect is played at
 | `Template` | `Folder`, `Asset`, `FadeDelay`, `FadeTime`, `Lifetime` | Places a copy of a part or model from `Assets.Models` at the effect's CFrame, then fades it |
 | `Shards` | `Count`, `Size = { min, max }`, `Color`, `Material`, `Time`, `Lifetime` | Small parts that fly out and fade. `Data.Color` / `Data.Material` override (used by `BlockBreak`) |
 | `JointSwing` | `Joint`, `Keys = { { At, Time, Angles } }` | Swings one joint through rotations (degrees from rest) |
-| `ClawSwing` | â | The werewolf combo swipe. `Variant` = combo step, `Speed` = attack speed, `Tool` = claws |
+| `ClawSwing` | — | The werewolf combo swipe. `Variant` = combo step, `Speed` = attack speed, `Tool` = claws |
 | `SleepSymbols` | `Interval`, `MaxDistance` | Zs rising from the head until stopped |
 | `ColorFade` | `Time` | Fades body parts using `Data.Colors = { [partName] = { From, To } }` |
 | `SamuraiPose` | `Phase = "Charge" \| "Release"` | IK sword pose. `Tool` = sword. Stop with `{ Instant = true }` to snap back |
-| `ChickenRush` | â | The Animal Whisperer's chicken stampede |
-| `Banner` | â | A screen banner from `Data.Title`, `Data.Text` and `Data.Color` (match start, bed destroyed, wins) |
-| `Satellite` | â | leo's satellite flying to the hacked team |
-| `HackWarning` | â | The warning shown to a hacked team |
+| `ChickenRush` | — | The Animal Whisperer's chicken stampede |
+| `Banner` | — | A screen banner from `Data.Title`, `Data.Text` and `Data.Color` (match start, bed destroyed, wins) |
+| `Satellite` | — | leo's satellite flying to the hacked team |
+| `HackWarning` | — | The warning shown to a hacked team |
 
 ### Playing Effects
 
-**Client** â `ReplicatedStorage.Modules.Client.Effects`:
+**Client** — `ReplicatedStorage.Modules.Client.Effects`:
 
 ```lua
 local Effects = require(ReplicatedStorage.Modules.Client.Effects)
@@ -1081,7 +955,7 @@ handle:Stop()
 Effects.Stop("WerewolfSleep", character)
 ```
 
-**Server** â `ServerScriptService.Modules.Systems.Effects.EffectService`:
+**Server** — `ServerScriptService.Modules.Systems.Effects.EffectService`:
 
 ```lua
 local EffectService = require(ServerScriptService.Modules.Systems.Effects.EffectService)
@@ -1118,7 +992,7 @@ Who receives a server-sent effect comes from its `Replicate` field:
 |---|---|---|
 | `All` | Every client | `Hit`, `SwordUpgrade`, `WerewolfSleep`, `WerewolfTransform`, `WerewolfTransformHowl`, `CapsuleSplash`, `SamuraiCharge`, `SamuraiRelease`, `ChickenRush`, `SatelliteHack`, `SatelliteHackWarning`, `MatchBanner`, `BedDestroyed`, `TeamEliminated`, `MatchWin` |
 | `Nearby` | Clients whose character is within `Range` studs | `SwordSwing` (200), `WerewolfClawSwing` (300), `WerewolfHuntHowl` (150), `GolemThrow` (300), `GolemShatter` (300), `BlockPlace` (150), `BlockBreak` (150), `BlockHit` (80), `GeneratorSpawn` (80), `PlayerKilled` (250) |
-| `Local` | Not sent â only the client plays it | `SwordSlash`, `ButtonHover`, `ButtonClick`, `Music`, `ShopPurchase`, `ShopDenied`, `InventoryOpen`, `InventoryClose`, `InventoryMove`, `TabListOpen` |
+| `Local` | Not sent — only the client plays it | `SwordSlash`, `ButtonHover`, `ButtonClick`, `Music`, `ShopPurchase`, `ShopDenied`, `InventoryOpen`, `InventoryClose`, `InventoryMove`, `TabListOpen` |
 
 Why each one:
 
@@ -1132,12 +1006,12 @@ Effects are only sent to clients that have finished loading (the `_ModulesLoaded
 
 ```text
 SoundService
-âââ Master
-    âââ Music        background music
-    âââ Abilities    ability sounds: swings, claw swipes, howls, snore
-    âââ Effects      hits, impacts and block sounds (also the default group)
-    âââ UI           buttons, banners, shop, inventory and tab list sounds
-    âââ Ambient      reserved for world ambience
+└── Master
+    ├── Music        background music
+    ├── Abilities    ability sounds: swings, claw swipes, howls, snore
+    ├── Effects      hits, impacts and block sounds (also the default group)
+    ├── UI           buttons, banners, shop, inventory and tab list sounds
+    └── Ambient      reserved for world ambience
 ```
 
 - SoundGroups **nest** in Roblox: a sound's volume is multiplied by its group's volume, then by `Master`'s. Changing `Master` scales everything.
@@ -1161,7 +1035,7 @@ AudioSettings.Changed:Connect(function(group, volume) end)
 
 Volumes go from `0` to `1`. `Set` changes the SoundGroup's `Volume` directly.
 
-Saved values come from `AudioSettings.Store`, which only has `Load()` and `Save(volumes)`. Today it keeps them for the session. To save volumes in player data, change `Store` only â `AudioSettings` and `Client.Effects` need no changes.
+Saved values come from `AudioSettings.Store`, which only has `Load()` and `Save(volumes)`. Today it keeps them for the session. To save volumes in player data, change `Store` only — `AudioSettings` and `Client.Effects` need no changes.
 
 ### Writing a New Visual Kind
 
@@ -1227,20 +1101,20 @@ local key = Blocks.Key(cell)              -- "x,y,z"
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `DisplayName` | `string` | â | Shown to players (and as the prompt's object text) |
-| `Id` | `number` | â | Unique. Keep it the same once used; never reuse an old one |
-| `Hardness` | `number` | â | Seconds to break with the preferred tool at `Speed` 1 |
-| `Breakable` | `boolean` | â | `false` for blocks that can be hovered but never broken |
-| `Placeable` | `boolean` | â | Whether players can place it. Placeable blocks need a `Model` |
+| `DisplayName` | `string` | ✅ | Shown to players (and as the prompt's object text) |
+| `Id` | `number` | ✅ | Unique. Keep it the same once used; never reuse an old one |
+| `Hardness` | `number` | ✅ | Seconds to break with the preferred tool at `Speed` 1 |
+| `Breakable` | `boolean` | ✅ | `false` for blocks that can be hovered but never broken |
+| `Placeable` | `boolean` | ✅ | Whether players can place it. Placeable blocks need a `Model` |
 | `Model` | `string` | when placeable | A part or model in `Assets.Models.Blocks` |
-| `SoundCategory` | `string` | â | `Variant` for the place/break/hit effects: `Wool`, `Wood`, `Stone`, `Dirt`, `Generic` |
-| `BreakEffect` / `PlaceEffect` | `string` | â | Effect names in `Content.Effects.Registry` |
-| `PreferredTool` | `string` | â | `Pickaxe`, `Axe` or `Shovel`. `nil` = every breaking tool is full speed |
-| `Size` | `Vector3` | â | Cells it fills. Default `1 Ã 1 Ã 1` |
-| `HealDelay` | `number` | â | Seconds without a hit before damage resets. Off by default |
-| `Interact` | `{ ActionText, HoldDuration? }` | â | Gives the block a prompt (on F) that runs its `OnInteract` hooks |
-| `Hooks` | `string` | â | Module name in `SSS.Content.Blocks.Hooks` and `Content.Blocks.Client` |
-| *anything else* | `any` | â | Block data for its hooks, e.g. `Resource`, `Interval`, `Limit` on generators, `Shop` on the shop keepers |
+| `SoundCategory` | `string` | ✅ | `Variant` for the place/break/hit effects: `Wool`, `Wood`, `Stone`, `Dirt`, `Generic` |
+| `BreakEffect` / `PlaceEffect` | `string` | ✅ | Effect names in `Content.Effects.Registry` |
+| `PreferredTool` | `string` | ❌ | `Pickaxe`, `Axe` or `Shovel`. `nil` = every breaking tool is full speed |
+| `Size` | `Vector3` | ❌ | Cells it fills. Default `1 × 1 × 1` |
+| `HealDelay` | `number` | ❌ | Seconds without a hit before damage resets. Off by default |
+| `Interact` | `{ ActionText, HoldDuration? }` | ❌ | Gives the block a prompt (on F) that runs its `OnInteract` hooks |
+| `Hooks` | `string` | ❌ | Module name in `SSS.Content.Blocks.Hooks` and `Content.Blocks.Client` |
+| *anything else* | `any` | ❌ | Block data for its hooks, e.g. `Resource`, `Interval`, `Limit` on generators, `Shop` on the shop keepers |
 
 ### Tool Types & Breaking
 
@@ -1248,11 +1122,11 @@ local key = Blocks.Key(cell)              -- "x,y,z"
 
 | ToolType | Breaks blocks |
 |---|---|
-| `Pickaxe` | â |
-| `Axe` | â |
-| `Shovel` | â |
-| `Sword` | â |
-| `Hand` (no tool, or an item with no `ToolType`) | â |
+| `Pickaxe` | ✅ |
+| `Axe` | ✅ |
+| `Shovel` | ✅ |
+| `Sword` | ❌ |
+| `Hand` (no tool, or an item with no `ToolType`) | ❌ |
 
 Break time:
 
@@ -1273,7 +1147,7 @@ Placement works like Bedwars, in first or third person, so bridging needs no exa
 
 In order, the block goes:
 
-1. **Against a side or bottom face you aim at** â so aiming under a block places under it.
+1. **Against a side or bottom face you aim at** — so aiming under a block places under it.
 2. **On your own level**, first along the path from under your feet toward the aim (so aiming anywhere ahead, even into the void, extends the bridge), then in the open cell nearest the aim.
 3. Only then **on top of a block**.
 
@@ -1283,7 +1157,7 @@ Other rules:
 - **Reach:** `PLACE_REACH` (24 studs, about 8 blocks). The server allows `PLACE_REACH_SLACK` (6) more, since it sees the character a little behind the client.
 - **Touching:** a placed block must touch an existing block, so players build out from what exists.
 - **Speed:** a click places one block at once. Holding past 0.25s, or clicking fast (an auto clicker works), places one every `PLACE_INTERVAL` (0.06s).
-- **Prediction:** each placement shows a solid placeholder until the server's block arrives, so building never waits on the server. A placement the server refuses comes back as `Blocks.Rejected`, and its placeholder goes at once â no fake blocks.
+- **Prediction:** each placement shows a solid placeholder until the server's block arrives, so building never waits on the server. A placement the server refuses comes back as `Blocks.Rejected`, and its placeholder goes at once — no fake blocks.
 - The server also refuses cells that are filled, tagged `NoBuild`, outside the build area, or where **another** player stands.
 
 ### Map Blocks
@@ -1297,7 +1171,7 @@ Other rules:
 
 ### Block Hooks
 
-**Server** â `SSS.Content.Blocks.Hooks.<Hook>` (all optional):
+**Server** — `SSS.Content.Blocks.Hooks.<Hook>` (all optional):
 
 | Hook | When it runs |
 |---|---|
@@ -1323,7 +1197,7 @@ Other rules:
 
 Other systems can watch blocks with `BlockService.ObserveBroken(fn)`, which runs `fn(block, player?)` after any block is removed.
 
-**Client** â `Content.Blocks.Client.<Hook>` (all optional):
+**Client** — `Content.Blocks.Client.<Hook>` (all optional):
 
 | Hook | When it runs |
 |---|---|
@@ -1478,20 +1352,20 @@ Each layer can add, remove or reprice entries, so taking a source away (like a k
 The upgrade keeper in each base opens `Client.Upgrades` (`MatchUpgrades`): one card per upgrade in the mode's `Upgrades`, ordered by `Order`, each with:
 
 - its icon (`Icon`, or the `Glyph` emoji),
-- every tier as `T1`, `T2`, `T3` with what it gives â a check on the tiers the team has, a lock on the rest,
+- every tier as `T1`, `T2`, `T3` with what it gives — a check on the tiers the team has, a lock on the rest,
 - the next tier's price,
 - a button: **BUY**, **NOT ENOUGH**, or **MAXED**. One click buys.
 
-Upgrades are for the whole team. Levels are stored in the match store (`Teams[id].Levels`), shown in the tab list as icons with **roman numerals** (â¡ III), and applied by the mode's `OnUpgrade`. Buying needs an **upgrade keeper** within `ShopkeeperRange`.
+Upgrades are for the whole team. Levels are stored in the match store (`Teams[id].Levels`), shown in the tab list as icons with **roman numerals** (⚡ III), and applied by the mode's `OnUpgrade`. Buying needs an **upgrade keeper** within `ShopkeeperRange`.
 
 Bedwars upgrades (`Classes.Upgrades`). Each tier describes the whole effect at that level:
 
 | Upgrade | T1 | T2 | T3 | Effect today |
 |---|---|---|---|---|
-| Armor ð¡ï¸ | 4 ð +10% | 8 ð +20% | 16 ð +30% | Hook point |
-| Damage âï¸ | 5 ð +5% | 10 ð +10% | 20 ð +20% | Hook point |
-| Diamond Gen ð | 4 ð: diamonds every 30s | 8 ð: every 20s | 12 ð: every 15s | Team generators drop diamonds (`Adds`) |
-| Team Gen â¡ | 4 ð: +50% speed | 8 ð: +100% | 12 ð: +100% and emeralds every 40s | Team generators speed up (`Speed`, `Adds`) |
+| Armor 🛡️ | 4 💎 +10% | 8 💎 +20% | 16 💎 +30% | Hook point |
+| Damage ⚔️ | 5 💎 +5% | 10 💎 +10% | 20 💎 +20% | Hook point |
+| Diamond Gen 💎 | 4 💎: diamonds every 30s | 8 💎: every 20s | 12 💎: every 15s | Team generators drop diamonds (`Adds`) |
+| Team Gen ⚡ | 4 💎: +50% speed | 8 💎: +100% | 12 💎: +100% and emeralds every 40s | Team generators speed up (`Speed`, `Adds`) |
 
 ### Events
 
@@ -1509,7 +1383,7 @@ Firing an event plays the `MatchBanner` effect, sets its `Info` rows (shown in t
 | **Top bar** (`MatchTop`) | `Client.Hud` | The clock box (countdown, match time, respawning, "Bed destroyed") and one square per team: its color, alive players centred, and a bed icon that greys out when the bed is gone. An eliminated team's square turns grey (nothing says OUT). Your team is outlined |
 | **Result** (`MatchResult`) | `Client.Hud` | The win or draw screen |
 | **Kill feed** (`KillFeed`) | `Client.KillFeed` | Top right: killer, item icon, victim, in team colors, `FINAL` when the victim can't respawn. Entries fade |
-| **Tab list** (`TabList`) | `Client.TabList` | Hold **Tab** (a Players button on touch). Teams in two columns: color, name, bed icon, upgrade icons with roman numerals, then each player's kit icon, name, ð (out) or "respawning", and kills. Then game info rows and upcoming events with countdowns. Roblox's player list is off |
+| **Tab list** (`TabList`) | `Client.TabList` | Hold **Tab** (a Players button on touch). Teams in two columns: color, name, bed icon, upgrade icons with roman numerals, then each player's kit icon, name, 💀 (out) or "respawning", and kills. Then game info rows and upcoming events with countdowns. Roblox's player list is off |
 | **Item shop** (`MatchShop`) | `Client.Shop` | See [The Item Shop](#the-item-shop) |
 | **Upgrades** (`MatchUpgrades`) | `Client.Upgrades` | See [Team Upgrades](#team-upgrades) |
 | **Spectating** | `Client.Spectate` | Who you're watching while out |
@@ -1546,7 +1420,7 @@ A mode's rules module (`Match.Server.Modes.<Rules>`). Every function is optional
 | `Cleanup(match)` | Resetting: undo what the mode made |
 | `Events = { [hook] = function(match, event) }` | Event hooks |
 
-**Hooks** â how the rest of the game tells the match what happened (`Match.Server().Hooks`). The match connects them itself: players through Roblox, `BlockBroken` through `BlockService.ObserveBroken`, `KitAssigned` through `KitState.ObserveKits`. They can also be called directly: `PlayerJoined`, `PlayerLeft`, `PlayerDied`, `PlayerSpawned(player, character)`, `BlockBroken(block, player?)`, `KitAssigned(player, kits)`.
+**Hooks** — how the rest of the game tells the match what happened (`Match.Server().Hooks`). The match connects them itself: players through Roblox, `BlockBroken` through `BlockService.ObserveBroken`, `KitAssigned` through `KitState.ObserveKits`. They can also be called directly: `PlayerJoined`, `PlayerLeft`, `PlayerDied`, `PlayerSpawned(player, character)`, `BlockBroken(block, player?)`, `KitAssigned(player, kits)`.
 
 ### Match Settings
 
@@ -1585,11 +1459,11 @@ Press **F2** in game to open the [Cmdr](https://eryn.io/Cmdr/) command bar. Only
 | `givekit` | `kit` | `<players> <kit> [replace]` | Add a kit to the player's kits. `replace = true` removes their other kits first |
 | `giveability` | `ability` | `<players> <ability>` | Give an ability without a kit. Only [grantable](#granted-abilities) abilities are listed |
 | `setteam` | `team` | `<players> <team>` | Move players to a team in the running match |
-| `shopadd` | â | `<item> <currency> <price> [player]` | Add a match shop entry, or set its price if it's listed |
-| `shopprice` | â | `<item> <currency> <price> [player]` | Change one currency of a listed entry's price |
-| `shopremove` | â | `<item> [player]` | Remove an entry |
-| `shoplist` | â | `[player]` | Print a player's listing, or the base listing |
-| `shopclear` | â | `[player]` | Undo every shop command change, or one player's |
+| `shopadd` | — | `<item> <currency> <price> [player]` | Add a match shop entry, or set its price if it's listed |
+| `shopprice` | — | `<item> <currency> <price> [player]` | Change one currency of a listed entry's price |
+| `shopremove` | — | `<item> [player]` | Remove an entry |
+| `shoplist` | — | `[player]` | Print a player's listing, or the base listing |
+| `shopclear` | — | `[player]` | Undo every shop command change, or one player's |
 
 Examples:
 
@@ -1682,13 +1556,13 @@ Used by kit and item `Info` tables (`Hud.InfoRows`):
 | `Ability5` | `G` | `RB` |
 | Item click action / swing | `LMB` | `LT` |
 | Sprint | `Left Shift` | `RT` |
-| Hotbar slots | `1`â`9`, or click | â |
-| Inventory | `E` | â |
-| ProximityPrompts (shops, kit NPCs, cauldronâ¦) | `F` | â |
-| Tab list | hold `Tab` | â |
-| Break (breaking tool held) | hold `LMB` | â |
-| Place (block item held) | click or hold `LMB` | â |
-| Command bar | `F2` | â |
+| Hotbar slots | `1`–`9`, or click | — |
+| Inventory | `E` | — |
+| ProximityPrompts (shops, kit NPCs, cauldron…) | `F` | — |
+| Tab list | hold `Tab` | — |
+| Break (breaking tool held) | hold `LMB` | — |
+| Place (block item held) | click or hold `LMB` | — |
+| Command bar | `F2` | — |
 
 - No two actions share a key: E is only the inventory, F only prompts.
 - Kit abilities take slots first, in the order kits and their `Abilities` are listed; then granted abilities; then the held item's other abilities.
@@ -1703,7 +1577,7 @@ Used by kit and item `Info` tables (`Hud.InfoRows`):
 
 ### Server
 
-#### `KitService` â `Systems.Kits.KitService`
+#### `KitService` — `Systems.Kits.KitService`
 
 | Method | Description |
 |---|---|
@@ -1718,7 +1592,7 @@ Used by kit and item `Info` tables (`Hud.InfoRows`):
 | `:GrantItems(player, kitName)` | Give the kit's missing items |
 | `:ApplyStats(player)` | Apply the highest `MaxHealth` / `WalkSpeed` of the active kits |
 
-#### `ItemService` â `Systems.Items.ItemService`
+#### `ItemService` — `Systems.Items.ItemService`
 
 | Function | Description |
 |---|---|
@@ -1733,7 +1607,7 @@ Used by kit and item `Info` tables (`Hud.InfoRows`):
 | `.SlotOf(tool) -> number?` | A Tool's slot |
 | `.SyncTools(player)` | Rebuild the hotbar Tools from the slots |
 
-#### `AbilityService` â `Systems.Abilities.AbilityService`
+#### `AbilityService` — `Systems.Abilities.AbilityService`
 
 | Method | Description |
 |---|---|
@@ -1741,14 +1615,14 @@ Used by kit and item `Info` tables (`Hud.InfoRows`):
 | `:GetCooldown(player, abilityName) -> number` | Seconds left |
 | `:SetCooldown(player, abilityName, seconds)` | Start or replace a cooldown (replicates to the client) |
 
-#### `EffectService` â `Systems.Effects.EffectService`
+#### `EffectService` — `Systems.Effects.EffectService`
 
 | Function | Description |
 |---|---|
 | `.Play(name, options?)` | Send an effect to the clients its `Replicate` names. `Local` effects warn and are not sent |
 | `.Stop(name, target?, data?)` | Stop an effect on every client, e.g. a persistent one. `data` is passed to the parts' stop functions |
 
-#### `Combat` / `DamageLog` â `Systems.Combat`
+#### `Combat` / `DamageLog` — `Systems.Combat`
 
 | Function | Description |
 |---|---|
@@ -1757,7 +1631,7 @@ Used by kit and item `Info` tables (`Hud.InfoRows`):
 | `DamageLog.Last(victim, window) -> (Player?, string?)` | The last attacker and item within `window` seconds |
 | `DamageLog.Clear(victim)` | Forget who hit them |
 
-#### `BlockService` â `Systems.Blocks.BlockService`
+#### `BlockService` — `Systems.Blocks.BlockService`
 
 | Function | Description |
 |---|---|
@@ -1777,7 +1651,7 @@ Used by kit and item `Info` tables (`Hud.InfoRows`):
 | `.InReach(player, origin, size, reach?) -> boolean` | Is the block within reach |
 | `.OverlapsPlayer(origin, size, except?) -> boolean` | Is any other player in those cells |
 
-#### `Claws` â `SSS.Content.Kits.Werewolf.Claws`
+#### `Claws` — `SSS.Content.Kits.Werewolf.Claws`
 
 | Function | Description |
 |---|---|
@@ -1801,13 +1675,13 @@ Each claws Tool gets a session (`Claws.Session`), and each child module adds its
 | `Hit` | Strike-frame hit detection, lifesteal, charge on hit |
 | `Effects` | Every claw effect request, through `EffectService` |
 
-#### `HackService` â `SSS.Content.Kits.leo.HackService`
+#### `HackService` — `SSS.Content.Kits.leo.HackService`
 
 leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enemy team at a time until the connection breaks or they retarget. A hacked team pays `Inflation` (+25%) more at the shop (`DecorateListing`, on the `Shop.Listing` extension point) and its generators run at `GeneratorRate` (85%, on `Generator.Rate`). The extra is stored in the connection (`Settle`, on `Shop.Purchased`), collected by interacting with it, and dropped when it breaks. Tuning is in `Content.Kits.leo.Shared.SatelliteHackConfig`.
 
 ### Shared
 
-#### `KitState` â `Shared.KitState`
+#### `KitState` — `Shared.KitState`
 
 | Function | Side | Description |
 |---|---|---|
@@ -1825,9 +1699,9 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.SetKits(player, kits)` | server | Low-level write. Use `KitService:SetKits` instead |
 | `.SetGranted(player, abilities)` | server | Low-level write. Use `KitService:GrantAbility` instead |
 
-> On the client, `player` must be the `LocalPlayer` â each client only receives its own state.
+> On the client, `player` must be the `LocalPlayer` — each client only receives its own state.
 
-#### `Items` â `Shared.Items`
+#### `Items` — `Shared.Items`
 
 | Function | Description |
 |---|---|
@@ -1838,7 +1712,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.Count(player, itemName)` | How many the player carries (reads `Inventory`) |
 | `.WireAbilities(player, use)` | Client: clicking an item Tool calls `use(abilityName, tool)` |
 
-#### `Inventory` â `Shared.Inventory`
+#### `Inventory` — `Shared.Inventory`
 
 | Member | Side | Description |
 |---|---|---|
@@ -1851,7 +1725,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.KeepOnDeath(itemName)` | both | `"Sword"`, `"Tool"`, `"KitGear"` or `nil` |
 | `.Write(player, slots)` / `.SetUnlocked(player, itemName?)` | server | Low-level writes. Use `ItemService` instead |
 
-#### `Blocks` â `Shared.Blocks`
+#### `Blocks` — `Shared.Blocks`
 
 | Function | Description |
 |---|---|
@@ -1859,8 +1733,8 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.Of(tool)` | The block a held block item places, or `nil` |
 | `.ToolOf(tool)` | How a held item breaks blocks. `nil` = empty hand |
 | `.BreakTime(definition, tool)` | Seconds to break, or `nil` if the tool can't |
-| `.CellOf(position)` / `.CenterOf(cell)` | World â cell |
-| `.Key(cell)` / `.FromKey(key)` | Cell â `"x,y,z"` |
+| `.CellOf(position)` / `.CenterOf(cell)` | World ↔ cell |
+| `.Key(cell)` / `.FromKey(key)` | Cell ↔ `"x,y,z"` |
 | `.SizeOf(definition, turned?)` | Size in cells, turned a quarter turn if `true` |
 | `.Cells(origin, size)` | Every cell a block fills |
 | `.Bounds(origin, size)` | Center CFrame and size in studs |
@@ -1870,7 +1744,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.Touches(origin, size, filled)` | Does a block touch a filled cell |
 | `.InBuildArea(origin, size)` | Does it fit in a `BUILD_AREAS` box |
 
-#### `ToolTypes` â `Shared.ToolTypes`
+#### `ToolTypes` — `Shared.ToolTypes`
 
 | Member | Description |
 |---|---|
@@ -1878,7 +1752,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.HAND` | The empty-hand tool |
 | `.Of(definition, itemName?)` | An item's tool (`ToolType`, `Speed`, `CanBreakBlocks`). Errors on bad fields |
 
-#### `BlockState` â `Shared.BlockState`
+#### `BlockState` — `Shared.BlockState`
 
 | Function | Side | Description |
 |---|---|---|
@@ -1886,7 +1760,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.SetDamage(key, damage)` | server | Set it. `0` clears it |
 | `.Observe(fn)` | both | `fn({ [key]: damage })` now and on every change |
 
-#### `ReadOnly` â `Shared.ReadOnly`
+#### `ReadOnly` — `Shared.ReadOnly`
 
 | Function | Description |
 |---|---|
@@ -1894,7 +1768,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 
 ### Client
 
-#### `Abilities` â `Client.Core.Abilities`
+#### `Abilities` — `Client.Core.Abilities`
 
 | Member | Description |
 |---|---|
@@ -1909,13 +1783,13 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `:GetAim() -> Vector3` | Mouse hit point, or a point in front of the character |
 | `.Changed` | Signal: the usable list changed |
 
-#### `Inputs` â `Client.Core.Inputs`
+#### `Inputs` — `Client.Core.Inputs`
 
 | Member | Description |
 |---|---|
 | `:GetKeyLabel(slot?) -> string` | Key text for a slot on the current device (`nil` = click action) |
 
-#### `Effects` â `Client.Effects`
+#### `Effects` — `Client.Effects`
 
 | Function | Description |
 |---|---|
@@ -1923,7 +1797,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.Stop(name, target?, data?)` | Stop every running copy of an effect on a target |
 | `handle:Stop(data?)` | Stop one play |
 
-#### `AudioSettings` â `Client.Audio.AudioSettings`
+#### `AudioSettings` — `Client.Audio.AudioSettings`
 
 | Member | Description |
 |---|---|
@@ -1932,7 +1806,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.GetAll() -> { [string]: number }` | Every group's volume, including Master |
 | `.Changed` | Signal: `(group, volume)` |
 
-#### `SoundGroups` â `Client.Audio.SoundGroups`
+#### `SoundGroups` — `Client.Audio.SoundGroups`
 
 | Member | Description |
 |---|---|
@@ -1941,15 +1815,15 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.Master() -> SoundGroup` | The Master group (created with its children if missing) |
 | `.NAMES` / `.DEFAULT` | The child group names / the default group |
 
-#### HUD â `Client.Hud`
+#### HUD — `Client.Hud`
 
 | Member | Description |
 |---|---|
-| `Hotbar.Use(index)` | Use a hotbar slot (what keys 1â9 do) |
+| `Hotbar.Use(index)` | Use a hotbar slot (what keys 1–9 do) |
 | `InventoryUI.Open()` / `.Close()` / `.IsOpen()` | The inventory window |
 | `ItemIcon.Draw(frame, itemName, image?)` | Draw an item's icon into a frame |
 
-#### Blocks â `Client.Blocks`
+#### Blocks — `Client.Blocks`
 
 | Module | Job |
 |---|---|
@@ -1962,7 +1836,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 
 ### Match
 
-#### `Match` â `ReplicatedStorage.Match`
+#### `Match` — `ReplicatedStorage.Match`
 
 | Function | Side | Description |
 |---|---|---|
@@ -1972,7 +1846,7 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.OpenShop(source?)` | client | Open the item shop. Closes when the player walks away from `source` |
 | `.OpenUpgrades(source?)` | client | Open the team upgrades window |
 
-#### `Core` â `Match.Server().*`
+#### `Core` — `Match.Server().*`
 
 | Function | Description |
 |---|---|
@@ -1991,11 +1865,11 @@ leo's satellite hack. One Hacker Connection per leo; from it, leo hacks one enem
 | `.Changed()` | Publish state changes |
 | `.Hooks` | `PlayerJoined`, `PlayerLeft`, `PlayerDied`, `PlayerSpawned`, `BlockBroken`, `KitAssigned` |
 
-#### `State` â `Match.Shared.State`
+#### `State` — `Match.Shared.State`
 
 | Function | Description |
 |---|---|
-| `.Get()` | A snapshot of the match: `Phase`, `Players`, `Teams`, `Info`, `Feed`, `Upcoming`â¦ |
+| `.Get()` | A snapshot of the match: `Phase`, `Players`, `Teams`, `Info`, `Feed`, `Upcoming`… |
 | `.Elapsed(snapshot?)` / `.Remaining(snapshot?)` | Seconds of play / left in the countdown, from server time |
 | `.PlayerEntry(player, snapshot?)` | The player's entry in `Players` |
 | `.ShopRoot(player)` / `.Listing(player)` | The player's shop root / listing (on a client, only the local player's) |
@@ -2008,36 +1882,36 @@ All packets live in `Shared.Packets` (the match's in `Match.Shared.Packets`).
 
 | Packet | Direction | Payload | Purpose |
 |---|---|---|---|
-| `Effects.Play` | S â clients | `name, options` | Play an effect (All or Nearby clients) |
-| `Effects.Stop` | S â all | `name, { Target, Data }` | Stop an effect |
-| `Abilities.Use` | C â S | `name, x, y, z` | Use any kit or item ability |
-| `Items.Equip` | C â S | `tool` | Equip a Backpack Tool on the server |
-| `Items.Unequip` | C â S | â | Put away the held Tool |
-| `Items.MoveSlot` | C â S | `from, to, item` | Move a slot's items onto another slot (merge or swap) |
-| `Items.SplitSlot` | C â S | `slot, item` | Split half a stack into the first empty slot |
-| `Items.UseSlot` | C â S | `slot, item` | Use a hotbar slot (equip or put away) |
-| `Blocks.Sync` | C â S | â | Ask for the snapshot, once listening |
-| `Blocks.Snapshot` | S â C | `{ { Key, Id, Size } }` | Every block |
-| `Blocks.Placed` | S â synced | `{ Key, Id, Size }` | A block was placed |
-| `Blocks.Removed` | S â synced | `key` | A block was removed |
-| `Blocks.Place` | C â S | `cell, turned` | Place the held block |
-| `Blocks.Rejected` | S â C | `cell` | The server refused that placement; drop its placeholder |
-| `Blocks.Hit` | C â S | `cell` | One break hit |
-| `Blocks.Interacted` | S â C | `key` | Run the block's client `OnInteract` |
-| `Combat.Hit` | S â all | `character, damage` | Hit feedback (damage popups, health bars) |
-| `Hacker.OpenConnection` | S â C | `key` | Open leo's connection panel |
-| `Werewolf.Rest` | C â S | `boolean` | Set resting directly (wake on move) |
-| `Werewolf.HuntTargets` | S â C | `tool, { targets }, expires` | Highlight hunt targets |
-| `Golem.ConsumeStone` | C â S | `stone` | Eat an ancient stone |
-| `Samurai.Charge` | C â S | `boolean` | Begin (`true`) or cancel (`false`) a dash charge |
-| `Cauldron.BrewingState` | C â S | `cauldron, holding` | Brew prompt held |
-| `Match.Purchase` | C â S | `entryId` | Buy an entry from the player's own listing (items or upgrades) |
-| `Match.PurchaseResult` | S â C | `entryId, reason` | `""` when bought, or why not |
-| `Match.Message` | S â C | `text` | A line for the player's chat |
+| `Effects.Play` | S → clients | `name, options` | Play an effect (All or Nearby clients) |
+| `Effects.Stop` | S → all | `name, { Target, Data }` | Stop an effect |
+| `Abilities.Use` | C → S | `name, x, y, z` | Use any kit or item ability |
+| `Items.Equip` | C → S | `tool` | Equip a Backpack Tool on the server |
+| `Items.Unequip` | C → S | — | Put away the held Tool |
+| `Items.MoveSlot` | C → S | `from, to, item` | Move a slot's items onto another slot (merge or swap) |
+| `Items.SplitSlot` | C → S | `slot, item` | Split half a stack into the first empty slot |
+| `Items.UseSlot` | C → S | `slot, item` | Use a hotbar slot (equip or put away) |
+| `Blocks.Sync` | C → S | — | Ask for the snapshot, once listening |
+| `Blocks.Snapshot` | S → C | `{ { Key, Id, Size } }` | Every block |
+| `Blocks.Placed` | S → synced | `{ Key, Id, Size }` | A block was placed |
+| `Blocks.Removed` | S → synced | `key` | A block was removed |
+| `Blocks.Place` | C → S | `cell, turned` | Place the held block |
+| `Blocks.Rejected` | S → C | `cell` | The server refused that placement; drop its placeholder |
+| `Blocks.Hit` | C → S | `cell` | One break hit |
+| `Blocks.Interacted` | S → C | `key` | Run the block's client `OnInteract` |
+| `Combat.Hit` | S → all | `character, damage` | Hit feedback (damage popups, health bars) |
+| `Hacker.OpenConnection` | S → C | `key` | Open leo's connection panel |
+| `Werewolf.Rest` | C → S | `boolean` | Set resting directly (wake on move) |
+| `Werewolf.HuntTargets` | S → C | `tool, { targets }, expires` | Highlight hunt targets |
+| `Golem.ConsumeStone` | C → S | `stone` | Eat an ancient stone |
+| `Samurai.Charge` | C → S | `boolean` | Begin (`true`) or cancel (`false`) a dash charge |
+| `Cauldron.BrewingState` | C → S | `cauldron, holding` | Brew prompt held |
+| `Match.Purchase` | C → S | `entryId` | Buy an entry from the player's own listing (items or upgrades) |
+| `Match.PurchaseResult` | S → C | `entryId, reason` | `""` when bought, or why not |
+| `Match.Message` | S → C | `text` | A line for the player's chat |
 
 `Shared.UnreliablePackets` holds `FootPrint` on an UnreliableRemoteEvent. Cmdr uses its own `CmdrFunction` / `CmdrEvent` remotes.
 
-> Always require `Shared.Packets` â never call `Packet("Name", ...)` from the command bar. A second copy of the packet library can't decode the real one's traffic.
+> Always require `Shared.Packets` — never call `Packet("Name", ...)` from the command bar. A second copy of the packet library can't decode the real one's traffic.
 
 ---
 
@@ -2047,13 +1921,13 @@ All packets live in `Shared.Packets` (the match's in `Match.Shared.Packets`).
 
 | Kit | Items | Abilities | State | HUD |
 |---|---|---|---|---|
-| Animal Whisperer | â | ChickenRush, OwlVision; passive Turtle Shield | â | â |
+| Animal Whisperer | — | ChickenRush, OwlVision; passive Turtle Shield | — | — |
 | Barbarian | Wooden Sword | Rage *(passive)* | `Rage`, `SwordLevel` | Custom UI: `Rage`; shop changes |
-| Golem | â | RockThrow | `Rocks`, `Scale` | Info: Rocks, Size |
-| leo | â | SatelliteHack | `ConnectionOwned`, `Earnings`, `HackActive`, `HackEndsAt`, `StoredResources`, `TargetTeam` | Info: Stored, Connection, Target, Hack, Earned; Custom UI: `SatelliteTargets`; can buy Hacker Connection |
+| Golem | — | RockThrow | `Rocks`, `Scale` | Info: Rocks, Size |
+| leo | — | SatelliteHack | `ConnectionOwned`, `Earnings`, `HackActive`, `HackEndsAt`, `StoredResources`, `TargetTeam` | Info: Stored, Connection, Target, Hack, Earned; Custom UI: `SatelliteTargets`; can buy Hacker Connection |
 | Samurai | Wooden Sword | Dash | `Charging`, `ChargeStartedAt` | Dash's custom UI: `DashCharge` |
-| Scientist | â | Brew *(passive)* | â | â |
-| Stew Boy | â | SummonCauldron, Brew *(passive)* | â | Shop changes |
+| Scientist | — | Brew *(passive)* | — | — |
+| Stew Boy | — | SummonCauldron, Brew *(passive)* | — | Shop changes |
 | Werewolf | Werewolf Claws | Rest, Hunt | `MoonCharge`, `Resting`, `RestStartedAt`, `HuntingUntil`, `Transformed`, `Transforming`, `Combo` | Info: Moon, Bonus, Lifesteal, Charge, Hunting |
 
 - **Turtle Shield** (Animal Whisperer, `SSS.Content.Kits.Animal Whisperer.TurtleShield`, on `Combat.BlockHit`): blocks 2 hits, and recharges after 20 seconds without hits while broken.
@@ -2063,7 +1937,7 @@ Each kit's code, by folder:
 | Kit | `Content.Kits.<Kit>` | `SSS.Content.Kits.<Kit>` |
 |---|---|---|
 | Barbarian | Definition, Shared/SwordLevels | Hook |
-| Scientist | Definition | â |
+| Scientist | Definition | — |
 | Werewolf | Definition, Client/WerewolfRest | Hook, Appearance, Claws (Config, Session, Rest, Moon, Hunt, Attack, Lunge, Hit, Effects) |
 | Golem | Definition, Shared/GolemConfig, Shared/BoulderPath, Client/StoneVisibility, Client/BoulderAim | Hook, Rocks, StoneSpawner, Heart |
 | StewBoy | Definition, Client/Cauldron, Client/CauldronVisuals | Hook, Cauldron, BrewRoll, Capsules, CapsuleEffects, SpeedPuddle |
@@ -2078,12 +1952,12 @@ Item client code is in `Content.Items.Client` (Capsules/CapsuleAim, Eye/EyeRevea
 
 | Item | Abilities | Notes |
 |---|---|---|
-| Wooden / Stone / Iron / Diamond Sword, Rageblade | Slash | `Damage` 10â30, `Cooldown`; `ToolType = "Sword"`, can't break blocks; `KeepOnDeath = "Sword"`; Rage upgrades through these |
-| Wooden Pickaxe / Axe / Shovel | â | `ToolType`, `Speed = 1`, `CanBreakBlocks = true`; `KeepOnDeath = "Tool"` (sold once a match) |
-| Red / Blue / Purple / Green Wool, Wood, Planks, Stone, Dirt, Concrete, Black Stone | â | Block items: `Block`, `Stack` |
-| Bed, Shop Keeper | â | Block items for the special blocks |
-| Hacker Connection | â | leo's block: `RequiredKit = "leo"`, `MaxOwned = 1`, `KeepOnDeath = "KitGear"` |
-| Iron, Diamond, Emerald | â | Currencies: `Stack`. Dropped by generators, spent at the shop |
+| Wooden / Stone / Iron / Diamond Sword, Rageblade | Slash | `Damage` 10–30, `Cooldown`; `ToolType = "Sword"`, can't break blocks; `KeepOnDeath = "Sword"`; Rage upgrades through these |
+| Wooden Pickaxe / Axe / Shovel | — | `ToolType`, `Speed = 1`, `CanBreakBlocks = true`; `KeepOnDeath = "Tool"` (sold once a match) |
+| Red / Blue / Purple / Green Wool, Wood, Planks, Stone, Dirt, Concrete, Black Stone | — | Block items: `Block`, `Stack` |
+| Bed, Shop Keeper | — | Block items for the special blocks |
+| Hacker Connection | — | leo's block: `RequiredKit = "leo"`, `MaxOwned = 1`, `KeepOnDeath = "KitGear"` |
+| Iron, Diamond, Emerald | — | Currencies: `Stack`. Dropped by generators, spent at the shop |
 | Fire / Poison / Speed / Shock Capsule | Throw | `Capsule` effect; `Brewed` |
 | Meat, Ham | Consume | `HealAmount` 25 / 50; `Brewed` |
 | Eye | Consume | `RevealDuration` 25; `Brewed` |
@@ -2093,42 +1967,42 @@ Item client code is in `Content.Items.Client` (Capsules/CapsuleAim, Eye/EyeRevea
 
 | Ability | Granted by | Type | Cooldown | Grantable |
 |---|---|---|---|---|
-| Rage | Barbarian | Passive | â | â |
-| Brew | Scientist, Stew Boy | Passive (unlocks the cauldron) | â | â |
-| RockThrow | Golem | Hold to aim, release to throw | 5s after a throw | â |
-| ChickenRush | Animal Whisperer | Tap: a chicken stampede, 35 damage per target | 8s | â |
-| OwlVision | Animal Whisperer | Tap: reveals enemies through walls for 12s | 35s | â |
-| SatelliteHack | leo | Pick an enemy team to hack (needs a placed Hacker Connection) | â | â |
-| Rest | Werewolf | Tap | 0.5s | â |
-| Hunt | Werewolf | Tap (full moon only) | Hunt duration + 45s | â |
-| Dash | Samurai | Hold to charge (or RMB), release to dash | 0.4s | â |
-| SummonCauldron | Stew Boy | Tap | 1s | â |
-| Slash | Swords | Click | Sword `Cooldown` | â |
-| Throw | Capsules | Click | 0.3s | â |
-| Claw | Werewolf Claws | Click | 0.55s (faster while hunting) | â |
-| Consume | Meat, Ham, Eye | Click | 0.3s | â |
+| Rage | Barbarian | Passive | — | ❌ |
+| Brew | Scientist, Stew Boy | Passive (unlocks the cauldron) | — | ✅ |
+| RockThrow | Golem | Hold to aim, release to throw | 5s after a throw | ✅ |
+| ChickenRush | Animal Whisperer | Tap: a chicken stampede, 35 damage per target | 8s | ✅ |
+| OwlVision | Animal Whisperer | Tap: reveals enemies through walls for 12s | 35s | ✅ |
+| SatelliteHack | leo | Pick an enemy team to hack (needs a placed Hacker Connection) | — | ✅ |
+| Rest | Werewolf | Tap | 0.5s | ❌ |
+| Hunt | Werewolf | Tap (full moon only) | Hunt duration + 45s | ❌ |
+| Dash | Samurai | Hold to charge (or RMB), release to dash | 0.4s | ❌ |
+| SummonCauldron | Stew Boy | Tap | 1s | ✅ |
+| Slash | Swords | Click | Sword `Cooldown` | ❌ |
+| Throw | Capsules | Click | 0.3s | ❌ |
+| Claw | Werewolf Claws | Click | 0.55s (faster while hunting) | ❌ |
+| Consume | Meat, Ham, Eye | Click | 0.3s | ❌ |
 
 ### Blocks
 
 | Id | Block | Hardness | Preferred tool | Breakable | Placeable | Size | Hook |
 |---|---|---|---|---|---|---|---|
-| 1 | MapBlock | â | â | â | â | 1Ã1Ã1 | â |
-| 2â5 | Red / Blue / Purple / Green Wool | 0.8 | any | â | â | 1Ã1Ã1 | â |
-| 6 | Wood | 2 | Axe | â | â | 1Ã1Ã1 | â |
-| 7 | Planks | 1.5 | Axe | â | â | 1Ã1Ã1 | â |
-| 8 | Stone | 3 | Pickaxe | â | â | 1Ã1Ã1 | â |
-| 9 | Dirt | 1 | Shovel | â | â | 1Ã1Ã1 | â |
-| 10 | Grass | 1.2 | Shovel | â | â | 1Ã1Ã1 | â |
-| 11 | Soil | 1 | Shovel | â | â | 1Ã1Ã1 | â |
-| 12 | Concrete | 4 | Pickaxe | â | â | 1Ã1Ã1 | â |
-| 13 | Black Stone | 6 | Pickaxe | â | â | 1Ã1Ã1 | â |
-| 20 | Bed | 2 | any | â | â | 2Ã1Ã1 | Bed |
-| 21 | Shop Keeper | â | â | â | â | 2Ã2Ã1 | ShopKeeper (`Shop = "Items"`) |
-| 22 | Iron Generator | â | â | â | â | 1Ã2Ã1 | Generator: Iron every 1.5s, up to 100 |
-| 23 | Diamond Generator | â | â | â | â | 1Ã2Ã1 | Generator: Diamond every 30s, up to 10 |
-| 24 | Emerald Generator | â | â | â | â | 1Ã2Ã1 | Generator: Emerald every 60s, up to 4 |
-| 25 | Hacker Connection | 3 | Pickaxe | â | â (leo) | 1Ã2Ã1 | HackerConnection |
-| 26 | Upgrade Keeper | â | â | â | â | 2Ã2Ã1 | ShopKeeper (`Shop = "Upgrades"`) |
+| 1 | MapBlock | — | — | ❌ | ❌ | 1×1×1 | — |
+| 2–5 | Red / Blue / Purple / Green Wool | 0.8 | any | ✅ | ✅ | 1×1×1 | — |
+| 6 | Wood | 2 | Axe | ✅ | ✅ | 1×1×1 | — |
+| 7 | Planks | 1.5 | Axe | ✅ | ✅ | 1×1×1 | — |
+| 8 | Stone | 3 | Pickaxe | ✅ | ✅ | 1×1×1 | — |
+| 9 | Dirt | 1 | Shovel | ✅ | ✅ | 1×1×1 | — |
+| 10 | Grass | 1.2 | Shovel | ✅ | ❌ | 1×1×1 | — |
+| 11 | Soil | 1 | Shovel | ✅ | ❌ | 1×1×1 | — |
+| 12 | Concrete | 4 | Pickaxe | ✅ | ✅ | 1×1×1 | — |
+| 13 | Black Stone | 6 | Pickaxe | ✅ | ✅ | 1×1×1 | — |
+| 20 | Bed | 2 | any | ✅ | ❌ | 2×1×1 | Bed |
+| 21 | Shop Keeper | — | — | ❌ | ✅ | 2×2×1 | ShopKeeper (`Shop = "Items"`) |
+| 22 | Iron Generator | — | — | ❌ | ❌ | 1×2×1 | Generator: Iron every 1.5s, up to 100 |
+| 23 | Diamond Generator | — | — | ❌ | ❌ | 1×2×1 | Generator: Diamond every 30s, up to 10 |
+| 24 | Emerald Generator | — | — | ❌ | ❌ | 1×2×1 | Generator: Emerald every 60s, up to 4 |
+| 25 | Hacker Connection | 3 | Pickaxe | ✅ | ✅ (leo) | 1×2×1 | HackerConnection |
+| 26 | Upgrade Keeper | — | — | ❌ | ❌ | 2×2×1 | ShopKeeper (`Shop = "Upgrades"`) |
 
 ### Match Content
 
@@ -2140,10 +2014,10 @@ Item client code is in `Content.Items.Client` (Capsules/CapsuleAim, Eye/EyeRevea
 
 | Category | Entries |
 |---|---|
-| Blocks | Wool (your team's color) Ã16 â 8 Iron; Planks Ã12 â 24 Iron; Stone Ã12 â 32 Iron; Concrete Ã8 â 24 Iron; Black Stone Ã4 â 2 Emerald |
-| Combat | Stone Sword â 20 Iron; Iron Sword â 70 Iron; Diamond Sword â 4 Emerald |
-| Tools | Wooden Pickaxe, Wooden Axe, Wooden Shovel â 10 Iron each (once a match) |
-| Items | Meat â 6 Iron |
+| Blocks | Wool (your team's color) ×16 — 8 Iron; Planks ×12 — 24 Iron; Stone ×12 — 32 Iron; Concrete ×8 — 24 Iron; Black Stone ×4 — 2 Emerald |
+| Combat | Stone Sword — 20 Iron; Iron Sword — 70 Iron; Diamond Sword — 4 Emerald |
+| Tools | Wooden Pickaxe, Wooden Axe, Wooden Shovel — 10 Iron each (once a match) |
+| Items | Meat — 6 Iron |
 
 ### Effects
 
@@ -2195,7 +2069,7 @@ Item client code is in `Content.Items.Client` (Capsules/CapsuleAim, Eye/EyeRevea
 - **Equips go through the server.** Client-side `Humanoid:EquipTool` doesn't replicate in this place, so hotbar use goes through `Items.UseSlot` (and `Client.Core.ToolSync` sends `Items.Equip` / `Items.Unequip`) and the server equips for real. Without it, the server sees empty hands and refuses item abilities.
 - **Item abilities need the item held on the server.** If an item ability "does nothing", check that the server's character has the Tool, not just the client's.
 - **Kit state, inventory, unlocks and granted abilities are session data.** They reset when the player leaves. Persisted data belongs elsewhere in the Scribe template.
-- **Block damage and match state are server data.** They live in Scribe's `ServerStore` (one per server, never saved, replicated to everyone). The Scribe package was **patched** to accept the `ServerStore` option â re-apply the patch if you update Scribe.
+- **Block damage and match state are server data.** They live in Scribe's `ServerStore` (one per server, never saved, replicated to everyone). The Scribe package was **patched** to accept the `ServerStore` option — re-apply the patch if you update Scribe.
 - **Client Scribe views are wrapped by `Shared.ReadOnly`.** Scribe lets a client write its own mirror; the wrapper makes those writes error instead of silently diverging.
 - **Scribe field names can't be accessor names.** A slot's count is stored as `Quantity`, not `Count`, for this reason; `Shared.Inventory` maps it back to `Count`.
 - **ModuleLoader calls `Init` and `Start` on every module** whose ancestors are all Folders. Helper modules that shouldn't start on their own use another name (e.g. `BlockVisuals.Build`). Use the `ClientOnly`, `ServerOnly` and `IgnoreLoader` attributes to control loading.
@@ -2204,12 +2078,12 @@ Item client code is in `Content.Items.Client` (Capsules/CapsuleAim, Eye/EyeRevea
 - **Overlapping map blocks are skipped.** On start the server warns with a count of map blocks that overlap another. Light-source parts are untagged so they don't hide generators.
 - **Every base needs its keepers.** Each base has an item shop keeper and an upgrade keeper (map blocks with `BlockType` `ShopKeeper` / `UpgradeKeeper`). A base without one can't buy there.
 - **Billboards can't show 3D views.** ViewportFrames don't render inside a BillboardGui, so generator billboards need an item `Image` for a real picture (a colored badge until then).
-- **F does nothing in a Studio play test?** Studio's "Respect Studio shortcuts when game has focus" setting lets Studio's own F shortcut (Zoom To) take the key. Turn it off in File â Studio Settings â Studio. Players in Roblox are not affected.
+- **F does nothing in a Studio play test?** Studio's "Respect Studio shortcuts when game has focus" setting lets Studio's own F shortcut (Zoom To) take the key. Turn it off in File → Studio Settings → Studio. Players in Roblox are not affected.
 - **Knockback vs. reach.** Sword hits knock targets ~2 studs back; the sword reaches 7 studs, so keep moving forward in a fight.
 - **Custom UI starts hidden.** Elements named in any `CustomUI` table are hidden when the HUD starts, then shown only while in use.
 - **Multiple kits.** Stats take the highest value; appearances apply in list order; abilities fill slot keys in order.
 - **Gameplay stays on the server.** Body-scale growth (Werewolf moon, Golem rocks, the hunt), the werewolf lunge, knockback, the thrown capsule and boulder, generator drops and resource drops are gameplay, so the server runs them. Only cosmetic effects run on clients.
-- **Capsule puddles have no server part.** The server keeps a `{ Position, Radius, Expires }` table for damage and speed; clients draw the puddle with `CapsuleSplash`. The puddle timings (5s fade delay, 2s fade, 7s lifetime) are in both `Capsules` and the registry â change both together.
+- **Capsule puddles have no server part.** The server keeps a `{ Position, Radius, Expires }` table for damage and speed; clients draw the puddle with `CapsuleSplash`. The puddle timings (5s fade delay, 2s fade, 7s lifetime) are in both `Capsules` and the registry — change both together.
 - **Late joiners miss running effects.** A player who joins while a persistent effect is running (a sleeping werewolf, a charging Samurai) won't see it until it plays again.
 - **Claws are shown by the client.** The server keeps claw parts hidden; `ClawSwing` shows them locally during a swipe, using each part's `VisibleTransparency` attribute (set by the server for the hunt look).
 - **Armor and Damage upgrades are hook points.** They're sold and shown, but nothing applies them in combat yet (`Bedwars.OnUpgrade`). The `DiamondsII` and `IronRush` events are hook points too.
