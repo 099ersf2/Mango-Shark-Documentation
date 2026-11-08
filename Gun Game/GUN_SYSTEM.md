@@ -47,7 +47,9 @@ A short map of how guns work. For adding guns and abilities, see [ADDING_GUNS.md
 ## Client frame
 
 - **RenderStep at Camera + 1** (`Viewmodel`): applies the change in camera recoil and CameraShaker shake since last frame, then places the 45%-scale rig: hip/ADS blend, sway from camera turn speed, walk bob, recoil spring, sprint pose, equip raise. In first person it hides the character's arms and the third-person Tool locally.
-- **Heartbeat** (`GunController`): fire loop, bloom recovery, reload tracking, aim pitch, crosshair gap.
+- **Heartbeat** (`GunController`): fire loop, bloom recovery, reload tracking, aim pitch, crosshair gap and its size (half size while aiming).
+
+Aiming lines each gun's `Aim` attachment up with the camera, so you look down its iron sights; only a gun with the `Scope` ability gets a scope overlay.
 
 Both exist only while a gun is held. The camera is locked to first person while a gun is held.
 

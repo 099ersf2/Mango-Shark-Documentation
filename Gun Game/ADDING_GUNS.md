@@ -69,7 +69,7 @@ ServerScriptService/Modules
 
 StarterGui/Main
 ├─ Gun          GunName, Ammo, Reserve, FireMode, ReloadBar.Bar, ReloadText
-├─ Crosshair    Top, Bottom, Left, Right, Dot
+├─ Crosshair    Top, Bottom, Left, Right, Dot, UIScale (half size while aiming)
 ├─ Hitmarker    four ticks
 └─ Mobile       FireButton, AimButton, ReloadButton (next to Swing, Sprint, Grab)
 ```
@@ -84,7 +84,8 @@ Put a `Model` in `ReplicatedStorage.Assets.Models.Guns`. The barrel points along
 | --- | --- | --- | --- |
 | `Handle` (BasePart, PrimaryPart) | The pistol grip | **Yes** | The Tool's handle; everything welds to it |
 | `Handle.Muzzle` (Attachment) | Tip of the barrel | **Yes** | Muzzle flash, gunfire sound, tracer start |
-| `Handle.Aim` (Attachment) | Just above the sights, facing forward | Recommended | Lines up with the camera when aiming. Without it, set `Viewmodel.ADSOffset` |
+| `Handle.Aim` (Attachment) | On the line through the rear notch and the top of the front sight, facing forward | Recommended | Lines up with the camera when aiming. Without it, set `Viewmodel.ADSOffset` |
+| `RearSightL`, `RearSightR`, `FrontSight` (BaseParts) | A notch at the back, a post or bead at the front | Recommended | Iron sights: the front sight's tip sits between the rear ears when aiming |
 | `Handle.EjectionPort` (Attachment) | The right side of the receiver | Optional | Shell casings fly out of here |
 | `Handle.RightGrip` (Attachment) | Where the right hand holds | Optional | The viewmodel's right arm reaches here |
 | `Handle.LeftGrip` (Attachment) | Where the left hand holds | Optional | The viewmodel's left arm reaches here |
@@ -92,7 +93,8 @@ Put a `Model` in `ReplicatedStorage.Assets.Models.Guns`. The barrel points along
 
 Checklist:
 
-- [ ] Every other part is welded to `Handle` with a `WeldConstraint`, unanchored
+- [ ] Every other part is welded to `Handle` with a `WeldConstraint`, unanchored (the viewmodel swaps these for fixed `Weld`s on its own copy)
+- [ ] Iron sights are thin: nothing taller than the front post sits between the rear notch and the muzzle
 - [ ] `CanCollide`, `CanTouch` and `CanQuery` are off, and `Massless` is on
 - [ ] Keep it to a handful of parts (the starter guns use 5 to 7)
 - [ ] The model's `PrimaryPart` is `Handle`
@@ -253,7 +255,7 @@ The shipped abilities show each kind of hook:
 | `ShotgunSpread` | `ModifyStats`, `OnFire` | Multi-pellet shots from one seed |
 | `Burst` | `ModifyStats` | Changing the fire mode |
 | `ExplosiveRounds` | `OnHit` (server) | Area damage through `ctx.ApplyHit`, plus a server effect |
-| `Scope` | `OnAltFire`, `OnUnequip` (client) | Zoom, hiding the viewmodel, cloning a UI template |
+| `Scope` | `OnAltFire`, `OnUnequip` (client) | A sniper scope: zoom, hiding the viewmodel, cloning a UI template. No starter gun uses it; add it to a sniper |
 | `Ricochet` | `CanPierce`, `OnHit` | Bouncing bullets through FastCast2's pierce callback |
 
 ## Adding effects to the Registry
@@ -318,7 +320,8 @@ The one exception is cloning a template. Put the template in `ReplicatedStorage.
 | Gun equips but won't fire | Still raising (`EquipTime`), reloading, out of ammo, stunned, or a `Gun.PreventFire` handler returns true | Check the player's `Reloading`, `Stunned` and `CantDoAnything` attributes and the Tool's `Ammo` attribute |
 | Shots fire locally but deal no damage | The server refused them: fire rate too high for `FireRate`, origin too far from the head, or the client clock is off | Make sure `FireRate` matches how fast the gun really fires; the server allows a few shots of jitter |
 | Ammo count jumps back up | Predicted ammo resynced with the server after refused shots | Same as above: find why the server refused them |
-| Aiming looks off-center | The `Aim` attachment isn't over the sights, or isn't facing −Z | Move or rotate `Handle.Aim`, or set `Viewmodel.ADSOffset` |
+| Aiming looks off-center | The `Aim` attachment isn't on the line through the sights, or isn't facing −Z | Move or rotate `Handle.Aim`, or set `Viewmodel.ADSOffset` |
+| Crosshair lines vanish | A convert-to-scale plugin was run on `Main.Crosshair` while it had no size | Keep `Main.Crosshair` at a real size (48×48); its lines are placed from its center |
 | Arms point the wrong way | `RightGrip` / `LeftGrip` missing or misplaced | Add them where the hands go |
 | Viewmodel shows in third person, or the tool shows in first person | The camera isn't within 1.5 studs of the head | The controller locks first person while a gun is held; check that nothing else changes `CameraMode` |
 | Sound plays twice for the shooter | The server effect wasn't sent with the shooter as `except` | Use `EffectService.Play(name, options, shooter)` for effects the shooter's client already played |

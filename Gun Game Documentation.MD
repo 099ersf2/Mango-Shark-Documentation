@@ -13,13 +13,14 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 - **A gun is one definition file plus one model.** Definitions live in `ReplicatedStorage.Content.Guns.Definitions`, models in `ReplicatedStorage.Assets.Models.Guns`.
 - **The server decides every hit.** Clients send a trigger pull with a seed, and the server rebuilds the same bullets from it.
 - **Abilities add behavior without core edits.** Scope, Ricochet, Burst, ExplosiveRounds and ShotgunSpread ship as examples in `Content.Guns.Abilities`.
+- **Aiming uses iron sights.** Every starter gun aims down a rear notch and front sight, and the crosshair shrinks to half size. Scope is kept for a future sniper.
 - **Test a gun in game** with the Cmdr command `givegun <player> <gunId>`.
 
 ## Starter guns
 
 | Gun | Fire mode | Bullets | Ability |
 | --- | --- | --- | --- |
-| Rifle | Auto, 600 RPM | Simulated, raycast | Scope |
+| Rifle | Auto, 600 RPM | Simulated, raycast | None (iron sights) |
 | Pistol | Semi, 420 RPM | Simulated, raycast | Ricochet |
 | Shotgun | Semi, 75 RPM | Hitscan, 8 spherecast pellets | ShotgunSpread |
 | BurstRifle | 3-round burst | Simulated blockcast with bullet drop | Burst, ExplosiveRounds |

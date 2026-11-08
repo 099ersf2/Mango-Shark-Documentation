@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-07: Iron sights
+
+### Changed
+
+- **Iron sights.** Rifle, Pistol and Shotgun have a rear notch and a front sight (`RearSightL`, `RearSightR`, `FrontSight`), and each `Aim` attachment sits on the line through them, so aiming looks down the sights.
+- **No scope on the Rifle.** The Rifle no longer has the `Scope` ability; it stays in `Content.Guns.Abilities` for a sniper.
+- **Crosshair while aiming.** It shrinks to half size (`GunHud.AIM_SCALE`) instead of hiding.
+
+### Fixed
+
+- **Gun parts hanging off the handle in first person.** The viewmodel now swaps a gun's `WeldConstraint`s for fixed `Weld`s before showing it, so the order joints turn on can't leave parts behind.
+- **Crosshair not visible.** `Main.Crosshair` was 0×0, so converting it to scale gave its lines infinite sizes. It is now 48×48 with its lines placed from its center.
+
 ## 2026-11-07: Gun system
 
 ### Added
