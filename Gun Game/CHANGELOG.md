@@ -1,5 +1,63 @@
 # Changelog
 
+## 2026-11-08: Movement, camera feel and FOV
+
+### Added
+
+- **Movement states.** Walk, Sprint, TacticalSprint (double-tap sprint), Crouch, Slide and Air.
+  - Flags and the one transition table live in `Shared.Movement.States`.
+  - Every tunable number lives in `Content.Movement.Config`.
+- **`Client.Movement.MovementController`.** Runs the state machine on the client for instant response.
+  - WalkSpeed ramps; HipHeight crouch with a headroom shapecast before standing.
+  - A reused `LinearVelocity` drives slides (slope gain and loss, steering, cooldown) and carries slide-jump momentum with limited air control.
+  - Footsteps run on a stride timer for this player and nearby others.
+  - Keys come from Keybinds; the gamepad uses L3 and B; touch uses Sprint and Crouch buttons plus thumbstick auto-sprint.
+- **`Client.Movement.MovementCamera`.** One RenderStep at Camera + 1, layered on the default camera.
+  - Crouch and slide eye height on a spring, FOV kicks, strafe and slide tilt, a landing dip, and head bob tied to footsteps.
+  - Gun recoil is in the same spring stack. CameraShaker is kept for impacts and explosions only.
+- **`Systems.Movement.MovementService`.**
+  - It checks each `Packets.Movement.SetState` against the transition table, cooldowns, grounded state and `Stunned` / `CantDoAnything`, and corrects with `Packets.Movement.Correct`.
+  - It sets the `Sprinting`, `Crouching` and `Sliding` StateHandler states and attributes, plus `MoveState`, WalkSpeed and HipHeight.
+  - It runs a 4 Hz speed check that logs and counts violations (`MoveViolations`) without kicking.
+- **`Client.Movement.MovementPoses`.** Third-person crouch and slide leg poses for every character, from the replicated attributes. It uses `Config.Animations` ids through AnimationHandler when they're set, and works with Motor6D and AnimationConstraint joints.
+- **Extension points.** `Movement.PreventSprint`, `Movement.PreventSlide` and `Movement.SpeedMultiplier`.
+- **Settings.**
+  - Actions `Sprint` (Left Shift), `Crouch` (C) and `CrouchAlt` (Left Ctrl).
+  - `PlayerSettings.Options`, saved under `Settings.Options` through the new `Packets.Settings.Option`:
+    - `Fov` (60–110, default 80) and `CameraBob` (0–100%);
+    - `HoldSprint`, `HoldCrouch`, `MobileAutoSprint` and `SprintWhileReloading`.
+  - `Client.Settings.Options` loads and applies them, previewing live while a slider is dragged.
+  - Settings menu sections **Movement** and **Display**, with rows from the new `ToggleRow` and `SliderRow` templates.
+- **`Client.Settings.Slider`.** The drag and snap logic shared by every settings slider; the volume sliders use it too.
+- **Gun fields.** `SprintOutTime` (default 0.15) and `MoveSpeedMultiplier` (default 1), plus `Spread.Crouch` (0.7) and `Spread.Slide` (2).
+  - Pistol: 0.1s and 1.05.
+  - Shotgun: 0.2s and 0.95.
+  - BurstRifle: 0.18s and 0.95.
+- **Effects.**
+  - Registry entries: `SlideStart`, `SlideLoop` (Persistent), `Land` and `Footstep` (variants Concrete, Grass, Soft, Wood and Metal).
+  - A pooled `Dust` effect part.
+  - Sounds in `Assets.Sounds` and the dust emitters `SlideDust`, `LandDust` and `StepDust` in `Assets.Vfx`.
+- **UI.** `Main.Mobile.CrouchButton`, and the `SprintButton` wired with a label. The `MovementDebug` template.
+- **Cmdr.** `movedebug` toggles an on-screen movement readout.
+- **Docs.** `docs/MOVEMENT.md`.
+
+### Changed
+
+- **Viewmodel.**
+  - It runs at Camera + 2, after MovementCamera, and no longer writes the camera's CFrame or FOV. Recoil, ADS zoom and scopes go through MovementCamera.
+  - ADS FOV is `base × ADSFov / 70`, so zoom is the same at any FOV.
+  - New crouch and slide poses.
+  - At the hip, the gun's offset partly makes up for high FOV (`Config.ViewmodelFovCompensation`).
+- **GunController.**
+  - Sprinting blocks firing and aiming. The trigger or aim ends a sprint and waits `SprintOutTime` (×2 after a tactical sprint).
+  - Spread uses the movement stance.
+- **GunService.**
+  - `tryShot` refuses a player's shot while sprinting or inside `SprintOutTime` (`MovementService.BlocksFire`).
+  - The minimum spread accepts the crouch cone while the player is crouched.
+- **`PooledSound`.** Supports `Looped` (until the effect stops) and a per-play `Data.Volume`.
+- **`StarterPlayer.EnableMouseLockOption`.** Now off, since Left Shift is sprint.
+- **Default Running sound.** Muted on every character, since footsteps replace it.
+
 ## 2026-11-08: Kill sounds and NPCs with guns
 
 ### Added

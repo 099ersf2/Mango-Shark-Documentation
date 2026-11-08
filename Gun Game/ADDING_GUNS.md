@@ -175,7 +175,7 @@ It gets a card in the menu with no other change. Gun names are Ids in `Content.G
 
 ## Controls and settings
 
-The Settings menu (`P`) rebinds keys and sets volumes. Both are saved in the player's data under `Settings`, written only by `Services.SettingsService`.
+The Settings menu (`P`) rebinds keys, sets volumes, FOV and camera bob, and switches the movement toggles. All are saved in the player's data under `Settings`, written only by `Services.SettingsService`.
 
 | Action | Default key | Gamepad (fixed) |
 | --- | --- | --- |
@@ -187,6 +187,10 @@ The Settings menu (`P`) rebinds keys and sets volumes. Both are saved in the pla
 | Next / previous weapon | Mouse wheel | L1 / R1 |
 | Loadout menu | B | |
 | Settings menu | P | |
+| Sprint (double-tap: tactical sprint) | Left Shift | Left stick click (toggles) |
+| Crouch / slide | C or Left Ctrl | B |
+
+Movement, the FOV slider and the movement toggles are covered in [MOVEMENT.md](MOVEMENT.md). For guns, the parts that matter are `SprintOutTime`, `MoveSpeedMultiplier` and the `Spread.Crouch` / `Spread.Slide` fields below.
 
 To add a rebindable action, add it to `ACTIONS` in `Shared.PlayerSettings` (a saved field and a menu row come with it), then read its key with `Keybinds.Get("Name")` and rebind on `Keybinds.Changed`. Volume sliders come from `VOLUME_GROUPS` there and drive `Client.Audio.AudioSettings`.
 
@@ -214,7 +218,9 @@ While a menu is open, `Client.Core.Menus` frees the mouse and the gun takes no i
 | `ReloadTime` | number | `1.8` | Seconds |
 | `EquipTime` | number | `0.35` | Seconds before the first shot |
 | `ADSTime` | number | `0.18` | Seconds to aim in |
-| `ADSFov` | number | `55` | Field of view while aiming |
+| `ADSFov` | number | `55` | Field of view while aiming, written for a base FOV of 70. The camera uses `playerFov × ADSFov / 70`, so the zoom is the same at any FOV setting |
+| `SprintOutTime` | number | `0.15` | Seconds after a sprint ends before the gun can fire or aim. Doubled after a tactical sprint (`Config.TacticalOutMultiplier`). The server checks it too |
+| `MoveSpeedMultiplier` | number | `1` | Movement speed while this gun is held. Below 1 for heavy guns (clamped to 0.1–2) |
 | `Projectile.CastType` | `"Raycast"` \| `"Blockcast"` \| `"Spherecast"` | `"Raycast"` | Shape of the bullet |
 | `Projectile.Speed` | number | `900` | Studs/second (tracer speed for hitscan) |
 | `Projectile.Gravity` | number | `0` | Bullet drop, studs/second² |
@@ -229,6 +235,8 @@ While a menu is open, `Client.Core.Menus` frees the mouse and the gun takes no i
 | `Spread.PerShot` | number | `0.3` | Bloom per shot |
 | `Spread.Recovery` | number | `6` | Bloom removed per second |
 | `Spread.Max` | number | `10` | Upper limit (the server clamps to it) |
+| `Spread.Crouch` | number | `0.7` | Multiplies `Hip` and `ADS` while crouched or sliding |
+| `Spread.Slide` | number | `2` | Degrees added while sliding (replaces the `Move` term). Hip fire works during a slide |
 | `Recoil.Vertical` | number | `1` | Degrees the camera climbs per shot |
 | `Recoil.Horizontal` | number | `0.3` | Degrees of random sideways kick |
 | `Recoil.Kick` | number | `0.08` | Studs the viewmodel pushes back |
