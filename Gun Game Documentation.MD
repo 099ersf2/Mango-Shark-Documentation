@@ -6,6 +6,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 | --- | --- |
 | [Adding guns](Gun%20Game/ADDING_GUNS.md) | You are adding a gun or ability, or something isn't working |
 | [Gun system](Gun%20Game/GUN_SYSTEM.md) | You need the shot flow, packets or state behind the system |
+| [Adding NPCs](Gun%20Game/ADDING_NPCS.md) | You are adding an NPC type, a behavior-tree task or a kill sound |
 | [Changelog](Gun%20Game/CHANGELOG.md) | You want what changed in the place, newest first |
 
 ## At a glance
@@ -18,6 +19,8 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 - **Players pick a loadout.** Four loadouts of up to three guns; the menu opens on join and with `B`, and the pick is saved.
 - **No hotbar.** Switch guns with 1, 2, 3, the mouse wheel, gamepad L1/R1, or the slots on the right side of the screen.
 - **Settings menu (`P`).** Rebind every key and set Master, Effects, Music and Interface volume; both are saved.
+- **NPCs fight with the same guns.** Soldier, Breacher and Grenadier profiles run a behavior tree (find, chase, strafe, take cover, reload) and shoot through the same server path as players. Spawn them with `spawnnpc <profile> [count]`, remove them with `clearnpcs`.
+- **Kills sound different.** A kill plays a heavier, lower kill sound; a headshot kill layers it after the headshot sound. One kill, one sound.
 - **Test a gun in game** with the Cmdr command `givegun <player> <gunId>`.
 
 ## Starter guns

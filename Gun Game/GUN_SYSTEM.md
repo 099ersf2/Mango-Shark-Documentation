@@ -1,11 +1,12 @@
 # Gun system architecture
 
-A short map of how guns work. For adding guns and abilities, see [ADDING_GUNS.md](ADDING_GUNS.md).
+A short map of how guns work. For adding guns and abilities, see [ADDING_GUNS.md](ADDING_GUNS.md); for NPCs, [ADDING_NPCS.md](ADDING_NPCS.md).
 
 ## Principles
 
 - **Data-driven.** A gun is a definition in `Content.Guns.Definitions` plus a model in `Assets.Models.Guns`. Behavior beyond stats lives in ability modules (`Content.Guns.Abilities`) made of hooks.
 - **Server-authoritative.** Clients send intent only: fire (server timestamp, origin, direction, seed, spread), reload, aim and ability key. The server owns ammo, fire rate, the spread floor, hits, headshots and damage.
+- **Players and NPCs are both shooters.** `GunService` keys held guns by character. A `Shooter` is `{ Character, Player?, Id }` (a UserId, or a negative NPC Id). Players fire through the packet handler `Fire`, which adds the timestamp and origin checks; NPCs fire through `FireAs`. Both pass the same `tryShot` checks (state, `Gun.PreventFire`, fire rate, ammo) and the same `shoot`.
 - **Same shot everywhere.** `Shared.Guns.Ballistics` builds a shot from a seed. The shooter, the server and other clients run the same `OnFire` hooks with `Random.new(seed)` and get the same pellets.
 - **Built on the existing framework.** Modules load through `ModuleLoader`; networking goes through `Shared.Packets` and `Shared.UnreliablePackets`; damage through `Combat.ApplyHit`; effects through `Content.Effects.Registry` with `EffectService` and `Client.Effects`; states through `StateHandler`; rules through `Shared.Extensions`.
 
@@ -67,6 +68,12 @@ Keybinds and volumes live in the player's Scribe data under `Settings` (declared
 Aiming lines each gun's `Aim` attachment up with the camera, so you look down its iron sights; only a gun with the `Scope` ability gets a scope overlay.
 
 Both exist only while a gun is held. The camera is locked to first person while a gun is held.
+
+## Kills
+
+`AbilityRunner.ApplyHit` reads the victim's health before `Combat.ApplyHit` and reports a kill only when that hit took it from above 0 to 0 or below. A player shooter gets `Packets.Gun.HitConfirm(headshot, killed)`, which picks the hit sound (HeadshotKill, Kill, Headshot or body). Every kill fires `Gun.Killed(who, victimHumanoid, gunId, headshot)`. `Combat.DamageLog` records attackers and victims that are players or NPC models.
+
+`UnreliablePackets.GunFired` carries the shooter's Id: a UserId, or an NPC's Id. NPC models are tagged `NPC` with an `NPCId` attribute, and `Client.Guns.GunEffects` looks them up so NPC tracers start at their gun's muzzle.
 
 ## Known limits
 

@@ -6,6 +6,8 @@ This guide covers the gun system in the FPS place: how it fits together, how to 
 
 A gun is **one definition file + one model**. Everything else (input, networking, server checks, damage, viewmodel, effects, UI) is shared code that reads the definition.
 
+**NPCs use guns automatically.** A profile in `Content.NPC.Profiles` names gun Ids, and NPCs fire them through `GunService.FireAs` with the same rules, damage, abilities, effects and sounds as players. A new gun needs no NPC code; see [ADDING_NPCS.md](ADDING_NPCS.md).
+
 ```mermaid
 flowchart LR
     subgraph Client
@@ -262,7 +264,20 @@ Override a side with `Sides = { OnAltFire = "Shared" }`. A server or shared `OnA
 Rules:
 
 - **`OnFire` must use only `ctx.Random`** for anything random. The shooter, the server and every other client run it with the same seed, so they must all make the same bullets.
-- Server hooks deal damage only through `ctx.ApplyHit(humanoid, damage)`, which is `Combat.ApplyHit` with the shooter as attacker. Shields, kill credit, hit effects and the hitmarker then all work.
+- Server hooks deal damage only through `ctx.ApplyHit(humanoid, damage)`, which applies `Gun.DamageMultiplier`, then `Combat.ApplyHit` with the shooter as attacker. Shields, kill credit, hit and kill sounds, and `Gun.Killed` then all work.
+- The shooter may be an NPC: then `ctx.Player` is nil and `ctx.Character` is the NPC's model. Use `ctx.Character` for "the shooter's body" (as `ExplosiveRounds` does to skip itself).
+
+### Extension points
+
+Every point gets `who`: the Player, or the NPC's model.
+
+| Point | Kind | Arguments | Use it to |
+| --- | --- | --- | --- |
+| `Gun.PreventFire` | Any | who, gunId, tool | Stop a shot (true) |
+| `Gun.DamageMultiplier` | Product | who, gunId, humanoid, hit (nil for ability damage) | Scale damage; NPCs use it to turn off friendly fire |
+| `Gun.Hit` | Fire | who, humanoid, hit, gunId | React to a bullet hitting a humanoid |
+| `Gun.Killed` | Fire | who, victimHumanoid, gunId, headshot | A kill feed or streaks; fires once, on the hit that took health from above 0 to 0 or below |
+| `Gun.Reloaded` | Fire | who, tool, gunId | React to a finished reload |
 - Play effects with `ctx.PlayEffect(name, options)`. On the server it is sent to clients; on a client it plays there.
 - Don't `require` anything in `ServerScriptService`: the file also loads on clients.
 
