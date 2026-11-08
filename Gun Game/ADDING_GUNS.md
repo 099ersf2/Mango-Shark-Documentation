@@ -35,7 +35,8 @@ ReplicatedStorage
 │  ├─ Registry            { [GunId] = definition }, built from Definitions, with defaults and checks
 │  ├─ Types               GunDefinition, AbilityModule, ShotContext, HitResult ... types
 │  ├─ Definitions/        one ModuleScript per gun: Rifle, Pistol, Shotgun, BurstRifle
-│  └─ Abilities/          one ModuleScript per ability: ShotgunSpread, Burst, ExplosiveRounds, Scope, Ricochet
+│  ├─ Abilities/          one ModuleScript per ability: ShotgunSpread, Burst, ExplosiveRounds, Scope, Ricochet
+│  └─ Loadouts            the loadouts players pick (up to 3 guns each); saved per player
 ├─ Content/Effects/
 │  ├─ Registry            GunFire_<Id>, BulletImpact, Reload, DryFire, Hitmarker, Explosion
 │  └─ Parts/              MuzzleFlash, PooledSound, Shell, Impact (pooled effect kinds)
@@ -44,16 +45,23 @@ ReplicatedStorage
 │  ├─ Models/Viewmodel    first-person arms rig
 │  ├─ Sounds/             RifleFire, PistolFire, ShotgunFire, Reload, DryFire, Explosion, Hitmarker, BodyHit, HeadshotHit
 │  ├─ Vfx/                MuzzleFlash, BulletImpact, BulletHole, ShellEject, Tracer, TracerRed, Explosion
-│  └─ UI/Templates/       ScopeOverlay
+│  └─ UI/Templates/       ScopeOverlay, LoadoutCard, KeybindRow, VolumeRow
+├─ Modules/Shared/PlayerSettings     rebindable actions, volume groups, saved Settings fields
 ├─ Modules/Shared/Guns/
 │  ├─ Ballistics          shots, pellets, FastCast2 casters, hitscan traces, pierce/bounce rule
 │  ├─ Abilities           calls ability hooks on the right side
 │  ├─ Spread              cone math (--!native)
 │  └─ Spring              damped spring (--!native)
-├─ Modules/Shared/Packets            Gun group
+├─ Modules/Shared/Packets            Gun group (+ Gun.Loadout), Settings group
 ├─ Modules/Shared/UnreliablePackets  GunFired, GunAim, GunAimRelay
+├─ Modules/Client/Core/Menus         which menu is open; frees the mouse, blocks gun input
+├─ Modules/Client/Settings/
+│  ├─ Keybinds            the player's keys per action; rebinding swaps conflicts
+│  └─ SettingsMenu        keybind rows and volume sliders
 └─ Modules/Client/Guns/
    ├─ GunController       input (KB/M, gamepad, touch), fire loop, reload, ADS
+   ├─ WeaponSlots         switching: 1/2/3, mouse wheel, gamepad L1/R1, the right-side slots
+   ├─ LoadoutMenu         the loadout cards
    ├─ Viewmodel           arms + gun on the camera
    ├─ GunEffects          local and remote cosmetic shots
    ├─ GunHud              updates the UI in StarterGui.Main
@@ -62,15 +70,22 @@ ReplicatedStorage
 ServerScriptService/Modules
 ├─ Systems/Guns/
 │  ├─ GunService          Give, equips, ammo, fire-rate checks, server casts
+│  ├─ LoadoutService      gives the picked loadout on every spawn, Slot attributes, saves picks
 │  └─ AbilityRunner       damage per bullet, server ability hooks
-└─ Services/CmdrSetup/
-   ├─ Commands/GiveGun, GiveGunServer   givegun <player> <gunId>
-   └─ Types/Gun                         the "gun" argument type
+└─ Services/
+   ├─ SettingsService     checks and saves keybind and volume changes
+   └─ CmdrSetup/
+      ├─ Commands/GiveGun, GiveGunServer   givegun <player> <gunId>
+      └─ Types/Gun                         the "gun" argument type
 
-StarterGui/Main
+StarterGui/Main   (ZIndexBehavior Global: children need a higher ZIndex than their parent)
 ├─ Gun          GunName, Ammo, Reserve, FireMode, ReloadBar.Bar, ReloadText
 ├─ Crosshair    Top, Bottom, Left, Right, Dot, UIScale (hidden while aiming)
 ├─ Hitmarker    four ticks
+├─ Weapons      Slot1..Slot3 (Key, GunName), right side
+├─ MenuButtons  LoadoutButton, SettingsButton, top right
+├─ Loadout      Title, Close, Body.List (LoadoutCards)
+├─ Settings     Title, Close, Body.Controls (KeybindRows), Body.ResetKeys, Body.Audio (VolumeRows)
 └─ Mobile       FireButton, AimButton, ReloadButton (next to Swing, Sprint, Grab)
 ```
 
@@ -135,7 +150,45 @@ Play the game, open Cmdr (the key is usually `F2`), and run:
 givegun me SMG
 ```
 
-Equip it from the hotbar. Check the Output window for `Gun SMG:` warnings from the registry: a missing model, attachment or ability is reported there when the game starts. Your user id must be in `Modules.Classes.Admins` to run commands.
+It lands in your next free slot; switch to it with that slot's key, or the mouse wheel. To give it on every spawn, add it to a loadout (below). Check the Output window for `Gun SMG:` warnings from the registry: a missing model, attachment or ability is reported there when the game starts. Your user id must be in `Modules.Classes.Admins` to run commands.
+
+## Adding a loadout
+
+Players pick a loadout in the Loadout menu (it opens when they join, and with `B`). `Systems.Guns.LoadoutService` gives its guns on every spawn, sets each Tool's `Slot` attribute and equips slot 1. The pick is saved in the player's data.
+
+Add an entry to the list in `ReplicatedStorage.Content.Guns.Loadouts`, at most three guns, in slot order:
+
+```lua
+{ Id = "Sniper", DisplayName = "Sniper", Description = "Long range with a pistol backup.", Guns = { "SniperRifle", "Pistol" } },
+```
+
+It gets a card in the menu with no other change. Gun names are Ids in `Content.Guns.Registry`.
+
+| Loadout | Slot 1 | Slot 2 | Slot 3 |
+| --- | --- | --- | --- |
+| Assault (default) | Rifle | Pistol | |
+| Breacher | Shotgun | Pistol | |
+| Grenadier | Burst Rifle | Pistol | |
+| Arsenal | Rifle | Shotgun | Pistol |
+
+## Controls and settings
+
+The Settings menu (`P`) rebinds keys and sets volumes. Both are saved in the player's data under `Settings`, written only by `Services.SettingsService`.
+
+| Action | Default key | Gamepad (fixed) |
+| --- | --- | --- |
+| Fire | Left mouse | R2 |
+| Aim down sights | Right mouse | L2 |
+| Reload | R | X |
+| Gun ability | F | Y |
+| Weapon 1, 2, 3 | 1, 2, 3 | L1 / R1 cycle |
+| Next / previous weapon | Mouse wheel | L1 / R1 |
+| Loadout menu | B | |
+| Settings menu | P | |
+
+To add a rebindable action, add it to `ACTIONS` in `Shared.PlayerSettings` (a saved field and a menu row come with it), then read its key with `Keybinds.Get("Name")` and rebind on `Keybinds.Changed`. Volume sliders come from `VOLUME_GROUPS` there and drive `Client.Audio.AudioSettings`.
+
+While a menu is open, `Client.Core.Menus` frees the mouse and the gun takes no input. In first person the cursor is locked to the center, so on PC the menus and slots are reached with their keys; on touch they are tapped.
 
 ## Definition reference
 
@@ -298,6 +351,8 @@ UI is built in Studio under `StarterGui.Main`; scripts only find and update it. 
 
 The one exception is cloning a template. Put the template in `ReplicatedStorage.Assets.UI.Templates` and `:Clone()` it, as `Scope` does with `ScopeOverlay`. Reuse `Packages.UI`: `AnimatedBar` (the reload bar), `ButtonHover` (the mobile aim toggle) and `BounceEffects` (menus). Mobile buttons go in `Main.Mobile`. Their `Position` and `Size` are in units of the `Mobile` frame, which `Client.Core.UI` resizes for phones and tablets.
 
+A new full-screen menu: build its frame in `Main` with a `Close` button, call `Menus.Register(name, frame)`, and open it with `Menus.Toggle(name)`. `Main` uses Global ZIndex, so give everything inside a menu a higher `ZIndex` than the menu itself (and templates cloned into it higher still), or the menu's background covers its own buttons.
+
 ## Performance checklist
 
 - [ ] **One caster per gun per side.** `Ballistics.Caster` makes it on first use and reuses it. Never call `FastCast.new()` per shot.
@@ -328,3 +383,7 @@ The one exception is cloning a template. Put the template in `ReplicatedStorage.
 | Sound plays twice for the shooter | The server effect wasn't sent with the shooter as `except` | Use `EffectService.Play(name, options, shooter)` for effects the shooter's client already played |
 | The camera drifts after shooting | Something else writes `camera.CFrame` after Camera + 1 | Recoil is applied as a per-frame change; don't set the camera to an absolute aim every frame while a gun is held |
 | Other players' tracers don't appear | `GunFired` is unreliable and can drop under load, or the shooter is beyond 600 studs | That's expected; increase `TRACER_RANGE` in `GunService` if needed |
+| A menu's buttons can't be clicked | `Main` uses Global ZIndex and the menu frame is above its children | Give the menu's descendants a higher `ZIndex` than the menu |
+| Clicking menu buttons with a gun held does nothing | First person locks the cursor to the center | Open menus with their keys (`B`, `P`); `Client.Core.Menus` frees the mouse while one is open |
+| A new loadout gives no guns | A name in `Guns` isn't a gun Id | Use Ids from `Content.Guns.Registry` |
+| A module fails with "Ambiguous syntax" | A line starts with `(` right after an expression | Put the value in a local first, or end the line before with `;` |

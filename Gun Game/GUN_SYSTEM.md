@@ -22,11 +22,23 @@ A short map of how guns work. For adding guns and abilities, see [ADDING_GUNS.md
 | 7 | `Systems.Guns.AbilityRunner` | Per bullet: falloff, headshot, `Gun.DamageMultiplier`, `OnHit`, then `Combat.ApplyHit` (shotgun pellets on one humanoid are added up into one hit), then `Gun.Hit` and `Packets.Gun.HitConfirm` |
 | 8 | `GunService` | `EffectService.Play(GunFire_<Id>)` to nearby players except the shooter; `UnreliablePackets.GunFired` so they draw the tracers |
 
+## Loadouts and switching
+
+1. On every spawn `Systems.Guns.LoadoutService` reads the player's saved `Loadout`, removes their old gun Tools, gives the loadout's guns through `GunService.Give` with `Slot` 1–3, and equips slot 1.
+2. `Client.Guns.WeaponSlots` turns off Roblox's hotbar and equips Tools itself (`Humanoid:EquipTool` on the client) from the Slot keys, the mouse wheel, gamepad L1/R1 and the slot strip in `Main.Weapons`. `GunController` and `GunService` react to the equip as before.
+3. Picking a loadout in `Client.Guns.LoadoutMenu` sends `Packets.Gun.Loadout`. The server saves it and gives it at once unless the player is firing or reloading; a `TokenBucket` stops it being used to refill ammo.
+
+## Settings
+
+Keybinds and volumes live in the player's Scribe data under `Settings` (declared by `Shared.PlayerSettings`, a ScribeFragment). The client loads them at start (`Client.Settings.Keybinds`, `Client.Audio.AudioSettings.Store`) and sends changes through `Packets.Settings`; `Services.SettingsService` checks the action, key or group name and writes it. A slider's changes are sent once it has been still for 0.5 s.
+
 ## State
 
 | Where | What |
 | --- | --- |
 | `Tool` attributes `GunId`, `Ammo`, `Reserve` | Server-owned. The client predicts ammo between shots and resyncs from `Ammo` |
+| `Tool` attribute `Slot` | The weapon slot (1–3), set by `LoadoutService`, or the next free slot by `GunService.Give` |
+| Player data `Loadout`, `Settings.Keybinds.*`, `Settings.Volumes.*` | Saved with ProfileStore; written only by the server |
 | `StateHandler` `Reloading` | Set on the server while reloading; the client's reload bar follows it |
 | `StateHandler` `Firing` | On while shots keep arriving, off 0.15 s after the last one |
 | `Held` table in `GunService` | Equipped gun, last shot time, aiming, reload token |
@@ -40,6 +52,9 @@ A short map of how guns work. For adding guns and abilities, see [ADDING_GUNS.md
 | `Packets.Gun.Aim` | Client → server | Boolean |
 | `Packets.Gun.AltFire` | Client → server | Boolean (only for server-side `OnAltFire`) |
 | `Packets.Gun.HitConfirm` | Server → shooter | Boolean headshot, Boolean killed |
+| `Packets.Gun.Loadout` | Client → server | Loadout Id |
+| `Packets.Settings.Keybind` | Client → server | Action name, key name |
+| `Packets.Settings.Volume` | Client → server | Sound group name, F32 volume |
 | `UnreliablePackets.GunFired` | Server → nearby clients | UserId, gun Id, origin, direction, seed, spread |
 | `UnreliablePackets.GunAim` | Client → server | Aim pitch, at 10 Hz |
 | `UnreliablePackets.GunAimRelay` | Server → nearby clients | UserId, pitch (tilts the right arm on R6, the waist on R15) |
@@ -58,4 +73,5 @@ Both exist only while a gun is held. The camera is locked to first person while 
 - **No lag compensation.** The server hits targets where it sees them when the shot arrives.
 - **No animations ship.** `Animations` ids are empty; motion comes from springs. Ids put in a definition play on the viewmodel rig through `AnimationHandler`.
 - **No sprint system.** The sprint pose reads a `Sprinting` player attribute, or moving faster than 19 studs/s. A future sprint script only needs to set that attribute.
-- **Spare ammo is lost on respawn.** Tools are given into the Backpack, which Roblox clears when the character respawns.
+- **Ammo resets on respawn.** The loadout is given fresh on every spawn, with full magazines and reserve.
+- **Mouse can't click the HUD while a gun is held.** First person locks the cursor to the center; menus open with keys on PC and by tap on touch.
