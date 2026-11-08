@@ -42,7 +42,7 @@ ReplicatedStorage
 ├─ Assets/
 │  ├─ Models/Guns/<Model> gun models (Handle + attachments)
 │  ├─ Models/Viewmodel    first-person arms rig
-│  ├─ Sounds/             RifleFire, PistolFire, ShotgunFire, Reload, DryFire, Explosion, Hitmarker
+│  ├─ Sounds/             RifleFire, PistolFire, ShotgunFire, Reload, DryFire, Explosion, Hitmarker, BodyHit, HeadshotHit
 │  ├─ Vfx/                MuzzleFlash, BulletImpact, BulletHole, ShellEject, Tracer, TracerRed, Explosion
 │  └─ UI/Templates/       ScopeOverlay
 ├─ Modules/Shared/Guns/
@@ -69,7 +69,7 @@ ServerScriptService/Modules
 
 StarterGui/Main
 ├─ Gun          GunName, Ammo, Reserve, FireMode, ReloadBar.Bar, ReloadText
-├─ Crosshair    Top, Bottom, Left, Right, Dot, UIScale (half size while aiming)
+├─ Crosshair    Top, Bottom, Left, Right, Dot, UIScale (hidden while aiming)
 ├─ Hitmarker    four ticks
 └─ Mobile       FireButton, AimButton, ReloadButton (next to Swing, Sprint, Grab)
 ```
@@ -271,7 +271,8 @@ GunFire_SMG = gunFire("SMGFire", 0.6, true), -- sound in Assets.Sounds, volume, 
 | `GunFire_<Id>` | `Nearby`, 400 studs | `PooledSound`, `MuzzleFlash`, `Shell` | Played on the `Muzzle` attachment. The server sends it to everyone except the shooter, whose client already played it |
 | `BulletImpact` | `Local` | `Impact` | Each client plays it for its own cosmetic bullets |
 | `Reload` | `Nearby`, 120 studs | `Sound` | |
-| `DryFire`, `Hitmarker` | `Local` | `PooledSound`, `Sound` | |
+| `DryFire` | `Local` | `PooledSound` | |
+| `Hitmarker` | `Local` | `Sound` | The shooter's hit sound: click + `BodyHit`, or click + `HeadshotHit` with `Variant = "Headshot"` |
 | `Explosion` | `Nearby`, 500 studs | `Sound`, `Particles` | Used by `ExplosiveRounds` |
 
 The gun kinds in `Content.Effects.Parts` reuse what they make: they create their instances once, then pool them.

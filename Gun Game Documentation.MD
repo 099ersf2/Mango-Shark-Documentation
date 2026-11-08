@@ -13,7 +13,8 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 - **A gun is one definition file plus one model.** Definitions live in `ReplicatedStorage.Content.Guns.Definitions`, models in `ReplicatedStorage.Assets.Models.Guns`.
 - **The server decides every hit.** Clients send a trigger pull with a seed, and the server rebuilds the same bullets from it.
 - **Abilities add behavior without core edits.** Scope, Ricochet, Burst, ExplosiveRounds and ShotgunSpread ship as examples in `Content.Guns.Abilities`.
-- **Aiming uses iron sights.** Every starter gun aims down a rear notch and front sight, and the crosshair shrinks to half size. Scope is kept for a future sniper.
+- **Aiming uses iron sights.** Every starter gun aims down a rear notch and front sight, and the crosshair hides while aiming. Scope is kept for a future sniper.
+- **Hits sound different.** Your own hits play a body-hit sound, and headshots play a distinct headshot sound.
 - **Test a gun in game** with the Cmdr command `givegun <player> <gunId>`.
 
 ## Starter guns
