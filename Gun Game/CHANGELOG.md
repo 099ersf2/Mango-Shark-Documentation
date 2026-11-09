@@ -58,6 +58,10 @@
 - **`StarterPlayer.EnableMouseLockOption`.** Now off, since Left Shift is sprint.
 - **Default Running sound.** Muted on every character, since footsteps replace it.
 
+### Fixed
+
+- **Aim tilt on newer R15 rigs.** Other players' upper bodies follow their aim again on characters whose joints are `AnimationConstraint`s, the newer Roblox avatar joints this place uses. `GunEffects` turns the constraint's `Attachment0` there, and still turns `C0` on `Motor6D` joints. Before, it only handled `Motor6D` and did nothing on these rigs.
+
 ## 2026-11-08: Kill sounds and NPCs with guns
 
 ### Added

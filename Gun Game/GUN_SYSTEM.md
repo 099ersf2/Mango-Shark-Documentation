@@ -62,7 +62,7 @@ Keybinds and volumes live in the player's Scribe data under `Settings` (declared
 | `Packets.Movement.Correct` | Server → one client | The server's movement state, after a refused change |
 | `UnreliablePackets.GunFired` | Server → nearby clients | UserId, gun Id, origin, direction, seed, spread |
 | `UnreliablePackets.GunAim` | Client → server | Aim pitch, at 10 Hz |
-| `UnreliablePackets.GunAimRelay` | Server → nearby clients | UserId, pitch (tilts the right arm on R6, the waist on R15) |
+| `UnreliablePackets.GunAimRelay` | Server → nearby clients | UserId, pitch (tilts the right arm on R6, the waist on R15; works with Motor6D and AnimationConstraint joints) |
 
 ## Client frame
 
