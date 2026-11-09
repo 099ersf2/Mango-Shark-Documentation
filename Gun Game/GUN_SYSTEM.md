@@ -70,7 +70,9 @@ Keybinds and volumes live in the player's Scribe data under `Settings` (declared
 - **RenderStep at Camera + 2** (`Viewmodel`): tells MovementCamera how far it is aimed in, then places the 45%-scale rig:
   - hip/ADS blend, sway from camera turn speed, walk bob, recoil spring;
   - sprint, crouch and slide poses, equip raise;
-  - FOV compensation at the hip.
+  - FOV compensation at the hip;
+  - a near guard that pushes the gun along the view axis so no part reaches the camera's 0.1-stud near clip plane (sights stay centered);
+  - a wall tuck at the hip that lifts the muzzle when a wall or the floor is closer than it (see [MOVEMENT.md](MOVEMENT.md#keeping-the-gun-whole-near-clip-and-walls)).
 
   In first person it hides the character's arms and the third-person Tool locally.
 - **Heartbeat** (`GunController`): fire loop, bloom recovery, reload tracking, aim pitch, crosshair gap, and hiding the crosshair while aiming.

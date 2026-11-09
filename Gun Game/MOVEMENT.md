@@ -57,7 +57,7 @@ stateDiagram-v2
     Air --> Sprint: land, sprint held
     Air --> Crouch: land, crouch held
     Air --> Slide: land, crouch + sprint held, fast enough
-    Walk --> Prone: prone (Z / hold B / hold touch Crouch)
+    Walk --> Prone: prone (Left Ctrl / hold B / hold touch Crouch)
     Crouch --> Prone: prone
     Sprint --> Prone: prone (drops flat)
     Slide --> Prone: prone
@@ -83,9 +83,11 @@ Each change sets the `Sprinting`, `Crouching`, `Sliding` and `Prone` **player at
 | Action | Keyboard (rebindable) | Gamepad | Touch |
 | --- | --- | --- | --- |
 | Sprint | Left Shift (double-tap: tactical) | Left stick click (toggle) | `Main.Mobile.SprintButton` (tap toggles). Pushing the thumbstick fully forward auto-sprints when **Auto-sprint (touch)** is on |
-| Crouch / slide | C, or Left Ctrl (`CrouchAlt`) | B | `Main.Mobile.CrouchButton` (tap toggles; slides while sprinting) |
-| Prone | Z (press again to get up) | Hold B (`ProneHoldTime`) | Hold `CrouchButton` |
+| Crouch / slide | C | B | `Main.Mobile.CrouchButton` (tap toggles; slides while sprinting) |
+| Prone | Left Ctrl (press again to get up) | Hold B (`ProneHoldTime`) | Hold `CrouchButton` |
 | Jump | the Humanoid's jump | A | the Roblox jump button |
+
+Prone used to be on Z, with Left Ctrl as a second crouch key (`CrouchAlt`, now removed). When saved keys load, `Client.Settings.Keybinds` moves a Prone still on Z to Left Ctrl and saves it, unless the player has put another action on Left Ctrl. To move another default later, add the old key to `MOVED_DEFAULTS` there.
 
 The Settings menu's **Movement** section has these toggles:
 - Sprint: Hold or Toggle.
@@ -123,6 +125,19 @@ The **Camera bob** setting (0–100%) scales bob, tilt and the landing dip; 0 tu
 The default camera script rebuilds the camera each frame from last frame's look direction. So pitch and yaw offsets are applied as the change since last frame, and roll, which the script drops, is applied in full every frame. When every spring is at rest and the FOV is already set, the step returns at once.
 
 The viewmodel keeps its size on screen across FOV settings by pulling its hip offset closer at high FOV. How much is set by `ViewmodelFovCompensation` and `ViewmodelMinScale`. At full aim there's no scaling, so the sights stay on the camera's axis; at FOV 60 and 110 the sight point sits exactly at screen center.
+
+### Keeping the gun whole (near clip and walls)
+
+The viewmodel is real geometry in the world, drawn with the normal camera, so two things can hide part of it:
+
+- **The near clip plane.** The camera cuts away anything closer than 0.1 studs, which leaves a hole in the gun. The rifle and shotgun stocks reach about 0.7 studs (rig scale) behind the grip. Before the fix, pulling the gun closer at high FOV (as low as 0.75 of its offset), plus the crouch and prone poses that move it back, put the stock through that plane. Clipping started around FOV 80 when crouched or prone and around FOV 85 standing; at 110 up to 20% of the screen was cut. The hip-to-ADS blend also swept the stock past the camera at every FOV.
+  - **Near guard.** Every frame the viewmodel finds the gun's nearest point along the view axis and, once that point is inside `ViewmodelNearClearance`, eases the gun forward along the axis so it never gets nearer than `ViewmodelNearMin`. It checks two boxes, made once per gun in the Handle's space: the whole gun (at the hip, faded out while aiming) and the parts within 0.1 studs below the sight line (always). Pushing along the axis keeps sideways placement, so the gun stays in the same screen spot, and it keeps aimed sights centered. **Trade-off:** at high FOV the long guns sit a little farther away than full compensation would put them (rifle handle depth 0.85 instead of 0.68 at FOV 110), so they look slightly smaller there. The pistol is unaffected.
+  - **Aiming in,** the gun's depth follows `ease³` while sideways and up follow `ease`. It reaches the center before it comes back to the eye, so the stock is already below the view when it passes the camera.
+  - **Stocks sit low enough.** At full aim the stock is behind the eye. The Rifle and Shotgun stocks were lowered (0.13 and 0.22 studs, full scale) so their tops sit 0.36 studs below the sight line, out of view at every FOV up to 110.
+  - **Crouch and prone poses fade out fully while aiming,** so aimed sights stay centered in every stance. The crouch pose used to keep 20% while aimed, which moved the sights about 0.8° off center.
+- **World geometry.** A wall, cover or the floor closer than the muzzle hides the barrel. This happens in any stance, but most often crouched behind cover or prone. At the hip, one raycast per frame runs from the camera to the untucked muzzle. When it's blocked, the gun lifts muzzle-up and inward (`TUCK_POSE` in `Client.Guns.Viewmodel`), blending in over `TUCK_RANGE` studs of overlap. **Trade-off:** there's no tuck while aiming, so the sights don't move. Aimed point-blank at a wall, the muzzle can still sink into it.
+
+To check clipping after changing a pose, an offset or a gun model, measure the nearest point of every viewmodel part along the view axis at FOV 60, 80 and 110, at the hip and aimed. In view it must stay above 0.1.
 
 ## FOV setting
 
@@ -168,6 +183,7 @@ Change `Content.Movement.Config`, then start a new playtest; it's read once at l
 - **Less motion:**
   - Lower `BobUp`, `BobSide` and `StrafeTilt`. Players can also set **Camera bob** to 0.
   - Lower the FOV kicks.
+- **Gun looks too small at high FOV:** raise `ViewmodelFovCompensation`. The near guard still keeps the stock off the near plane, so long guns stop growing once their stock reaches `ViewmodelNearClearance`. Don't set `ViewmodelNearMin` below about 0.105; the near plane is at 0.1.
 - **Stricter server:**
   - Lower `SpeedTolerance` and `SpeedSlack`.
   - Raise `SprintOutTolerance` toward 1. Keep it below 1 so laggy players' first shot isn't refused.

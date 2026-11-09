@@ -188,8 +188,9 @@ The Settings menu (`P`) rebinds keys, sets volumes, FOV and camera bob, and swit
 | Loadout menu | B | |
 | Settings menu | P | |
 | Sprint (double-tap: tactical sprint) | Left Shift | Left stick click (toggles) |
-| Crouch / slide | C or Left Ctrl | B |
-| Prone | Z | Hold B |
+| Crouch / slide | C | B |
+| Prone | Left Ctrl | Hold B |
+| Interact (repair boards, any prompt) | E | DPad Up |
 
 Movement, the FOV slider and the movement toggles are covered in [MOVEMENT.md](MOVEMENT.md). For guns, the parts that matter are `SprintOutTime`, `MoveSpeedMultiplier` and the `Spread.Crouch` / `Spread.Slide` fields below.
 

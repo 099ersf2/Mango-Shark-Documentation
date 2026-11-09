@@ -1,5 +1,39 @@
 # Changelog
 
+## 2026-11-08: Breakable boards and the Interact key
+
+### Added
+
+- **Breakable boards.**
+  - At server start, every part tagged `Board` is replaced with `Assets.Models.Board`, positioned by its BasePart.
+  - Damage removes the spray paint first, then planks from the highest number down (planks 60 HP, spray paint 25 HP).
+  - Broken pieces hide and stop blocking players and bullets.
+- **Board repair.**
+  - Hold the Interact key on the board's prompt to place the next missing piece: planks 1 to N, then the spray paint last.
+  - The server checks distance, cooldown and order.
+  - Numbers are in `Content.Breakables.Definitions.Board`.
+- **Guns damage boards.** Every bullet, including shotgun pellets and ricochets, damages the board piece it hits, and explosive rounds damage boards in their blast radius. Intact planks stop bullets like walls.
+- **`Systems.Breakables.BreakableService`.** A weapon-agnostic API (`Damage`, `DamageRadius`, `Repair`, `Reset`, `IsBreakable`, `Get`) with `Breakable.*` extension points. New breakable types come from the data-driven `Content.Breakables` registry.
+- **Interact keybind.** A rebindable Interact action (default E, gamepad DPad Up) in Settings > Controls. Every ProximityPrompt uses the player's Interact key and updates live when it is rebound (`Client.Interact.PromptKeys`).
+- **Effects.** `BoardBreak` and `BoardPlace`, with ProSoundEffects wood-crack, hammer and spray-can sounds and a pooled `BoardDust` burst.
+- **Docs.** New `docs/BREAKABLES.md`.
+
+## 2026-11-08: Crouch on C, prone on Left Ctrl
+
+### Changed
+
+- **Controls.** C crouches (or slides while sprinting) and Left Ctrl goes prone; press Left Ctrl again to get up. Z no longer does anything by default.
+- **Second crouch key removed.** `CrouchAlt` (Left Ctrl) is gone from `Shared.PlayerSettings`. The Settings menu now shows one "Crouch / slide" row (C) and "Prone" (LCtrl).
+- **Saved keybinds move over.**
+  - When keybinds load, `Client.Settings.Keybinds` moves a saved Prone still on the old default Z to Left Ctrl, and saves it through `Packets.Settings.Keybind`. It doesn't move it if the player already put another action on Left Ctrl.
+  - Old profiles keep an unused `CrouchAlt` field, which Scribe loads without errors.
+  - To move another default later, add its old key to `MOVED_DEFAULTS`.
+- **Unchanged:** gamepad (B: tap crouch, hold prone) and touch (Crouch button: tap or hold).
+
+### Fixed
+
+- **Gun clipping into the camera.** Parts of the gun could come closer to the camera than its near clip plane, at high FOV and in the crouch and prone poses, which cut them off. When any part gets within `Config.ViewmodelNearClearance` (0.15), the viewmodel now eases forward along the view axis, never closer than `Config.ViewmodelNearMin` (0.11). Moving along the view axis keeps aimed sights centered. Built by an agent that was stopped before writing its report, so this hasn't had its full playtest yet.
+
 ## 2026-11-08: Prone, and viewmodel and tracer fixes
 
 ### Added
