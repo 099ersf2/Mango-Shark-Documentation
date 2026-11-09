@@ -57,6 +57,13 @@ stateDiagram-v2
     Air --> Sprint: land, sprint held
     Air --> Crouch: land, crouch held
     Air --> Slide: land, crouch + sprint held, fast enough
+    Walk --> Prone: prone (Z / hold B / hold touch Crouch)
+    Crouch --> Prone: prone
+    Sprint --> Prone: prone (drops flat)
+    Slide --> Prone: prone
+    Prone --> Walk: prone again / jump / sprint (headroom check)
+    Prone --> Crouch: crouch, or no room to stand
+    Air --> Prone: land with prone wanted
 ```
 
 | State | Speed | Sets | Notes |
@@ -66,9 +73,10 @@ stateDiagram-v2
 | `TacticalSprint` | `TacticalSprintSpeed` | `Sprinting` | Double-tap sprint. Lasts `TacticalDuration`, cooldown `TacticalCooldown`; guns take `SprintOutTime × TacticalOutMultiplier` to fire after |
 | `Crouch` | `CrouchSpeed` | `Crouching` | HipHeight lowered by `CrouchHipDrop`. Crouch spread (`Spread.Crouch`). Can't stand under a ceiling |
 | `Slide` | burst, then friction | `Crouching`, `Sliding` | Starts at `max(speed × SlideBoost, SlideStartSpeed)`. Faster downhill, slower uphill. Hip fire allowed with `Spread.Slide` extra spread. Cooldown `SlideCooldown` |
+| `Prone` | `ProneSpeed` | `Prone` | Lying down. HipHeight lowered by `ProneHipDrop`, eye `ProneEyeDrop` lower. Best spread (`Spread.Prone`), can fire and aim, can't jump (a jump press gets up), no footsteps. `ProneCooldown` between going down and getting up |
 | `Air` | carried | — | A slide-jump keeps `SlideJumpKeep` of the slide's speed, with limited air control. Landing makes a camera dip scaled by fall speed |
 
-Each change sets the `Sprinting`, `Crouching` and `Sliding` **player attributes**. MovementController predicts them at once; the server sets the same values through `StateHandler`, so `StateHandler.GetState(player, "Sprinting")` works in server code. The server also sets `MoveState` (the state name), `MoveSpeedMultiplier`, `StandHipHeight` and `MoveViolations`.
+Each change sets the `Sprinting`, `Crouching`, `Sliding` and `Prone` **player attributes**. MovementController predicts them at once; the server sets the same values through `StateHandler`, so `StateHandler.GetState(player, "Sprinting")` works in server code. The server also sets `MoveState` (the state name), `MoveSpeedMultiplier`, `StandHipHeight` and `MoveViolations`.
 
 ## Input
 
@@ -76,6 +84,7 @@ Each change sets the `Sprinting`, `Crouching` and `Sliding` **player attributes*
 | --- | --- | --- | --- |
 | Sprint | Left Shift (double-tap: tactical) | Left stick click (toggle) | `Main.Mobile.SprintButton` (tap toggles). Pushing the thumbstick fully forward auto-sprints when **Auto-sprint (touch)** is on |
 | Crouch / slide | C, or Left Ctrl (`CrouchAlt`) | B | `Main.Mobile.CrouchButton` (tap toggles; slides while sprinting) |
+| Prone | Z (press again to get up) | Hold B (`ProneHoldTime`) | Hold `CrouchButton` |
 | Jump | the Humanoid's jump | A | the Roblox jump button |
 
 The Settings menu's **Movement** section has these toggles:
@@ -144,7 +153,8 @@ Sounds go through `PooledSound`, which now supports `Looped` and a per-play `Dat
 Other players see crouch and slide through `Client.Movement.MovementPoses`, driven only by the replicated attributes.
 
 - **With animation ids:** if `Config.Animations.Crouch`, `CrouchWalk` or `Slide` hold ids, they play through `AnimationHandler`.
-- **Without them** (the default), a leg pose is laid over the Animator's output: bent hips and knees for a crouch, one leg forward and a lean back for a slide.
+- **Without them** (the default), a pose is laid over the Animator's output: bent hips and knees for a crouch, one leg forward and a lean back for a slide, and the whole body tipped flat onto its front for prone (lowered by `ProneBodyDrop`, head raised).
+- **Your own character while prone:** its body parts move to the `ProneBody` collision group, which collides with nothing; the server registers it at start. The Humanoid keeps the torso's `CanCollide` on, so without this the lowered torso would lift the character off the floor. The root part keeps colliding, and the parts go back to their own groups on getting up.
 - **Joint types:** it works with Motor6D and with the newer `AnimationConstraint` joints this place's R15 rigs use.
 - **R6:** these characters only lower the camera.
 
@@ -164,7 +174,9 @@ Change `Content.Movement.Config`, then start a new playtest; it's read once at l
 
 Use the Cmdr command **`movedebug`** to show a live readout: client and server state, speed, WalkSpeed and multiplier, HipHeight, grounded and floor, FOV, flags and violations.
 
-## Adding a state (prone, dive, mantle…)
+## Adding a state (dive, mantle…)
+
+Prone was added this way, so it's a worked example to copy.
 
 1. **`Shared.Movement.States`:**
    - Add the state to `Info` with its flags (`Sprinting`, `Crouched`, `Sliding`, `Grounded`).
@@ -187,6 +199,7 @@ Nothing else changes: other systems read the attributes and `StateHandler` state
 | --- | --- | --- | --- |
 | `Movement.PreventSprint` | Any | `player, state` | `true` refuses Sprint / TacticalSprint (for example while carrying an objective) |
 | `Movement.PreventSlide` | Any | `player` | `true` refuses a slide |
+| `Movement.PreventProne` | Any | `player` | `true` refuses going prone |
 | `Movement.SpeedMultiplier` | Product | `player, gunId?` | Scales every movement speed (perks, slows). The held gun's `MoveSpeedMultiplier` is applied on top. The server sends the result to the client as the `MoveSpeedMultiplier` attribute |
 
 Add handlers on the server for rules. The client checks `PreventSprint` and `PreventSlide` too when a client-side handler exists, which saves a correction round trip.
@@ -201,7 +214,14 @@ Add handlers on the server for rules. The client checks `PreventSprint` and `Pre
 | Ground speed above `state speed × multiplier × SpeedTolerance + SpeedSlack` (slide speed allowed during and just after a slide) | Counted in `MoveViolations`; logged after `ViolationsToLog` samples in a row, at most once per `LogInterval`. Nobody is kicked |
 | Shot while sprinting or inside `SprintOutTime` | Refused in `GunService.tryShot` |
 
+## Viewmodel and shots
+
+- **When the gun is drawn:** the viewmodel draws whenever the camera is in first person. That means `LockFirstPerson`, or the camera within 1.5 studs of its focus. It no longer measures from the head, because crouch, slide and prone poses move the head away from the eye.
+- **Where tracers start:** cosmetic tracers and the muzzle flash start at the viewmodel's muzzle while it's drawn, and at the held Tool's own muzzle otherwise, never at the camera. The real bullets still aim from the camera.
+
 ## Known limits
+
+- **Prone keeps the Humanoid's upright root part,** so you can't crawl under gaps lower than about 2.4 studs.
 
 - **Normal jumps use the Humanoid's own air control.** Only slide-jumps carry extra momentum with limited air control.
 - **No third-person animations ship.** The built-in leg pose is used until ids are set in `Config.Animations`.

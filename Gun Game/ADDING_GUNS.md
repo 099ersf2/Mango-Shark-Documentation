@@ -189,6 +189,7 @@ The Settings menu (`P`) rebinds keys, sets volumes, FOV and camera bob, and swit
 | Settings menu | P | |
 | Sprint (double-tap: tactical sprint) | Left Shift | Left stick click (toggles) |
 | Crouch / slide | C or Left Ctrl | B |
+| Prone | Z | Hold B |
 
 Movement, the FOV slider and the movement toggles are covered in [MOVEMENT.md](MOVEMENT.md). For guns, the parts that matter are `SprintOutTime`, `MoveSpeedMultiplier` and the `Spread.Crouch` / `Spread.Slide` fields below.
 
@@ -237,6 +238,7 @@ While a menu is open, `Client.Core.Menus` frees the mouse and the gun takes no i
 | `Spread.Max` | number | `10` | Upper limit (the server clamps to it) |
 | `Spread.Crouch` | number | `0.7` | Multiplies `Hip` and `ADS` while crouched or sliding |
 | `Spread.Slide` | number | `2` | Degrees added while sliding (replaces the `Move` term). Hip fire works during a slide |
+| `Spread.Prone` | number | `0.5` | Multiplies `Hip` and `ADS` while prone |
 | `Recoil.Vertical` | number | `1` | Degrees the camera climbs per shot |
 | `Recoil.Horizontal` | number | `0.3` | Degrees of random sideways kick |
 | `Recoil.Kick` | number | `0.08` | Studs the viewmodel pushes back |

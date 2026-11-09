@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-08: Prone, and viewmodel and tracer fixes
+
+### Added
+
+- **Prone.**
+  - Lie down with Z (rebindable), hold gamepad B or hold the touch Crouch button. Press again, crouch, jump or sprint to get up; you stay down under anything too low to rise into.
+  - Crawls at `ProneSpeed` (3.5). The eye is about 1.3 studs above the floor, and spread is best here (`Spread.Prone`, default 0.5).
+  - No jumping and no footsteps. `ProneCooldown` applies between going down and getting up, on both client and server.
+  - Sets the `Prone` attribute and StateHandler state, and adds the `Movement.PreventProne` extension point.
+  - Third person: the body tips flat onto its front through `MovementPoses`, or plays `Config.Animations.Prone` if set. The viewmodel gets a braced prone pose.
+  - The server registers the `ProneBody` collision group; the prone player's own body parts use it so the lowered torso can't lift the character.
+
+### Fixed
+
+- **Viewmodel disappearing or flickering while sliding and crouch-walking.** The viewmodel judged first person by the camera's distance to the head. The crouch and slide camera offsets and body poses pushed that past 1.5 studs. It now uses the camera mode and the camera's distance to its focus.
+- **Shots starting at the camera.** Tracers and the muzzle flash now always start at the gun: the viewmodel muzzle while it's drawn, else the held Tool's muzzle. Before, they started at the camera whenever the viewmodel was hidden.
+- **Stance changes read as falling.** Lowering the body (crouch, slide, prone) drops it onto the floor; that short fall no longer counts as the Air state.
+- **Standing-up headroom check.** It now measures from the root part instead of the posed head.
+
 ## 2026-11-08: Movement, camera feel and FOV
 
 ### Added
