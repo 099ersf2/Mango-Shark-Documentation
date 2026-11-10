@@ -37,7 +37,7 @@ Every `Packets.Skins` request is refused unless:
 
 ## Setting up the crate product
 
-The crate is off until it has a developer product:
+The crate's developer product is **"Skin Crate", 499 Robux, id `3730208338`** (created 2026-11-10), set in `Shared.ProductIds`. To replace it, or for a new place:
 
 1. Create a developer product named "Skin Crate", priced like `Skins.CRATE_PRICE` (**499 Robux**), on the Creator Dashboard (the experience > Monetization > Developer Products). Claude can create it through Open Cloud once the Studio connection has the `developer-product:write` permission.
 2. Put its id in `ReplicatedStorage.Modules.Shared.ProductIds`, at `Products.SkinCrate` (`0` means not created, so the crate is off).

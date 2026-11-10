@@ -31,9 +31,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
 - **Aim assist for controller and touch** (`Client.Guns.AimAssist`): friction and a gentle pull toward enemies, stronger when aimed, never on mouse. Settings > Toggles turns it off.
 - **The HUD scales with the screen.** Health, ammo, weapon slots and kill feed are sized in scale with aspect locks. On touch, the ammo box moves above the health bar, the weapon slots go top left, and small screens get a bigger HUD. The touch buttons keep their original pixel layout.
 
-### Not done
-
-- **The 499 Robux crate product isn't created yet.** Creating it needs the Open Cloud `developer-product:write` permission, which is now granted, but the request needs an icon file from a folder approved for uploads in Studio (Assistant Settings > MCP Permissions). See [the setup steps](docs/SKINS.md#setting-up-the-crate-product).
+- **Skin crate product is live.** "Skin Crate", 499 Robux, product id `3730208338`, in `Shared.ProductIds`.
 
 ## 2026-11-09: Gun bash (melee)
 
