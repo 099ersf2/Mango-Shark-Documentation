@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-10: Stronger aim assist
+
+See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+
+### Changed
+
+- **Aim assist is stronger** (controller and touch). Cone 12° at the hip and 9° aimed (was 7° / 5°), covering 4 studs of body up close (was 2.2). Friction 50% / 70% (was 35% / 50%). Pull 7 / 11 per second (was 3 / 5), up to 120° per second (was 40°). The fade toward the cone's edge is now squared, so it stays strong over most of the cone. It still never moves the aim while the player is still.
+- **Test rigs count as enemies.** `Rig`, `Rig1` and `Rig2` moved into `workspace.Enemies`, so they get health bars and aim assist.
+
 ## 2026-11-10: Grenade and smoke bomb
 
 See [docs/CONSUMABLES.md](docs/CONSUMABLES.md).

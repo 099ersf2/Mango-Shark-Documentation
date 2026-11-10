@@ -24,21 +24,21 @@ All of these must be true:
 
 | Part | What it does | Strength |
 | --- | --- | --- |
-| **Friction** | With the crosshair near an enemy, part of the player's own turn is taken out, so the aim slows over the target instead of sliding past | 35% of the turn at the hip, 50% fully aimed, at the target's center |
-| **Pull** | While the player turns the stick or moves, the aim is drawn toward the target's chest, so it follows a strafing enemy | Closes 3 / s of the gap at the hip, 5 / s aimed; never faster than 40° per second |
+| **Friction** | With the crosshair near an enemy, part of the player's own turn is taken out, so the aim slows over the target instead of sliding past | 50% of the turn at the hip, 70% fully aimed, at the target's center |
+| **Pull** | While the player turns the stick or moves, the aim is drawn toward the target's chest, so it follows a strafing enemy | Closes 7 / s of the gap at the hip, 11 / s aimed; never faster than 120° per second |
 
 - **The pull never moves the aim while the player is still** (not turning, and not moving faster than 1 stud per second), so the game never aims for you.
-- **Both parts fade** from full strength on the target to nothing at the edge of the cone.
+- **Both parts fade** from full strength on the target to nothing at the edge of the cone. The fade is squared (`1 - (angle / cone)²`), so they stay strong over most of the cone: three quarters strength halfway out.
 - **Aiming down sights** blends both parts from the hip values to the aimed values.
 
 ## Targets
 
 A target must be:
 
-1. **Another player's character** (not a teammate when teams are used), **or a model inside `workspace.Enemies`**. Humanoids anywhere else in the map, like test rigs, are ignored. `NPCService` puts every NPC it spawns in `workspace.Enemies`, so real NPCs always count.
+1. **Another player's character** (not a teammate when teams are used), **or a model inside `workspace.Enemies`**. Humanoids anywhere else in the map are ignored (the test rigs `Rig`, `Rig1` and `Rig2` were moved into `Enemies` on 2026-11-10). `NPCService` puts every NPC it spawns in `workspace.Enemies`, so real NPCs always count.
 2. **Alive** (Humanoid health above 0).
 3. **Within range:** the gun's `Range`, or 250 studs if the gun has none.
-4. **Inside the cone:** 7° from the crosshair at the hip, 5° aimed. Close targets widen the cone to cover about 2.2 studs of body.
+4. **Inside the cone:** 12° from the crosshair at the hip, 9° aimed. Close targets widen the cone to cover about 4 studs of body.
 5. **In clear view:** a ray from the camera to the target must hit the target first.
 
 The aim point is the first of `UpperTorso`, `Torso` or `HumanoidRootPart`. If several targets qualify, the one closest to the crosshair wins.
@@ -58,12 +58,13 @@ Every number is a constant at the top of `Client.Guns.AimAssist`:
 
 | Constant | Default | Meaning |
 | --- | --- | --- |
-| `CONE_HIP` / `CONE_ADS` | 7° / 5° | Half-angle of the cone |
-| `TARGET_RADIUS` | 2.2 | Studs of body the cone covers on close targets |
+| `CONE_HIP` / `CONE_ADS` | 12° / 9° | Half-angle of the cone |
+| `TARGET_RADIUS` | 4 | Studs of body the cone covers on close targets |
 | `DEFAULT_RANGE` | 250 | Range for guns without `Range` |
-| `FRICTION_HIP` / `FRICTION_ADS` | 0.35 / 0.5 | Share of the player's turn removed on target |
-| `PULL_HIP` / `PULL_ADS` | 3 / 5 | Share of the gap closed per second while turning or moving |
-| `MAX_PULL_SPEED` | 40° / s | Fastest the pull may turn the aim |
+| `FRICTION_HIP` / `FRICTION_ADS` | 0.5 / 0.7 | Share of the player's turn removed on target |
+| `PULL_HIP` / `PULL_ADS` | 7 / 11 | Share of the gap closed per second while turning or moving |
+| `MAX_PULL_SPEED` | 120° / s | Fastest the pull may turn the aim |
+| `FALLOFF_POWER` | 2 | Strength is `1 - (angle / cone) ^ FALLOFF_POWER`; higher stays strong further out (1 is a straight fade) |
 | `TURN_THRESHOLD` | 2° / s | Player turn that counts as turning |
 | `MOVE_THRESHOLD` | 1 | Studs per second that count as moving |
 | `AIM_PARTS` | UpperTorso, Torso, HumanoidRootPart | The aim point, first found |
@@ -80,6 +81,8 @@ local pitch, yaw = AimAssist.Update(dt, camera, turnPitch, turnYaw, aimAlpha)   
 `Update` returns `0, 0` whenever aim assist is off, the input is mouse, or there's no target.
 
 ## Testing
+
+- **2026-11-10: strengthened** after play feedback that it was very weak: wider cone (7°/5° to 12°/9°), friction 0.35/0.5 to 0.5/0.7, pull 3/5 to 7/11 with a 120°/s cap (was 40°/s), and a squared fade. Not yet felt on a controller or phone after the change.
 
 - Studio reports mouse input, so the assist stays off in a normal playtest. Use Studio's device emulator (a phone, or a connected gamepad) to feel it.
 - To check the math in a playtest, require a copy of the module with the input check removed, call `SetGun({ Range = 300 })`, and call `Update` with a test `Camera` pointed a few degrees off a dummy in `workspace.Enemies`. This was checked on 2026-11-09: friction and pull inside the cone, nothing outside it, with no gun, or on mouse.
