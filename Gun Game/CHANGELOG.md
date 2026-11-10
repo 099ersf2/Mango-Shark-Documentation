@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-11-09: Decisions round (shop stand, keys, recoil, bash, debris, Revolver)
+
+Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
+
+### Changed
+
+- **Crouch is Left Ctrl, prone is C** (swapped). Saved keys still on an old default move on join, and swaps work both ways (`Client.Settings.Keybinds` `MOVED_DEFAULTS`).
+- **The skin shop is a stand in the lobby** (`Workspace.Lobby.SkinShopStand`), opened with its prompt (Interact, E). The I key and the Skin shop button are gone.
+- **Lobby camera fixed.** The shop no longer forces a free mouse every frame in the lobby, so the camera turns again.
+- **Recoil doesn't drag the aim back down.** After a spray, the aim stays where recoil left it and the player pulls it back. The old ease-back is kept behind `Recoil.RecoverAim = true` (default `false`, in `Content.Guns.Registry`).
+- **Shotgun kick lowered** (Shotgun and SiegeShotgun: Vertical 4.5 / 6, ViewFlip 9, Kick 0.2).
+- **New gun bash animation.** A timed windup, a cross-body strike and a smooth return (0.5 s, `Viewmodel.Actions`), replacing the spring jab.
+- **A bash cancels a reload** (client and server: `GunService.CancelReload`).
+- **Per-gun soft-wall holes.** Each gun's `SoftWallConfig.Guns[Id].HoleRadius` applies (Pistol 0.15, LMG 0.25, SMG 0.18, Shotgun pellets 0.15, and so on). BurstRifle explosive rounds stop at soft walls (`Penetrates = false`).
+- **Door board prompt** reads "Door board".
+- **Old helpers tidied** to house style (headers, `--!strict`), with these fixes:
+  - `Services.PlayerJoin` sets the Player collision group when parts are added instead of scanning every character each frame; only the UpperTorso rule still runs per frame.
+  - `Client.Hud.HealthBillboards` no longer errors without `workspace.Enemies`, and its waits time out.
+  - `Handlers.AnimationHandler.RemoveAnim` works with numeric ids; `Handlers.StateHandler.SetStun` finds the Humanoid on the character.
+  - `Client.Combat.CharacterHurt` drops an unused camera shaker. `Main`, `UI`, `CharacterAdded`, `CmdrClient`, `CursorAim`, `TableHelpers`, `UIHelpers`, `SetCollisionGroup`, `CmdrSetup`, `TokenBucket`, `UnreliablePackets`, `PersonalHealth`, `HealthUI` and `config` got headers.
+
+### Added
+
+- **Visible debris.** A broken plank falls as a copy of itself; soft-wall holes and chunks throw small chips. These are client-only effect parts (`Content.Effects.Parts.Debris`), faded and removed after a few seconds.
+- **Revolver** is a gun (`Content.Guns.Definitions.Revolver`: semi, 48 damage, 6 rounds), with a Handle and attachments on its model, and a **Gunslinger** loadout (Revolver, Pistol, Knife).
+- **Crate refund.** Buying a crate with every skin owned gives 500 coins (`Skins.CRATE_REFUND_COINS`).
+
+### Not done
+
+- **The 499 Robux crate product isn't created yet.** Creating it needs the Open Cloud `developer-product:write` permission, which this Studio connection doesn't have. See [the setup steps](docs/SKINS.md#setting-up-the-crate-product).
+
 ## 2026-11-09: Gun bash (melee)
 
 ### Added

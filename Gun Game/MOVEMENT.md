@@ -57,7 +57,7 @@ stateDiagram-v2
     Air --> Sprint: land, sprint held
     Air --> Crouch: land, crouch held
     Air --> Slide: land, crouch + sprint held, fast enough
-    Walk --> Prone: prone (Left Ctrl / hold B / hold touch Crouch)
+    Walk --> Prone: prone (C / hold B / hold touch Crouch)
     Crouch --> Prone: prone
     Sprint --> Prone: prone (drops flat)
     Slide --> Prone: prone
@@ -83,11 +83,11 @@ Each change sets the `Sprinting`, `Crouching`, `Sliding` and `Prone` **player at
 | Action | Keyboard (rebindable) | Gamepad | Touch |
 | --- | --- | --- | --- |
 | Sprint | Left Shift (double-tap: tactical) | Left stick click (toggle) | `Main.Mobile.SprintButton` (tap toggles). Pushing the thumbstick fully forward auto-sprints when **Auto-sprint (touch)** is on |
-| Crouch / slide | C | B | `Main.Mobile.CrouchButton` (tap toggles; slides while sprinting) |
-| Prone | Left Ctrl (press again to get up) | Hold B (`ProneHoldTime`) | Hold `CrouchButton` |
+| Crouch / slide | Left Ctrl | B | `Main.Mobile.CrouchButton` (tap toggles; slides while sprinting) |
+| Prone | C (press again to get up) | Hold B (`ProneHoldTime`) | Hold `CrouchButton` |
 | Jump | the Humanoid's jump | A | the Roblox jump button |
 
-Prone used to be on Z, with Left Ctrl as a second crouch key (`CrouchAlt`, now removed). When saved keys load, `Client.Settings.Keybinds` moves a Prone still on Z to Left Ctrl and saves it, unless the player has put another action on Left Ctrl. To move another default later, add the old key to `MOVED_DEFAULTS` there.
+Prone used to be on Z, with Left Ctrl as a second crouch key (`CrouchAlt`, now removed). When saved keys load, `Client.Settings.Keybinds` moves a Prone still on Z to Left Ctrl and saves it, unless the player has put another action on Left Ctrl. On 2026-11-09 crouch and prone swapped: crouch is now Left Ctrl and prone C. A saved Crouch still on C, and a saved Prone still on Z or Left Ctrl, move to the new defaults. Every action on an old default moves together, so the swap never leaves two actions on one key. To move another default later, add the old keys to `MOVED_DEFAULTS` there.
 
 The Settings menu's **Movement** section has these toggles:
 - Sprint: Hold or Toggle.

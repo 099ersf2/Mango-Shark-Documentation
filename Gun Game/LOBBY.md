@@ -9,7 +9,8 @@ Players start each session in the lobby, a separate area with no guns, where the
 | Server | `ServerScriptService.Modules.Systems.Lobby.LobbyService` (replaces the old loose `ServerScriptService.LobbySpawn` script) |
 | Map | `Workspace.Lobby` with `LobbySpawnPoint` and `ArenaPortal.PortalTrigger`; `Workspace.ArenaReturnPortal.PortalTrigger` |
 | State | The Player attribute `InLobby` (set by the server only) |
-| Uses it | `Systems.Guns.LoadoutService` (no guns), `Systems.SkinShopService` (shop requests), `Client.Core.SkinShop` (shop button, free mouse) |
+| Skin shop | `Workspace.Lobby.SkinShopStand`: a counter, sign and display gun facing the spawn. `Counter.ShopPrompt` (tagged `SkinShopPrompt`) opens the shop |
+| Uses it | `Systems.Guns.LoadoutService` (no guns), `Systems.SkinShopService` (shop requests), `Client.Core.SkinShop` (the shop stand's prompt) |
 
 ## How it works
 
@@ -17,7 +18,8 @@ Players start each session in the lobby, a separate area with no guns, where the
 2. **First spawn.** The first character of the session spawns at a normal arena `SpawnLocation`, then is moved to `LobbySpawnPoint` once its `HumanoidRootPart` loads.
 3. **To the arena.** Touching `Lobby.ArenaPortal.PortalTrigger` moves the player to a random enabled `SpawnLocation` outside the lobby (3 studs up) and sets `InLobby` to false. `LoadoutService` gives their loadout.
 4. **Back to the lobby.** Touching `ArenaReturnPortal.PortalTrigger` moves them to `LobbySpawnPoint` and sets `InLobby` to true. `LoadoutService` takes their guns and knife.
-5. **Respawns.** Every later character spawns in the arena and is not in the lobby. Dying in the lobby sets `InLobby` to false at once, so the next spawn gets its guns once.
+5. **Camera.** The lobby uses the normal camera; nothing forces the mouse free (that used to stop the camera turning).
+6. **Respawns.** Every later character spawns in the arena and is not in the lobby. Dying in the lobby sets `InLobby` to false at once, so the next spawn gets its guns once.
 
 The server checks each portal use: the player must be alive, on the right side, past the 2-second cooldown, and with their root within the trigger's size plus 8 studs of it (a fake touch from across the map is refused).
 

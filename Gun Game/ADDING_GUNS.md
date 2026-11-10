@@ -46,7 +46,7 @@ ReplicatedStorage
 │  ├─ Registry            GunFire_<Id>, BulletImpact, Reload, DryFire, Hitmarker, Explosion, MeleeSwing, MeleeImpact
 │  └─ Parts/              MuzzleFlash, PooledSound, Shell, Impact (pooled effect kinds)
 ├─ Assets/
-│  ├─ Models/Guns/<Model> gun models (Handle + attachments); also Knife, and Revolver (no definition yet)
+│  ├─ Models/Guns/<Model> gun models (Handle + attachments); also Knife, and Revolver
 │  ├─ Models/Viewmodel    first-person arms rig
 │  ├─ Sounds/             RifleFire, PistolFire, ShotgunFire, Reload, DryFire, Explosion, Hitmarker, BodyHit, HeadshotHit
 │  ├─ Vfx/                MuzzleFlash, BulletImpact, BulletHole, ShellEject, Tracer, TracerRed, Explosion
@@ -192,6 +192,7 @@ It gets a card in the menu with no other change. Gun names are Ids in `Content.G
 | Arsenal | Rifle | Shotgun | Pistol (Knife in slot 4) |
 | SMG (Id `Sprayer`) | SMG | Shotgun | Knife |
 | Support | LMG | Pistol | Knife |
+| Gunslinger | Revolver | Pistol | Knife |
 
 ## Controls and settings
 
@@ -203,15 +204,15 @@ The Settings menu (`P`) rebinds keys, sets volumes, FOV and camera bob, and swit
 | Aim down sights | Right mouse | L2 |
 | Reload | R | X |
 | Gun ability | F | Y |
-| Inspect | V (fixed, not yet rebindable) | |
+| Inspect | V | |
 | Melee (gun bash) | Q, and middle mouse (pressing the wheel, fixed) | R3 (right stick click) |
 | Weapon 1, 2, 3, 4 | 1, 2, 3, 4 | L1 / R1 cycle |
 | Next / previous weapon | Mouse wheel | L1 / R1 |
 | Loadout menu | B | |
 | Settings menu | P | |
 | Sprint (double-tap: tactical sprint) | Left Shift | Left stick click (toggles) |
-| Crouch / slide | C | B |
-| Prone | Left Ctrl | Hold B |
+| Crouch / slide | Left Ctrl | B |
+| Prone | C | Hold B |
 | Interact (repair boards, any prompt) | E | DPad Up |
 
 Movement, the FOV slider and the movement toggles are covered in [MOVEMENT.md](MOVEMENT.md). For guns, the parts that matter are `SprintOutTime`, `MoveSpeedMultiplier`, the `Spread.Crouch` / `Spread.Slide` fields and the `Recoil.ADS` / `Recoil.Crouch` / `Recoil.Prone` multipliers below.
@@ -226,8 +227,8 @@ Any held gun can bash: **Q** (the rebindable `Melee` action), **pressing the mid
 
 | Step | Where | What happens |
 | --- | --- | --- |
-| 1 | `Client.Guns.GunController` | Refused while a menu is open, while reloading (the reload is **not** cancelled; bash after it), while raising the gun, while stunned, or inside the cooldown. Otherwise it ends aiming (and a scope), a sprint and an inspect, holds fire for 0.3 s, sends `Packets.Melee.Swing(serverTime, lookDirection)`, plays the bash (`Viewmodel.Bash`) and the `MeleeSwing` whoosh |
-| 2 | `Systems.Combat.GunMelee` | Checks the timestamp (±2 s), that the look points within 100° of where the body faces, a held gun past 75% of its `EquipTime`, alive, not `Stunned`, `CantDoAnything` or `Reloading`, `Gun.PreventMelee`, and 80% of the cooldown since the last bash |
+| 1 | `Client.Guns.GunController` | Refused while a menu is open, while raising the gun, while stunned, or inside the cooldown. A bash mid-reload cancels the reload (`finishReload`). Otherwise it ends aiming (and a scope), a sprint and an inspect, holds fire for 0.3 s, sends `Packets.Melee.Swing(serverTime, lookDirection)`, plays the bash (`Viewmodel.Bash`) and the `MeleeSwing` whoosh |
+| 2 | `Systems.Combat.GunMelee` | Checks the timestamp (±2 s), that the look points within 100° of where the body faces, a held gun past 75% of its `EquipTime`, alive, not `Stunned` or `CantDoAnything` (a reload in progress is cancelled with `GunService.CancelReload`), `Gun.PreventMelee`, and 80% of the cooldown since the last bash |
 | 3 | `GunMelee.Query` | From the head: humanoids (players and NPCs) whose nearest point is within `Range` and `ConeAngle` of the look, with a clear line, are found by an overlap; the one nearest the cone's center wins. With none, a sphere cast (`Radius`) finds the first wall, board or soft wall straight ahead (falling soft wall debris is skipped). One target per bash |
 | 4 | `GunMelee` | **Humanoid:** `Combat.ApplyHit` with `Attacker` and `Item = "<DisplayName> bash"` (kill feed, `DamageLog`), a small knockback, `Packets.Gun.HitConfirm` (the hitmarker) and `Gun.Killed` on the killing hit, like bullets. Damage goes through `Gun.DamageMultiplier` (hit is nil). **Breakable:** `BreakableService.Damage(part, amount, attacker, "Melee")`; by default the top piece's health, so each bash knocks off the spray paint or one plank (no hole is cut in the board). **Soft wall:** `SoftWalls.Punch(part, position, direction, nil, attacker, "Melee")`, so the hole radius is `SoftWallConfig.Sources.Melee` (0.45); called through `pcall`. Then `Gun.MeleeHit` fires and `MeleeImpact` plays nearby |
 
@@ -352,7 +353,8 @@ Every `Recoil` field is optional; the default is in `Content.Guns.Registry`. Ang
 | `CameraDamping` | `0.8` | 1 settles with no overshoot; lower overshoots and wobbles |
 | `CameraSnap` | `0.6` | Extra velocity on each kick: 0 eases to the new aim, 1 snaps past it |
 | `CameraRoll` | `0.3` | Random camera roll per shot, with a small pitch twitch |
-| `Recovery` | `8` | After `RecoveryDelay`, this share of the remaining recoil returns per second (exponential) |
+| `RecoverAim` | `false` | `false`: after `RecoveryDelay` the remaining recoil is baked into the player's aim, so the view stays where the spray left it. `true`: it eases back down at `Recovery` |
+| `Recovery` | `8` | Used only with `RecoverAim = true`. After `RecoveryDelay`, this share of the remaining recoil returns per second (exponential) |
 | `RecoveryDelay` | `0.12` | Seconds after the last shot before recovery starts. Auto and Burst guns: never less than 1.1 shot intervals |
 | `RateSnap` | `2.5` | Both springs are at least `RateSnap × shots per second` fast, so each shot of a fast gun reads on its own |
 | **Viewmodel** (the gun in your hands) | | |

@@ -22,8 +22,8 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 1. **Owning.** `WeaponSkins` (a saved set of skin Ids) is what the player owns. Only the `SkinCrate` product's `Grant` adds to it.
 2. **Equipping.** Each gun with a skin has a saved field `<Gun>Skin` (`RifleSkin`, `PistolSkin`): `"None"` or a skin Id. `Shared.Data` builds these fields from `Content.Guns.Skins`, so the allowed values always match the list.
 3. **Showing it.** `SkinShopService` copies each `<Gun>Skin` field to the Player attribute of the same name, and restyles the player's gun Tools whenever a field changes. Other players see the styled Tool. The player's own first-person viewmodel is styled by `Viewmodel` from the attribute.
-4. **The shop.** Open with `I` or the **Skin shop** button, only in the lobby. Each row shows **Equip** / **Equipped** for an owned skin, or **In crate**. Clicking **Equip** on the equipped skin takes it off.
-5. **The crate.** One random skin the player doesn't own yet, equipped at once. The odds line shows the chance for each skin left (equal odds; owned skins are never rolled). Once every skin is owned, the Buy button is off and the server refuses the prompt.
+4. **The shop.** Walk up to the shop stand in the lobby (`Workspace.Lobby.SkinShopStand`) and use its prompt (Interact, E). Any `ProximityPrompt` tagged `SkinShopPrompt` opens the shop, only while in the lobby; leaving the lobby closes it. There is no key. Each row shows **Equip** / **Equipped** for an owned skin, or **In crate**. Clicking **Equip** on the equipped skin takes it off.
+5. **The crate.** One random skin the player doesn't own yet, equipped at once. The odds line shows the chance for each skin left (equal odds; owned skins are never rolled). Once every skin is owned, the Buy button is off and the server refuses the prompt. If every skin is already owned when a purchase is granted anyway, the player gets `Skins.CRATE_REFUND_COINS` (500) coins instead.
 
 ### Server checks
 
@@ -39,7 +39,7 @@ Every `Packets.Skins` request is refused unless:
 
 The crate is off until it has a developer product:
 
-1. Create a developer product on the website, priced like `Skins.CRATE_PRICE` (499 Robux).
+1. Create a developer product named "Skin Crate", priced like `Skins.CRATE_PRICE` (**499 Robux**), on the Creator Dashboard (the experience > Monetization > Developer Products). Claude can create it through Open Cloud once the Studio connection has the `developer-product:write` permission.
 2. In Studio, set the number attribute `SkinCrateProductId` on `ReplicatedStorage` to the product's id.
 
 `Shared.Data` reads the attribute **once, when the server starts**, and only then declares the `SkinCrate` product, so set it in Studio before publishing. Changing it while a server runs does nothing until a new server starts. The product is marked `PaidRandom`, so Scribe refuses it for players whose policy restricts paid random items.

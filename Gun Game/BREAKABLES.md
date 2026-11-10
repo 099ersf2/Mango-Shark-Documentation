@@ -12,7 +12,7 @@ The server owns every breakable. Clients only see the result: pieces are shown o
 | Types (data) | `ReplicatedStorage.Content.Breakables.Registry`, one file per type in `Content.Breakables.Definitions` (`Board`, `DoorBoard`) |
 | Models | `ReplicatedStorage.Assets.Models` (`Board`, `DoorBoard`) |
 | Prompt keys (client) | `ReplicatedStorage.Modules.Client.Interact.PromptKeys` |
-| Effects | `BoardBreak` and `BoardPlace` in `Content.Effects.Registry`; sounds `BoardBreak`, `BoardPlace` and `SprayPaint` in `Assets.Sounds`, dust `Assets.Vfx.BoardDust` (pooled by the Dust part) |
+| Effects | `BoardBreak` and `BoardPlace` in `Content.Effects.Registry`; sounds `BoardBreak`, `BoardPlace` and `SprayPaint` in `Assets.Sounds`, dust `Assets.Vfx.BoardDust` (pooled by the Dust part). Each broken piece also falls as a copy (`Debris` effect part, `Piece = true`; spray paint drops flakes) that fades after 4 s |
 | Gun hook | `Systems.Guns.AbilityRunner.Hit` (bullets), `ShotContext.DamageBreakables` (explosive rounds) |
 
 ## How boards work
@@ -67,7 +67,7 @@ Attributes the server sets (read them on the client):
 | `Repair.HoldDuration` | `0.5` | Seconds to hold Interact per piece |
 | `Repair.Cooldown` | `0.35` | Seconds between two repairs by the same player (server) |
 | `Repair.MaxDistance` | `9` | Prompt range in studs. The server allows 3 more |
-| `Repair.ObjectText` | `"Board"` | Prompt title; shows as `Board 3/6` |
+| `Repair.ObjectText` | `"Board"` | Prompt title; shows as `Board 3/6` (`Door board 3/6` on door boards) |
 | `Repair.ActionText` | `Plank = "Place plank"`, `Spraypaint = "Spray paint"` | Prompt action, by the next piece's Kind |
 | `Effects.Break`, `Effects.Place` | `"BoardBreak"`, `"BoardPlace"` | Effects played for each piece, with `Variant` = the piece's Kind |
 
@@ -75,7 +75,7 @@ With these numbers a full board takes 325 damage: about 15 rifle bullets, 4 shot
 
 ## DoorBoard
 
-`Content.Breakables.Definitions.DoorBoard` is a deep copy of `Board` with its own `Id = "DoorBoard"`, `Tags = { "DoorBoard", "doorboard" }` and `Model = "DoorBoard"`. Every other field (piece health, overflow, multipliers, repair, effects) comes from `Board`, so a change to `Board` changes door boards too. Tag a 7 x 8 x 0.24 part `DoorBoard` (the size of `Assets.Models.DoorBoard`'s `BasePart`), or tag a hand-placed `DoorBoard` model with the same layout (`BasePart`, `Planks/Plank1..5`, `Spraypaint`). A full door board takes 325 damage, the same as a window board.
+`Content.Breakables.Definitions.DoorBoard` is a deep copy of `Board` with its own `Id = "DoorBoard"`, `Repair.ObjectText = "Door board"`, `Tags = { "DoorBoard", "doorboard" }` and `Model = "DoorBoard"`. Every other field (piece health, overflow, multipliers, repair, effects) comes from `Board`, so a change to `Board` changes door boards too. Tag a 7 x 8 x 0.24 part `DoorBoard` (the size of `Assets.Models.DoorBoard`'s `BasePart`), or tag a hand-placed `DoorBoard` model with the same layout (`BasePart`, `Planks/Plank1..5`, `Spraypaint`). A full door board takes 325 damage, the same as a window board.
 
 ## Damage API (for any weapon)
 

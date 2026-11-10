@@ -11,8 +11,8 @@ The answers to open design questions, so the code and the docs follow the same r
 | Do respawns go back to the lobby? | **No.** Only a player's first spawn of a session is in the lobby; later respawns are in the arena (`Systems.Lobby.LobbyService`). |
 | Is the lobby a safe zone? | **No.** `nuke` and other damage can hit players in the lobby. |
 | Does the skin shop have a key? | **No key.** The shop has a **physical location in the lobby**: walk up to the shop stand and use its prompt (the Interact key) to open it. The old I key is removed. |
-| Crate price | **499 Robux** per crate, sold as a developer product. Its id is in `Shared.Data` (`SkinCrateProductId`). |
-| Buying a crate when you already own every skin | **Coins back** instead of a skin. |
+| Crate price | **499 Robux** per crate, sold as a developer product. Its id goes in the `ReplicatedStorage` attribute `SkinCrateProductId`, read by `Shared.Data`. **Not created yet** (needs the `developer-product:write` permission). |
+| Buying a crate when you already own every skin | **Coins back** instead of a skin: 500 coins (`Skins.CRATE_REFUND_COINS`). Claude picked the amount; change it there. |
 | Is Inspect rebindable? | **Yes**, in Settings > Controls (default V). |
 
 ### Movement

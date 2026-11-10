@@ -66,6 +66,21 @@ A piece that falls is unanchored, put in `workspace.SoftWallDebris`, tagged `Sof
 - Bullets pass through it without a hit, on the server and for cosmetic bullets.
 - It is removed after `DebrisLifetime` (8 s). At most `MaxDebris` (20) pieces are alive map-wide; the oldest go first.
 - Pieces with a bounding box under `MinDebrisVolume` just vanish.
+- On top of the real pieces, every hole (`SoftWallHole`) and fallen chunk (`SoftWallChunk`) throws small chips. These are client-only effect parts (`Content.Effects.Parts.Debris`) in the `SoftWallDebris` group, faded and removed in a few seconds.
+
+## Per-gun settings
+
+`SoftWallConfig.Guns`, by gun Id (unset fields use the defaults):
+
+| Gun | `HoleRadius` | `PenetrationMultiplier` |
+| --- | --- | --- |
+| Pistol, SiegePistol | 0.15 | 0.5 |
+| Tactical_Revolver_1 | 0.2 | 0.6 |
+| Rifle, SiegeCarbine, Tactical_Bullpup_1 | default | 0.65 |
+| LMG | 0.25 | 0.75 |
+| SMG, SiegeSMG | 0.18 | 0.5 |
+| Shotgun, SiegeShotgun (per pellet) | 0.15 | 0.4 |
+| BurstRifle | 0.2 | `Penetrates = false`: explosive rounds stop at soft walls |
 
 ## Bullets and penetration
 
@@ -98,7 +113,7 @@ All in `Content.Destruction.SoftWallConfig`. Sizes are studs, times seconds.
 | `HoleSpin` | `true` | Turn each square or octagon by a random angle about the normal |
 | `PenetrationMultiplier` | `0.6` | Damage kept per wall passed |
 | `MaxWallsPerBullet` | `4` | Soft walls one bullet may pass |
-| `Guns` | Pistol 0.5, Rifle 0.65, BurstRifle 0.7, Shotgun 0.4 | Per gun Id: `HoleRadius`, `PenetrationMultiplier`, `Penetrates` |
+| `Guns` | see [Per-gun settings](#per-gun-settings) | Per gun Id: `HoleRadius`, `PenetrationMultiplier`, `Penetrates` |
 | `Sources` | Melee `HoleRadius = 0.45` | Per `Punch` source: `HoleRadius` |
 | `MaxRebuildStartsPerFrame` | `2` | Walls that may start a rebuild per Heartbeat |
 | `MaxRebuildsInFlight` | `4` | Walls rebuilding at once |
