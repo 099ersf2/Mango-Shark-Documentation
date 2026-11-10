@@ -112,7 +112,7 @@ All in `Content.Destruction.SoftWallConfig`. Sizes are studs, times seconds.
 | `DebrisLifetime`, `MaxDebris` | `8`, `20` | Debris cleanup |
 | `DebrisPush`, `DebrisShrink` | `4`, `0.02` | Debris push speed, shrink per side |
 | `DebrisCollidesWithPlayers`, `DebrisCollisionGroup` | `false`, `"SoftWallDebris"` | Debris collisions |
-| `HoleEffect`, `ChunkEffect` | `"SoftWallHole"`, `"SoftWallChunk"` | Registry effects, skipped while not in `Content.Effects.Registry` (none ship yet) |
+| `HoleEffect`, `ChunkEffect` | `"SoftWallHole"`, `"SoftWallChunk"` | Registry effects: a stone knock with dust where a hole opens, and rubble with dust when a piece falls (both Nearby, tinted by the wall's color). An effect missing from `Content.Effects.Registry` is skipped |
 | `HoleEffectInterval`, `MaxChunkEffects` | `0.06`, `2` | Effect rate limits |
 
 Hole radius for a hit: the radius the caller passes (a gun's `Guns[Id].HoleRadius`), else `Sources[source].HoleRadius`, else the wall's `SoftWallHoleRadius`, else `HoleRadius`.
