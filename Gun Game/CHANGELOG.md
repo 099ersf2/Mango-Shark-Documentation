@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-10: Touch buttons for bash and Cmdr
+
+### Added
+
+- **BASH touch button** (`Main.Mobile.BashButton`), above FIRE, shown with the other gun buttons; it does the same gun bash as Q.
+- **CMD touch button** (`Main.Mobile.CmdrButton`) that opens the Cmdr bar, shown only to admins in `Classes.Admins`. The server still checks every command.
+
 ## 2026-11-10: API reference
 
 ### Added

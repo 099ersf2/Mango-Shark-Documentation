@@ -97,7 +97,7 @@ StarterGui/Main   (ZIndexBehavior Global: children need a higher ZIndex than the
 ├─ MenuButtons  LoadoutButton, SettingsButton, top right
 ├─ Loadout      Title, Close, Body.List (LoadoutCards)
 ├─ Settings     Title, Close, Body.Controls (KeybindRows), Body.ResetKeys, Body.Audio (VolumeRows)
-└─ Mobile       FireButton, AimButton, ReloadButton (next to Swing, Sprint, Grab)
+└─ Mobile       FireButton, AimButton, ReloadButton, BashButton (next to Swing, Sprint, Grab); CmdrButton (admins)
 ```
 
 ## Add a gun in 3 steps
@@ -206,7 +206,7 @@ The Settings menu (`P`) rebinds keys, sets volumes, FOV and camera bob, and swit
 | Reload | R | X |
 | Gun ability | F | Y |
 | Inspect | V | |
-| Melee (gun bash) | Q, and middle mouse (pressing the wheel, fixed) | R3 (right stick click) |
+| Melee (gun bash) | Q, and middle mouse (pressing the wheel, fixed) | R3 (right stick click); touch: the BASH button |
 | Weapon 1, 2, 3, 4 | 1, 2, 3, 4 | L1 / R1 cycle |
 | Next / previous weapon | Mouse wheel | L1 / R1 |
 | Loadout menu | B | |
@@ -240,7 +240,7 @@ While a menu is open, `Client.Core.Menus` frees the mouse and the gun takes no i
 
 ## Melee (gun punch)
 
-Any held gun can bash: **Q** (the rebindable `Melee` action), **pressing the middle mouse button** (pressing the wheel; scrolling it still switches weapons), or **R3** on a gamepad. The two extra inputs are fixed (`PlayerSettings.MeleeMouseButton`, `PlayerSettings.MeleeGamepadKey`). The Knife keeps its own swing (`Client.Combat.SwordInput`); the bash is for firearms only.
+Any held gun can bash: **Q** (the rebindable `Melee` action), **pressing the middle mouse button** (pressing the wheel; scrolling it still switches weapons), **R3** on a gamepad, or the **BASH** button on touch (`Main.Mobile.BashButton`, shown with the other gun buttons). The two extra inputs are fixed (`PlayerSettings.MeleeMouseButton`, `PlayerSettings.MeleeGamepadKey`). The Knife keeps its own swing (`Client.Combat.SwordInput`); the bash is for firearms only.
 
 | Step | Where | What happens |
 | --- | --- | --- |
@@ -559,7 +559,7 @@ UI is built in Studio under `StarterGui.Main`; scripts only find and update it. 
 
 - **On touch:** shows `Main.Mobile`, moves the ammo box above the health bar and the weapon slots to the top left, and enlarges widgets 1.6x on screens 600 px tall or less.
 - **The kill feed:** kept just under the top-right menu buttons.
-- **The touch buttons:** they stay in **pixels**, on purpose. The `Mobile` frame is one button's size (70 px on small screens, 120 px otherwise, like Roblox's jump button) and every button is placed in multiples of it.
+- **The touch buttons:** they stay in **pixels**, on purpose. BASH sits above FIRE and CMD (admins only) at the top of the cluster, both placed in button-size multiples like the rest. The `Mobile` frame is one button's size (70 px on small screens, 120 px otherwise, like Roblox's jump button) and every button is placed in multiples of it.
 
 The layout before the change to scale is kept in `ServerStorage.Main_BackupBeforeScale`.
 

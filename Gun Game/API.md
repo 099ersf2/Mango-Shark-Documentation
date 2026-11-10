@@ -365,7 +365,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `Viewmodel.Inspect()` / `Bash()` / `Swing()` / `Reloading()` / `FinishReloading()` and `IsInspecting()` / `IsBashing()` | Actions |
 | `Viewmodel.SetSkin()` | Re-applies the equipped skin |
 | `Viewmodel.GunModel.*` | `Get`, `ApplySkin`, `SkinOf`, `Bounds`, `Scaled`, `MakeLocal`, `NearPush` |
-| `GunHud.Show(gun)` / `ShowMelee()` / `Hide()` / `SetAmmo(ammo, reserve)` / `SetReloading(bool)` / `Crosshair(spread, aimAlpha)` / `Hitmarker(headshot, killed)` / `SetAimToggle(bool)` / `MobileButtons()` | The gun HUD |
+| `GunHud.Show(gun)` / `ShowMelee()` / `Hide()` / `SetAmmo(ammo, reserve)` / `SetReloading(bool)` / `Crosshair(spread, aimAlpha)` / `Hitmarker(headshot, killed)` / `SetAimToggle(bool)` / `MobileButtons()` | The gun HUD. `MobileButtons()` returns Fire, Aim, Reload and Bash |
 | `WeaponSlots.Equip(index)` / `Cycle(step)` | Switch weapons |
 | `LoadoutMenu.Pick(id)` | Picks a loadout |
 | `AimAssist.SetGun(gun?)` / `Update(dt, camera, turnPitch, turnYaw, aimAlpha)` | See [AIM_ASSIST.md](AIM_ASSIST.md) |
@@ -394,6 +394,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `PromptKeys.Key()` | The current Interact key (ProximityPrompts follow it) |
 | `HealthBillboards.SetupBillboard(humanoid)` | Shows a health billboard |
 | `Client.Core.UI` | No API: fits the HUD to the screen and the touch layout |
+| `Client.Core.CmdrClient` | No API: F2 opens Cmdr; on touch, admins (`Classes.Admins`) get a CMD button (`Main.Mobile.CmdrButton`) |
 
 ---
 
@@ -417,7 +418,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 
 ## Cmdr commands
 
-Open the bar with **F2** (admins only, `Classes.Admins`).
+Open the bar with **F2**, or the **CMD** touch button (shown only to admins in `Classes.Admins.UserIds`). The server checks `Classes.Admins` again for every command.
 
 | Command | Arguments | What it does |
 | --- | --- | --- |
