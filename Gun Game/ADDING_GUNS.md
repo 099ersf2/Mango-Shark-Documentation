@@ -236,7 +236,7 @@ While a menu is open, `Client.Core.Menus` frees the mouse and the gun takes no i
 - **Camera:** `MovementCamera` calls `AimAssist.Update` inside its own camera step and applies the result there, so the assist, recoil and the player's turn never fight over the camera.
 - **Equip:** `GunController` calls `AimAssist.SetGun` on equip and unequip.
 - **Server:** it never reads aim assist; bullets still go where the camera points.
-- **Tuning:** the numbers are constants at the top of the module.
+- **Tuning:** the numbers are constants at the top of the module. Full details: [AIM_ASSIST.md](AIM_ASSIST.md).
 
 ## Melee (gun punch)
 

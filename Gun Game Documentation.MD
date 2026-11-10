@@ -12,6 +12,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 | [Soft walls](Gun%20Game/SOFTWALLS.md) | You are placing walls bullets punch holes through, tuning penetration, or making a weapon cut holes |
 | [Skins](Gun%20Game/SKINS.md) | You are adding a weapon skin, working on the skin shop, or setting up the skin crate product |
 | [Lobby](Gun%20Game/LOBBY.md) | You are working on the lobby, its portals, first spawn or the `InLobby` attribute |
+| [Aim assist](Gun%20Game/AIM_ASSIST.md) | You are tuning aim assist for controller and touch, or checking what counts as a target |
 | [Kill feed](Gun%20Game/KILL_FEED.md) | You want a weapon's kills in the kill feed, are restyling it, or are using `nuke` |
 | [Design decisions](Gun%20Game/DECISIONS.md) | You want to know how a design question was answered (lobby, skins, guns, bash, walls) |
 | [Changelog](Gun%20Game/CHANGELOG.md) | You want what changed in the place, newest first |

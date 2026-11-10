@@ -1,0 +1,92 @@
+# Aim assist
+
+Aim assist helps controller and touch players hit targets in the FPS place. Mouse players never get it. It only changes how the camera turns: the server never reads it, and every bullet still goes where the camera points.
+
+## Where things are
+
+| What | Where |
+| --- | --- |
+| The logic | `ReplicatedStorage.Modules.Client.Guns.AimAssist` (`ClientOnly`) |
+| Applied to the camera | `Client.Movement.MovementCamera`, inside its one camera step |
+| Told which gun is held | `Client.Guns.GunController` (`AimAssist.SetGun` on equip and unequip) |
+| The setting | `Shared.PlayerSettings` option `AimAssist`, in Settings > Toggles as "Aim assist (controller, touch)". On by default |
+
+## When it's active
+
+All of these must be true:
+
+- The player's preferred input is **Gamepad** or **Touch** (`UserInputService.PreferredInput`).
+- The **Aim assist** setting is on.
+- A **gun** is held. The knife doesn't count.
+- The player is **not in the lobby** (`InLobby`).
+
+## What it does
+
+| Part | What it does | Strength |
+| --- | --- | --- |
+| **Friction** | With the crosshair near an enemy, part of the player's own turn is taken out, so the aim slows over the target instead of sliding past | 35% of the turn at the hip, 50% fully aimed, at the target's center |
+| **Pull** | While the player turns the stick or moves, the aim is drawn toward the target's chest, so it follows a strafing enemy | Closes 3 / s of the gap at the hip, 5 / s aimed; never faster than 40° per second |
+
+- **The pull never moves the aim while the player is still** (not turning, and not moving faster than 1 stud per second), so the game never aims for you.
+- **Both parts fade** from full strength on the target to nothing at the edge of the cone.
+- **Aiming down sights** blends both parts from the hip values to the aimed values.
+
+## Targets
+
+A target must be:
+
+1. **Another player's character** (not a teammate when teams are used), **or a model inside `workspace.Enemies`**. Humanoids anywhere else in the map, like test rigs, are ignored. `NPCService` puts every NPC it spawns in `workspace.Enemies`, so real NPCs always count.
+2. **Alive** (Humanoid health above 0).
+3. **Within range:** the gun's `Range`, or 250 studs if the gun has none.
+4. **Inside the cone:** 7° from the crosshair at the hip, 5° aimed. Close targets widen the cone to cover about 2.2 studs of body.
+5. **In clear view:** a ray from the camera to the target must hit the target first.
+
+The aim point is the first of `UpperTorso`, `Torso` or `HumanoidRootPart`. If several targets qualify, the one closest to the crosshair wins.
+
+## How it fits with recoil
+
+`MovementCamera` already owns every camera rotation (recoil, landing dip, tilt, bob), so aim assist runs in the same step:
+
+1. It measures the player's own turn since last frame.
+2. It calls `AimAssist.Update(dt, camera, turnPitch, turnYaw, aimAlpha)`, which returns the pitch and yaw to add.
+3. It applies the assist as a lasting turn: yaw about world up, pitch about the camera's right, so the assist never adds roll.
+4. The assist is left out of the turn recoil sees next frame, so recoil never treats the assist as the player pulling down.
+
+## Tuning
+
+Every number is a constant at the top of `Client.Guns.AimAssist`:
+
+| Constant | Default | Meaning |
+| --- | --- | --- |
+| `CONE_HIP` / `CONE_ADS` | 7° / 5° | Half-angle of the cone |
+| `TARGET_RADIUS` | 2.2 | Studs of body the cone covers on close targets |
+| `DEFAULT_RANGE` | 250 | Range for guns without `Range` |
+| `FRICTION_HIP` / `FRICTION_ADS` | 0.35 / 0.5 | Share of the player's turn removed on target |
+| `PULL_HIP` / `PULL_ADS` | 3 / 5 | Share of the gap closed per second while turning or moving |
+| `MAX_PULL_SPEED` | 40° / s | Fastest the pull may turn the aim |
+| `TURN_THRESHOLD` | 2° / s | Player turn that counts as turning |
+| `MOVE_THRESHOLD` | 1 | Studs per second that count as moving |
+| `AIM_PARTS` | UpperTorso, Torso, HumanoidRootPart | The aim point, first found |
+
+## API
+
+```lua
+local AimAssist = require(ReplicatedStorage.Modules.Client.Guns.AimAssist)
+
+AimAssist.SetGun(gunDefinition)   -- on equip; nil on unequip (GunController does this)
+local pitch, yaw = AimAssist.Update(dt, camera, turnPitch, turnYaw, aimAlpha)   -- radians to add this frame
+```
+
+`Update` returns `0, 0` whenever aim assist is off, the input is mouse, or there's no target.
+
+## Testing
+
+- Studio reports mouse input, so the assist stays off in a normal playtest. Use Studio's device emulator (a phone, or a connected gamepad) to feel it.
+- To check the math in a playtest, require a copy of the module with the input check removed, call `SetGun({ Range = 300 })`, and call `Update` with a test `Camera` pointed a few degrees off a dummy in `workspace.Enemies`. This was checked on 2026-11-09: friction and pull inside the cone, nothing outside it, with no gun, or on mouse.
+- Not yet tried on a real controller or phone.
+
+## Limits
+
+- Only players and `workspace.Enemies` count; tag-based or other NPC folders are not scanned.
+- One target at a time, chosen fresh every frame.
+- No snap-to-target on aiming down sights, by design.
