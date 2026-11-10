@@ -4,6 +4,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 
 | Doc | Read it when |
 | --- | --- |
+| [API](Gun%20Game/API.md) | You want to control something from code: every function, hook, packet, command, attribute and tag |
 | [Adding guns](Gun%20Game/ADDING_GUNS.md) | You are adding a gun or ability, or something isn't working |
 | [Gun system](Gun%20Game/GUN_SYSTEM.md) | You need the shot flow, packets or state behind the system |
 | [Adding NPCs](Gun%20Game/ADDING_NPCS.md) | You are adding an NPC type, a behavior-tree task or a kill sound |

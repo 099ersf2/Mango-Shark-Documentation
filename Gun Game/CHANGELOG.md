@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-10: API reference
+
+### Added
+
+- **[docs/API.md](docs/API.md)**: one page covering every public function, extension point, packet, Cmdr command, attribute, tag, data field and collision group, with recipes for common jobs.
+
 ## 2026-11-09: Decisions round (shop stand, keys, recoil, bash, debris, Revolver)
 
 Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
