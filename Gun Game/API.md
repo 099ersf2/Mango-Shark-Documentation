@@ -59,6 +59,9 @@ Every module loads through ModuleLoader (`Init`, then `Start`). Require modules 
 | Shake the camera (client) | `MovementCamera.Shake(3, 10, 0.1, 0.6)` |
 | Use a product id | `ProductIds.Products.SkinCrate` (never type an id elsewhere) |
 | Show a banner to everyone | the `announce <text>` command |
+| Give grenades back / set the count | `ConsumableService.Refill(player)` / `ConsumableService.SetCount(player, 2)` |
+| Set off a grenade or smoke anywhere | `ConsumableService.Detonate("Grenade", position, player)` |
+| Is a line blocked by smoke? | `Smoke.Blocks(from, to)` (both sides) |
 
 ---
 
@@ -162,6 +165,18 @@ Runs gun abilities (`Content.Guns.Abilities`) on the server. Abilities normally 
 | `SoftWalls.Reset(target)` / `SoftWalls.ResetAll()` | Puts one wall / every punched wall back |
 | `SoftWalls.Stats()` | Counters (rebuilds, debris) for debugging |
 
+### `Systems.Consumables.ConsumableService` (grenade, smoke)
+
+See [CONSUMABLES.md](CONSUMABLES.md).
+
+| Function | What it does |
+| --- | --- |
+| `ConsumableService.Get(player): (Consumable?, number)` | The carried consumable and how many are left |
+| `ConsumableService.Refill(player)` | Saved kind, count back to `PER_LIFE` (2); runs on every spawn |
+| `ConsumableService.SetCount(player, count)` | Clamped to 0..`PER_LIFE` |
+| `ConsumableService.Throw(player, direction): BasePart?` | Every check, then a throw |
+| `ConsumableService.Detonate(id, position, attacker?): boolean` | A grenade blast or a smoke cloud there, no throw |
+
 ### `Systems.Lobby.LobbyService`
 
 | Function | What it does |
@@ -245,6 +260,10 @@ Handlers are global: check that the player has the thing before acting. Errors a
 | `Movement.PreventSprint` | Any | player, state | Refuse sprint / tactical sprint |
 | `Movement.PreventSlide` / `Movement.PreventProne` | Any | player | Refuse slide / prone |
 | `Movement.SpeedMultiplier` | Product | player, gunId? | Scale every move speed (sent to the client as `MoveSpeedMultiplier`) |
+| `Consumable.PreventThrow` | Any | player, id | Stop a grenade or smoke throw |
+| `Consumable.DamageMultiplier` | Product | attacker?, id, humanoid | Scale grenade damage |
+| `Consumable.Thrown` | Fire | player, id, projectile | After a throw |
+| `Consumable.Detonated` | Fire | attacker?, id, position | After a blast or smoke pop |
 
 ### `Shared.Data`: player data (Scribe)
 
@@ -266,6 +285,7 @@ data.WeaponSkins.Has("Rifle_Gold")
 | `Settings.Volumes.<Group>` | Number 0–1 | Sound volumes |
 | `Settings.Options.<Option>` | Number | Options (toggles are 0 / 1) |
 | Saved loadout | String | The picked loadout Id |
+| `Consumable` | String | The picked consumable Id (`Grenade` or `Smoke`), from `Content.Consumables` |
 
 Add fields from a new module without editing `Shared.Data`: tag a ModuleScript `ScribeFragment` that returns `{ Template = { ... }, ServerStore = { ... } }`. Each root name may only be used once.
 
@@ -283,11 +303,11 @@ Add fields from a new module without editing `Shared.Data`: tag a ModuleScript `
 
 | Member | What it is |
 | --- | --- |
-| `Actions` | Every rebindable action and default key (Fire, Aim, Reload, Ability, Inspect V, Melee Q, Sprint, Crouch LeftControl, Prone C, Slot1–4, Interact E, …) |
+| `Actions` | Every rebindable action and default key (Fire, Aim, Reload, Ability, Inspect V, Melee Q, Consumable G, Sprint, Crouch LeftControl, Prone C, Slot1–4, Interact E, …) |
 | `Options` | Every option: `Fov` (60–110), `CameraBob`, `HoldSprint`, `HoldCrouch`, `MobileAutoSprint`, `SprintWhileReloading`, `AimAssist`. Add one here and the Settings menu shows it |
 | `VolumeGroups` | The sound groups with sliders |
 | `ToInput(name)` / `DefaultKey(action)` / `GetOption(name)` / `CleanOption(name, value)` / `IsVolumeGroup(name)` | Helpers |
-| `InteractGamepadKey`, `MeleeMouseButton`, `MeleeGamepadKey` | The fixed extra inputs |
+| `InteractGamepadKey`, `MeleeMouseButton`, `MeleeGamepadKey`, `ConsumableGamepadKey` (DPad Right) | The fixed extra inputs |
 
 ### `Shared.Packets` and `Shared.UnreliablePackets`
 
@@ -304,6 +324,7 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | `Gun.HitConfirm` | Server → shooter | headshot, killed |
 | `Gun.Loadout` | Client → server | loadout Id |
 | `Melee.Swing` | Client → server | server time, look direction |
+| `Consumable.Throw` / `Consumable.Pick` | Client → server | server time, look direction / consumable Id |
 | `Skins.Equip` / `Skins.BuyCrate` | Client → server, answered (ok, message) | skin Id / — |
 | `Lobby.SelectMap` | Client → server, answered | map Id |
 | `Settings.Keybind` / `Volume` / `Option` | Client → server | name, value |
@@ -330,6 +351,7 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | Function | What it does |
 | --- | --- |
 | `Shared.Movement.States.Can(from, to)` / `IsState(name)` | Allowed movement state changes |
+| `Shared.Smoke.Blocks(from, to): boolean` | True if the line crosses a smoke cloud's core (NPC sight, aim assist) |
 | `Shared.CursorAim.Ray(): (origin, direction)` | The local aim ray (screen center when locked) |
 | `Shared.ReadOnly.Wrap(node, label)` | A read-only view of a table |
 | `Handlers.StateHandler` | `SetState(plr, key, value, duration)`, `GetState`, `ReturnStates`, `RemoveStates`, `SetStun(plr, value, duration, stunSpeed)`, `ClearAllState`. Sets player attributes like `Reloading`, `Stunned` |
@@ -368,6 +390,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `GunHud.Show(gun)` / `ShowMelee()` / `Hide()` / `SetAmmo(ammo, reserve)` / `SetReloading(bool)` / `Crosshair(spread, aimAlpha)` / `Hitmarker(headshot, killed)` / `SetAimToggle(bool)` / `MobileButtons()` | The gun HUD. `MobileButtons()` returns Fire, Aim, Reload and Bash |
 | `WeaponSlots.Equip(index)` / `Cycle(step)` | Switch weapons |
 | `LoadoutMenu.Pick(id)` | Picks a loadout |
+| `Client.Guns.Consumables.Throw()` / `Pick(id)` | Throws one (G) / picks grenade or smoke |
 | `AimAssist.SetGun(gun?)` / `Update(dt, camera, turnPitch, turnYaw, aimAlpha)` | See [AIM_ASSIST.md](AIM_ASSIST.md) |
 | `Recoil.ShotKick` / `Scale`, and `Recoil.Pattern` / `Camera` / `View` classes | Recoil math (see [ADDING_GUNS.md](ADDING_GUNS.md#recoil-fields)) |
 
@@ -407,6 +430,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `Content.Guns.Loadouts` | The loadouts; `Loadouts.Get(id)` |
 | `Content.Guns.Skins` | `List`, `CRATE_PRICE` (499), `CRATE_REFUND_COINS` (500); `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)` |
 | `Content.Guns.Melee` | Bash numbers; `Melee.For(gunId)` |
+| `Content.Consumables` | Grenade and smoke numbers; `List`, `Get(id)`, `PER_LIFE` (2), `DEFAULT`, `THROW_COOLDOWN` |
 | `Content.Guns.Abilities.*` | Ability hooks: `ModifyStats`, `OnFire`, `OnHit`, `CanPierce`, `OnAltFire`, `OnEquip`, `OnUnequip`, `OnReload`. Shipped: Scope, Ricochet, Burst, ExplosiveRounds, PumpShotgunSpread, SiegeShotgunSpread |
 | `Content.Effects.Registry` | Every effect by name |
 | `Content.Breakables.Registry` / `Definitions` | Board types (`Board`, `DoorBoard`) |
@@ -442,6 +466,7 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | Attribute | On | Meaning |
 | --- | --- | --- |
 | `InLobby` | Player | In the lobby (no guns) |
+| `ConsumableId`, `ConsumableCount` | Player | The carried consumable and how many are left this life |
 | `SelectedMap` | Player | The map picked in the lobby hub |
 | `<Gun>Skin` | Player | Equipped skin per gun |
 | `Reloading`, `Stunned`, other states | Player | From `StateHandler` |
@@ -466,6 +491,7 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | `NPC` | (set by the game) | Spawned NPCs |
 | `NPCSpawn` | A part | An NPC spawn point |
 | `ScribeFragment` | A ModuleScript | Adds player data fields |
+| `SmokeCloud` | (set by the game) | A live smoke cloud part, with a `Radius` attribute |
 
 ## Collision groups
 
@@ -474,3 +500,4 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | `Player` | Every character part; doesn't collide with itself |
 | `ProneBody` | The prone collision box |
 | `SoftWallDebris` | Falling soft-wall pieces and debris chips; no player collision |
+| `Thrown` | Thrown grenades and smoke bombs; no collision with `Player` or each other |

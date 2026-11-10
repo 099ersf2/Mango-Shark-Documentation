@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-10: Grenade and smoke bomb
+
+See [docs/CONSUMABLES.md](docs/CONSUMABLES.md).
+
+### Added
+
+- **Consumables.** Each player carries a frag grenade or a smoke bomb, picked in the Loadout menu (saved). They get 2 per life; the count refills on respawn, so it resets on death.
+- **Throw with G** (rebindable, "Throw grenade / smoke"), gamepad DPad Right, or the NADE / SMOKE touch button (`Main.Mobile.ConsumableButton`, left of BASH, showing the count). A HUD line above the ammo box shows the name and count on keyboard and gamepad.
+- **Frag grenade:** bounces, explodes after 3 s. 120 damage at the center falling to 15% at 16 studs, only through clear view, half damage to the thrower, kill feed credit and hitmarkers. It damages boards and holes nearby soft walls.
+- **Smoke bomb:** pops after 1.5 s into a 13-stud cloud for 15 s. NPCs can't see through it and aim assist ignores targets behind it (`Shared.Smoke`).
+- New: `Content.Consumables`, `Systems.Consumables.ConsumableService`, `Client.Guns.Consumables`, `Shared.Smoke`, the `Consumable` packets, the `Thrown` collision group, the `ConsumableThrow` and `SmokePop` effects, models in `Assets.Models.Consumables` and the `Assets.Vfx.SmokeCloud` particles.
+
 ## 2026-11-10: Touch buttons for bash and Cmdr
 
 ### Added

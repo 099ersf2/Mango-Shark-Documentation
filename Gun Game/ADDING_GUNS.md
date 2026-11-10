@@ -97,7 +97,7 @@ StarterGui/Main   (ZIndexBehavior Global: children need a higher ZIndex than the
 ├─ MenuButtons  LoadoutButton, SettingsButton, top right
 ├─ Loadout      Title, Close, Body.List (LoadoutCards)
 ├─ Settings     Title, Close, Body.Controls (KeybindRows), Body.ResetKeys, Body.Audio (VolumeRows)
-└─ Mobile       FireButton, AimButton, ReloadButton, BashButton (next to Swing, Sprint, Grab); CmdrButton (admins)
+└─ Mobile       FireButton, AimButton, ReloadButton, BashButton (next to Swing, Sprint, Grab); ConsumableButton; CmdrButton (admins)
 ```
 
 ## Add a gun in 3 steps
@@ -207,6 +207,7 @@ The Settings menu (`P`) rebinds keys, sets volumes, FOV and camera bob, and swit
 | Gun ability | F | Y |
 | Inspect | V | |
 | Melee (gun bash) | Q, and middle mouse (pressing the wheel, fixed) | R3 (right stick click); touch: the BASH button |
+| Throw grenade / smoke ([CONSUMABLES.md](CONSUMABLES.md)) | G | DPad Right; touch: the NADE / SMOKE button |
 | Weapon 1, 2, 3, 4 | 1, 2, 3, 4 | L1 / R1 cycle |
 | Next / previous weapon | Mouse wheel | L1 / R1 |
 | Loadout menu | B | |
