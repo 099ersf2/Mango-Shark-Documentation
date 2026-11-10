@@ -94,6 +94,7 @@ The Settings menu's **Movement** section has these toggles:
 - Crouch: Hold or Toggle.
 - Auto-sprint (touch).
 - Sprint while reloading: off by default, so a reload stops a sprint and you can't sprint until it ends.
+- Aim assist (controller, touch): on by default; see [ADDING_GUNS.md](ADDING_GUNS.md#aim-assist-controller-and-touch).
 
 While a menu is open, movement keys are ignored. Shift-lock is turned off in `StarterPlayer`, because Left Shift is the sprint key.
 

@@ -40,9 +40,9 @@ Every `Packets.Skins` request is refused unless:
 The crate is off until it has a developer product:
 
 1. Create a developer product named "Skin Crate", priced like `Skins.CRATE_PRICE` (**499 Robux**), on the Creator Dashboard (the experience > Monetization > Developer Products). Claude can create it through Open Cloud once the Studio connection has the `developer-product:write` permission.
-2. In Studio, set the number attribute `SkinCrateProductId` on `ReplicatedStorage` to the product's id.
+2. Put its id in `ReplicatedStorage.Modules.Shared.ProductIds`, at `Products.SkinCrate` (`0` means not created, so the crate is off).
 
-`Shared.Data` reads the attribute **once, when the server starts**, and only then declares the `SkinCrate` product, so set it in Studio before publishing. Changing it while a server runs does nothing until a new server starts. The product is marked `PaidRandom`, so Scribe refuses it for players whose policy restricts paid random items.
+`Shared.Data`, `Systems.SkinShopService` and `Client.Core.SkinShop` all read the id from `Shared.ProductIds`, the one place every product and game pass id lives. Never type an id anywhere else. A new id takes effect when the place is published and new servers start. The product is marked `PaidRandom`, so Scribe refuses it for players whose policy restricts paid random items.
 
 ## Adding a skin
 

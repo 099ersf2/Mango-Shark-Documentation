@@ -25,11 +25,15 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
 
 - **Visible debris.** A broken plank falls as a copy of itself; soft-wall holes and chunks throw small chips. These are client-only effect parts (`Content.Effects.Parts.Debris`), faded and removed after a few seconds.
 - **Revolver** is a gun (`Content.Guns.Definitions.Revolver`: semi, 48 damage, 6 rounds), with a Handle and attachments on its model, and a **Gunslinger** loadout (Revolver, Pistol, Knife).
+- **`Shared.ProductIds`**: one module for every developer product and game pass id. The skin crate reads `Products.SkinCrate` from it instead of the old `SkinCrateProductId` attribute.
 - **Crate refund.** Buying a crate with every skin owned gives 500 coins (`Skins.CRATE_REFUND_COINS`).
+
+- **Aim assist for controller and touch** (`Client.Guns.AimAssist`): friction and a gentle pull toward enemies, stronger when aimed, never on mouse. Settings > Toggles turns it off.
+- **The HUD scales with the screen.** Health, ammo, weapon slots and kill feed are sized in scale with aspect locks. On touch, the ammo box moves above the health bar, the weapon slots go top left, and small screens get a bigger HUD. The touch buttons keep their original pixel layout.
 
 ### Not done
 
-- **The 499 Robux crate product isn't created yet.** Creating it needs the Open Cloud `developer-product:write` permission, which this Studio connection doesn't have. See [the setup steps](docs/SKINS.md#setting-up-the-crate-product).
+- **The 499 Robux crate product isn't created yet.** Creating it needs the Open Cloud `developer-product:write` permission, which is now granted, but the request needs an icon file from a folder approved for uploads in Studio (Assistant Settings > MCP Permissions). See [the setup steps](docs/SKINS.md#setting-up-the-crate-product).
 
 ## 2026-11-09: Gun bash (melee)
 

@@ -31,6 +31,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 - **Learnable recoil.** Each gun has its own spray pattern: the first shots climb straight, then the aim weaves the same way every spray. The aim stays where the spray left it; there's no automatic pull-down (`Recoil.RecoverAim` turns it back on). Aiming, crouching and prone all steady it.
 - **NPCs fight with the same guns.** Soldier, Breacher and Grenadier profiles run a behavior tree (find, chase, strafe, take cover, reload) and shoot through the same server path as players. Spawn them with `spawnnpc <profile> [count]`, remove them with `clearnpcs`.
 - **Kills sound different.** A kill plays a heavier, lower kill sound; a headshot kill layers it after the headshot sound. One kill, one sound.
+- **Aim assist on controller and touch.** Friction and a gentle pull near enemies, stronger when aimed; never on mouse. The HUD scales with the screen, with a touch layout for phones.
 - **Test a gun in game** with the Cmdr command `givegun <player> <gunId>`.
 
 ## Starter guns

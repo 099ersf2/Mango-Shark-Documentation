@@ -68,6 +68,7 @@ ReplicatedStorage
    ├─ WeaponSlots         switching: 1/2/3, mouse wheel, gamepad L1/R1, the right-side slots
    ├─ LoadoutMenu         the loadout cards
    ├─ Recoil              recoil pattern, camera and viewmodel springs (pure math, testable in Edit mode)
+   ├─ AimAssist           friction and pull for controller and touch (see Aim assist)
    ├─ Viewmodel           arms + gun on the camera
    │  ├─ GunModel         scaled gun copies, skins on them, the near guard's boxes
    │  └─ Actions          procedural reload, inspect, knife swing and gun bash
@@ -220,6 +221,22 @@ Movement, the FOV slider and the movement toggles are covered in [MOVEMENT.md](M
 To add a rebindable action, add it to `ACTIONS` in `Shared.PlayerSettings` (a saved field and a menu row come with it), then read its key with `Keybinds.Get("Name")` and rebind on `Keybinds.Changed`. Volume sliders come from `VOLUME_GROUPS` there and drive `Client.Audio.AudioSettings`.
 
 While a menu is open, `Client.Core.Menus` frees the mouse and the gun takes no input. In first person the cursor is locked to the center, so on PC the menus and slots are reached with their keys; on touch they are tapped.
+
+## Aim assist (controller and touch)
+
+`Client.Guns.AimAssist` helps gamepad and touch players; mouse players never get it. It is on by default, and players can turn it off in Settings > Toggles ("Aim assist (controller, touch)", the `AimAssist` option). It only works while a gun is held, outside the lobby.
+
+| Part | What it does |
+| --- | --- |
+| Friction | With the crosshair near an enemy, part of the player's own turn is taken out (35% from the hip, 50% aimed, at the center), so the aim slows over a target instead of sliding past |
+| Pull | While the player turns or moves, the aim is drawn toward the target's chest (3/s from the hip, 5/s aimed, at most 40° per second). It never moves the aim while the player is still |
+
+- **Targets:** other players' characters (not teammates) and NPCs in `workspace.Enemies`. They must be alive, within the gun's `Range` (250 if unset), and in clear view from the camera.
+- **Cone:** 7° from the hip, 5° aimed, widened for close targets to cover about 2.2 studs of body. Both parts fade to nothing at the cone's edge.
+- **Camera:** `MovementCamera` calls `AimAssist.Update` inside its own camera step and applies the result there, so the assist, recoil and the player's turn never fight over the camera.
+- **Equip:** `GunController` calls `AimAssist.SetGun` on equip and unequip.
+- **Server:** it never reads aim assist; bullets still go where the camera points.
+- **Tuning:** the numbers are constants at the top of the module.
 
 ## Melee (gun punch)
 
@@ -535,6 +552,16 @@ Tracers are not registry effects. They are the cosmetic bullets FastCast2 moves,
 ## Adding UI
 
 UI is built in Studio under `StarterGui.Main`; scripts only find and update it. Never create UI with `Instance.new` in a script.
+
+**Screen sizes.** The HUD widgets (`Health`, `Gun`, `Weapons`, `KillFeed`) are sized in **scale**, as their share of a 1920x1080 screen. Each has a `UIAspectRatioConstraint` (`FitWithinMaxSize`), so it keeps its shape on any screen, and the text inside uses `TextScaled` with a `UITextSizeConstraint` capped at the designed size. Set new HUD widgets up the same way.
+
+`Client.Core.UI` handles the rest:
+
+- **On touch:** shows `Main.Mobile`, moves the ammo box above the health bar and the weapon slots to the top left, and enlarges widgets 1.6x on screens 600 px tall or less.
+- **The kill feed:** kept just under the top-right menu buttons.
+- **The touch buttons:** they stay in **pixels**, on purpose. The `Mobile` frame is one button's size (70 px on small screens, 120 px otherwise, like Roblox's jump button) and every button is placed in multiples of it.
+
+The layout before the change to scale is kept in `ServerStorage.Main_BackupBeforeScale`.
 
 1. Add the frame in Studio, inside `Main`.
 2. Find it in `Client.Guns.GunHud` with `WaitForChild` and add a function that updates it.
