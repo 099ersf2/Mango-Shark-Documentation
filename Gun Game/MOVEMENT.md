@@ -117,7 +117,7 @@ While a menu is open, movement keys are ignored. Shift-lock is turned off in `St
 | Tilt | `StrafeTilt` degrees of roll into the strafe, `SlideTilt` while sliding |
 | Landing dip | Pitch impulse of `LandDipPerSpeed` per stud/s of fall speed (capped at `LandMaxDip`) that springs back |
 | Bob | Up, side and roll from the footstep phase, scaled by speed and cut to `BobAds` while aiming |
-| Recoil | The gun's camera recoil (`Viewmodel.Kick`) and a small per-shot roll go into the same stack, so the layers never fight |
+| Recoil | The gun's camera recoil (`MovementCamera.AddRecoil` from `Viewmodel.Kick`, a `Client.Guns.Recoil` Camera) and a small per-shot roll go into the same stack, so the layers never fight. The player's own turn against the recoil is absorbed, so recovery never pulls the view below where they aimed. See [GUN_SYSTEM.md](GUN_SYSTEM.md#recoil) |
 | Shake | `MovementCamera.Shake(...)` uses CameraShaker, for impacts and explosions only |
 
 The **Camera bob** setting (0–100%) scales bob, tilt and the landing dip; 0 turns them off.

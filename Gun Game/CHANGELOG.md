@@ -1,5 +1,103 @@
 # Changelog
 
+## 2026-11-09: Gun bash (melee)
+
+### Added
+
+- **Gun bash.** Press Q (rebindable "Melee" in Settings > Controls), click the mouse wheel, or press R3 on a gamepad to hit with any gun.
+  - It deals 45 damage within 6 studs (35° cone) on a 0.9 s cooldown.
+  - The Pistol is lighter and quicker; the Shotgun and LMG hit harder.
+  - Scrolling the wheel still switches weapons.
+- **Server-decided hits** (`Systems.Combat.GunMelee`).
+  - Hits are credited like bullets: the kill feed shows "<Gun> bash", plus the hitmarker and DamageLog.
+  - Each bash knocks one piece (the spray paint or a plank) off a board, and cuts a melee-sized hole in soft walls.
+- **Animation.** A spring-based gun-jab in the viewmodel. It ends aiming, sprinting and inspecting, and isn't possible while reloading.
+- **Config and hooks.**
+  - Numbers and per-gun overrides live in `Content.Guns.Melee`.
+  - New extension points `Gun.PreventMelee` and `Gun.MeleeHit`, and a new packet `Packets.Melee.Swing`.
+- **Effects.**
+  - New: `MeleeSwing`, `MeleeImpact`, and the soft-wall `SoftWallHole` and `SoftWallChunk` (stone knock, rubble and dust).
+  - New sounds: `MeleeImpact`, `RockImpact`, `RubbleFall` (ProSoundEffects).
+
+## 2026-11-09: Soft walls rebuilt
+
+### Changed
+
+- **Soft walls rebuilt (`Systems.Destruction.SoftWalls`).**
+  - Every hit that lands on a wall while it waits or rebuilds is cut in one CSG pass, so a shotgun blast is one rebuild.
+  - Caps limit rebuilds per frame, rebuilds in flight and cuts per rebuild. Nothing runs while idle.
+- **Loose pieces fall as debris** instead of vanishing.
+  - Debris doesn't collide with players, and bullets pass through it. It's removed after 8 s, with at most 20 pieces at once.
+  - New support rule: `Auto`, `Bottom`, `Touching` or `All`, set per wall with the `SoftWallSupport` attribute.
+- **Bullets lose damage through soft walls.** `PenetrationMultiplier` applies per wall and can be set per gun, up to 4 walls, without using up the gun's Pierce. Before this, the multiplier was never applied.
+- **Square holes,** turned by a random angle (`HoleShape`, `HoleSpin`). Round holes cost about 10× more with the precise collision that holes need.
+- **Melee and explosions.** Melee cuts 0.45-stud holes (source `"Melee"`). Explosions now damage boards whose planks have holes.
+- **Config.** `Content.Destruction.SoftWallConfig` holds every soft wall number, with per-gun and per-source settings.
+
+### Added
+
+- **Cmdr commands** `softwallpunch [radius] [ring]` and `softwallreset [all]`.
+- **Docs.** New `docs/SOFTWALLS.md`, plus updates to the shot flow in `GUN_SYSTEM.md`, a board note in `BREAKABLES.md` and a link in `GUN_GAME.md`.
+
+## 2026-11-09: Gun recoil patterns, gun client refactor and Shotgun model fix
+
+### Added
+
+- **Recoil patterns.** Each gun has a learnable spray: the first shots climb straight, then the aim weaves side to side the same way every spray, with a small random part. The weave comes from a seeded curve or an authored `Recoil.Pattern`, and the spray starts over after `ResetTime`.
+- **Camera and gun recoil are separate.** The camera (where you aim) and the gun in your hands (push-back, muzzle flip, twist, roll) each have their own spring. While you aim, the gun turns about its sights, so they stay centered.
+- **Recovery respects your pull-down.** After firing, the aim returns only by the recoil you didn't already pull against, and never drags the view below where you put it.
+- **Stance and fire rate.**
+  - Multipliers for ADS, crouch (also used while sliding) and prone, plus a first-shot multiplier.
+  - The springs stay fast enough that every shot of a fast gun still reads.
+- **Per-gun feel.**
+  - Rifle (steady), Pistol (snap), Shotgun (one big kick), Burst Rifle (tight burst), SMG (fast, jittery) and LMG (heavy, slow).
+  - Every number is in the gun's `Recoil` table, with defaults in `Content.Guns.Registry`. See "Tuning recoil" in `docs/ADDING_GUNS.md`.
+- **`Client.Guns.Recoil`.** Pure recoil math that can be tested from Studio's command bar.
+
+### Changed
+
+- **Viewmodel split.** `Client.Guns.Viewmodel` is now three documented parts:
+  - the frame and API;
+  - `Viewmodel.GunModel`: gun copies, skins, near guard;
+  - `Viewmodel.Actions`: reload, inspect, knife swing.
+
+  Behavior is unchanged.
+- **House style.** SMG, LMG and Loadouts follow it now. The docs list the SMG and LMG, and the six loadouts with the knife slot.
+
+### Fixed
+
+- **Shotgun model.** The imported mesh had no Handle, so the Shotgun's viewmodel and muzzle were broken (boot warning "model Shotgun has no Handle part"). It now has an invisible Handle carrying Muzzle, Aim (on the sight line), RightGrip, LeftGrip (on the pump) and EjectionPort. The new look is unchanged.
+- **Skins in first person** were drawn about three times too big. They're now applied at full size and scaled with the viewmodel.
+- **Knife skin.** The knife no longer wears the Pistol's skin.
+- **Skin changes** now update the viewmodel for every gun that has skins, not only the Rifle and Pistol.
+
+## 2026-11-09: Skins, lobby and kill feed cleanup
+
+### Changed
+
+- **Lobby moved into the loader.** The loose `ServerScriptService.LobbySpawn` script is now `Systems.Lobby.LobbyService`, with the same behavior:
+  - first spawn in the lobby;
+  - the arena and return portals;
+  - the `InLobby` attribute;
+  - a 2-second portal cooldown.
+
+  Portals now also check that the player is really next to them, and dying in the lobby gives your guns once on the next spawn instead of twice.
+- **Skin shop uses Studio-built UI and packets.** The shop is `StarterGui.Main.SkinShop`, with `Main.SkinShopButton` and the `Assets.UI.Templates.SkinRow` template, instead of UI built by script. Requests go through `Packets.Skins.Equip` and `Packets.Skins.BuyCrate` instead of the runtime `SkinShopRemote`.
+- **Skins are data.** `Content.Guns.Skins` describes each skin's colors, resized parts and detail parts. The saved `<Gun>Skin` fields and the shop are built from that list, so adding a skin is one entry.
+- **Kill feed, Nuke and DoorBoard documented and tidied.** No behavior change. DoorBoard no longer shares tables with Board.
+
+### Fixed
+
+- **Skin shop on the server.** It no longer loads on the server (it had no `ClientOnly`).
+- **Skin requests.** They're rate limited (4 per 2 s) and Ids are validated. Setting the crate product id mid-session no longer errors.
+- **Cursor in the arena.** It no longer stays visible after you leave the lobby holding a gun.
+- **Stale shop state.** The shop briefly showed the old "Equipped" state after equipping.
+- **Music.** It stored the playlist folder as the "current song".
+
+### Added
+
+- **Docs.** `docs/SKINS.md`, `docs/LOBBY.md` and `docs/KILL_FEED.md`, plus a DoorBoard section in `docs/BREAKABLES.md`.
+
 ## 2026-11-08: Breakable boards and the Interact key
 
 ### Added

@@ -1,6 +1,6 @@
 # Breakables
 
-Breakable objects are models made of pieces that weapons knock off one at a time and players put back. The first type is the **Board**: planks nailed across a window, with a coat of spray paint on top.
+Breakable objects are models made of pieces that weapons knock off one at a time and players put back. The first type is the **Board**: planks nailed across a window, with a coat of spray paint on top. **DoorBoard** is the door-sized version, with the same rules.
 
 The server owns every breakable. Clients only see the result: pieces are shown or hidden through replicated part properties, and the state is in attributes.
 
@@ -9,8 +9,8 @@ The server owns every breakable. Clients only see the result: pieces are shown o
 | What | Where |
 | --- | --- |
 | Server system | `ServerScriptService.Modules.Systems.Breakables.BreakableService` |
-| Types (data) | `ReplicatedStorage.Content.Breakables.Registry`, one file per type in `Content.Breakables.Definitions` (`Board`) |
-| Models | `ReplicatedStorage.Assets.Models` (`Board`) |
+| Types (data) | `ReplicatedStorage.Content.Breakables.Registry`, one file per type in `Content.Breakables.Definitions` (`Board`, `DoorBoard`) |
+| Models | `ReplicatedStorage.Assets.Models` (`Board`, `DoorBoard`) |
 | Prompt keys (client) | `ReplicatedStorage.Modules.Client.Interact.PromptKeys` |
 | Effects | `BoardBreak` and `BoardPlace` in `Content.Effects.Registry`; sounds `BoardBreak`, `BoardPlace` and `SprayPaint` in `Assets.Sounds`, dust `Assets.Vfx.BoardDust` (pooled by the Dust part) |
 | Gun hook | `Systems.Guns.AbilityRunner.Hit` (bullets), `ShotContext.DamageBreakables` (explosive rounds) |
@@ -19,7 +19,7 @@ The server owns every breakable. Clients only see the result: pieces are shown o
 
 1. **Placing boards on the map.** Put a part where the board goes, the size of the board (4 x 5 x 0.24 studs), and give it the tag `Board`. Anchor it. When the server starts, `BreakableService` replaces every part with that tag with a copy of `Assets.Models.Board`. The copy's `BasePart` (its PrimaryPart) sits exactly on the tagged part's CFrame, and the tagged part is destroyed. Parts tagged later, while the game runs, are replaced too. A `Model` with the tag is used as it is, without being copied.
 2. **Breaking.** Damage always goes to the top piece that is still up, whatever part was hit. The spray paint goes first, then the planks from the highest number down: Plank5, Plank4, ... Plank1. A piece that runs out of health is hidden: Transparency 1, and CanCollide, CanQuery and CanTouch off. A hidden piece blocks nothing, not even bullets. Damage left over after a piece breaks carries on to the next one (`CarryOverflow`).
-3. **Bullets.** An intact piece is a normal solid part, so it stops bullets like a wall (unless the gun pierces). Every gun bullet that hits a piece damages the board: hitscan, simulated, each shotgun pellet, and ricochets. Explosive rounds also damage boards within their radius. Once a board is fully broken, bullets go through the window.
+3. **Bullets.** An intact piece is a normal solid part, so it stops bullets like a wall (unless the gun pierces). Every gun bullet that hits a piece damages the board: hitscan, simulated, each shotgun pellet, and ricochets. Explosive rounds also damage boards within their radius. Once a board is fully broken, bullets go through the window. The shipped `Board` and `DoorBoard` models have their planks and spray paint tagged `SoftWall`, so bullets pass through them, cut holes, and break the board by hole count instead (five holes); see [Soft walls](SOFTWALLS.md#boards).
 4. **Repairing.** While a piece is missing, the board shows a prompt (Hold E). Each completed hold places the next missing piece back at full health, in placing order: Plank1 up to Plank5, then the spray paint last. The prompt hides when the board is complete.
 
 The server checks every repair: the player must be alive, within `MaxDistance` + 3 studs of the board, and past their `Cooldown`. The piece is always the server's own next piece. A caller that names a piece (`expectedPiece`) is refused if that piece is not next.
@@ -73,6 +73,10 @@ Attributes the server sets (read them on the client):
 
 With these numbers a full board takes 325 damage: about 15 rifle bullets, 4 shotgun blasts at close range, or 12 pistol shots.
 
+## DoorBoard
+
+`Content.Breakables.Definitions.DoorBoard` is a deep copy of `Board` with its own `Id = "DoorBoard"`, `Tags = { "DoorBoard", "doorboard" }` and `Model = "DoorBoard"`. Every other field (piece health, overflow, multipliers, repair, effects) comes from `Board`, so a change to `Board` changes door boards too. Tag a 7 x 8 x 0.24 part `DoorBoard` (the size of `Assets.Models.DoorBoard`'s `BasePart`), or tag a hand-placed `DoorBoard` model with the same layout (`BasePart`, `Planks/Plank1..5`, `Spraypaint`). A full door board takes 325 damage, the same as a window board.
+
 ## Damage API (for any weapon)
 
 All on `Systems.Breakables.BreakableService` (server). Every function takes **any part of a breakable** (or its model), so a weapon passes whatever it hit:
@@ -92,7 +96,7 @@ BreakableService.Repair(target, player?, expectedPiece?): (boolean, reason?)
 BreakableService.Reset(target)   -- every piece back, no effects (round start)
 ```
 
-A gun melee ("gun punch") calls it with the part its hit found:
+The gun melee ("gun punch", `Systems.Combat.GunMelee`, see [ADDING_GUNS.md](ADDING_GUNS.md#melee-gun-punch)) calls it with the part its hit found. By default it deals exactly the top piece's health, so each bash knocks off one piece:
 
 ```lua
 if BreakableService.IsBreakable(hitPart) then
@@ -100,7 +104,7 @@ if BreakableService.IsBreakable(hitPart) then
 end
 ```
 
-Source names used so far: `"Bullet"` (every gun bullet) and `"Explosion"` (explosive rounds). A source name in a type's `SourceMultipliers` scales its damage.
+Source names used so far: `"Bullet"` (every gun bullet), `"Explosion"` (explosive rounds) and `"Melee"` (sword swings and gun bashes). A source name in a type's `SourceMultipliers` scales its damage.
 
 Extension points (`Shared.Extensions`), where `who` is the Player, an NPC model or nil:
 
@@ -144,6 +148,6 @@ Prompts use the **Interact** action from `Shared.PlayerSettings` (default E, reb
 
 ## Limits
 
-- The map's older window models named `Board` / `Board1` / `DoorBoard` are not tagged, so the system ignores them. Only parts tagged `Board` become breakable boards.
+- Only parts and models tagged `Board` or `DoorBoard` become breakables. Older untagged window models are ignored.
 - No lag compensation, the same as the guns.
 - Board state is not saved, and boards are not reset by anything yet. Call `BreakableService.Reset` from a round system.

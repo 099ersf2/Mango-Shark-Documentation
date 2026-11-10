@@ -1,0 +1,45 @@
+# Lobby
+
+Players start each session in the lobby, a separate area with no guns, where they can open the skin shop. A portal takes them to the arena, and a return portal in the arena brings them back.
+
+## Where things are
+
+| What | Where |
+| --- | --- |
+| Server | `ServerScriptService.Modules.Systems.Lobby.LobbyService` (replaces the old loose `ServerScriptService.LobbySpawn` script) |
+| Map | `Workspace.Lobby` with `LobbySpawnPoint` and `ArenaPortal.PortalTrigger`; `Workspace.ArenaReturnPortal.PortalTrigger` |
+| State | The Player attribute `InLobby` (set by the server only) |
+| Uses it | `Systems.Guns.LoadoutService` (no guns), `Systems.SkinShopService` (shop requests), `Client.Core.SkinShop` (shop button, free mouse) |
+
+## How it works
+
+1. **Join.** `InLobby` is set to true as soon as the player joins, before their first character loads, so `LoadoutService` never hands them guns.
+2. **First spawn.** The first character of the session spawns at a normal arena `SpawnLocation`, then is moved to `LobbySpawnPoint` once its `HumanoidRootPart` loads.
+3. **To the arena.** Touching `Lobby.ArenaPortal.PortalTrigger` moves the player to a random enabled `SpawnLocation` outside the lobby (3 studs up) and sets `InLobby` to false. `LoadoutService` gives their loadout.
+4. **Back to the lobby.** Touching `ArenaReturnPortal.PortalTrigger` moves them to `LobbySpawnPoint` and sets `InLobby` to true. `LoadoutService` takes their guns and knife.
+5. **Respawns.** Every later character spawns in the arena and is not in the lobby. Dying in the lobby sets `InLobby` to false at once, so the next spawn gets its guns once.
+
+The server checks each portal use: the player must be alive, on the right side, past the 2-second cooldown, and with their root within the trigger's size plus 8 studs of it (a fake touch from across the map is refused).
+
+`LobbyService` hooks players in `Init`, the earliest point the loader offers, so the timing matches the old script.
+
+## API
+
+```lua
+local LobbyService = require(ServerScriptService.Modules.Systems.Lobby.LobbyService)
+LobbyService.IsInLobby(player)
+LobbyService.SendToArena(player)  -- what the arena portal does; returns whether they moved
+LobbyService.SendToLobby(player)  -- what the return portal does
+```
+
+Constants at the top of the module: `TELEPORT_COOLDOWN`, `ARENA_SPAWN_HEIGHT`, `PORTAL_REACH`, and the part names.
+
+## Map rules
+
+- Don't put a `SpawnLocation` inside `Workspace.Lobby`: players are moved there by script. Any `SpawnLocation` outside it counts as an arena spawn, including ones added while the game runs.
+- If `Lobby`, `LobbySpawnPoint` or either `PortalTrigger` is missing, the service warns once and turns off: players spawn in the arena with guns as normal.
+
+## Limits
+
+- The lobby isn't a safe zone. Nothing stops damage there (for example a `nuke` near it).
+- Exploiters control their own character's position, so they can walk or teleport into the arena. The server only checks portal touches.
