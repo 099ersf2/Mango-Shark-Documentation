@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-11: Guns held higher
+
+### Fixed
+
+- **Long guns were still held too low** (around the waist when aiming). The step that brings the left hand to the front grip was pulling the gun down toward the left shoulder. It now only slides the gun straight back, level, and the left hand holds as far along the gun as it reaches.
+- **The poses are higher:** long guns aim with the sights at eye level beside the right cheek, idle and reload sit at chest height, and the pistol idle is higher.
+
+Measured on the gun range, all 72 rigs:
+- **Long guns aiming:** the sight sits at eye level (+0.10 from the head center); before, it was at -0.25 and 0.38 studs to the wrong side.
+- **Long guns at idle:** chin/shoulder height.
+- **Fit:** clipping 0.02 studs at most, and the right hand always on the grip.
+
 ## 2026-11-11: Guns no longer sit low in the hand
 
 ### Fixed

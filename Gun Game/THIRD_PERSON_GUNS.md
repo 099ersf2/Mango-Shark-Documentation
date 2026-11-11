@@ -25,7 +25,7 @@ A gun reaching more than 0.45 studs behind its Handle has a stock and is held as
 | --- | --- | --- |
 | **Idle** (low ready) | Holding a gun, nothing else | Lowered in front: muzzle about 30 degrees down (pistols 40), half of the aim pitch. Walking adds a small bob |
 | **Sprint** | Sprinting (the `Sprinting` / `MoveState` attribute), or an NPC moving faster than 19 studs/s | Long guns across the chest, muzzle up and to the left; pistols low by the hip, muzzle down |
-| **Aim** | `GunAiming` on the character, or a shot in the last 0.8 s | Up at the eyes: a pistol's rear sight 1.2 studs out, a long gun's 0.5 studs out with the stock in. Follows the full aim pitch |
+| **Aim** | `GunAiming` on the character, or a shot in the last 0.8 s | Up at the eyes: a pistol's rear sight centered 1.2 studs out; a long gun's at eye level beside the right cheek. Follows the full aim pitch |
 | **Shoot** | The tool's `Ammo` goes down | A recoil kick on top of the pose: pistols 13 degrees, shotguns 10, rifles 5, plus 0.1 studs back, springing back |
 | **Reload** | The tool's `Reloading` attribute | Gun tilted to show the magazine well. The left hand goes to the magazine, down to the belt (a part named `Magazine` hides), back up with it, and onto the grip again, over the gun's `ReloadTime` |
 
@@ -41,7 +41,7 @@ Every frame, in `RunService.PreSimulation` (after the Animator), for each R15 ch
    - **Your own body:** your camera.
 2. The right hand goes where the gun's grip needs it (the gun is welded to the right hand by `RightGrip`). The left palm goes on the gun's `LeftGrip`.
 3. **Settle** (up to 5 rounds):
-   - the gun moves toward the left shoulder by what the left arm is short of the front grip;
+   - the gun slides straight back, level, by what the left arm is short of the front grip. It is never pulled down or sideways, so it keeps the pose's height. An earlier version pulled it toward the left shoulder, which dragged long guns down to the waist;
    - it moves forward out of the head and torso, checking every corner of its outline (a stock may rest 0.15 studs into the chest, the shoulder pocket);
    - it comes back toward the right shoulder if the right arm is short (the gun is welded to that hand).
 
@@ -83,7 +83,19 @@ At the top of `Client.Guns.ThirdPersonGuns`:
 
 `ThirdPersonGuns.Report()` (client) returns each posed character's gun kind, how deep the gun still goes into the body (`Clip`), and how far each hand is off (`RightMiss`, `LeftMiss`). The gun range ([GUN_SHOWCASE.md](GUN_SHOWCASE.md)) is the place to read it for every gun at once.
 
-**On the range, all 72 rigs (2026-11-11, after the fixes):**
+**Heights on the range (2026-11-11, after raising the guns), measured from the head center:**
+
+| Pose | Rear sight | Right hand |
+| --- | --- | --- |
+| Aim, long guns | Eye level (+0.10), beside the right cheek (+0.31) | Chest (-0.5 to -0.9) |
+| Aim, pistols | Eye level (+0.04), centered | -0.8 |
+| Idle, long guns | Chin/shoulder (-0.31), muzzle down 20 degrees | Upper chest (about -1.0) |
+| Idle, pistols | Chin (-0.55), muzzle down 30 degrees | -1.1 to -1.4 |
+| Sprint | Carried lower across the body (-0.6 to -1.0) | -1.4 to -1.9 |
+
+Clipping was 0.02 studs at most, the right hand always reached, and the left hand averaged 0.5 studs from the front grip, holding along the gun body.
+
+**On the range, all 72 rigs (2026-11-11, earlier fit check):**
 - **Clipping:** at most 0.10 studs into the body. Before, whole stocks went through heads.
 - **Right hand:** always on the grip.
 - **Left hand:** on average 0.19 studs from the front grip, about 0.4 at worst on the long rifles when aimed.
