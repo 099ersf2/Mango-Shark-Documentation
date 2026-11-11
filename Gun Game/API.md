@@ -350,7 +350,7 @@ Add fields from a new module without editing `Shared.Data`: tag a ModuleScript `
 
 | Member | What it is |
 | --- | --- |
-| `Actions` | Every rebindable action and default key (Fire, Aim, Reload, Ability, Inspect V, Melee Q, Consumable G, Sprint, Crouch LeftControl, Prone C, Slot1–4, Interact E, Loadout B, Settings P, Scoreboard Tab, Match M, Drone 5 (go in / throw), DroneView X (leave drone)) |
+| `Actions` | Every rebindable action and default key (Fire, Aim, Reload, Ability, Inspect V, Melee Q, Consumable G, Sprint, Crouch LeftControl, Prone C, Slot1–4, Interact E, Loadout B, Settings P, Scoreboard Tab, Match M, Drone 5 (in / out / throw), DroneView X (leave drone)) |
 | `Options` | Every option: `Fov` (60–110), `CameraBob`, `HoldSprint`, `HoldCrouch`, `MobileAutoSprint`, `SprintWhileReloading`, `AimAssist`. Add one here and the Settings menu shows it |
 | `VolumeGroups` | The sound groups with sliders |
 | `ToInput(name)` / `DefaultKey(action)` / `GetOption(name)` / `CleanOption(name, value)` / `IsVolumeGroup(name)` | Helpers |
