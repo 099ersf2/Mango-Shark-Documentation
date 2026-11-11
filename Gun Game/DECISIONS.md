@@ -39,7 +39,7 @@ The answers to open design questions, so the code and the docs follow the same r
 | Does a bash cancel a reload? | **Yes.** Bashing mid-reload cancels the reload and bashes. |
 | Damage and cooldown | **45 damage, 0.9 s cooldown** are right. |
 | Does a bash wait for SprintOutTime after a sprint? | **No.** It bashes at once. |
-| Animation | The old jab looked bad. **Replaced** with a new bash animation. |
+| Animation | The old jab looked bad. **Replaced** with a new bash animation. On 2026-11-10 the wide sideways swing that replaced it also looked bad (it swung the gun across the middle of the screen), so it became a **long straight jab** with about 1.6 studs of forward travel. **No camera shake.** |
 
 ### Soft walls and boards
 

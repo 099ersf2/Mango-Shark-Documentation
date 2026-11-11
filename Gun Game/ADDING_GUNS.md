@@ -274,7 +274,16 @@ A new gun needs nothing: it bashes with `DEFAULT`. To tune it, add `MyGun = { Da
 
 ### The animation
 
-`Viewmodel.Actions` drives the bash with two springs (position and rotation, like the recoil). For 0.08 s they pull toward `BASH_MOVE` (in toward the center, up, forward) and `BASH_TURN` (muzzle down a touch, in, canted 30°), then let go, so the gun jabs forward about 0.65 studs (full scale) and springs back with a small bounce. Once both settle (about 0.4 s) they are zeroed, so the gun's frame, and aimed sights, are exactly as before. It runs before the near guard, so nothing reaches the camera's near plane. Tune the `BASH_*` constants at the top of `Viewmodel.Actions`.
+`Viewmodel.Actions` plays the bash as a timed jab over `BASH_DURATION` (0.45 s), and the gun stays on its own side of the screen:
+
+| Part | Share of the bash | What the gun does |
+| --- | --- | --- |
+| Pull back | 0–20% | Draws back 0.3 studs toward the shoulder, canted 8° (`BASH_WINDUP`) |
+| Strike | 20–40% | Thrusts straight forward to 1.3 studs ahead, about 1.6 studs of travel, canted 15° so the side leads (`BASH_STRIKE`); fastest at the start |
+| Hold | 40–50% | A short beat on impact |
+| Return | 50–100% | Snaps back and settles at rest |
+
+The distances are at full scale; the viewmodel is drawn smaller. There's no camera shake. At the end the pose is exactly at rest, so the gun's frame, and aimed sights, are as before. It runs before the near guard, so nothing reaches the camera's near plane. Tune the `BASH_*` constants at the top of `Viewmodel.Actions`.
 
 ### Extension points
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-10: SMG sound and a new gun bash
+
+### Fixed
+
+- **The SMG's gunfire sound was silent.** The `RifleFire` sound file starts with about 0.3 s of silence. The SMG fires every 0.07 s with 4 pooled copies, so each copy restarted before it reached the bang. Gunfire now skips that silence (`Start = 0.3` on `GunFire_Rifle`; `PooledSound` takes a new `Start` field) and keeps 6 copies per muzzle. Checked: at SMG speed there was sound in 89 of 91 frames (0 of 61 before). This also removes a 0.3 s delay between the shot and the sound for every gun using `GunFire_Rifle` (Rifle, SMG, LMG and others).
+
+### Changed
+
+- **The gun bash is a long straight jab.** The gun pulls back toward the shoulder, then thrusts about 1.6 studs straight forward (full scale) with a slight cant, holds a beat, and snaps back. It stays on its own side of the screen instead of swinging across the middle. No camera shake. Tune the `BASH_*` constants in `Client.Guns.Viewmodel.Actions`. See [docs/ADDING_GUNS.md](docs/ADDING_GUNS.md).
+
 ## 2026-11-10: Tracers no longer come out of your face
 
 ### Fixed
