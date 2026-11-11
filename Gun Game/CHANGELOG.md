@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-11-10: NPCs move, hunt and get around
+
+See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
+
+### Fixed
+
+- **NPCs stood still.** They wandered only near their spawn, and froze or walked into walls when a path failed, and some were shut in rooms with no path anywhere. Now: wander points 20-90 studs away on their own floor, paths through corridors about 3 studs wide, the closest reachable path when there's no full one, faster re-pathing when stuck, and **breaking out** of rooms they're shut in (through a board, soft wall or window). Live: NPCs moved in 30-37 of 40 samples (was 21 for the Grenadier), and a Grenadier trapped upstairs broke a window board, climbed out and dropped down.
+- **NPCs stared through glass.** Seeing a target they can't shoot, they now go after it and break in if they must.
+- **NPCs walked into boards.** A board or soft wall right ahead on their path is broken on the spot.
+- **Shooting at hidden players** is shorter: 1.2 s after the last reason (was 2.5), 1.5 s after losing sight (was 3). NPC bullets only pass soft walls and boards, like players' (0 of 14 logged hits went through anything solid).
+
+### Added
+
+- **NPCs turn toward where a hit came from** when they can't see the shooter, and hunt there.
+- **NPCs hear boards being rebuilt** (`Breakable.Repaired`) within 60% of their hearing range.
+- **NPCs climb through windows**, including after breaking a window's board, and drop from upper floors.
+
 ## 2026-11-10: NPCs decide to break in
 
 See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
