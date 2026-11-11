@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-10: Aim assist holds headshots
+
+### Changed
+
+- **Aim assist sticks to the head or the chest, whichever is nearer the crosshair.** It used to know only the chest, so aiming at a head got pulled down to the body. Now aiming near the head holds the head. See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+
 ## 2026-11-10: Aim assist on PC for testing
 
 ### Added

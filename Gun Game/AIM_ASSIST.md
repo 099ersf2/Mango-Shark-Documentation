@@ -26,7 +26,7 @@ All of these must be true:
 | Part | What it does | Strength |
 | --- | --- | --- |
 | **Friction** | With the crosshair near an enemy, part of the player's own turn is taken out, so the aim slows over the target instead of sliding past | 50% of the turn at the hip, 70% fully aimed, at the target's center |
-| **Pull** | While the player turns the stick or moves, the aim is drawn toward the target's chest, so it follows a strafing enemy | Closes 7 / s of the gap at the hip, 11 / s aimed; never faster than 120° per second |
+| **Pull** | While the player turns the stick or moves, the aim is drawn toward the target's head or chest, whichever is nearer the crosshair, so it follows a strafing enemy and holds a headshot line | Closes 7 / s of the gap at the hip, 11 / s aimed; never faster than 120° per second |
 
 - **The pull never moves the aim while the player is still** (not turning, and not moving faster than 1 stud per second), so the game never aims for you.
 - **Both parts fade** from full strength on the target to nothing at the edge of the cone. The fade is squared (`1 - (angle / cone)²`), so they stay strong over most of the cone: three quarters strength halfway out.
@@ -42,7 +42,7 @@ A target must be:
 4. **Inside the cone:** 12° from the crosshair at the hip, 9° aimed. Close targets widen the cone to cover about 4 studs of body.
 5. **In clear view:** a ray from the camera to the target must hit the target first.
 
-The aim point is the first of `UpperTorso`, `Torso` or `HumanoidRootPart`. If several targets qualify, the one closest to the crosshair wins.
+Each target has two aim points: its **Head** and its body (the first of `UpperTorso`, `Torso` or `HumanoidRootPart`). The assist sticks to whichever is nearest the crosshair, so aiming near the head holds the head and aiming at the body holds the body. Before 2026-11-10 it only knew the chest and dragged head aim down. If several targets qualify, the nearest point wins.
 
 ## How it fits with recoil
 
@@ -68,7 +68,8 @@ Every number is a constant at the top of `Client.Guns.AimAssist`:
 | `FALLOFF_POWER` | 2 | Strength is `1 - (angle / cone) ^ FALLOFF_POWER`; higher stays strong further out (1 is a straight fade) |
 | `TURN_THRESHOLD` | 2° / s | Player turn that counts as turning |
 | `MOVE_THRESHOLD` | 1 | Studs per second that count as moving |
-| `AIM_PARTS` | UpperTorso, Torso, HumanoidRootPart | The aim point, first found |
+| `HEAD_PART` | Head | The head aim point |
+| `BODY_PARTS` | UpperTorso, Torso, HumanoidRootPart | The body aim point, first found |
 
 ## API
 
@@ -82,6 +83,8 @@ local pitch, yaw = AimAssist.Update(dt, camera, turnPitch, turnYaw, aimAlpha)   
 `Update` returns `0, 0` whenever aim assist is off, the input is mouse, or there's no target.
 
 ## Testing
+
+- **Head or chest (2026-11-10):** 15 studs from a rig, aiming 0.35 studs under the head pulled **up** to the head, 0.35 above the chest pulled **down** to the chest, and below the chest or above the head pulled back to the nearer one.
 
 **On PC:** open Cmdr (F2) and run `aimassistpc <you>` (alias `aapc`). It toggles aim assist for that player on mouse and keyboard; `aimassistpc <you> true` or `false` sets it. It's a server-set player attribute, `AimAssistPC`, so only admins can turn it on, and it lasts until you leave or turn it off. The **Aim assist** setting must also be on (it is by default). Checked 2026-11-10 in a playtest: the command registered, set, toggled and cleared the attribute; on mouse input with it on, a target 3° off the crosshair gave a turn toward it, and with it off, nothing.
 
