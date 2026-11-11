@@ -175,7 +175,8 @@ See [CONSUMABLES.md](CONSUMABLES.md).
 | `ConsumableService.Refill(player)` | Saved kind, count back to `PER_LIFE` (2); runs on every spawn |
 | `ConsumableService.SetCount(player, count)` | Clamped to 0..`PER_LIFE` |
 | `ConsumableService.Throw(player, direction): BasePart?` | Every check, then a throw |
-| `ConsumableService.Detonate(id, position, attacker?): boolean` | A grenade blast or a smoke cloud there, no throw |
+| `ConsumableService.Detonate(id, position, attacker?): boolean` | A grenade blast or a smoke cloud there, no throw. `attacker` is a Player or an NPC model |
+| `ConsumableService.ThrowAs(model, id, start, velocity): BasePart?` | A throw for a server-side thrower (NPCs), with an exact launch velocity and no player checks |
 
 ### `Systems.Lobby.LobbyService`
 
@@ -190,10 +191,12 @@ See [CONSUMABLES.md](CONSUMABLES.md).
 
 | Function | What it does |
 | --- | --- |
-| `NPCService.Spawn(profileId: string, where: CFrame, spawnPart: BasePart?)` | Spawns an NPC from `Content.NPC.Profiles` into `workspace.Enemies`. Refused past `MAX_NPCS` (currently 0, NPCs off) |
+| `NPCService.Spawn(profileId: string, where: CFrame, spawnPart: BasePart?)` | Spawns an NPC from `Content.NPC.Profiles` into `workspace.Enemies`. Refused past `MAX_NPCS` (10) |
 | `NPCService.Clear()` | Removes every NPC |
 | `NPCService.Count()` / `NPCService.ProfileNames()` | How many are alive / the profile names |
-| `Brain.*` | Helpers behavior-tree tasks use: `CanSee`, `Blocked`, `AimPoint`, `Eye`, `MoveTo`, `MoveDirect`, `Stop`, `IsMoving`, `Ammo`, `IsReloading`, `SetLastKnown`, `FlatDistance`, `NewPath`, `AdvancePath` |
+| `NPCService.Agents()` | The live agents (`Brain.Agent`), read only, for tests and debug tools |
+| `Tactics.Danger` / `Suspicion` / `Breach` / `TryGrenade(agent, now)` | The reflexes around the tree (dodge grenades, shoot to test, breach, throw); see [ADDING_NPCS.md](ADDING_NPCS.md) |
+| `Brain.*` | Helpers behavior-tree tasks use: `CanSee` (sees through windows), `SeeThrough`, `Penetrable`, `ShootThrough`, `BreachPoint`, `Blocked` (soft walls and boards aren't cover), `AimPoint`, `Eye`, `MoveTo`, `MoveDirect`, `Stop`, `IsMoving`, `Ammo`, `IsReloading`, `SetLastKnown`, `FlatDistance`, `NewPath`, `AdvancePath` |
 | Tasks (`Systems.NPC.Tasks.*`) | `FindTarget`, `HasLineOfSight`, `InRange`, `LowHealth`, `NeedsReload`, `MoveToCover`, `Reload`, `AimAndShoot`, `Strafe`, `Chase`, `Patrol`: each has `run(agent)`, some `start` / `finish`. See [ADDING_NPCS.md](ADDING_NPCS.md) |
 
 ### `Systems.Movement.MovementService`
@@ -243,6 +246,7 @@ Handlers are global: check that the player has the thing before acting. Errors a
 | `Gun.Hit` | Fire | who, humanoid, hit, gunId | A bullet hit a humanoid |
 | `Gun.Killed` | Fire | who, victimHumanoid, gunId, headshot | A gun or bash kill, once per death |
 | `Gun.Reloaded` | Fire | who, tool, gunId | A reload finished |
+| `Gun.Fired` | Fire | who, gunId, origin | Every shot that goes off, players' and NPCs' (NPCs hear shots through it) |
 | `Gun.PreventMelee` | Any | who, gunId, tool | Stop a gun bash |
 | `Gun.MeleeHit` | Fire | who, kind, instance, humanoid?, gunId | A bash landed; kind is `Humanoid`, `Breakable`, `SoftWall` or `Surface` |
 | `Combat.BlockHit` | Any | humanoid, damage | Cancel a hit |
@@ -469,6 +473,7 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | `InLobby` | Player | In the lobby (no guns) |
 | `AimAssistPC` | Player | True gives aim assist on mouse and keyboard (the `aimassistpc` command) |
 | `ConsumableId`, `ConsumableCount` | Player | The carried consumable and how many are left this life |
+| `ConsumableId`, `DetonateAt`, `Thrower` | Thrown part in `workspace.Thrown` | What it is, the server time it goes off, who threw it (UserId or NPC name) |
 | `SelectedMap` | Player | The map picked in the lobby hub |
 | `<Gun>Skin` | Player | Equipped skin per gun |
 | `Reloading`, `Stunned`, other states | Player | From `StateHandler` |

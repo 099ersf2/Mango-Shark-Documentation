@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-10: Smarter NPCs
+
+See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
+
+### Added
+
+- **Every NPC hears gunshots** (new `Hearing`, 150 studs, through the new `Gun.Fired` extension point). If it can't see the shooter it turns to the sound and hunts there.
+- **Shoot to test.** An NPC that just lost sight of you, or heard you, fires at that spot through soft walls, soft floors, boards or smoke (never into open air or solid walls), and keeps firing while it keeps hearing you.
+- **Breaching.** When an NPC has no path to where you are (a sealed room) and a board or soft wall is in the way, it shoots it open, then walks in once pathfinding finds the opening.
+- **NPCs see through windows** (glass, or parts at least 0.3 transparent). They only fire when a bullet can actually reach you; otherwise they look for a way in.
+- **NPC grenades.** Every NPC carries a frag grenade (`Grenades` 1, the Grenadier 3). It throws when you hide (1–8 s) or peek with only your head over cover (2.5 s), solving an arc that clears walls, never inside its own blast or near a teammate. Tested: a Soldier behind a 9-stud wall threw over it (peak 15.5 studs) and the grenade went off 0.6 studs from the hidden spot; it held its grenade for a spot 10 studs away, a spot by a teammate, and one 80 studs away.
+- **NPCs dodge grenades.** Any NPC within a live grenade's blast (+4 studs) with no solid cover runs straight away, still shooting what it can see. Tested: two NPCs 4.5 studs from a grenade got 21–23 studs away before it went off and took no damage.
+- `ConsumableService.ThrowAs(model, id, start, velocity)`, `NPCService.Agents()`, `Brain.SeeThrough` / `Penetrable` / `ShootThrough` / `BreachPoint`, and a `DetonateAt` attribute on thrown parts.
+
+### Changed
+
+- **Soft walls, soft floors and boards are no longer cover** for NPCs: bullets get through them.
+- `ConsumableService.Detonate` takes an NPC model as the attacker (kill feed credit). NPC grenades don't hurt the thrower's teammates.
+
 ## 2026-11-10: Grenade lands heavy and breaks more
 
 ### Changed

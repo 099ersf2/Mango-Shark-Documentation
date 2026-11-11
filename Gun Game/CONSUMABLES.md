@@ -49,6 +49,10 @@ A throw works with any weapon held, or none. It's refused in the lobby, while a 
 
 The projectile is server-made, so other players see the same throw, and the thrower sees it after their ping.
 
+## NPCs
+
+NPCs throw frag grenades too, and run from them (see [ADDING_NPCS.md](ADDING_NPCS.md), Tactics). An NPC throws through `ConsumableService.ThrowAs`, so its grenade is the same as a player's; the NPC model gets the kill credit. Each thrown part carries a `DetonateAt` attribute (server time) that NPCs read to see live grenades.
+
 ## Count and death reset
 
 The server keeps two **player attributes**: `ConsumableId` (the kind) and `ConsumableCount` (left this life).

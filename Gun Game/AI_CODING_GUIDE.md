@@ -281,7 +281,7 @@ This is how features change each other without editing each other's code.
   - Put them in a named folder in `workspace` (for example `workspace.Thrown`), never loose.
   - Projectiles the server spawns get `SetNetworkOwner(nil)`.
   - Clean up with `task.delay` + `Destroy`.
-- **NPCs:** spawned NPCs live in `workspace.Enemies` and are tagged `NPC`. Aim assist and health bars only look in `workspace.Enemies`. `NPCService`'s `MAX_NPCS` is `0` on purpose: the user turned NPCs off.
+- **NPCs:** spawned NPCs live in `workspace.Enemies` and are tagged `NPC`. Aim assist and health bars only look in `workspace.Enemies`. `NPCService`'s `MAX_NPCS` is `10`. NPC reflexes (hearing, shooting to test through soft walls and boards, breaching, grenades, dodging) live in `Systems.NPC.Tactics`; see `ADDING_NPCS.md`.
 - **Tags:** use `CollectionService` tags for map objects (`Board`, `DoorBoard`, `SoftWall`, `NPCSpawn`, `SkinShopPrompt`). New tags go in `API.md`.
 - **Lobby:** the `InLobby` player attribute is true in the lobby. Only a player's first spawn of a session is in the lobby. Weapons, consumables and abilities must be refused there.
 - **Teams:**

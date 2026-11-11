@@ -47,6 +47,7 @@ ServerScriptService/Modules/Systems
 ├─ NPC/
 │  ├─ NPCService          spawning, scheduler, aiming and shooting, cleanup
 │  ├─ Brain               what tasks share: agent type, line of sight, pathing, ammo, the NPCWorld blackboard
+│  ├─ Tactics             reflexes around the tree: dodge grenades, hearing, shoot to test, breach, throw grenades
 │  └─ Tasks/              FindTarget, HasLineOfSight, InRange, LowHealth, NeedsReload,
 │                         MoveToCover, Strafe, Chase, AimAndShoot, Reload, Patrol
 └─ Guns/GunService        GiveNPC, FireAs, ReloadAs, ShooterOf, RemoveShooter
@@ -97,6 +98,9 @@ Workspace
 | `LowHealth` | `0.3` | Share of health below which it retreats to cover once |
 | `RespawnDelay` | `8` | Seconds, for NPCs from spawn points |
 | `InfiniteAmmo` | `true` | The reserve never runs out (magazines and reloads still apply) |
+| `Grenades` | `1` | Frag grenades per life (the Grenadier has 3); 0 for none |
+| `GrenadeCooldown` | `12` | Seconds between two of its throws (the Grenadier: 7) |
+| `Hearing` | `150` | Studs within which it hears a gunshot and suspects the shooter is there |
 | `Difficulty.ReactionTime` | `0.5` | Seconds from first seeing a target to the first shot |
 | `Difficulty.AimError` | `6` | Degrees of aim error when a target is first seen |
 | `Difficulty.MinAimError` | `1.5` | Degrees of aim error after tracking for a while |
@@ -104,6 +108,26 @@ Workspace
 | `Difficulty.LongRangeMiss` | `0.3` | Chance a shot past twice `PreferredRange` is thrown wide on purpose |
 
 Fire mode comes from the gun. Semi guns tap every 0.25–0.55 s, Auto guns fire bursts of 3–6, and Burst guns fire their full burst, each with a short pause after.
+
+## Tactics: hearing, testing walls, breaching, grenades
+
+Around the tree, every decision tick runs the reflexes in `Systems.NPC.Tactics` (`NPCService.think`). They apply to **every** NPC type.
+
+| Reflex | When | What it does |
+| --- | --- | --- |
+| **Dodge grenades** | Before the tree. A live frag grenade (`workspace.Thrown`, with a `DetonateAt` attribute) whose blast radius + 4 studs reaches it, with no solid cover in between | Skips the tree and runs straight away, trying 7 angles so it doesn't run into a wall (pathfinds if boxed in). It keeps shooting a target it can still see |
+| **Hearing** | Any gunshot by an enemy within the profile's `Hearing` (150 studs), through the `Gun.Fired` extension point | If it can't see the shooter: it suspects that spot for 5 s, turns to it, hunts there (`LastKnown`), and its vision cone opens for a moment |
+| **Shoot to test** | It just lost sight of its target (3 s), or heard a shot | After 0.6 s it fires at the spot, and keeps firing while it keeps hearing shots there (up to 2.5 s after the last). Only when the shot goes **through a soft wall or floor, a board, or smoke** (`Brain.ShootThrough`); never into open air or a solid wall |
+| **Breach** | It hunts an enemy it can't see, pathfinding found no way there (or it got stuck) in the last 2 s, and the first thing in the way is a board or soft wall | Shoots that surface open from up to 35 studs (walking closer if farther). Bullets break planks and cut soft-wall holes; pathfinding keeps retrying, so it walks in once there's an opening |
+| **Grenades** | It has grenades left (`Grenades` per life), its cooldown passed, and the target has hidden for 1–8 s or shown only its head over cover for 2.5 s | Throws a frag grenade at that spot when the spot is past its own blast (16 + 3 studs) and within 55, no teammate is within 19 studs of it, and an arc clears every wall (it tries a flat, a medium and a high arc). 35% chance per tick once all of that holds. It's the players' grenade (`ConsumableService.ThrowAs`): same blast, kill feed credit to the NPC |
+
+**Sight.** NPCs see through glass and anything at least 0.3 transparent (`Brain.SeeThrough`), so a player behind a window is seen and hunted. They only fire at a seen target when a bullet can reach it (`Brain.ShootThrough`), so they don't waste rounds on a window bullets don't pass; they look for a way in instead.
+
+**Cover.** Soft walls, soft floors and boards are never cover (`Brain.Blocked` ignores them), because bullets get through.
+
+**Teams.** NPC grenades don't hurt the thrower's teammates (`Consumable.DamageMultiplier` in `NPCService`); its own grenade still hurts itself, which is why it never throws inside its own blast.
+
+Tune the numbers at the top of `Systems.NPC.Tactics` (`SUSPECT_*`, `BREACH_*`, `GRENADE_*`, `DANGER_MARGIN`).
 
 ## Write a task module
 
@@ -230,7 +254,7 @@ The server reports a kill only on the hit that takes a humanoid from above 0 hea
 
 ## Performance
 
-- **NPC cap:** `MAX_NPCS` (30) in `NPCService` limits live NPCs. Spawns past it are refused with a warning.
+- **NPC cap:** `MAX_NPCS` (10) in `NPCService` limits live NPCs. Spawns past it are refused with a warning.
 - **One Heartbeat:**
   - Decisions run round-robin, at most 10 NPCs per frame, each about 7 times a second.
   - Turning and path following run every frame for NPCs within 200 studs of a player. NPCs farther out snap on their decision tick.
@@ -256,6 +280,6 @@ The server reports a kill only on the hit that takes a humanoid from above 0 hea
 | `could't build tree; external task node had no source` | An External Task node has no `Source` | Set `Parameters.Source` to the task module |
 | The BTrees Editor errors with `Index is not a valid member` | A hand-made node has no `Parameters.Index` | Add an `Index` IntValue to every node's `Parameters` |
 | NPCs stand still | They are asleep (no player within 350 studs), or the tree fails at the root | Move closer; open the tree in the editor while playing to watch the live node |
-| NPCs see you but never shoot | You are behind cover they can't shoot through, or `ReactionTime` is long | They aim at the head when the chest is hidden; check the profile's `Difficulty` |
+| NPCs see you but never shoot | You are behind cover or a window bullets can't pass, or `ReactionTime` is long | They see through windows but only fire when a bullet can reach you; they aim at the head when the chest is hidden; check the profile's `Difficulty` |
 | NPCs walk into walls | Pathfinding found no route, so they walk straight | Give the map gaps of at least 4 studs; NPCs re-path after 4 s on one waypoint |
 | NPC shots show no tracers for some players | `GunFired` is unreliable, or the player is more than 600 studs away | Expected; raise `TRACER_RANGE` in `GunService` if needed |
