@@ -36,7 +36,7 @@ All of these must be true:
 
 A target must be:
 
-1. **Another player's character** (not a teammate when teams are used), **or a model inside `workspace.Enemies`**. Humanoids anywhere else in the map are ignored (the test rigs `Rig`, `Rig1` and `Rig2` were moved into `Enemies` on 2026-11-10). `NPCService` puts every NPC it spawns in `workspace.Enemies`, so real NPCs always count.
+1. **Another player's character** (not a teammate: same `Team` attribute, `Systems.Match.TeamService`), **or a model inside `workspace.Enemies`**. Humanoids anywhere else in the map are ignored (the test rigs `Rig`, `Rig1` and `Rig2` were moved into `Enemies` on 2026-11-10). `NPCService` puts every NPC it spawns in `workspace.Enemies`, so real NPCs always count.
 2. **Alive** (Humanoid health above 0).
 3. **Within range:** the gun's `Range`, or 250 studs if the gun has none.
 4. **Inside the cone:** 12° from the crosshair at the hip, 9° aimed. Close targets widen the cone to cover about 4 studs of body.

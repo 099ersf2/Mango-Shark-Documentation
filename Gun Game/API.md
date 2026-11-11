@@ -59,6 +59,11 @@ Every module loads through ModuleLoader (`Init`, then `Start`). Require modules 
 | Shake the camera (client) | `MovementCamera.Shake(3, 10, 0.1, 0.6)` |
 | Use a product id | `ProductIds.Products.SkinCrate` (never type an id elsewhere) |
 | Show a banner to everyone | the `announce <text>` command |
+| Change the next match's mode or a setting | `MatchService.SetMode("FreeForAll")` / `MatchService.SetSetting("TimeLimit", 600)`, the Match menu (M, admins), or `matchmode` / `matchset` |
+| Start, end or restart a match | `MatchService.StartNow()` / `EndNow()` / `Restart()`, or `match start\|end\|restart` |
+| Give a team or player points | `MatchService.AddScore("Red", 1)` / `MatchService.AddScore(player, 1)` |
+| A player's team / are two on the same team? | the `Team` attribute, `TeamService.TeamOf(player)` / `TeamService.AreAllies(a, b)` |
+| Add a mode | a ModuleScript in `Content.Match.Modes` ([MATCH.md](MATCH.md)) |
 | Give grenades back / set the count | `ConsumableService.Refill(player)` / `ConsumableService.SetCount(player, 2)` |
 | Set off a grenade or smoke anywhere | `ConsumableService.Detonate("Grenade", position, player)` |
 | Is a line blocked by smoke? | `Smoke.Blocks(from, to)` (both sides) |
@@ -136,21 +141,6 @@ Runs gun abilities (`Content.Guns.Abilities`) on the server. Abilities normally 
 | `KillFeed.ReportDeath(humanoid)` | Sends a kill feed line for a death with a credited attacker |
 | `SwordCombat:Attack(player, aimOrigin?, aimDirection?)` | A knife or sword swing (sword combat; don't change its behavior) |
 
-### `Systems.Round.RoundService`
-
-| Function / data | What it does |
-| --- | --- |
-| `RoundService.OnPlayerDeath(victim: Player, killer: Player?)` | Records a credited player death during an active round and notifies the victim's client |
-| `Content.Round.RoundDurationSeconds` | Round length in seconds (`180`) |
-| `Content.Round.IntermissionSeconds` | Time between rounds (`10`) |
-| `Content.Round.MinimumPlayers` | Arena players required to start (`2`) |
-| `Content.Round.MaximumLeaderboardEntries` | Maximum player rows sent to clients (`10`) |
-| Player attribute `RoundTeam` | `"Red"` or `"Blue"` while assigned to a round |
-| Player attribute `RoundActive` | True while the player is eligible to score in an active round |
-| Extension `Combat.PreventFriendlyFire(attacker, victimCharacter, victimHumanoid)` | Return `true` to block the hit; the round service blocks active teammates |
-
-`Packets.Round.State` sends a snapshot table: `Phase`, `EndsAt` (server time), `RoundNumber`, `RedScore`, `BlueScore`, `Winner`, and `Players`. Each player row has `UserId`, `Name`, `DisplayName`, `Team`, and `Kills`. `Packets.Round.Death` sends the victim the killer's user ID and display name; a zero user ID means no credited player killer. `Packets.Round.RequestState` asks the server for the current snapshot and is rate-limited.
-
 ---
 
 ## Server: world
@@ -192,6 +182,22 @@ See [CONSUMABLES.md](CONSUMABLES.md).
 | `ConsumableService.Throw(player, direction): BasePart?` | Every check, then a throw |
 | `ConsumableService.Detonate(id, position, attacker?): boolean` | A grenade blast or a smoke cloud there, no throw. `attacker` is a Player or an NPC model |
 | `ConsumableService.ThrowAs(model, id, start, velocity): BasePart?` | A throw for a server-side thrower (NPCs), with an exact launch velocity and no player checks |
+
+### `Systems.Match.MatchService` and `Systems.Match.TeamService`
+
+See [MATCH.md](MATCH.md): modes, settings, teams, the match API for mode hooks.
+
+| Function | What it does |
+| --- | --- |
+| `MatchService.SetMode(id): boolean` | The next match's mode (its default settings) |
+| `MatchService.SetSetting(name, value): any` | One of the next match's settings, cleaned; nil if refused |
+| `MatchService.StartNow()` / `EndNow()` / `Restart()` | Start now / end now (leader wins) / new match with the next setup |
+| `MatchService.AddScore(teamIdOrPlayer, amount)` | Points from anything (objectives); reaching `ScoreLimit` wins |
+| `MatchService.OnPlayerDeath(victim, killer?)` | KillFeed reports player deaths here |
+| `MatchService.Phase()` / `Mode()` / `Setting(name)` / `ModeIds()` | The running match |
+| `TeamService.Setup(ids)` / `Active()` / `Assign(player, id?)` / `Remove(player)` | Teams of a match; a player's team (nil = smallest) |
+| `TeamService.TeamOf(who)` / `Members(id, arenaOnly?)` / `Smallest()` / `Balance()` | Team lookups (players, characters, NPC models) |
+| `TeamService.AreAllies(a, b)` / `SpawnFor(player)` | Same team? / where to spawn |
 
 ### `Systems.Lobby.LobbyService`
 
@@ -262,6 +268,11 @@ Handlers are global: check that the player has the thing before acting. Errors a
 | `Gun.Killed` | Fire | who, victimHumanoid, gunId, headshot | A gun or bash kill, once per death |
 | `Gun.Reloaded` | Fire | who, tool, gunId | A reload finished |
 | `Gun.Fired` | Fire | who, gunId, origin | Every shot that goes off, players' and NPCs' (NPCs hear shots through it) |
+| `Combat.PreventFriendlyFire` | Any | attacker, victimCharacter, humanoid | Cancel a hit in `Combat.ApplyHit` (MatchService blocks teammates unless `FriendlyFire` is on) |
+| `Match.Started` / `Match.RoundStarted` | Fire | modeId / modeId, round | A match / a round started |
+| `Match.Scored` | Fire | target, amount | A team (Id) or player scored |
+| `Match.Ended` | Fire | modeId, winner? | A match ended (team Id, Player, or nil for a draw) |
+| `Team.Changed` | Fire | player, oldTeam?, newTeam? | A player's team changed |
 | `Gun.PreventMelee` | Any | who, gunId, tool | Stop a gun bash |
 | `Gun.MeleeHit` | Fire | who, kind, instance, humanoid?, gunId | A bash landed; kind is `Humanoid`, `Breakable`, `SoftWall` or `Surface` |
 | `Combat.BlockHit` | Any | humanoid, damage | Cancel a hit |
@@ -322,7 +333,7 @@ Add fields from a new module without editing `Shared.Data`: tag a ModuleScript `
 
 | Member | What it is |
 | --- | --- |
-| `Actions` | Every rebindable action and default key (Fire, Aim, Reload, Ability, Inspect V, Melee Q, Consumable G, Sprint, Crouch LeftControl, Prone C, Slot1–4, Interact E, …) |
+| `Actions` | Every rebindable action and default key (Fire, Aim, Reload, Ability, Inspect V, Melee Q, Consumable G, Sprint, Crouch LeftControl, Prone C, Slot1–4, Interact E, Loadout B, Settings P, Scoreboard Tab, Match M) |
 | `Options` | Every option: `Fov` (60–110), `CameraBob`, `HoldSprint`, `HoldCrouch`, `MobileAutoSprint`, `SprintWhileReloading`, `AimAssist`. Add one here and the Settings menu shows it |
 | `VolumeGroups` | The sound groups with sliders |
 | `ToInput(name)` / `DefaultKey(action)` / `GetOption(name)` / `CleanOption(name, value)` / `IsVolumeGroup(name)` | Helpers |
@@ -337,9 +348,6 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | `Effects.Play` / `Effects.Stop` | Server → clients | effect name, options |
 | `Combat.Hit` | Server → all | character, damage |
 | `Combat.KillFeed` | Server → all | killer, victim, item |
-| `Round.State` | Server → clients | snapshot table: phase, deadline, round, team scores, winner, top player rows |
-| `Round.Death` | Server → victim | credited killer user ID, display name |
-| `Round.RequestState` | Client → server | no arguments; rate-limited snapshot request |
 | `Combat.Swing` | Client → server | sword aim origin, direction |
 | `Gun.Fire` | Client → server | server time, origin, direction, seed, spread |
 | `Gun.Reload` / `Gun.Aim` / `Gun.AltFire` | Client → server | — / aiming / pressed |
@@ -347,6 +355,10 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | `Gun.Loadout` | Client → server | loadout Id |
 | `Melee.Swing` | Client → server | server time, look direction |
 | `Consumable.Throw` / `Consumable.Pick` | Client → server | server time, look direction / consumable Id |
+| `Match.State` | Server → clients | the match snapshot (phase, mode, timer, teams, players, next setup) |
+| `Match.Death` | Server → victim | killer UserId (0 for none), killer name |
+| `Match.RequestState` | Client → server | — |
+| `Match.Admin` | Client → server, answered (ok, message) | action (`Mode`, `Setting`, `Start`, `End`, `Restart`), argument; admins only |
 | `Skins.Equip` / `Skins.BuyCrate` | Client → server, answered (ok, message) | skin Id / — |
 | `Lobby.SelectMap` | Client → server, answered | map Id |
 | `Settings.Keybind` / `Volume` / `Option` | Client → server | name, value |
@@ -432,7 +444,9 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 
 | Function | What it does |
 | --- | --- |
-| `Menus.Register(name, frame)` / `Open(name)` / `Close(name?)` / `Toggle(name)` / `IsOpen()` / `SetMouseIconAfterClose(bool)` | One menu at a time, frees the mouse. Names: `Loadout`, `Settings`, `SkinShop`, `Career`, `Backpack`, `MapSelection` |
+| `Menus.Register(name, frame)` / `Open(name)` / `Close(name?)` / `Toggle(name)` / `IsOpen()` / `SetMouseIconAfterClose(bool)` | One menu at a time, frees the mouse. Names: `Loadout`, `Settings`, `Match`, `SkinShop`, `Career`, `Backpack`, `MapSelection` |
+| `Client.Hud.MatchHud` | No API: the match HUD, scoreboard (Tab), result banner, death screen, teammate outlines |
+| `Client.Core.MatchMenu` | No API: the admin Match menu (M) |
 | `Keybinds.Get(action)` / `KeyName(action)` / `Label(action)` / `Set(action, keyName)` / `Reset()` | Key bindings |
 | `Options.Get(name)` / `IsOn(name)` / `Set(name, value, previewOnly?)` / `Save(name)` | Options |
 | `Slider.Bind(bar, onChange)` / `Slider.Show(row, alpha, text)` | Settings sliders |
@@ -448,6 +462,9 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | Module | What it holds / API |
 | --- | --- |
 | `Content.Guns.Definitions.*` | One file per gun (see [ADDING_GUNS.md](ADDING_GUNS.md)) |
+| `Content.Match.Modes.*` | One file per match mode ([MATCH.md](MATCH.md)) |
+| `Content.Match.Settings` | Every match setting and its range; `List`, `Get`, `Clean`, `Describe`, `DEFAULT_MODE` |
+| `Content.Match.Teams` | Every team (Red, Blue, Green, Yellow); `List`, `Get` |
 | `Content.Guns.Registry` | Every gun by Id, with defaults filled in: `Registry[gunId]` |
 | `Content.Guns.Loadouts` | The loadouts; `Loadouts.Get(id)` |
 | `Content.Guns.Skins` | `List`, `CRATE_PRICE` (499), `CRATE_REFUND_COINS` (500); `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)` |
@@ -475,6 +492,9 @@ Open the bar with **F2**, or the **CMD** touch button (shown only to admins in `
 | `softwallreset` (`swreset`) | all? | Restores the wall you look at, or all |
 | `nuke` | player | A warned strike that damages players, NPCs and boards nearby |
 | `announce` | text | A banner for everyone (the example command) |
+| `match` | start / end / restart | Starts the next match now, ends the running one, or restarts with the next setup |
+| `matchmode` | mode | The next match's mode (TeamDeathmatch, FreeForAll, Elimination, …) |
+| `matchset` | setting, value | One of the next match's settings: a number, or on/off |
 | `movedebug` | — | Toggles the movement readout |
 | `aimassistpc` (`aapc`) | player, on? | Turns controller aim assist on or off for that player on mouse and keyboard, for testing; leave out `on` to toggle |
 
@@ -489,6 +509,8 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | Attribute | On | Meaning |
 | --- | --- | --- |
 | `InLobby` | Player | In the lobby (no guns) |
+| `Team` | Player, NPC model, SpawnLocation (you set) | A `Content.Match.Teams` Id: the player's team (our team system), an NPC's side, or which team a spawn belongs to |
+| `Eliminated`, `MatchReturn` | Player | Sitting out a round (no-respawn modes) / sent to the lobby for it, back next round |
 | `AimAssistPC` | Player | True gives aim assist on mouse and keyboard (the `aimassistpc` command) |
 | `ConsumableId`, `ConsumableCount` | Player | The carried consumable and how many are left this life |
 | `ConsumableId`, `DetonateAt`, `Thrower` | Thrown part in `workspace.Thrown` | What it is, the server time it goes off, who threw it (UserId or NPC name) |

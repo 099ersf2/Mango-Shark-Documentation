@@ -1,22 +1,23 @@
 # Changelog
 
-## 2026-11-10: Team deathmatch rounds
+## 2026-11-11: Modular matches and our own teams
 
-See [Team deathmatch rounds](ROUND_SYSTEM.md).
-
-### Added
-
-- **Three-minute Red vs. Blue rounds.** The server balances arena players, tracks credited enemy-player kills, and awards the round to the team with the higher kill total (ties are draws). Rounds require two arena players and have a ten-second intermission.
-- **Match HUD and death spectating.** The HUD displays team totals and the ten highest-kill players with profile thumbnails. On death, the victim sees a death screen and follows the credited killer until respawn.
-- **Friendly-fire protection during active rounds.** Teammate damage is blocked by the server; self-damage remains unchanged.
+See [docs/MATCH.md](docs/MATCH.md).
 
 ### Changed
 
-- The kill-feed death hook now reports a credited player death to the round service before clearing its damage record.
+- **The round system is rebuilt as a modular match system** (`Systems.Match.MatchService`), replacing the fixed Red vs Blue `Systems.Round.RoundService`, `Content.Round` and `Client.Hud.RoundHud`. A mode is one ModuleScript in `Content.Match.Modes` (data plus optional hooks); three ship: **Team Deathmatch**, **Free-for-All** and **Elimination** (rounds, no respawns).
+- **Our own team system** (`Systems.Match.TeamService`, `Content.Match.Teams`) replaces Roblox `Teams`: a player's team is the `Team` attribute. Red, Blue, Green and Yellow; up to 4 teams a match; team spawns from a SpawnLocation `Team` attribute or an automatic split of the arena. NPCs, aim assist, NPC hearing and friendly fire read it.
+- **The match UI is redone in the style of the other menus:** a top bar with a score chip per team, a status line and result banner, a Tab scoreboard (replacing Roblox's player list), the death screen, and teammate outlines.
 
-### Fixed
+### Added
 
-- None.
+- **Match settings an admin can adjust** (`Content.Match.Settings`): time limit, score limit, rounds to win, number of teams, respawn delay, friendly fire, auto-balance, players to start, intermission. Each mode picks which it uses and its defaults; the server cleans every value.
+- **The Match menu** (M, `Main.MatchMenu`, admins only): pick the next mode, adjust its settings, start, end or restart a match. Also Cmdr: `match start|end|restart`, `matchmode`, `matchset`.
+- `MatchService.AddScore` for objectives, and extension points `Match.Started`, `Match.RoundStarted`, `Match.Scored`, `Match.Ended`, `Team.Changed`.
+- Keys: **Scoreboard** (Tab) and **Match setup** (M) in Settings > Controls.
+
+Tested in a Studio playtest with one player: waiting, admin start, team assignment and team spawns, the score limit ending Team Deathmatch and Free-for-All, an Elimination round ending and the next starting, setting cleaning, the admin packet, the HUD and the menu.
 
 ## 2026-11-10: NPCs board up doors and windows
 

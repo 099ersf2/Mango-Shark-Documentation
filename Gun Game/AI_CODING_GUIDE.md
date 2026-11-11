@@ -285,7 +285,7 @@ This is how features change each other without editing each other's code.
 - **Tags:** use `CollectionService` tags for map objects (`Board`, `DoorBoard`, `SoftWall`, `NPCSpawn`, `SkinShopPrompt`). New tags go in `API.md`.
 - **Lobby:** the `InLobby` player attribute is true in the lobby. Only a player's first spawn of a session is in the lobby. Weapons, consumables and abilities must be refused there.
 - **Teams:**
-  - There is no team system yet. Code that targets enemies must skip teammates when `player.Team` is set (see `Client.Guns.AimAssist`).
+  - Teams are our own system (`Systems.Match.TeamService`, `Content.Match.Teams`), not Roblox `Teams`: a player's team is the `Team` attribute. Code that targets enemies must skip players with the same `Team` attribute (see `Client.Guns.AimAssist`), and use `TeamService.AreAllies` on the server. Matches and modes: `docs/MATCH.md`.
   - Friendly-fire rules go through a `…DamageMultiplier` extension point, not hardcoded checks.
 
 ---
