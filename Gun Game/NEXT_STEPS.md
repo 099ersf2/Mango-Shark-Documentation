@@ -20,3 +20,8 @@ This list tracks verification not available in the solo Studio session.
 ## Pistol shoot animation (2026-11-11)
 - [ ] Publish `RBX_ANIMSAVES.Rig2."Pistol Shoot"` from the Animation Editor to get an animation ID, then hook it to the NPC or gun that should use it.
 
+
+## Third-person gun animation (2026-11-11)
+- [ ] Watch another player in a two-player test: aim pitch, aiming, sprinting, shooting and reloading in third person.
+- [ ] Look at each gun from the side and front; tune `POSES` in `Client.Guns.ThirdPersonGuns` if a hold looks off.
+

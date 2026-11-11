@@ -479,6 +479,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `Menus.Register(name, frame)` / `Open(name)` / `Close(name?)` / `Toggle(name)` / `IsOpen()` / `SetMouseIconAfterClose(bool)` | One menu at a time, frees the mouse. Names: `Loadout`, `Settings`, `Match`, `SkinShop`, `Career`, `Backpack`, `MapSelection` |
 | `Client.Hud.MatchHud` | No API: the match HUD, scoreboard (Tab), result banner, teammate outlines |
 | `Client.Hud.DeathScreen` | No API: the death screen and spectate camera ([DEATH_SCREEN.md](DEATH_SCREEN.md)) |
+| `Client.Guns.ThirdPersonGuns` | No API: third-person gun poses for every character holding a gun ([THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md)) |
 | `Client.Core.MatchMenu` | No API: the admin Match menu (M) |
 | `Keybinds.Get(action)` / `KeyName(action)` / `Label(action)` / `Set(action, keyName)` / `Reset()` | Key bindings |
 | `Options.Get(name)` / `IsOn(name)` / `Set(name, value, previewOnly?)` / `Save(name)` | Options |
@@ -544,6 +545,9 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | --- | --- | --- |
 | `InLobby` | Player | In the lobby (no guns) |
 | `Team` | Player, NPC model, SpawnLocation (you set) | A `Content.Match.Teams` Id: the player's team (our team system), an NPC's side, or which team a spawn belongs to |
+| `GunAiming` | Player character, NPC model | Aiming down sights (players) or aiming at a target (NPCs); the third-person aim pose ([THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md)) |
+| `Reloading` | Gun Tool | True while the gun reloads (the third-person reload) |
+| `AimPitch` | NPC model | Where the NPC aims, radians up (the third-person aim pitch) |
 | `DronesReady`, `DroneNextReady`, `DroneControlling` | Player | Drones ready to throw / server time the next comes back (0 for none) / looking through a drone (MovementController holds the body) |
 | `DroneOwner`, `DroneSlot` (and `Team`) | Drone model | The owner's UserId / which of their drones |
 | `Eliminated`, `MatchReturn` | Player | Sitting out a round (no-respawn modes) / sent to the lobby for it, back next round |

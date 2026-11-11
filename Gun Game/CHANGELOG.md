@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-11-11: Third-person gun animation for every gun
+
+See [docs/THIRD_PERSON_GUNS.md](docs/THIRD_PERSON_GUNS.md).
+
+### Added
+
+- **Other players and NPCs now hold, aim, shoot and reload guns properly** in third person, for all guns (`Client.Guns.ThirdPersonGuns`). Before, every gun's animation slots were empty and characters used Roblox's one-arm hold.
+  - **Idle:** a two-handed low ready, with a walk bob.
+  - **Sprint:** long guns are carried across the chest, pistols held low.
+  - **Aim:** the sights come up to the eyes and follow where they look, with the waist and head following too.
+  - **Shoot:** a recoil kick on every shot (pistols 13 degrees, shotguns 10, rifles 5).
+  - **Reload:** the left hand goes to the magazine, down to the belt and back, with the magazine hidden while it's out.
+  - **Lower body:** the legs keep the normal walk and run.
+- It is code, not animation files: each gun is posed from its own sight and grip attachments with IK, so new guns work with nothing to upload. Long guns slide back toward the body until both hands reach their grips.
+- New shared state: `GunAiming` (characters), `Reloading` (gun tools), `AimPitch` (NPCs).
+
+### Changed
+
+- The old third-person aim tilt in `Client.Guns.GunEffects` is replaced by the new system.
+
+Tested in a playtest on the test-area NPCs:
+- **Pistol aim:** the sight sat 1.17 studs in front of the eyes, on the aim line.
+- **Idle:** the left hand sat on the front grip (0.00 studs) for the pistol, burst rifle and shotgun.
+- **Reload:** the full magazine path.
+- **Shotgun shots:** they kicked the barrel to about 11 degrees.
+
 ## 2026-11-11: Pistol shoot animation (Rig2)
 
 ### Added

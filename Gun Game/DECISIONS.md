@@ -4,6 +4,13 @@ The answers to open design questions, so the code and the docs follow the same r
 
 ## 2026-11-11
 
+### Third-person gun animation
+
+| Question | Decision |
+| --- | --- |
+| Animation assets or code? | **Code** (`Client.Guns.ThirdPersonGuns`): poses from each gun's own attachments with IK, so every gun (and future guns) gets idle, walk/run, sprint, aim, shoot and reload with nothing to upload |
+| Long guns the left hand can't reach? | **The gun slides back toward the body** until both hands reach |
+
 ### Death screen
 
 | Question | Decision |
