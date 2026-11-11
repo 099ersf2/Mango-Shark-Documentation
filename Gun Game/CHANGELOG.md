@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-11-11: Death screen and spectating the killer chain
+
+See [docs/DEATH_SCREEN.md](docs/DEATH_SCREEN.md).
+
+### Added
+
+- **A new death screen** (`Main.DeathScreen`, `Client.Hud.DeathScreen`): who killed you (a player's avatar, or an NPC's name), the weapon, and the respawn countdown.
+- **Spectating your killer** in a third-person camera that follows behind them smoothly and never goes through walls. **If your killer dies, you watch their killer**, and so on; **with nobody to watch, the camera stays on your body**. When you respawn, the camera goes back to you. Works for NPC killers and outside matches too (`Systems.Combat.DeathCamService`).
+- The `Combat.Death` extension point: every death, credited or not, with its attacker and weapon.
+
+### Changed
+
+- The old death screen in the match HUD (`Main.MatchHUD.DeathScreen`, `Packets.Match.Death`), which only followed player killers in first person, is removed; `Packets.Death` replaces it.
+
+Tested in a playtest: killed by the Soldier NPC, the camera followed it; when the Breacher killed the Soldier, it moved to the Breacher; when the Breacher died with no killer, it went back to the body; on respawn it went back to the new character.
+
 ## 2026-11-11: Quicker, smoother movement and faster slides
 
 See [docs/MOVEMENT.md](docs/MOVEMENT.md) (Tuning).

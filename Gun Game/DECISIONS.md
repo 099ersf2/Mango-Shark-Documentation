@@ -4,6 +4,14 @@ The answers to open design questions, so the code and the docs follow the same r
 
 ## 2026-11-11
 
+### Death screen
+
+| Question | Decision |
+| --- | --- |
+| Who do you spectate? | **Your killer (player or NPC); if they die, their killer, and so on.** Nobody left: the camera stays on your body |
+| Camera | **Third person behind the one you watch**, easing after them, never through walls |
+| When does it end? | **On respawn**: the camera goes back to your character |
+
 ### Scout drones
 
 | Question | Decision |

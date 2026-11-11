@@ -16,7 +16,8 @@ It replaced the fixed Red vs Blue `Systems.Round.RoundService` on 2026-11-11.
 | Teams | `Content.Match.Teams` |
 | The match loop | `ServerScriptService.Modules.Systems.Match.MatchService` |
 | The team system | `Systems.Match.TeamService` |
-| HUD, scoreboard, death screen | `Client.Hud.MatchHud` → `StarterGui.Main.MatchHUD` |
+| HUD, scoreboard | `Client.Hud.MatchHud` → `StarterGui.Main.MatchHUD` |
+| Death screen, spectating | `Client.Hud.DeathScreen` → `StarterGui.Main.DeathScreen`, `Systems.Combat.DeathCamService` ([DEATH_SCREEN.md](DEATH_SCREEN.md)) |
 | Admin match menu | `Client.Core.MatchMenu` → `StarterGui.Main.MatchMenu`, opened with `MenuButtons.MatchButton` or **M** |
 | Templates | `Assets.UI.Templates.MatchTeamScore`, `ScoreboardRow`, `ScoreboardTeam`. The menu reuses `LoadoutCard`, `SliderRow` and `ToggleRow` |
 | Packets | `Packets.Match.State`, `Death`, `RequestState`, `Admin` |
@@ -43,7 +44,7 @@ These things happen when a match starts:
 **Deaths:** `Systems.Combat.KillFeed` reports each player death to `MatchService.OnPlayerDeath(victim, killer)`.
 - **Stats:** kills and deaths are counted. A kill on a teammate doesn't count.
 - **Hooks:** the mode's `OnKill` and `OnDeath` run.
-- **Death screen:** the victim gets it, spectating their killer.
+- **Death screen:** the victim gets it, spectating their killer (and their killer's killer when they die); see [DEATH_SCREEN.md](DEATH_SCREEN.md). It works in and out of matches.
 
 **Time up:** the mode's `OnTimeUp` runs. Without one, the leader wins, and a tie is a draw. In round modes, the team with the most players alive wins the round.
 
@@ -189,7 +190,7 @@ A player's team is the server-set player attribute **`Team`** (a team Id), nil i
   - **Layout:** team headers with totals, then each player's kills, deaths and score (your own row highlighted, dead players dimmed).
   - **When it shows by itself:** while a match has ended.
   - **Roblox player list:** it replaces it, which used Tab too.
-- **Death screen:** who killed you; the camera follows them until you respawn. In Elimination it says "Out until the next round".
+- **Death screen:** who killed you and with what; the camera follows them until you respawn, moving on to their killer if they die. In Elimination it says "Out until the next round". See [DEATH_SCREEN.md](DEATH_SCREEN.md).
 
 ## Extension points
 

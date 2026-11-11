@@ -4,6 +4,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 
 | Doc | Read it when |
 | --- | --- |
+| [Death screen](Gun%20Game/DEATH_SCREEN.md) | You are working on what a player sees after dying, or spectating |
 | [Scout drones](Gun%20Game/DRONES.md) | You are tuning the drones, their UI, or how NPCs deal with them |
 | [Matches and teams](Gun%20Game/MATCH.md) | You are adding a game mode, a team, or changing match settings |
 | [AI coding guide](Gun%20Game/AI_CODING_GUIDE.md) | You are giving the codebase to an AI agent: the rules, structure and code style it must follow |

@@ -201,6 +201,15 @@ See [MATCH.md](MATCH.md): modes, settings, teams, the match API for mode hooks.
 | `TeamService.TeamOf(who)` / `Members(id, arenaOnly?)` / `Smallest()` / `Balance()` | Team lookups (players, characters, NPC models) |
 | `TeamService.AreAllies(a, b)` / `SpawnFor(player)` | Same team? / where to spawn |
 
+### `Systems.Combat.DeathCamService`
+
+See [DEATH_SCREEN.md](DEATH_SCREEN.md).
+
+| Function | What it does |
+| --- | --- |
+| `DeathCamService.KillerOf(victim)` | The last recorded killer of a player or NPC model, or nil |
+| `DeathCamService.Watching(player)` | Who a dead player is spectating (Player or NPC model), or nil |
+
 ### `Systems.Drones.DroneService`
 
 See [DRONES.md](DRONES.md).
@@ -286,6 +295,7 @@ Handlers are global: check that the player has the thing before acting. Errors a
 | `Match.Scored` | Fire | target, amount | A team (Id) or player scored |
 | `Match.Ended` | Fire | modeId, winner? | A match ended (team Id, Player, or nil for a draw) |
 | `Team.Changed` | Fire | player, oldTeam?, newTeam? | A player's team changed |
+| `Combat.Death` | Fire | victim (Player or NPC model), attacker?, item? | Every death `KillFeed.ReportDeath` handles, credited or not, before the damage log is cleared |
 | `Drone.PreventDeploy` | Any | player | Stop a drone throw |
 | `Drone.Deployed` / `Drone.Destroyed` | Fire | player, drone / player, drone, killer? | A drone was thrown / destroyed |
 | `Drone.Noise` | Fire | drone, position, share | A drone driving (NPCs hear it within share of their hearing range) |
@@ -373,7 +383,8 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | `Melee.Swing` | Client → server | server time, look direction |
 | `Consumable.Throw` / `Consumable.Pick` | Client → server | server time, look direction / consumable Id |
 | `Match.State` | Server → clients | the match snapshot (phase, mode, timer, teams, players, next setup) |
-| `Match.Death` | Server → victim | killer UserId (0 for none), killer name |
+| `Death.Killed` | Server → the player who died | killer name ("" for none), killer UserId (0 for an NPC or none), weapon, seconds to respawn (-1: out until the next round) |
+| `Death.Spectate` | Server → a dead player | who to watch now (a model, or nil for nobody), name |
 | `Match.RequestState` | Client → server | — |
 | `Match.Admin` | Client → server, answered (ok, message) | action (`Mode`, `Setting`, `Start`, `End`, `Restart`), argument; admins only |
 | `Drone.Deploy` | Client → server | unit look direction |
@@ -466,7 +477,8 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | Function | What it does |
 | --- | --- |
 | `Menus.Register(name, frame)` / `Open(name)` / `Close(name?)` / `Toggle(name)` / `IsOpen()` / `SetMouseIconAfterClose(bool)` | One menu at a time, frees the mouse. Names: `Loadout`, `Settings`, `Match`, `SkinShop`, `Career`, `Backpack`, `MapSelection` |
-| `Client.Hud.MatchHud` | No API: the match HUD, scoreboard (Tab), result banner, death screen, teammate outlines |
+| `Client.Hud.MatchHud` | No API: the match HUD, scoreboard (Tab), result banner, teammate outlines |
+| `Client.Hud.DeathScreen` | No API: the death screen and spectate camera ([DEATH_SCREEN.md](DEATH_SCREEN.md)) |
 | `Client.Core.MatchMenu` | No API: the admin Match menu (M) |
 | `Keybinds.Get(action)` / `KeyName(action)` / `Label(action)` / `Set(action, keyName)` / `Reset()` | Key bindings |
 | `Options.Get(name)` / `IsOn(name)` / `Set(name, value, previewOnly?)` / `Save(name)` | Options |
