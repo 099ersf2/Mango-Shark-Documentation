@@ -454,6 +454,7 @@ Open the bar with **F2**, or the **CMD** touch button (shown only to admins in `
 | `nuke` | player | A warned strike that damages players, NPCs and boards nearby |
 | `announce` | text | A banner for everyone (the example command) |
 | `movedebug` | — | Toggles the movement readout |
+| `aimassistpc` (`aapc`) | player, on? | Turns controller aim assist on or off for that player on mouse and keyboard, for testing; leave out `on` to toggle |
 
 Add a command: a `<Name>` definition and a `<Name>Server` module in `Services.CmdrSetup.Commands`.
 
@@ -466,6 +467,7 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | Attribute | On | Meaning |
 | --- | --- | --- |
 | `InLobby` | Player | In the lobby (no guns) |
+| `AimAssistPC` | Player | True gives aim assist on mouse and keyboard (the `aimassistpc` command) |
 | `ConsumableId`, `ConsumableCount` | Player | The carried consumable and how many are left this life |
 | `SelectedMap` | Player | The map picked in the lobby hub |
 | `<Gun>Skin` | Player | Equipped skin per gun |

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-10: Aim assist on PC for testing
+
+### Added
+
+- **`aimassistpc <player> [true/false]`** (alias `aapc`), an admin Cmdr command that gives a player controller aim assist on mouse and keyboard, so it can be tried on PC. With no true/false it toggles. It sets the server-side player attribute `AimAssistPC`, which `Client.Guns.AimAssist` reads; the Aim assist setting must also be on. See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+
 ## 2026-11-10: AI coding guide
 
 ### Added
