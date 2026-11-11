@@ -195,8 +195,8 @@ See [CONSUMABLES.md](CONSUMABLES.md).
 | `NPCService.Clear()` | Removes every NPC |
 | `NPCService.Count()` / `NPCService.ProfileNames()` | How many are alive / the profile names |
 | `NPCService.Agents()` | The live agents (`Brain.Agent`), read only, for tests and debug tools |
-| `Tactics.Danger` / `Suspicion` / `Breach` / `TryGrenade(agent, now)` | The reflexes around the tree (dodge grenades, shoot to test, breach, throw); see [ADDING_NPCS.md](ADDING_NPCS.md) |
-| `Brain.*` | Helpers behavior-tree tasks use: `CanSee` (sees through windows), `SeeThrough`, `Penetrable`, `ShootThrough`, `BreachPoint`, `Blocked` (soft walls and boards aren't cover), `AimPoint`, `Eye`, `MoveTo`, `MoveDirect`, `Stop`, `IsMoving`, `Ammo`, `IsReloading`, `SetLastKnown`, `FlatDistance`, `NewPath`, `AdvancePath` |
+| `Tactics.Danger` / `Suspicion` / `Breach` / `TryGrenade(agent, now)` | The reflexes around the tree (dodge grenades, shoot to test, breach to get in, throw); see [ADDING_NPCS.md](ADDING_NPCS.md) |
+| `Brain.*` | Helpers behavior-tree tasks use: `CanSee` (sees through windows), `SeeThrough`, `Penetrable`, `ShootThrough`, `BreachPoint`, `FindEntry`, `Blocked` (soft walls and boards aren't cover), `AimPoint`, `Eye`, `MoveTo`, `MoveDirect`, `Stop`, `IsMoving`, `Ammo`, `IsReloading`, `SetLastKnown`, `FlatDistance`, `NewPath`, `AdvancePath` |
 | Tasks (`Systems.NPC.Tasks.*`) | `FindTarget`, `HasLineOfSight`, `InRange`, `LowHealth`, `NeedsReload`, `MoveToCover`, `Reload`, `AimAndShoot`, `Strafe`, `Chase`, `Patrol`: each has `run(agent)`, some `start` / `finish`. See [ADDING_NPCS.md](ADDING_NPCS.md) |
 
 ### `Systems.Movement.MovementService`
@@ -499,6 +499,7 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | `NPCSpawn` | A part | An NPC spawn point |
 | `ScribeFragment` | A ModuleScript | Adds player data fields |
 | `SmokeCloud` | (set by the game) | A live smoke cloud part, with a `Radius` attribute |
+| `NPCSecure` | A part inside a room | Idle NPCs go clear that room, breaking in through boards or soft walls if they must; optional `Team` attribute |
 
 ## Collision groups
 

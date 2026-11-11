@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-11-10: NPCs decide to break in
+
+See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
+
+### Added
+
+- **NPCs decide when boards and soft walls must be broken to get in.** Going after a hidden enemy, or a room they're securing, they breach when there's no path, they're stuck, or the way round is much longer than going through (over 1.8x + 20 studs). They pick the door-height board or soft wall that opens onto the room on the shortest trip, walk to it (lobbing a grenade when the arc is clear), and **bash** or **shoot** it until a person fits, then walk in. Tested: the Breacher broke in through a door board with one shotgun blast and secured the room in 2 s; the Grenadier bashed it open and was in within 8 s.
+- **Secure rooms.** Tag a part `NPCSecure` inside a room and idle NPCs go clear it (breaking in if they must), hold it a few seconds, and move on. A fight interrupts them; they go back after.
+
+### Fixed
+
+- **NPCs stood still when told to face a spot while walking a path.** Facing set the root's CFrame every frame, which stopped the walk; they now face where they walk until they stop.
+- NPCs no longer pick a window as a way in; entrances must reach from near the floor to above head height.
+
 ## 2026-11-10: Smarter NPCs
 
 See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
