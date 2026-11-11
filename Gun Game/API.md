@@ -64,6 +64,8 @@ Every module loads through ModuleLoader (`Init`, then `Start`). Require modules 
 | Give a team or player points | `MatchService.AddScore("Red", 1)` / `MatchService.AddScore(player, 1)` |
 | A player's team / are two on the same team? | the `Team` attribute, `TeamService.TeamOf(player)` / `TeamService.AreAllies(a, b)` |
 | Add a mode | a ModuleScript in `Content.Match.Modes` ([MATCH.md](MATCH.md)) |
+| Throw a drone for a player / remove drones | `DroneService.Deploy(player, look)` / `DroneService.Clear(player?, refund?)` ([DRONES.md](DRONES.md)) |
+| Every living drone | `DroneService.All()` (models in `workspace.Drones`) |
 | Give grenades back / set the count | `ConsumableService.Refill(player)` / `ConsumableService.SetCount(player, 2)` |
 | Set off a grenade or smoke anywhere | `ConsumableService.Detonate("Grenade", position, player)` |
 | Is a line blocked by smoke? | `Smoke.Blocks(from, to)` (both sides) |
@@ -199,6 +201,17 @@ See [MATCH.md](MATCH.md): modes, settings, teams, the match API for mode hooks.
 | `TeamService.TeamOf(who)` / `Members(id, arenaOnly?)` / `Smallest()` / `Balance()` | Team lookups (players, characters, NPC models) |
 | `TeamService.AreAllies(a, b)` / `SpawnFor(player)` | Same team? / where to spawn |
 
+### `Systems.Drones.DroneService`
+
+See [DRONES.md](DRONES.md).
+
+| Function | What it does |
+| --- | --- |
+| `DroneService.Deploy(player, look): Model?` | Every check, then throws a drone along the unit look |
+| `DroneService.Spot(player, drone, look): boolean` | Spots the enemy the drone looks at for the player's team |
+| `DroneService.Clear(player?, refund?)` | Removes a player's drones (nil: everyone's); refund gives the charges back now |
+| `DroneService.Of(player)` / `DroneService.All()` | A player's living drones (by slot) / every living drone |
+
 ### `Systems.Lobby.LobbyService`
 
 | Function | What it does |
@@ -273,6 +286,10 @@ Handlers are global: check that the player has the thing before acting. Errors a
 | `Match.Scored` | Fire | target, amount | A team (Id) or player scored |
 | `Match.Ended` | Fire | modeId, winner? | A match ended (team Id, Player, or nil for a draw) |
 | `Team.Changed` | Fire | player, oldTeam?, newTeam? | A player's team changed |
+| `Drone.PreventDeploy` | Any | player | Stop a drone throw |
+| `Drone.Deployed` / `Drone.Destroyed` | Fire | player, drone / player, drone, killer? | A drone was thrown / destroyed |
+| `Drone.Noise` | Fire | drone, position, share | A drone driving (NPCs hear it within share of their hearing range) |
+| `Drone.Spotted` | Fire | player, target | A player spotted an enemy with a drone |
 | `Gun.PreventMelee` | Any | who, gunId, tool | Stop a gun bash |
 | `Gun.MeleeHit` | Fire | who, kind, instance, humanoid?, gunId | A bash landed; kind is `Humanoid`, `Breakable`, `SoftWall` or `Surface` |
 | `Combat.BlockHit` | Any | humanoid, damage | Cancel a hit |
@@ -333,7 +350,7 @@ Add fields from a new module without editing `Shared.Data`: tag a ModuleScript `
 
 | Member | What it is |
 | --- | --- |
-| `Actions` | Every rebindable action and default key (Fire, Aim, Reload, Ability, Inspect V, Melee Q, Consumable G, Sprint, Crouch LeftControl, Prone C, Slot1–4, Interact E, Loadout B, Settings P, Scoreboard Tab, Match M) |
+| `Actions` | Every rebindable action and default key (Fire, Aim, Reload, Ability, Inspect V, Melee Q, Consumable G, Sprint, Crouch LeftControl, Prone C, Slot1–4, Interact E, Loadout B, Settings P, Scoreboard Tab, Match M, Drone 5, DroneView X) |
 | `Options` | Every option: `Fov` (60–110), `CameraBob`, `HoldSprint`, `HoldCrouch`, `MobileAutoSprint`, `SprintWhileReloading`, `AimAssist`. Add one here and the Settings menu shows it |
 | `VolumeGroups` | The sound groups with sliders |
 | `ToInput(name)` / `DefaultKey(action)` / `GetOption(name)` / `CleanOption(name, value)` / `IsVolumeGroup(name)` | Helpers |
@@ -359,6 +376,10 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | `Match.Death` | Server → victim | killer UserId (0 for none), killer name |
 | `Match.RequestState` | Client → server | — |
 | `Match.Admin` | Client → server, answered (ok, message) | action (`Mode`, `Setting`, `Start`, `End`, `Restart`), argument; admins only |
+| `Drone.Deploy` | Client → server | unit look direction |
+| `Drone.View` | Client → server | looking through a drone (true / false) |
+| `Drone.Spot` | Client → server, answered (spotted) | drone, unit look direction |
+| `Drone.Spotted` | Server → the spotter's team | target model, seconds |
 | `Skins.Equip` / `Skins.BuyCrate` | Client → server, answered (ok, message) | skin Id / — |
 | `Lobby.SelectMap` | Client → server, answered | map Id |
 | `Settings.Keybind` / `Volume` / `Option` | Client → server | name, value |
@@ -465,6 +486,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `Content.Match.Modes.*` | One file per match mode ([MATCH.md](MATCH.md)) |
 | `Content.Match.Settings` | Every match setting and its range; `List`, `Get`, `Clean`, `Describe`, `DEFAULT_MODE` |
 | `Content.Match.Teams` | Every team (Red, Blue, Green, Yellow); `List`, `Get` |
+| `Content.Drones` | Every drone setting and attribute name ([DRONES.md](DRONES.md)) |
 | `Content.Guns.Registry` | Every gun by Id, with defaults filled in: `Registry[gunId]` |
 | `Content.Guns.Loadouts` | The loadouts; `Loadouts.Get(id)` |
 | `Content.Guns.Skins` | `List`, `CRATE_PRICE` (499), `CRATE_REFUND_COINS` (500); `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)` |
@@ -510,6 +532,8 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | --- | --- | --- |
 | `InLobby` | Player | In the lobby (no guns) |
 | `Team` | Player, NPC model, SpawnLocation (you set) | A `Content.Match.Teams` Id: the player's team (our team system), an NPC's side, or which team a spawn belongs to |
+| `DronesReady`, `DroneNextReady`, `DroneControlling` | Player | Drones ready to throw / server time the next comes back (0 for none) / looking through a drone (MovementController holds the body) |
+| `DroneOwner`, `DroneSlot` (and `Team`) | Drone model | The owner's UserId / which of their drones |
 | `Eliminated`, `MatchReturn` | Player | Sitting out a round (no-respawn modes) / sent to the lobby for it, back next round |
 | `AimAssistPC` | Player | True gives aim assist on mouse and keyboard (the `aimassistpc` command) |
 | `ConsumableId`, `ConsumableCount` | Player | The carried consumable and how many are left this life |

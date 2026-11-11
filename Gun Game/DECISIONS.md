@@ -4,6 +4,17 @@ The answers to open design questions, so the code and the docs follow the same r
 
 ## 2026-11-11
 
+### Scout drones
+
+| Question | Decision |
+| --- | --- |
+| Which drones? | **Rainbow Six Siege's**, rebuilt from scratch in the framework (`Systems.Drones`, `Client.Gadgets.DroneController`). The old drone system (another team member's) is archived, disabled, in `ServerStorage.Archive.OldDroneSystem` |
+| How many, and when destroyed? | **2 per player; a destroyed one comes back after 18 s.** A new match refills them |
+| Health | **30** (a couple of bullets, one to the camera); owner and teammates can't hurt it |
+| Who simulates a drone? | **The owner's client**, after the server flies the throw to a stop; the server checks speed |
+| Your body while driving | **Held still**; any damage drops you out of the drone |
+| NPCs | **See drones within 55 studs, prefer players, hear drones driving, and shoot them** |
+
 ### Matches and teams
 
 | Question | Decision |

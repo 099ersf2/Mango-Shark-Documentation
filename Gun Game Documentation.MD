@@ -4,6 +4,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 
 | Doc | Read it when |
 | --- | --- |
+| [Scout drones](Gun%20Game/DRONES.md) | You are tuning the drones, their UI, or how NPCs deal with them |
 | [Matches and teams](Gun%20Game/MATCH.md) | You are adding a game mode, a team, or changing match settings |
 | [AI coding guide](Gun%20Game/AI_CODING_GUIDE.md) | You are giving the codebase to an AI agent: the rules, structure and code style it must follow |
 | [API](Gun%20Game/API.md) | You want to control something from code: every function, hook, packet, command, attribute and tag |

@@ -8,3 +8,11 @@ This list tracks verification not available in the solo Studio session.
 - [ ] Verify no-killer deaths show the death screen and do not award a kill.
 - [ ] Verify teammate damage is blocked and enemy damage still works during an active round.
 - [ ] Check the match HUD, avatar thumbnails, and death screen on a phone-sized viewport.
+
+## Scout drones (2026-11-11)
+- [ ] Drive a drone with real keys: does it feel fast and smooth? Tune `SPEED`, `ACCELERATION`, `BRAKING`, `HOP_SPEED` in `Content.Drones`.
+- [ ] Spot a real enemy and check your teammate sees the mark; check teammates can't shoot your drone.
+- [ ] Try gamepad (DPad Left / Down, sticks) and touch (DRONE, CAMS and the in-drone buttons) on a phone.
+- [ ] Replace the placeholder motor sound (`Assets.Models.Gadgets.Drone.HumanoidRootPart.Motor`).
+- [ ] Watch NPCs react to a drone driving past (hearing) and shoot it.
+

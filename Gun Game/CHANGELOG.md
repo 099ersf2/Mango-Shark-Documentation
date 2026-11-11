@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-11: Siege-style scout drones
+
+See [docs/DRONES.md](docs/DRONES.md).
+
+### Changed
+
+- **The drone system is rebuilt from scratch**, modeled on Rainbow Six Siege's drones, in the framework's structure: `Content.Drones` (settings), `Systems.Drones.DroneService` (server), `Client.Gadgets.DroneController` (client), with a new UI built in Studio (`StarterGui.DroneFeed`, `Main.DroneSlot`, mobile buttons). The old system (`DroneService` Script, `DroneController` LocalScript, `DroneRemote`, its model) is archived, disabled, in `ServerStorage.Archive.OldDroneSystem`.
+
+### Added
+
+- **Throw a drone with 5 and look through it at once**; X opens and closes the drone cameras, Q / E switch drones. Two drones per player.
+- **Fast, smooth driving**: 24 studs/s, quick to start and stop, the drone turns with your look. **Hop** (Space), **boost** (Shift, 36 studs/s, an empty bar locks for 6 s), a camera that eases landings and leans into turns.
+- **Spotting**: the Fire button marks the enemy in the crosshair for your team for 8 s (red outline and marker).
+- **Drones have health (30)** and can be shot or blown up by anyone but the owner's team. A destroyed drone shows "SIGNAL LOST" and **comes back after 18 s**.
+- **NPCs deal with drones**: they see them up close (55 studs, players first), hear them driving, are woken by them, and shoot them down.
+- Your body stays where you left it; taking damage drops you out of the drone. Gamepad (DPad Left / Down) and touch controls.
+
+Tested in a Studio playtest: a throw lands and is handed to the client, the feed opens with the HUD and gun viewmodel hidden, the HUD count and cooldown work, and NPCs shot drones down. Fixed during the test: destroyed drones were never removed (a Humanoid without a state machine never fires `Died`), a thrown drone slid 100 studs while its physics changed hands, and the gun viewmodel drew over the drone camera.
+
 ## 2026-11-11: Modular matches and our own teams
 
 See [docs/MATCH.md](docs/MATCH.md).
