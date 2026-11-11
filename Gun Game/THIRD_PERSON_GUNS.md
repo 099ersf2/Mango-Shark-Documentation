@@ -15,6 +15,8 @@ The gun models are built big (a full-size rifle is 4.4 studs, the pump shotgun 5
 
 The first-person viewmodel, loadout previews and gameplay don't change: bullets come from the head, and the viewmodel has its own copy.
 
+**Where the hand grips** (`GunService` `fitGrip`, on every equip): the Tool's `Grip` is set from the holder's own right hand. The top of the fist sits 0.03 studs under the gun's body (the top of its Handle), so the fist wraps the pistol grip from below. The plain grip put a big hand's middle on the middle of the grip, and the gun sank into the fist; it was worst on the scaled-down long guns, whose grips are short. Measured on the range: every gun's body now sits on top of the fist. The guns came up 0.24 to 0.41 studs relative to the hand.
+
 A gun reaching more than 0.45 studs behind its Handle has a stock and is held as a **long gun**; anything else is a **sidearm**, revolvers included. Before 2026-11-11 the kind came from the muzzle's distance, which put the long-barreled Revolver in the rifle poses.
 
 ## What each pose does

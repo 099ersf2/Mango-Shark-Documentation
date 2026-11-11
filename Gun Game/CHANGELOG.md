@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-11: Guns no longer sit low in the hand
+
+### Fixed
+
+- **Long guns** (Rifle, BurstRifle, LMG, Shotgun, SiegeShotgun, Tactical_Bullpup_1, SiegeCarbine) **sat too low in the hand.** The hand gripped the middle of the gun's short pistol grip, so the gun sank into the fist. `GunService` now sets each gun's grip on equip from the holder's own hand size, so the top of the fist sits just under the gun body (`fitGrip`). This applies to every gun and every avatar's hands.
+
+Measured on the gun range: every gun's body sits on top of the fist (0.03 studs above it) in all 72 rigs. The guns moved up 0.24 to 0.41 studs relative to the hand. The other fit checks held: clipping at most 0.15 studs, and the left hand 0.16 studs from the front grip on average.
+
 ## 2026-11-11: Third-person guns fixed: no more guns through heads, revolvers fixed
 
 See [docs/THIRD_PERSON_GUNS.md](docs/THIRD_PERSON_GUNS.md).
