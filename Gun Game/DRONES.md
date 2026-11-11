@@ -1,6 +1,6 @@
 # Scout drones
 
-Small ground drones in the style of Rainbow Six Siege's. You throw one out and look through its camera at once. You drive it fast and low, hop over things, boost, and spot enemies for your team. Drones are fragile: a couple of bullets, one shot to the camera, or any grenade destroys one. A destroyed drone comes back after a 30 s cooldown. You have one drone out at a time, and 5 always takes you back to it while it lives. NPCs see, hear and shoot drones.
+Small ground drones in the style of Rainbow Six Siege's. You throw one out and look through its camera at once. You drive it fast and low, hop over things, boost, and spot enemies for your team. Drones are fragile: a couple of bullets, one shot to the camera, or any grenade destroys one. A destroyed drone comes back after a 30 s cooldown. You have one drone out at a time: 5 takes you into it (or throws one), X takes you out. NPCs see, hear and shoot drones.
 
 Built 2026-11-11. It replaced an older drone system (a loose `DroneService` Script, a `DroneController` LocalScript and `DroneRemote`), which is kept, disabled, in `ServerStorage.Archive.OldDroneSystem` for reference.
 
@@ -9,8 +9,8 @@ Built 2026-11-11. It replaced an older drone system (a loose `DroneService` Scri
 | | |
 | --- | --- |
 | Drones | 1 per player (`CHARGES`; Siege gives 2). A destroyed drone comes back after 30 s (`RESPAWN_COOLDOWN`). A new match refills everyone; the lobby clears your drone |
-| 5 (`Drone` key) | In a drone: back to your body. On foot: back into your drone where you left it, if it is alive; otherwise throw a new one (once the cooldown is done). A throw flies from your head along your look, lands, skids to a stop, and you are looking through it |
-| X (`DroneView` key) | Into your living drone, or back to your body. Never throws one |
+| 5 (`Drone` key) | Go into your drone where you left it, if it is alive; otherwise throw a new one (once the cooldown is done). A throw flies from your head along your look, lands, skids to a stop, and you are looking through it. Does nothing in a drone |
+| X (`DroneView` key) | Leave the drone, back to your body. Does nothing on foot |
 | Drive | WASD (or left stick, or the touch thumbstick). Mouse / right stick / touch drag looks and turns the drone. 24 studs/s, fast to start and stop |
 | Hop | **Space**: about 2 studs up, every 1.1 s |
 | Boost | **Shift**: 36 studs/s for 2.5 s of bar; it refills in 4 s, and an empty bar is locked for 6 s (Siege's rule) |
@@ -19,7 +19,7 @@ Built 2026-11-11. It replaced an older drone system (a loose `DroneService` Scri
 | Health | 30. Your own and your teammates' shots don't hurt it. Destroyed: a small pop, "SIGNAL LOST", then your next drone or your body |
 | NPCs | Notice a drone within 55 studs, and prefer a player in view. They hear one driving within 30% of their hearing range (60% boosting), and come to look |
 
-Gamepad: DPad Left is the 5 key, DPad Down the X key; in a drone A hops, L3 boosts, RT spots, B leaves. Touch: the DRONE and CAMS buttons; in a drone HOP, SPOT, BOOST and EXIT buttons.
+Gamepad: DPad Left is the 5 key; in a drone DPad Down or B leaves, A hops, L3 boosts, RT spots. Touch: the DRONE button goes in or throws; in a drone HOP, SPOT, BOOST and EXIT buttons.
 
 ## Files
 
@@ -30,7 +30,7 @@ Gamepad: DPad Left is the 5 key, DPad Down the X key; in a drone A hops, L3 boos
 | `ReplicatedStorage.Modules.Client.Gadgets.DroneController` (ClientOnly) | Client: keys, driving, the camera, the feed UI, the HUD slot and mobile buttons, spot marks |
 | `ReplicatedStorage.Assets.Models.Gadgets.Drone` | The model (see below) |
 | `StarterGui.DroneFeed` | The camera feed UI |
-| `StarterGui.Main.DroneSlot`, `Main.Mobile.DroneButton`, `Main.Mobile.DroneViewButton` | On-foot HUD and mobile buttons |
+| `StarterGui.Main.DroneSlot`, `Main.Mobile.DroneButton` | On-foot HUD and mobile button |
 | `Assets.UI.Templates.SpotMarker`, `SpotHighlight` | What a spotted enemy shows |
 | `Lighting.DroneFeed` | A ColorCorrectionEffect for the feed's colder, flatter look (on only in a drone) |
 | `Shared.Packets` `Drone` group, `Shared.PlayerSettings` `Drone` / `DroneView` actions | Network and keys |
@@ -55,7 +55,7 @@ The motor sound is a placeholder: the game's slide loop pitched up. Swap `Motor.
 
 **Camera**: Scriptable, just in front of the lens, turned by your look (pitch ±70°), FOV 88 (96 while boosting). Its height eases after landings and it leans a little into turns. Main and the gun viewmodel (`Viewmodel.SetHidden`) are hidden while in a drone; `DroneFeed` and `Lighting.DroneFeed` are shown. The mouse is locked to the center. The other gun and movement keys are sunk, so nothing fires from your body. Your body and held gun stay visible to you: first person hides them locally every frame (Roblox's camera and the Viewmodel), and the drone camera, which runs after both, sets their `LocalTransparencyModifier` back to 0.
 
-**Leaving with 5 or X**: the in-drone binding leaves and is removed while it handles the press, so Roblox hands the same press on to the on-foot binding. Without a guard that put you straight back in (X) or threw a new drone (5). `Use` and `ToggleView` now ignore calls for `REENTRY_GUARD` (0.3 s) after leaving.
+**Keys**: on foot only 5 is bound (go in or throw). In a drone, X (and gamepad B / DPad Down) leaves and 5 is swallowed. The in-drone binding is removed while it handles the press that leaves, so Roblox hands that same press on to the on-foot bindings; that is what used to put you straight back in. Now X has no on-foot binding, and `Use` also ignores calls for `REENTRY_GUARD` (0.3 s) after leaving.
 
 **Server checks** (every 0.25 s): a drone below the world dies. One going flat-out faster than `BOOST_SPEED * SPEED_SLACK` three checks in a row is stopped, and the server takes its physics back for 0.4 s. The `Motor` sound's volume and pitch follow its speed for everyone. A moving drone fires `Drone.Noise` every 0.5 s.
 
@@ -83,7 +83,7 @@ DroneService.Of(player)                 -- the player's living drones, by slot
 DroneService.All()                      -- every living drone
 ```
 
-Client: `DroneController.Use()`, `Throw()`, `ToggleView()`, `View(drone)`, `Exit()`, `Hop()`, `Spot()`.
+Client: `DroneController.Use()` (go in or throw), `Throw()`, `View(drone)`, `Exit()`, `Hop()`, `Spot()`.
 
 Extension points: `Drone.PreventDeploy(player)` (Any), `Drone.Deployed(player, drone)`, `Drone.Destroyed(player, drone, killer?)`, `Drone.Noise(drone, position, share)`, `Drone.Spotted(player, target)` (Fire).
 
@@ -94,6 +94,8 @@ Extension points: `Drone.PreventDeploy(player)` (Any), `Drone.Deployed(player, d
 - The HUD slot shows "Drone [5] x2", then x1 and x0, dimmed at 0.
 - NPCs shot two drones down (the Soldier, from the test area). Before a fix, a destroyed drone stayed at negative health: its Humanoid never fires `Died`, so the server now watches `HealthChanged`. The destroyed drone's charge then counted down.
 
-**Tested again after the key changes** (NPCs held out of the test, since any hit on your body drops you out): 5 threw and went in, with your body fully visible (0 of 34 parts hidden). 5 left, even with the same press reaching the on-foot key again. 5 went back into the same drone without throwing a new one, and X did the same both ways. A destroyed drone was removed and the next was ready in 29 s.
+**Tested with the final keys** (5 in, X out): on foot only 5 / DPad Left is bound and the CAMS button is gone. In a drone, X / B / DPad Down leave and 5 is swallowed; the hint line reads "X leave". 5 went in, 5 in the drone did nothing, X left, 5 went back into the same drone, X left again.
+
+**Tested after the earlier key changes** (NPCs held out of the test, since any hit on your body drops you out): 5 threw and went in, with your body fully visible (0 of 34 parts hidden). 5 left, even with the same press reaching the on-foot key again. 5 went back into the same drone without throwing a new one, and X did the same both ways. A destroyed drone was removed and the next was ready in 29 s.
 
 Not yet checked by hand: how driving, hop and boost feel with real keys, and spotting a real enemy. Also gamepad and touch, and two players (team marks, friendly fire on drones). Studio's input injection doesn't reach the game, so the keys were tested through the controller's own functions. See [NEXT_STEPS.md](NEXT_STEPS.md).

@@ -10,7 +10,7 @@ See [docs/DRONES.md](docs/DRONES.md).
 
 ### Added
 
-- **Throw a drone with 5 and look through it at once**; X opens and closes the drone camera.
+- **Throw a drone with 5 and look through it at once**; X leaves it.
 - **Fast, smooth driving**: 24 studs/s, quick to start and stop, the drone turns with your look. **Hop** (Space), **boost** (Shift, 36 studs/s, an empty bar locks for 6 s), a camera that eases landings and leans into turns.
 - **Spotting**: the Fire button marks the enemy in the crosshair for your team for 8 s (red outline and marker).
 - **Drones have health (30)** and can be shot or blown up by anyone but the owner's team. A destroyed drone shows "SIGNAL LOST" and **comes back after 30 s**.
@@ -19,7 +19,7 @@ See [docs/DRONES.md](docs/DRONES.md).
 
 ### Changed the same day, after your playtest
 
-- **One drone out at a time, and 5 goes back to it**: 5 takes you back into your drone where you left it while it lives, and throws a new one only when it is gone and the cooldown is done. 5 or X in a drone takes you back to your body.
+- **One drone out at a time; 5 goes in, X goes out**: 5 takes you into your drone where you left it while it lives, and throws a new one only when it is gone and the cooldown is done. X only leaves the drone. The touch CAMS button is gone (DRONE goes in, the feed's EXIT leaves).
 - **The respawn cooldown is 30 s** (was 18).
 - **Fixed: X put you straight back into the drone** (and 5 threw a new one) when you used it to leave: the same key press reached the on-foot key too.
 - **Your body stays visible** while you look through the drone (first person was hiding it).
