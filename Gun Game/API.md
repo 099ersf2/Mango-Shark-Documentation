@@ -529,6 +529,7 @@ Open the bar with **F2**, or the **CMD** touch button (shown only to admins in `
 | `announce` | text | A banner for everyone (the example command) |
 | `match` | start / end / restart | Starts the next match now, ends the running one, or restarts with the next setup |
 | `matchmode` | mode | The next match's mode (TeamDeathmatch, FreeForAll, Elimination, …) |
+| `range` (`showcase`) | — | Takes you to the gun animation range ([GUN_SHOWCASE.md](GUN_SHOWCASE.md)) |
 | `matchset` | setting, value | One of the next match's settings: a number, or on/off |
 | `movedebug` | — | Toggles the movement readout |
 | `aimassistpc` (`aapc`) | player, on? | Turns controller aim assist on or off for that player on mouse and keyboard, for testing; leave out `on` to toggle |

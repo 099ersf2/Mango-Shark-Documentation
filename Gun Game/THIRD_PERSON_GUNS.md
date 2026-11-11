@@ -38,6 +38,8 @@ What it skips (Roblox's animations hold these):
 - characters more than 250 studs from the camera;
 - your own body while you're in first person. It is posed when the camera is away from your head, such as from a drone.
 
+See every gun's poses side by side at the gun range ([GUN_SHOWCASE.md](GUN_SHOWCASE.md), the `range` command).
+
 ## Server side
 
 | Attribute | On | Set by |

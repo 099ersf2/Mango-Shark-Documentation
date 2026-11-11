@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-11-11: Gun animation range
+
+See [docs/GUN_SHOWCASE.md](docs/GUN_SHOWCASE.md).
+
+### Added
+
+- **A gun range with 72 rigs** (`workspace.GunShowcase`, east of the map): one per gun (12) and animation (idle, walk, sprint, aim, shoot, reload), each doing only that one, for real.
+  - **Shoot:** fire real bullets at their lane's target in the gun's own rhythm and reload when empty.
+  - **Reload:** reload on a loop.
+  - **Walk and Sprint:** pace their lanes.
+  - **Aim:** aim at their target.
+- **Driver:** `Systems.Showcase.GunShowcase` runs them; the rigs can't be hurt.
+- **The `range` command** (alias `showcase`) takes you there.
+
+### Changed
+
+- `Client.Guns.ThirdPersonGuns` treats only an Ammo drop of at most 3 rounds as a shot. It also poses `GunShowcase`-tagged rigs; `Client.Guns.GunEffects` draws their tracers.
+
+Tested in a playtest:
+- **Guns:** all 72 rigs were armed.
+- **Shooters:** every one fired and reloaded.
+- **Lanes:** the walk and sprint rigs moved.
+- **Visible:** muzzle flashes and tracers showed.
+- **Errors:** none.
+
 ## 2026-11-11: Third-person gun animation for every gun
 
 See [docs/THIRD_PERSON_GUNS.md](docs/THIRD_PERSON_GUNS.md).
