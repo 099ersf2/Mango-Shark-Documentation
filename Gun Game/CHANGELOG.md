@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-10: NPCs board up doors and windows
+
+See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics, Board up).
+
+### Added
+
+- **NPCs rebuild broken door and window boards when they need to hide or hold.** When their health is low and they know where you are, or you hit them from out of sight, they board up a broken door or window between you and them (on their floor, within 25 studs). When they hold a room they secured, they seal its broken doors and windows. They walk to the inside, face the board and put a piece back every 0.6 s (`BreakableService.Repair`), stopping at once to fight if they can see and shoot you. Tested: a wounded Soldier boarded a fully broken door back up in 4-5 s; a healthy one with no threat left it alone; one holding a room sealed both of its doors.
+
+### Fixed
+
+- NPCs marked a door or board as unreachable when an older, unrelated path failed just after they picked it; now only a failed path to that door counts.
+
 ## 2026-11-10: NPCs stop shooting glass and come for you
 
 ### Fixed
