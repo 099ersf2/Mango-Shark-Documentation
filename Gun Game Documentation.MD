@@ -17,6 +17,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 | [Consumables](Gun%20Game/CONSUMABLES.md) | You are tuning the grenade or smoke bomb, or adding a consumable |
 | [Aim assist](Gun%20Game/AIM_ASSIST.md) | You are tuning aim assist for controller and touch, or checking what counts as a target |
 | [Kill feed](Gun%20Game/KILL_FEED.md) | You want a weapon's kills in the kill feed, are restyling it, or are using `nuke` |
+| [Team deathmatch rounds](Gun%20Game/ROUND_SYSTEM.md) | You are working on Red vs. Blue rounds, match scoring, the leaderboard, or death spectating |
 | [Design decisions](Gun%20Game/DECISIONS.md) | You want to know how a design question was answered (lobby, skins, guns, bash, walls) |
 | [Changelog](Gun%20Game/CHANGELOG.md) | You want what changed in the place, newest first |
 

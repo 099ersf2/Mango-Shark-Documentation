@@ -136,6 +136,21 @@ Runs gun abilities (`Content.Guns.Abilities`) on the server. Abilities normally 
 | `KillFeed.ReportDeath(humanoid)` | Sends a kill feed line for a death with a credited attacker |
 | `SwordCombat:Attack(player, aimOrigin?, aimDirection?)` | A knife or sword swing (sword combat; don't change its behavior) |
 
+### `Systems.Round.RoundService`
+
+| Function / data | What it does |
+| --- | --- |
+| `RoundService.OnPlayerDeath(victim: Player, killer: Player?)` | Records a credited player death during an active round and notifies the victim's client |
+| `Content.Round.RoundDurationSeconds` | Round length in seconds (`180`) |
+| `Content.Round.IntermissionSeconds` | Time between rounds (`10`) |
+| `Content.Round.MinimumPlayers` | Arena players required to start (`2`) |
+| `Content.Round.MaximumLeaderboardEntries` | Maximum player rows sent to clients (`10`) |
+| Player attribute `RoundTeam` | `"Red"` or `"Blue"` while assigned to a round |
+| Player attribute `RoundActive` | True while the player is eligible to score in an active round |
+| Extension `Combat.PreventFriendlyFire(attacker, victimCharacter, victimHumanoid)` | Return `true` to block the hit; the round service blocks active teammates |
+
+`Packets.Round.State` sends a snapshot table: `Phase`, `EndsAt` (server time), `RoundNumber`, `RedScore`, `BlueScore`, `Winner`, and `Players`. Each player row has `UserId`, `Name`, `DisplayName`, `Team`, and `Kills`. `Packets.Round.Death` sends the victim the killer's user ID and display name; a zero user ID means no credited player killer. `Packets.Round.RequestState` asks the server for the current snapshot and is rate-limited.
+
 ---
 
 ## Server: world
@@ -322,6 +337,9 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | `Effects.Play` / `Effects.Stop` | Server → clients | effect name, options |
 | `Combat.Hit` | Server → all | character, damage |
 | `Combat.KillFeed` | Server → all | killer, victim, item |
+| `Round.State` | Server → clients | snapshot table: phase, deadline, round, team scores, winner, top player rows |
+| `Round.Death` | Server → victim | credited killer user ID, display name |
+| `Round.RequestState` | Client → server | no arguments; rate-limited snapshot request |
 | `Combat.Swing` | Client → server | sword aim origin, direction |
 | `Gun.Fire` | Client → server | server time, origin, direction, seed, spread |
 | `Gun.Reload` / `Gun.Aim` / `Gun.AltFire` | Client → server | — / aiming / pressed |
