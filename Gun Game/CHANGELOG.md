@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-11: Shotgun idles fixed
+
+### Fixed
+
+- **Both shotgun idles** (Shotgun, SiegeShotgun) held the gun too far back, with the stock up over the shoulder.
+  - **Cause:** the gun slides back when the left hand can't reach the front grip. Held out to the side, a shotgun met no body to stop it.
+  - **Slide limit:** the slide is now capped at 0.45 studs.
+- **One idle for every long gun:** the long-gun idle, sprint and reload are now placed by the grip, not the rear sight, which sits in a different spot on every gun (on a shotgun it's on the grip). Every long gun now idles in the same low ready: the hand at the right of the chest, the stock at the right shoulder, the muzzle 25 degrees down and a little across the body.
+
+Checked on the gun range:
+- **Shotguns:** both are in the low ready, seen from the side.
+- **Fit, all 72 rigs:** clipping 0.01 studs at most, and the right hand always on the grip.
+
 ## 2026-11-11: Guns held higher
 
 ### Fixed

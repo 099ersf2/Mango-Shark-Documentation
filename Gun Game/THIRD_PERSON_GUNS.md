@@ -23,7 +23,7 @@ A gun reaching more than 0.45 studs behind its Handle has a stock and is held as
 
 | Pose | When | Gun placement (from the eyes) |
 | --- | --- | --- |
-| **Idle** (low ready) | Holding a gun, nothing else | Lowered in front: muzzle about 30 degrees down (pistols 40), half of the aim pitch. Walking adds a small bob |
+| **Idle** (low ready) | Holding a gun, nothing else | Long guns: the hand at the right of the chest, the stock at the right shoulder, the muzzle 25 degrees down and a little across the body. Pistols: at chin height, muzzle 30 degrees down. Half of the aim pitch; walking adds a small bob |
 | **Sprint** | Sprinting (the `Sprinting` / `MoveState` attribute), or an NPC moving faster than 19 studs/s | Long guns across the chest, muzzle up and to the left; pistols low by the hip, muzzle down |
 | **Aim** | `GunAiming` on the character, or a shot in the last 0.8 s | Up at the eyes: a pistol's rear sight centered 1.2 studs out; a long gun's at eye level beside the right cheek. Follows the full aim pitch |
 | **Shoot** | The tool's `Ammo` goes down | A recoil kick on top of the pose: pistols 13 degrees, shotguns 10, rifles 5, plus 0.1 studs back, springing back |
@@ -35,13 +35,16 @@ Poses ease into each other. The waist leans with a quarter of the aim pitch and 
 
 Every frame, in `RunService.PreSimulation` (after the Animator), for each R15 character within 250 studs of the camera that holds a gun with `Aim` and `LeftGrip` attachments on its Handle:
 
-1. The gun's `Aim` attachment (the rear sight) is placed in front of the eyes by the pose. The pose is turned by the character's facing and its aim pitch:
+1. **Placement:**
+   - pistols, and long guns when aiming, have the gun's `Aim` attachment (the rear sight) placed in front of the eyes by the pose;
+   - long guns' idle, sprint and reload place the grip (the Handle) instead, because the rear sight is in a different spot on every long gun (on a shotgun it is on the grip), while the grip is always where the hand is;
+   - all poses are blended as sight placements, so they ease into each other alike. The pose is turned by the character's facing and its aim pitch:
    - **Players:** the relayed pitch (`UnreliablePackets.GunAimRelay`).
    - **NPCs:** the `AimPitch` attribute.
    - **Your own body:** your camera.
 2. The right hand goes where the gun's grip needs it (the gun is welded to the right hand by `RightGrip`). The left palm goes on the gun's `LeftGrip`.
 3. **Settle** (up to 5 rounds):
-   - the gun slides straight back, level, by what the left arm is short of the front grip. It is never pulled down or sideways, so it keeps the pose's height. An earlier version pulled it toward the left shoulder, which dragged long guns down to the waist;
+   - the gun slides straight back, level, by what the left arm is short of the front grip, at most 0.45 studs in all (`MAX_SLIDE`). Without the cap, a gun held out to the side met no body to stop it, and slid back until its stock was over the shoulder; that was the shotgun idles. It is never pulled down or sideways, so it keeps the pose's height. An earlier version pulled it toward the left shoulder, which dragged long guns down to the waist;
    - it moves forward out of the head and torso, checking every corner of its outline (a stock may rest 0.15 studs into the chest, the shoulder pocket);
    - it comes back toward the right shoulder if the right arm is short (the gun is welded to that hand).
 
