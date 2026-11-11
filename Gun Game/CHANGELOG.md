@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-10: Stronger head aim assist
+
+### Changed
+
+- **Aim assist favors the head.** The head now wins about two thirds of the space between head and chest, gets 1.4× friction and 1.6× pull, and the assist sticks to the point it locked last frame so a small wobble doesn't drop it to the chest. Tuning: `HEAD_PREFERENCE`, `STICKY`, `HEAD_FRICTION_BOOST`, `HEAD_PULL_BOOST`, `MAX_FRICTION` in `Client.Guns.AimAssist`. See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+
 ## 2026-11-10: Aim assist holds headshots
 
 ### Changed

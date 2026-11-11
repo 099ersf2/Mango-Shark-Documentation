@@ -42,7 +42,13 @@ A target must be:
 4. **Inside the cone:** 12° from the crosshair at the hip, 9° aimed. Close targets widen the cone to cover about 4 studs of body.
 5. **In clear view:** a ray from the camera to the target must hit the target first.
 
-Each target has two aim points: its **Head** and its body (the first of `UpperTorso`, `Torso` or `HumanoidRootPart`). The assist sticks to whichever is nearest the crosshair, so aiming near the head holds the head and aiming at the body holds the body. Before 2026-11-10 it only knew the chest and dragged head aim down. If several targets qualify, the nearest point wins.
+Each target has two aim points: its **Head** and its body (the first of `UpperTorso`, `Torso` or `HumanoidRootPart`). The assist sticks to whichever is nearest the crosshair, with three head helpers:
+
+- **Head preference:** the head's angle counts as 55% when choosing, so the head holds about two thirds of the space down to the chest.
+- **Head boost:** on the head, friction is 1.4× (at most 90% of the turn) and the pull is 1.6×.
+- **Stickiness:** the point locked last frame counts as 75% of its angle, so a small wobble doesn't flip head to chest or back.
+
+If several targets qualify, the best-scoring point wins.
 
 ## How it fits with recoil
 
@@ -70,6 +76,10 @@ Every number is a constant at the top of `Client.Guns.AimAssist`:
 | `MOVE_THRESHOLD` | 1 | Studs per second that count as moving |
 | `HEAD_PART` | Head | The head aim point |
 | `BODY_PARTS` | UpperTorso, Torso, HumanoidRootPart | The body aim point, first found |
+| `HEAD_PREFERENCE` | 0.55 | Share of the head's angle used when choosing head or body; lower favors the head more |
+| `STICKY` | 0.75 | Share of last frame's point's angle; lower is stickier |
+| `HEAD_FRICTION_BOOST` / `HEAD_PULL_BOOST` | 1.4 / 1.6 | Extra friction and pull on the head |
+| `MAX_FRICTION` | 0.9 | Friction never removes more of the turn than this |
 
 ## API
 
@@ -84,6 +94,7 @@ local pitch, yaw = AimAssist.Update(dt, camera, turnPitch, turnYaw, aimAlpha)   
 
 ## Testing
 
+- **Head helpers (2026-11-10):** 15 studs from a rig. Pull toward the head from just under it went from 0.0027 to 0.0043 rad per frame (1.6×); friction on the head 0.0137 vs 0.0097 on the chest. Aiming at the middle of the head–chest gap now goes to the head (it went to the chest). Aiming 0.94 studs under the head goes to the chest from fresh, but stays on the head if the head was locked the frame before.
 - **Head or chest (2026-11-10):** 15 studs from a rig, aiming 0.35 studs under the head pulled **up** to the head, 0.35 above the chest pulled **down** to the chest, and below the chest or above the head pulled back to the nearer one.
 
 **On PC:** open Cmdr (F2) and run `aimassistpc <you>` (alias `aapc`). It toggles aim assist for that player on mouse and keyboard; `aimassistpc <you> true` or `false` sets it. It's a server-set player attribute, `AimAssistPC`, so only admins can turn it on, and it lasts until you leave or turn it off. The **Aim assist** setting must also be on (it is by default). Checked 2026-11-10 in a playtest: the command registered, set, toggled and cleared the attribute; on mouse input with it on, a target 3° off the crosshair gave a turn toward it, and with it off, nothing.
