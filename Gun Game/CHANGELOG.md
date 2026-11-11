@@ -19,6 +19,24 @@ See [docs/MATCH.md](docs/MATCH.md).
 
 Tested in a Studio playtest with one player: waiting, admin start, team assignment and team spawns, the score limit ending Team Deathmatch and Free-for-All, an Elimination round ending and the next starting, setting cleaning, the admin packet, the HUD and the menu.
 
+## 2026-11-10: Team deathmatch rounds
+
+See [Team deathmatch rounds](ROUND_SYSTEM.md). *Replaced on 2026-11-11 by the modular match system ([docs/MATCH.md](docs/MATCH.md)); Team Deathmatch is now one of its modes.*
+
+### Added
+
+- **Three-minute Red vs. Blue rounds.** The server balances arena players, tracks credited enemy-player kills, and awards the round to the team with the higher kill total (ties are draws). Rounds require two arena players and have a ten-second intermission.
+- **Match HUD and death spectating.** The HUD displays team totals and the ten highest-kill players with profile thumbnails. On death, the victim sees a death screen and follows the credited killer until respawn.
+- **Friendly-fire protection during active rounds.** Teammate damage is blocked by the server; self-damage remains unchanged.
+
+### Changed
+
+- The kill-feed death hook now reports a credited player death to the round service before clearing its damage record.
+
+### Fixed
+
+- None.
+
 ## 2026-11-10: NPCs board up doors and windows
 
 See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics, Board up).

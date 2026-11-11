@@ -2,6 +2,31 @@
 
 The answers to open design questions, so the code and the docs follow the same rules. Newest first. Each entry says what was decided and where it lives in the place.
 
+## 2026-11-11
+
+### Matches and teams
+
+| Question | Decision |
+| --- | --- |
+| How are rounds built? | **A modular match system** (`Systems.Match.MatchService`): each mode is one module in `Content.Match.Modes`. It replaced the fixed Red vs Blue rounds below. Team Deathmatch, Free-for-All and Elimination ship |
+| Who adjusts a match? | **Admins** (`Classes.Admins`), from the Match menu (M) or Cmdr. Changes apply to the next match, or at once with Restart |
+| Roblox Teams or our own? | **Our own** (`Systems.Match.TeamService`, `Content.Match.Teams`): the player attribute `Team`. Up to 4 teams |
+| Friendly fire | **Off by default**, a per-match setting (`FriendlyFire`) |
+| Scoreboard key | **Tab**, replacing Roblox's player list |
+
+## 2026-11-10
+
+### Team deathmatch rounds
+
+| Question | Decision |
+| --- | --- |
+| Round mode and length | **Red vs. Blue team deathmatch, three minutes per round.** The team with the most credited player kills wins; a tie is a draw. |
+| Who is assigned to teams? | Arena players are split as evenly as possible. Players in the lobby are not assigned. |
+| What does the match leaderboard show? | The ten players with the highest round kill counts, including profile thumbnails. |
+| What happens after a player is killed? | Show a death screen and spectate the credited killer until the victim respawns. |
+| Does friendly fire count? | No. The server blocks teammate damage during active rounds; self-damage is unchanged. |
+| Do damaged boards and walls reset between rounds? | Not currently. Round start does not reset breakables or soft walls. |
+
 ## 2026-11-09
 
 ### Lobby and skins
