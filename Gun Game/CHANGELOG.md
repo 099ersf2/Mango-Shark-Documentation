@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-10: Tracers no longer come out of your face
+
+### Fixed
+
+- **Your own tracers start out at the barrel.** The viewmodel's muzzle sits about 1.2 studs from the eye (on the crosshair when aimed), so full-size tracers started there looked like they came out of your head. They now start on the same screen line but 4 studs out (`TRACER_START_DISTANCE` in `Client.Guns.GunEffects`), or just in front of a closer wall or target. Checked in a playtest: hip and aimed tracers first appear 4.0 studs out, at the barrel's spot on screen. Hits are unchanged (still from the camera). See [docs/ADDING_GUNS.md](docs/ADDING_GUNS.md).
+
 ## 2026-11-10: Stronger head aim assist
 
 ### Changed

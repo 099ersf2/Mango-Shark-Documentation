@@ -550,6 +550,8 @@ To add a new kind, copy `Content.Effects.Parts.Template`: a module with `Play(sp
 
 Tracers are not registry effects. They are the cosmetic bullets FastCast2 moves, and `Effects.Tracer` names the part in `Assets.Vfx` to use. Each gun's client caster pools them with `ObjectCache`.
 
+**Where your own tracers start.** The viewmodel is drawn small, so its `Muzzle` is only about 1.2 studs from your eye, right on the crosshair when aimed. A full-size tracer started there looked like it came out of your face. So `Client.Guns.GunEffects` starts your tracers on the camera's line through the viewmodel muzzle (the same spot on screen as the barrel) but `TRACER_START_DISTANCE` (4) studs out, where a real gun's muzzle is; a wall or target closer than that moves the start just in front of it. The flash and sound stay on the viewmodel muzzle. Other players' tracers start at their third-person gun's `Muzzle` as before. The real (damage) bullet still fires from the camera, so it goes where the crosshair points.
+
 ## Adding UI
 
 UI is built in Studio under `StarterGui.Main`; scripts only find and update it. Never create UI with `Instance.new` in a script.
