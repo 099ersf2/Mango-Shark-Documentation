@@ -196,7 +196,7 @@ See [CONSUMABLES.md](CONSUMABLES.md).
 | `NPCService.Count()` / `NPCService.ProfileNames()` | How many are alive / the profile names |
 | `NPCService.Agents()` | The live agents (`Brain.Agent`), read only, for tests and debug tools |
 | `Tactics.Danger` / `Vault` / `Pursue` / `Suspicion` / `Breach` / `TryGrenade(agent, now)`, `Tactics.OnHurt(agent, attacker)` | The reflexes around the tree (dodge grenades, climb windows, chase a target behind glass, shoot to test, break in or out, throw, turn toward a hit); see [ADDING_NPCS.md](ADDING_NPCS.md) |
-| `Brain.*` | Helpers behavior-tree tasks use: `CanSee` (sees through windows), `SeeThrough`, `Penetrable`, `ShootThrough`, `BreachPoint`, `FindEntry`, `FindExit`, `BlockedAhead`, `Blocked` (soft walls and boards aren't cover), `AimPoint`, `Eye`, `MoveTo`, `MoveDirect`, `Stop`, `IsMoving`, `Ammo`, `IsReloading`, `SetLastKnown`, `FlatDistance`, `NewPath`, `AdvancePath` |
+| `Brain.*` | Helpers behavior-tree tasks use: `CanSee` (sees through windows), `SeeThrough`, `Penetrable`, `ShootThrough`, `BreachPoint`, `FindEntry`, `Connected`, `Ground`, `FindExit`, `BlockedAhead`, `Blocked` (soft walls and boards aren't cover), `AimPoint`, `Eye`, `MoveTo`, `MoveDirect`, `Stop`, `IsMoving`, `Ammo`, `IsReloading`, `SetLastKnown`, `FlatDistance`, `NewPath`, `AdvancePath` |
 | Tasks (`Systems.NPC.Tasks.*`) | `FindTarget`, `HasLineOfSight`, `InRange`, `LowHealth`, `NeedsReload`, `MoveToCover`, `Reload`, `AimAndShoot`, `Strafe`, `Chase`, `Patrol`: each has `run(agent)`, some `start` / `finish`. See [ADDING_NPCS.md](ADDING_NPCS.md) |
 
 ### `Systems.Movement.MovementService`

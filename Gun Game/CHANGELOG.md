@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-10: NPCs stop shooting glass and come for you
+
+### Fixed
+
+- **NPCs shot at you through unbreakable see-through walls.** Their "can a bullet reach" check counted a hit within 2 studs of you, and glass right in front of you is that close. At a person they now only fire when the bullet reaches that person; behind glass they go after you instead.
+- **NPCs couldn't walk while they saw a target.** Turning set the root's CFrame every frame, which stopped them walking. They now turn with an `AlignOrientation`, so they face you and move at the same time.
+- **Paths to a person failed.** Path goals were the person's root, inside their body, which pathfinding refuses. Paths now go to the floor under the goal (`Brain.Ground`).
+- **NPCs didn't find the door into your room** when it was round a corner. They now check the nearest doors, boards, soft walls and windows by pathfinding from just inside each to you (`Brain.Connected`) and break the first that leads in.
+- Trapped NPCs look for a way into the target's room before breaking out of their own; a failed search retries after 4 s (was 10).
+
+Tested: a Soldier facing the test Rig behind the glass held fire, went round, cut through a soft wall and was in the room shooting the Rig 4.5 s later.
+
 ## 2026-11-10: NPCs move, hunt and get around
 
 See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
