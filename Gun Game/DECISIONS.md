@@ -9,7 +9,7 @@ The answers to open design questions, so the code and the docs follow the same r
 | Question | Decision |
 | --- | --- |
 | Which drones? | **Rainbow Six Siege's**, rebuilt from scratch in the framework (`Systems.Drones`, `Client.Gadgets.DroneController`). The old drone system (another team member's) is archived, disabled, in `ServerStorage.Archive.OldDroneSystem` |
-| How many, and when destroyed? | **2 per player; a destroyed one comes back after 18 s.** A new match refills them |
+| How many, and when destroyed? | **One out at a time; a destroyed one comes back after 30 s.** 5 takes you back to your drone while it lives instead of throwing another (changed 2026-11-11 from 2 drones and 18 s). A new match refills it |
 | Health | **30** (a couple of bullets, one to the camera); owner and teammates can't hurt it |
 | Who simulates a drone? | **The owner's client**, after the server flies the throw to a stop; the server checks speed |
 | Your body while driving | **Held still**; any damage drops you out of the drone |

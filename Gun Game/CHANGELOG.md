@@ -10,12 +10,20 @@ See [docs/DRONES.md](docs/DRONES.md).
 
 ### Added
 
-- **Throw a drone with 5 and look through it at once**; X opens and closes the drone cameras, Q / E switch drones. Two drones per player.
+- **Throw a drone with 5 and look through it at once**; X opens and closes the drone camera.
 - **Fast, smooth driving**: 24 studs/s, quick to start and stop, the drone turns with your look. **Hop** (Space), **boost** (Shift, 36 studs/s, an empty bar locks for 6 s), a camera that eases landings and leans into turns.
 - **Spotting**: the Fire button marks the enemy in the crosshair for your team for 8 s (red outline and marker).
-- **Drones have health (30)** and can be shot or blown up by anyone but the owner's team. A destroyed drone shows "SIGNAL LOST" and **comes back after 18 s**.
+- **Drones have health (30)** and can be shot or blown up by anyone but the owner's team. A destroyed drone shows "SIGNAL LOST" and **comes back after 30 s**.
 - **NPCs deal with drones**: they see them up close (55 studs, players first), hear them driving, are woken by them, and shoot them down.
 - Your body stays where you left it; taking damage drops you out of the drone. Gamepad (DPad Left / Down) and touch controls.
+
+### Changed the same day, after your playtest
+
+- **One drone out at a time, and 5 goes back to it**: 5 takes you back into your drone where you left it while it lives, and throws a new one only when it is gone and the cooldown is done. 5 or X in a drone takes you back to your body.
+- **The respawn cooldown is 30 s** (was 18).
+- **Fixed: X put you straight back into the drone** (and 5 threw a new one) when you used it to leave: the same key press reached the on-foot key too.
+- **Your body stays visible** while you look through the drone (first person was hiding it).
+- Q / E (switch drones) and the touch NEXT button are gone, since there is only one drone.
 
 Tested in a Studio playtest: a throw lands and is handed to the client, the feed opens with the HUD and gun viewmodel hidden, the HUD count and cooldown work, and NPCs shot drones down. Fixed during the test: destroyed drones were never removed (a Humanoid without a state machine never fires `Died`), a thrown drone slid 100 studs while its physics changed hands, and the gun viewmodel drew over the drone camera.
 
