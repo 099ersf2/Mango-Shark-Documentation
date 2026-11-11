@@ -4,6 +4,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 
 | Doc | Read it when |
 | --- | --- |
+| [AI coding guide](Gun%20Game/AI_CODING_GUIDE.md) | You are giving the codebase to an AI agent: the rules, structure and code style it must follow |
 | [API](Gun%20Game/API.md) | You want to control something from code: every function, hook, packet, command, attribute and tag |
 | [Adding guns](Gun%20Game/ADDING_GUNS.md) | You are adding a gun or ability, or something isn't working |
 | [Gun system](Gun%20Game/GUN_SYSTEM.md) | You need the shot flow, packets or state behind the system |

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-10: AI coding guide
+
+### Added
+
+- **[docs/AI_CODING_GUIDE.md](docs/AI_CODING_GUIDE.md):** one file to give any AI agent before it codes in the FPS place: the hard rules, where code lives, how ModuleLoader loads it, the module template and code style, the shared building blocks (packets, extension points, Scribe data, effects, states, input, Cmdr, products), world conventions, a feature walkthrough, testing and docs standards, and a done checklist.
+
+### Fixed
+
+- `API.md` said `Content` isn't loaded by ModuleLoader. It is, on both sides; most Content modules just return a table.
+
 ## 2026-11-10: Stronger aim assist
 
 See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).

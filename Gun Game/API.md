@@ -9,7 +9,7 @@ Every function, hook, packet, command, attribute, tag and data field you can use
 | `Systems.*`, `Services.*`, `Helpers.*` (server) | `ServerScriptService.Modules.*` | Server only |
 | `Shared.*`, `Handlers.*`, `Helpers.*`, `Classes.*` | `ReplicatedStorage.Modules.*` | Both |
 | `Client.*` | `ReplicatedStorage.Modules.Client.*` (attribute `ClientOnly`) | Client only |
-| `Content.*` | `ReplicatedStorage.Content.*` (data, not loaded by ModuleLoader) | Both |
+| `Content.*` | `ReplicatedStorage.Content.*` (game data; loaded by ModuleLoader on both sides, most modules only return a table) | Both |
 
 ```lua
 -- Server
