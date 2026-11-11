@@ -16,3 +16,7 @@ This list tracks verification not available in the solo Studio session.
 - [ ] Replace the placeholder motor sound (`Assets.Models.Gadgets.Drone.HumanoidRootPart.Motor`).
 - [ ] Watch NPCs react to a drone driving past (hearing) and shoot it.
 
+
+## Pistol shoot animation (2026-11-11)
+- [ ] Publish `RBX_ANIMSAVES.Rig2."Pistol Shoot"` from the Animation Editor to get an animation ID, then hook it to the NPC or gun that should use it.
+

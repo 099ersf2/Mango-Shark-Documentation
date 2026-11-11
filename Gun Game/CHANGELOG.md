@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-11: Pistol shoot animation (Rig2)
+
+### Added
+
+- **A "Pistol Shoot" animation** for the R15 rig `Workspace.Enemies.Rig2` and the Pistol it holds, saved as `ServerStorage.RBX_ANIMSAVES.Rig2."Pistol Shoot"` (open it in the Animation Editor). It is 0.3 s, plays once, priority Action, and moves only the upper body (waist, neck, both arms), so it layers over walking:
+  - 0 s: an aimed two-handed stance: barrel level and straight ahead, the rear sight on the eye line 1.16 studs in front of the eyes, the support hand on the pistol's `LeftGrip` point.
+  - 0.04 s: the kick: muzzle up 13.5 degrees and pulled 0.2 studs toward the face, hands still on the gun.
+  - 0.12 s: settling (muzzle 2.7 degrees up), easing back.
+  - 0.3 s: back on target.
+- The poses were solved from the rig's real joints (its `AnimationConstraint`s and attachments) and the pistol's attachments, not hand-placed. The solved joint angles are kept on Rig2 as the `SolvedAimPose` and `SolvedKickPose` attributes (JSON) to build more pistol animations from.
+
+Checked in a playtest: played on Rig2, the barrel pointed within 0.7 degrees of straight ahead at the aim frame and 13.5 degrees up at the kick frame (screenshots).
+
 ## 2026-11-11: Death screen and spectating the killer chain
 
 See [docs/DEATH_SCREEN.md](docs/DEATH_SCREEN.md).
