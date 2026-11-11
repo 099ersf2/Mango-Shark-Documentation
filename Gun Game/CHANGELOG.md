@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-10: Grenade lands heavy and breaks more
+
+### Changed
+
+- **Grenades and smoke bombs stay near where they land.** They're heavy and barely bounce, keep half their speed on landing, then roll about 2–4 studs to a stop (`Bounce`, `LandingKeep`, `RollDrag` in `Content.Consumables`). They used to roll away like a light ball.
+- **Grenades remove more of boards and soft walls.** Board damage 80 → 350: a blast 4 studs from a board strips all 6 pieces (it took 2). Soft walls: hole 1.6 → 3.5 studs, reach 6 → 10 studs, up to 6 walls (was 3); a blast 2 studs from a wall removed 9.0 cubic studs of it (2.0 before). Player damage is unchanged. See [docs/CONSUMABLES.md](docs/CONSUMABLES.md).
+
 ## 2026-11-10: SMG sound and a new gun bash
 
 ### Fixed

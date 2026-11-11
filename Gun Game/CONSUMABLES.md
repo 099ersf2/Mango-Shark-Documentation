@@ -17,11 +17,12 @@ A throw works with any weapon held, or none. It's refused in the lobby, while a 
 | | Frag grenade (`Grenade`) | Smoke bomb (`Smoke`) |
 | --- | --- | --- |
 | Throw | 70 studs/s along the look, plus 12 up | 65 studs/s, plus 10 up |
-| Goes off | 3 s after the throw (bounces until then) | 1.5 s after the throw |
+| Goes off | 3 s after the throw | 1.5 s after the throw |
+| Landing | Heavy, barely bounces (`Bounce` 0.08); keeps half its speed on landing, then rolls about 2–4 studs to a stop | Same (`Bounce` 0.1) |
 | Effect | Blast of 16 studs: 120 damage at the center, falling to 15% at the edge, with knockback | A cloud of 13 studs for 15 s |
 | Thrower | Takes half damage from their own grenade | — |
 | Cover | Only humanoids in clear view of the blast are hit | Blocks NPC sight and aim assist through its core; bullets still pass |
-| World | Boards take 80 (`"Explosion"` source); up to 3 soft walls within 6 studs get a 1.6-stud hole | — |
+| World | Boards take 350 (`"Explosion"` source, 1.5× on boards): a blast 4 studs away strips a whole board. Up to 6 soft walls within 10 studs each get a 3.5-stud hole | — |
 | Kill feed | Item "Frag grenade", thrower credited; hits give the thrower a hitmarker | — |
 
 ## Where things are
@@ -43,7 +44,7 @@ A throw works with any weapon held, or none. It's refused in the lobby, while a 
 
 1. **Client** (`Client.Guns.Consumables.Throw`) checks the count, the lobby, menus and the cooldown, sends `Packets.Consumable.Throw` and plays the whoosh at once.
 2. **Server** (`ConsumableService.Throw`) checks again: the timestamp (±2 s), alive, not in the lobby, not stunned, one left, 80% of the cooldown passed, and `Consumable.PreventThrow`.
-3. It takes one off `ConsumableCount` and clones the model 1.5 studs ahead of the head (closer if a wall is right in front). The part goes in the `Thrown` collision group, so it never hits players, and is owned by the server. It launches with the throw speed plus half the thrower's own velocity, and bounces off the map.
+3. It takes one off `ConsumableCount` and clones the model 1.5 studs ahead of the head (closer if a wall is right in front). The part goes in the `Thrown` collision group, so it never hits players, and is owned by the server. It launches with the throw speed plus half the thrower's own velocity. It's heavy and barely bounces. On its first landing it keeps `LandingKeep` (0.5) of its sideways speed and spin, then `RollDrag` (1.8) slows it to a stop, so it stays near where it lands.
 4. After the fuse, `ConsumableService.Detonate` runs where the part lies. One that fell out of the world does nothing.
 
 The projectile is server-made, so other players see the same throw, and the thrower sees it after their ping.
@@ -90,7 +91,7 @@ Client (`Client.Guns.Consumables`): `Throw()` and `Pick(id)`.
 
 ## Adding a consumable
 
-1. Add an entry to `LIST` in `Content.Consumables` with a new `Id`, a `Kind` (`"Grenade"` or `"Smoke"`) and its numbers.
+1. Add an entry to `LIST` in `Content.Consumables` with a new `Id`, a `Kind` (`"Grenade"` or `"Smoke"`) and its numbers. `Bounce`, `LandingKeep` and `RollDrag` set how it lands and rolls.
 2. Add its model (one part) to `Assets.Models.Consumables`, named as `Model`.
 3. Add a TextButton named after the Id to `Main.Loadout.Body.Consumables.Options` (copy one of the two).
 
@@ -106,6 +107,12 @@ Checked in a Studio playtest on 2026-11-10:
 - **Smoke:** picking it switched the kind with the count kept at 1. The throw used the last one, the HUD read x0, and the cloud blocked a line through it but not one 20 studs to the side.
 - **Death:** the count went from 0 back to 2, and the pick stayed Smoke.
 - **G key:** bound (G and DPad Right). Studio's input tool couldn't deliver key presses to the game, so it hasn't been pressed by hand yet.
+
+Retuned on 2026-11-10 (it rolled like a light ball, and walls barely broke):
+
+- **Roll:** with the old settings it rolled far. Now: landing keep 0.3 / drag 3 rolled 0.5–1.3 studs (too little); 0.45 / 2 rolled 1.1–2.7; 0.55 / 1.6 rolled 4.5–5.3. Set to 0.5 / 1.8 in between, about 2–4 studs.
+- **Boards:** a blast 4 studs from a 6-piece board took off 2 pieces with the old 80 damage, and all 6 with 350.
+- **Soft walls:** a blast 2 studs from a wall removed 2.0 cubic studs of wall with the old 1.6-stud hole, and 9.0 with the new 3.5-stud hole.
 
 Not yet tried: a real phone or gamepad, against real NPCs, or with other players.
 
