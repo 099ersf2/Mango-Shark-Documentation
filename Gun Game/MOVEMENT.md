@@ -72,7 +72,7 @@ stateDiagram-v2
 | `Sprint` | `SprintSpeed` | `Sprinting` | Only while moving mostly forward (`SprintForwardDot`). Blocks firing and ADS |
 | `TacticalSprint` | `TacticalSprintSpeed` | `Sprinting` | Double-tap sprint. Lasts `TacticalDuration`, cooldown `TacticalCooldown`; guns take `SprintOutTime × TacticalOutMultiplier` to fire after |
 | `Crouch` | `CrouchSpeed` | `Crouching` | HipHeight lowered by `CrouchHipDrop`. Crouch spread (`Spread.Crouch`). Can't stand under a ceiling |
-| `Slide` | burst, then friction | `Crouching`, `Sliding` | Starts at `max(speed × SlideBoost, SlideStartSpeed)`. Faster downhill, slower uphill. Hip fire allowed with `Spread.Slide` extra spread. Cooldown `SlideCooldown` |
+| `Slide` | burst, then friction | `Crouching`, `Sliding` | Starts at `max(speed × SlideBoost, SlideStartSpeed)`. Faster downhill, slower uphill. Hip fire allowed with `Spread.Slide` extra spread. Cooldown `SlideCooldown`. Ending in a sprint carries the slide's speed into it (up to the sprint speed) instead of ramping up again from crouch speed |
 | `Prone` | `ProneSpeed` | `Prone` | Lying down. HipHeight lowered by `ProneHipDrop`, eye `ProneEyeDrop` lower. Best spread (`Spread.Prone`), can fire and aim, can't jump (a jump press gets up), no footsteps. `ProneCooldown` between going down and getting up |
 | `Air` | carried | — | A slide-jump keeps `SlideJumpKeep` of the slide's speed, with limited air control. Landing makes a camera dip scaled by fall speed |
 
@@ -179,7 +179,21 @@ Other players see crouch and slide through `Client.Movement.MovementPoses`, driv
 Change `Content.Movement.Config`, then start a new playtest; it's read once at load. Some starting points:
 
 - **Snappier sprint:** raise `Acceleration`.
-- **Longer slides:** lower `SlideFriction`, or raise `SlideStartSpeed`.
+- **Longer slides:** lower `SlideFriction`, or raise `SlideStartSpeed`. Keep `SlideBurstWindow` longer than `SlideMaxTime`, or the server's speed check logs slides as too fast.
+
+**Tuned 2026-11-11 (quicker and smoother; sliding felt slow):**
+
+| Setting | Was | Now |
+| --- | --- | --- |
+| `WalkSpeed` / `SprintSpeed` / `TacticalSprintSpeed` / `CrouchSpeed` | 16 / 23 / 27 / 8 | 17 / 26 / 31 / 9 |
+| `Acceleration` / `Deceleration` | 45 / 70 | 80 / 100 |
+| `SlideStartSpeed` / `SlideBoost` / `SlideMaxSpeed` | 30 / 1.2 / 42 | 38 / 1.35 / 52 |
+| `SlideFriction` / `SlideEndSpeed` / `SlideMaxTime` | 24 / 11 / 1.6 | 20 / 15 / 1.5 |
+| `SlideSteer` / `SlideCooldown` / `SlideJumpKeep` | 1.6 / 0.75 / 0.8 | 2.4 / 0.45 / 0.9 |
+| `AirControl` / `HeightSpeed` / `FovSpeed` | 18 / 13 / 7 | 28 / 18 / 9 |
+| `SlideBurstWindow` (server) | 0.6 | 2 |
+
+Measured in a playtest afterwards: a full slide lasted 1.1 s, peaked at 37 studs/s and covered 29 studs (before: about 0.8 s and 20 studs), then went straight back into a sprint; sprint tops out at 26 studs/s.
 - **Steeper slopes matter more:** raise `SlideSlopeGravity`.
 - **Less motion:**
   - Lower `BobUp`, `BobSide` and `StrafeTilt`. Players can also set **Camera bob** to 0.

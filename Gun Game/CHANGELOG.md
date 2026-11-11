@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-11-11: Quicker, smoother movement and faster slides
+
+See [docs/MOVEMENT.md](docs/MOVEMENT.md) (Tuning).
+
+### Changed
+
+- **Faster movement**: walk 17, sprint 26, tactical sprint 31, crouch 9 studs/s (was 16 / 23 / 27 / 8). Speed changes ramp almost twice as fast (acceleration 80, deceleration 100), and air control is stronger, so starting, stopping and turning feel snappier.
+- **Faster, longer slides**: a slide starts at 38 studs/s or 1.35 times your speed (up to 52), loses speed more slowly, and ends at 15 instead of 11. A full slide now lasts about 1.1 s and covers about 29 studs (was about 0.8 s and 20). It steers better and can be used again after 0.45 s (was 0.75). A slide-jump keeps 90% of its speed.
+- **A slide that ends in a sprint keeps its speed**, instead of the sprint ramping up again from crouch speed (the slow part after a slide).
+- The camera drops into a slide or crouch and its field of view changes a little quicker.
+- The server's speed check allows slide speed for 2 s after a slide (was 0.6 s), to cover the longer slides.
+
+Measured in a playtest: a full slide lasted 1.1 s, peaked at 37 studs/s and covered 29 studs, then went straight back into a sprint.
+
 ## 2026-11-11: Siege-style scout drones
 
 See [docs/DRONES.md](docs/DRONES.md).
