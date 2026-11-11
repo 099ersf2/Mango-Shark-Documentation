@@ -6,6 +6,17 @@ First person (your own view) is separate: `Client.Guns.Viewmodel` already animat
 
 Built 2026-11-11. Before this, every gun's `Animations` slots were empty, so other characters held guns with Roblox's default one-arm pose and never aimed, reloaded or recoiled.
 
+## Gun size and kind
+
+The gun models are built big (a full-size rifle is 4.4 studs, the pump shotgun 5.8, while an R15 arm reaches about 1.7). So the **third-person Tool is scaled down** when it's made (`Systems.Guns.GunService`, `thirdPersonScale`):
+- long guns come out about **2.2 studs** long (`LONG_GUN_LENGTH`), and pistols and revolvers about **1.15** (`SIDEARM_LENGTH`);
+- a gun is never made bigger;
+- the scale is stored as the Tool's `ModelScale` attribute, and `Content.Guns.Skins` scales skin sizes and offsets by it.
+
+The first-person viewmodel, loadout previews and gameplay don't change: bullets come from the head, and the viewmodel has its own copy.
+
+A gun reaching more than 0.45 studs behind its Handle has a stock and is held as a **long gun**; anything else is a **sidearm**, revolvers included. Before 2026-11-11 the kind came from the muzzle's distance, which put the long-barreled Revolver in the rifle poses.
+
 ## What each pose does
 
 | Pose | When | Gun placement (from the eyes) |
@@ -27,7 +38,12 @@ Every frame, in `RunService.PreSimulation` (after the Animator), for each R15 ch
    - **NPCs:** the `AimPitch` attribute.
    - **Your own body:** your camera.
 2. The right hand goes where the gun's grip needs it (the gun is welded to the right hand by `RightGrip`). The left palm goes on the gun's `LeftGrip`.
-3. **Reach:** if either hand couldn't reach (a long gun's front grip is about 1.7 studs ahead of its handle), the whole gun slides back toward the body by exactly what's missing, up to 3 passes. So both hands stay on guns of any length.
+3. **Settle** (up to 5 rounds):
+   - the gun moves toward the left shoulder by what the left arm is short of the front grip;
+   - it moves forward out of the head and torso, checking every corner of its outline (a stock may rest 0.15 studs into the chest, the shoulder pocket);
+   - it comes back toward the right shoulder if the right arm is short (the gun is welded to that hand).
+
+   If the front grip is still out of reach, the left hand holds as far along the gun toward it as it can.
 4. Two-bone IK sets the shoulder, elbow and wrist joints' `Transform`. It works with both Motor6D and `AnimationConstraint` rigs.
 
 Guns are sorted by shape: a muzzle within 1.3 studs of the grip is a **pistol**; a `Spherecast` gun or one named shotgun is a **shotgun**; anything else is a **rifle**.
@@ -60,6 +76,16 @@ At the top of `Client.Guns.ThirdPersonGuns`:
 - `KICK_DECAY`, `AIM_AFTER_SHOT`, `WAIST_PITCH`, `NECK_PITCH`.
 - `REACH_SHARE` and `REACH_PASSES`.
 - `RANGE`.
+
+## Checking the fit
+
+`ThirdPersonGuns.Report()` (client) returns each posed character's gun kind, how deep the gun still goes into the body (`Clip`), and how far each hand is off (`RightMiss`, `LeftMiss`). The gun range ([GUN_SHOWCASE.md](GUN_SHOWCASE.md)) is the place to read it for every gun at once.
+
+**On the range, all 72 rigs (2026-11-11, after the fixes):**
+- **Clipping:** at most 0.10 studs into the body. Before, whole stocks went through heads.
+- **Right hand:** always on the grip.
+- **Left hand:** on average 0.19 studs from the front grip, about 0.4 at worst on the long rifles when aimed.
+- **Kinds:** Revolver and SiegePistol are held as sidearms.
 
 ## Tested (2026-11-11, Studio playtest, the test-area NPCs)
 

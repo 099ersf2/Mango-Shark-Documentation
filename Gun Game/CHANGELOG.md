@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-11-11: Third-person guns fixed: no more guns through heads, revolvers fixed
+
+See [docs/THIRD_PERSON_GUNS.md](docs/THIRD_PERSON_GUNS.md).
+
+### Fixed
+
+- **Guns stuck out of characters' heads and bodies.** The gun models are far bigger than an R15 character can hold (a full rifle is 4.4 studs; an arm reaches 1.7). Third-person guns are now scaled to fit: long guns about 2.2 studs, pistols and revolvers about 1.15. The first-person view and gameplay are unchanged. The poses also keep every part of the gun out of the head and torso; a stock may rest slightly into the shoulder.
+- **Revolver animations were wrong.** Their long barrel made them count as rifles (sight half a stud from the face, rifle sprint carry). Guns are now sorted by whether they have a stock, so revolvers use the pistol poses.
+- **The left hand on long guns** now goes as far toward the front grip as it can reach instead of dragging the gun into the body.
+
+### Changed
+
+- `Content.Guns.Skins` scales skins by a gun's `ModelScale`, so skins fit the smaller third-person guns.
+- `ThirdPersonGuns.Report()` gives each character's gun fit, for checking.
+
+Measured on the gun range, all 72 rigs:
+- **Clipping:** at most 0.10 studs into the body.
+- **Right hand:** always on the grip.
+- **Left hand:** 0.19 studs from the front grip on average.
+
 ## 2026-11-11: Gun animation range
 
 See [docs/GUN_SHOWCASE.md](docs/GUN_SHOWCASE.md).
