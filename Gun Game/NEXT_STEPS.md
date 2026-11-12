@@ -2,6 +2,37 @@
 
 This list tracks verification not available in the solo Studio session.
 
+## Siege, matchmaking, classes (2026-11-12)
+
+**Before Siege can be played at all**
+- [ ] Fix the map (`Workspace.CurrentMap`) so it passes the check in [SIEGE.md](SIEGE.md#the-map): add `AttackerSpawnLocations` (5 parts), add `Cameras`, rename the second `Bombs.MainFloor`, name each site's volumes `BombA` / `BombB`, give every site a folder in `Sites` and a spawn in `DefenseSpawnLocations` named after it. The four spawns in `DefenseSpawnLocations` today (BackPorch, PoolSide, RoofSide, Street) look like attacker spawns.
+- [ ] Decide the lobby: it is off (its portals are gone), so on a lobby server players spawn on the map with guns while they queue. `LobbyService` has a marked line to require only `Lobby` and `LobbySpawnPoint` once that is wanted.
+
+**Live servers (nothing here has run)**
+- [ ] Publish to a test place and queue from two lobby servers: one matchmaker at a time; shut that server down and check another takes the lease within about 15 s.
+- [ ] A full reserved-server match: teleport in, teams from the match record, the round, the teleport back with parties intact.
+- [ ] A party with members on two lobby servers: invite, accept, kick, promote (ownership moves), leader leaves.
+- [ ] Force a teleport failure and check the requeue.
+- [ ] Watch MemoryStore and MessagingService usage with many lobby servers.
+
+**Two or more players**
+- [ ] Two attackers pick the same spawn, and two teammates the same class, at the same moment: one gets it, the other sees it greyed out at once.
+- [ ] A tied site vote: only tied sites are ever chosen.
+- [ ] A second client is never sent the other team's picks, or a defender's class before a scan (read the packets on an attacker client).
+- [ ] Drone scan: the mark stays where the defender stood, the next scan replaces it, the first scan shows the class on the attackers' scoreboard.
+- [ ] Site located once; red A and blue B marks for attackers.
+- [ ] Spectate teammates, then enemies when none is left; a dead attacker can't get into their drone.
+- [ ] Mid-match leaves: the last defender leaving gives the attackers the round; the last attacker leaving gives it to the defenders.
+- [ ] Every class ability in play ([CLASSES.md](CLASSES.md)).
+
+**With Studio's window visible (render steps did not run in the tests)**
+- [ ] The drone, security-camera and spectate views; the mouse free on the selection screens.
+- [ ] Real clicks through the Play menu and the selection pages.
+- [ ] Gamepad and touch for every new control.
+
+**Assets**
+- [ ] Class icons (`Content.Classes`, `Icon` is empty) and real sounds for `GadgetPlace`, `GadgetDestroyed`, `Flashbang`, `AbilityPulse`.
+
 - [ ] Run a two-player test and verify balanced team assignment and team spawn sides.
 - [ ] Credit an enemy-player kill and verify the player's kill count, team total, and winner.
 - [ ] Verify a victim spectates the credited killer until respawn, including when that killer leaves or respawns first.

@@ -2,6 +2,28 @@
 
 The answers to open design questions, so the code and the docs follow the same rules. Newest first. Each entry says what was decided and where it lives in the place.
 
+## 2026-11-12
+
+### Siege and matchmaking
+
+| Question | Decision |
+| --- | --- |
+| Which modes? | **Siege only.** Team Deathmatch, Free-for-All and Elimination are archived, not deleted |
+| Where is a match played? | **Always on a reserved server**, one match each. A lobby server never hosts one. Studio hosts it on the Studio server |
+| Does killing every defender end the round? | **No.** The attackers must still plant both defusers; if the clock runs out the defenders win, even all dead |
+| When does a team lose by being "gone"? | **Only when its players have left the server.** Being eliminated is not leaving |
+| Can a dead attacker use their drone? | **No.** It stays in the world and can be destroyed, but is locked for good |
+| A tied site vote | **Drawn at random among the tied sites only** |
+| Plant progress when you leave the room or die | **Back to zero** |
+| How many drones? | **One per attacker per match, never replaced.** Defenders have none |
+| What does a drone scan do? | **A static mark where the defender stood** (30 s, replaced by the next scan), and the first scan reveals their class. No highlight, no following |
+| Which map? | **The one in Workspace** (`CurrentMap`). No map loading |
+| Who sees a defender's class? | **Defenders always; attackers only after a scan.** The server never sends it before |
+| Does MatchService stay? | **Yes.** Siege is an `External` mode: `SiegeService` runs it, `MatchService` keeps kills, friendly fire and the HUD snapshot |
+| Classes per team | **Five, not four** (Claude's call): a team has up to five players and a class is one per team. Smoker and Anchor are the extras |
+| Camera key for defenders | **The Drone key (5)** (Claude's call): a defender has no drone, so no new key was added |
+| Spectate camera | **The death camera's own slot, Camera + 4** (Claude's call): spectating only changes who it follows |
+
 ## 2026-11-11
 
 ### NPC guard mode

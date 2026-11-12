@@ -73,6 +73,143 @@ Every module loads through ModuleLoader (`Init`, then `Start`). Require modules 
 
 ---
 
+## Siege, matchmaking, classes, cameras (2026-11-12)
+
+Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.md), [MATCHMAKING.md](MATCHMAKING.md), [CLASSES.md](CLASSES.md) and [DRONES.md](DRONES.md). Where a row further down this page disagrees with this section, this section is right: the admin match controls, `Packets.Match.Admin`, the `match` / `matchmode` / `matchset` commands, the Match key, `Packets.Drone.Spot` / `Spotted` and the Team Deathmatch, Free-for-All and Elimination modes are archived.
+
+### Recipes
+
+| I want to… | Do this (server unless noted) |
+| --- | --- |
+| Know what kind of server this is | `ServerRole.Kind()`: `"Lobby"`, `"Match"` or `"Studio"` |
+| Queue a player's party | `QueueService.Join(player)` (the leader only) |
+| Start a Siege match alone in Studio | Set the workspace attribute `SiegeTestTeam` to `Attackers` or `Defenders`, then queue from the Play menu (K) |
+| Know the Siege phase / a player's side | `SiegeService.Phase()` / `SiegeService.TeamOf(player)` |
+| End the round now | `SiegeService.ForceEnd("Attackers", "BombsPlanted")` |
+| Check the map | `SiegeMap.Load()` returns the map's info, or nil and warns every problem |
+| Give a class / arm a player | `ClassService.Assign(player, "Breacher", guns?)` / `ClassService.Arm(player)` |
+| Give guns that are not the saved loadout | `LoadoutService.Arm(player, { "Rifle", "Pistol" })` |
+| Give a drone without a throw | `DroneService.Place(player, cframe)` |
+| Show players a static mark | `DroneService.Mark(players, key, position, seconds)` |
+| Add a security camera | `CameraService.Add(model, name, team, bulletproof)` |
+| Change the plant time | `Extensions.Add("Siege.PlantTimeMultiplier", function(player, bombName) return 0.5 end)` |
+
+### Server functions
+
+| Function | What it does |
+| --- | --- |
+| `ServerRole.Kind()` / `IsLobby()` / `IsMatch()` / `IsLocal()` / `JobId()` | The server's role (`Systems.Matchmaking.ServerRole`) |
+| `Store.Sorted(name)` / `Store.Hash(name)` / `Store.Publish(topic, message)` / `Store.Subscribe(topic, handler)` / `Store.Now()` | MemoryStore and MessagingService with retries; local stand-ins in Studio (`Systems.Matchmaking.Store`) |
+| `Retry.Call(label, fn, attempts?)` | pcall, retries, exponential backoff (`Helpers.Retry`) |
+| `TeamPacker.Pack(tickets, now, limits)` | The next match's two sides, or nil |
+| `PartyService.Of(player)` / `Get(partyId)` / `Ensure(player)` / `IsLeader(player)` / `Owns(party)` / `UserIds(party)` | Parties |
+| `PartyService.Park(party)` / `Restore(player, partyId)` / `SetTravelling(userId, on)` | Keeping a party through a match |
+| `QueueService.Join(player)` / `Leave(player)` / `IsQueued(player)` | The queue |
+| `MatchHost.Record()` / `TeamOf(userId)` / `ReturnAll()` / `Clear()` | The match server's record and the return to the lobby |
+| `SiegeMap.Find()` / `Check(map)` / `Load()` | The Workspace map and its problems |
+| `SiegeService.Phase()` / `IsPlaying(player)` / `TeamOf(player)` / `IsAlive(player)` / `Players(team?, aliveOnly?)` / `Site()` | The running match |
+| `SiegeService.Reveal(defender)` / `ForceEnd(winner?, reasonKey)` | Show a defender's class to attackers / end the round |
+| `SpectateService.Begin(player, delay, choices)` / `Stop(player)` / `StopAll()` / `Watching(player)` | Spectating after the death camera |
+| `ClassService.Assign(player, classId, guns?)` / `ClassOf(player)` / `Arm(player)` / `Charges(player)` / `Clear(player)` / `Reset()` | Classes |
+| `ClassService.Use(player, timestamp, origin, look)` | Every check, then the ability: ok, message |
+| `Gadgets.Aim(context, range)` / `Place(kind, context, hit, health?)` / `OnDestroyed(model, fn)` / `Remove(model)` / `IsLive(model)` / `Blast(position, radius, damage, attacker, item)` / `Enemies(team)` / `Allies(team)` / `Clear()` | What abilities share (`Systems.Classes.Gadgets`) |
+| `CameraService.Setup(sources, team)` / `Add(model, name, team, bulletproof)` / `List()` / `Stop(player)` / `Clear()` | Security cameras |
+| `DroneService.Place(player, cframe)` / `Mark(players, key, position, seconds)` / `SetEnabled(player, on)` / `SetLockedIn(player, on)` / `Lock(player)` / `CanView(player)` | Drone controls for a game mode |
+| `MatchService.BeginExternal(id, endsAt?)` / `SetClock(endsAt)` / `Finish(winner?)` / `Reset()` / `Kills(player)` / `Refresh()` | For the service that runs an `External` mode |
+| `LoadoutService.Arm(player, guns)` | Gives exactly these guns and the knife |
+| `LobbyService.Release(player)` | Out of the lobby without moving them |
+| `DeathCamService.Release(player)` | Stop choosing who a dead player watches |
+
+### Client
+
+| Function | What it does |
+| --- | --- |
+| `Client.Core.Matchmaking.Open()` | Opens the Play menu (`Menus` name `Play`) |
+| `Client.Core.SiegeSelect` | No API: the selection and reveal screens |
+| `Client.Hud.SiegeHud.UseAbility()` | Uses the class ability |
+| `Client.Hud.Scoreboard` | No API: the scoreboard (hold Tab) |
+| `Client.Gadgets.CameraController.Use()` / `View(model)` / `Cycle(direction)` / `Exit(tellServer?)` | Security cameras |
+| `Client.Core.Spectate.Cycle(direction)` | Next or previous player to watch |
+| `DroneController.Exit(force?)` | Leaving is refused while `DroneLockedIn`, unless forced |
+
+### Packets
+
+| Packet | Direction | Arguments |
+| --- | --- | --- |
+| `Party.Request` | Client → server, answered (ok, message) | action (`Invite`, `Accept`, `Decline`, `Leave`, `Kick`, `Promote`), argument |
+| `Party.State` | Server → one client | `{ Id, Leader, Max, Members = { { UserId, Name, Here } } }` or nil |
+| `Party.Invite` / `Party.InviteClosed` | Server → one client | PartyId, leader name, leader UserId, seconds / PartyId |
+| `Queue.Request` | Client → server, answered (ok, message) | `Join` or `Leave` |
+| `Queue.State` | Server → one client | `{ Queued, Since, Status, Size }` |
+| `Siege.State` | Server → one client | The match as their team may see it |
+| `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`), value |
+| `Siege.Plant` | Server → one attacker | bomb (`""` for none), server time it started, seconds |
+| `Siege.Board` | Server → one client | Scoreboard rows, filtered for their team |
+| `Siege.RequestState` | Client → server | — |
+| `Class.Use` | Client → server, answered (ok, message) | server time, camera position, unit look |
+| `Class.State` | Server → the owner only | `{ ClassId, Charges, ReadyAt, Guns }` or nil |
+| `Class.Flash` | Server → one client | seconds blinded |
+| `Camera.View` | Client → server, answered (ok) | CameraId, or `""` to stop |
+| `Spectate.Next` / `Spectate.Mode` | Client → server / server → one client | 1 or -1 / `Team`, `Enemy` or `""` |
+| `Drone.Scan` | Client → server, answered (scanned) | drone, unit look |
+| `Drone.Marked` | Server → the scanner's team | key, position, seconds |
+
+### Extension points
+
+| Point | Kind | Arguments |
+| --- | --- | --- |
+| `Siege.PhaseChanged` | Fire | phase |
+| `Siege.PreventPlant` / `Siege.PlantTimeMultiplier` | Any / Product | player, bombName |
+| `Siege.Planted` / `Siege.SiteLocated` / `Siege.Ended` | Fire | player, bombName / player / winner?, reasonKey |
+| `Party.PreventInvite` | Any | player, targetUserId |
+| `Party.Changed` / `Party.Disbanded` | Fire | partyId |
+| `Queue.PreventJoin` | Any | player |
+| `Queue.Joined` / `Queue.Left` | Fire | partyId, ticket / partyId, reason |
+| `Matchmaking.MatchFormed` / `Assigned` / `MatchReady` / `Arrived` | Fire | record / record / record / player, record |
+| `Classes.PreventAbility` / `Classes.AllowBodiless` | Any | player, classId, ability / player, classId |
+| `Classes.CooldownMultiplier` | Product | player, classId, abilityId |
+| `Classes.AbilityUsed` / `Classes.Assigned` | Fire | player, classId, abilityId / player, classId |
+| `Classes.GadgetPlaced` / `Classes.GadgetDestroyed` | Fire | player, kind, model / owner?, kind, model, killer? |
+| Ability points | | `Classes.BreachDetonated`, `PreventFlash`, `FlashTimeMultiplier`, `Flashed`, `PreventPulseMark`, `Pulsed`, `PreventMineTrigger`, `MineDetonated`, `HealMultiplier`, `Healed` ([CLASSES.md](CLASSES.md#extension-points)) |
+| `Camera.PreventView` / `Camera.PreventDamage` | Any | player, model / attacker, model |
+| `Camera.Viewed` / `Camera.Destroyed` | Fire | player, model? / model, killer? |
+| `Spectate.Changed` | Fire | viewer, model?, mode |
+| `Drone.PreventRespawn` / `Drone.PreventView` | Any | player |
+| `Drone.Spotted` | Fire | player, target, **position** (added) |
+| `Lobby.PreventFirstSpawn` | Any | player |
+| `Loadout.PreventApply` | Any | player |
+| `Death.PreventSpectate` | Any | viewer |
+
+### Content
+
+| Module | What it holds |
+| --- | --- |
+| `Content.Matchmaking` | Party size, team sizes and minimums, waits, lifetimes, retry numbers, MemoryStore and topic names, the Studio settings |
+| `Content.Siege` | Phase times, plant time, map folder names, bomb labels and colors, texts, win reasons |
+| `Content.Classes` | Every class and ability; `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |
+| `Content.Cameras` | Camera health, hit box, view limits, attribute names |
+| `Content.Match.Modes.Siege` | The mode entry (`External = true`) |
+| `Content.Match.Teams` | Also `Attackers` and `Defenders` |
+| `Content.Drones` | Also `NO_SIGNAL_TIME` and the `DronesEnabled`, `DroneLockedIn`, `DroneLost`, `DroneLocked` attribute names; `SPOT_TIME` is 30, `SPOT_COOLDOWN` is 5 |
+
+### Attributes, tags, folders, keys
+
+| Name | On | Meaning |
+| --- | --- | --- |
+| `DronesEnabled`, `DroneLockedIn`, `DroneLost` | Player | No drone at all (false) / held in the drone's view / the drone is gone for good |
+| `DroneLocked`, `ShieldedUntil` | Drone model | Nobody may view or drive it / the Drone Shield's end (server time) |
+| `CameraViewing` | Player | The CameraId they look through |
+| `CameraId`, `CameraName`, `Destroyed`, `Bulletproof` (and `Team`) | Camera model in `workspace.SiegeCameras` | Camera state |
+| `Gadget`, `GadgetOwner`, `Armed` (and `Team`) | Gadget model in `workspace.SiegeGadgets` | Kind, owner UserId, a live mine |
+| `Reinforced` | Board model | Reinforced by the Reinforcement Expert |
+| `Planted` | A bomb in the map | A defuser is on it |
+| `SiegeTestTeam` | Workspace (you set, Studio only) | Puts everyone queued on that side |
+| Tag `Camera` | A part or model in the map | A security camera |
+| `workspace.SiegeCameras`, `workspace.SiegeGadgets` | | Made at runtime |
+| Keys | | `Play` (K), `ClassAbility` (T) in `Shared.PlayerSettings.Actions`; the `Match` action is gone. A player's class is **never** an attribute |
+
+---
+
 ## Server: guns
 
 ### `Systems.Guns.GunService`

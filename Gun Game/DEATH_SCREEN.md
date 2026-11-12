@@ -4,6 +4,8 @@ When you die you see who killed you and with what, and the camera follows your k
 
 Built 2026-11-11. It replaced the death screen that was part of the match HUD (`Main.MatchHUD.DeathScreen`, `Packets.Match.Death`), which only worked for player killers and followed them in first person.
 
+> **2026-11-12, Siege.** A dead player has one life, so after 4 s of the normal death camera `Systems.Siege.SpectateService` takes over who the camera follows: living teammates, then living enemies ([SIEGE.md](SIEGE.md#spectating)). It uses this same camera (render priority Camera + 4) and the same `Death.Spectate` packet. Two additions to `DeathCamService`: the `Death.PreventSpectate(viewer)` extension point (Any: true and this service sends that viewer no new target) and `DeathCamService.Release(player)`.
+
 ## How it plays
 
 | | |

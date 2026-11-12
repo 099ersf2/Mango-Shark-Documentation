@@ -2,7 +2,7 @@
 
 Give this file to any AI agent before it writes code for the Roblox place **"FPS"** (Mango Shark Studios, placeId `80699390327837`, universe `10775243847`). It explains how the game is built and how new code must be written. Follow it exactly. When this file and your habits disagree, this file wins.
 
-The other docs go deeper on each system: `API.md` (every function, packet, hook, attribute), `ADDING_GUNS.md`, `GUN_SYSTEM.md`, `THIRD_PERSON_GUNS.md`, `GUN_SHOWCASE.md`, `MOVEMENT.md`, `ADDING_NPCS.md` (including Guard mode), `MATCH.md` (matches, modes, teams), `DRONES.md`, `DEATH_SCREEN.md`, `CONSUMABLES.md`, `BREAKABLES.md`, `SOFTWALLS.md`, `SKINS.md`, `LOBBY.md`, `KILL_FEED.md`, `AIM_ASSIST.md`, `DECISIONS.md` (design answers already given).
+The other docs go deeper on each system: `API.md` (every function, packet, hook, attribute), `ADDING_GUNS.md`, `GUN_SYSTEM.md`, `THIRD_PERSON_GUNS.md`, `GUN_SHOWCASE.md`, `MOVEMENT.md`, `ADDING_NPCS.md` (including Guard mode), `SIEGE.md` (the game mode), `MATCHMAKING.md` (queue, parties, reserved servers), `CLASSES.md` (Siege classes and abilities), `MATCH.md` (MatchService and teams), `DRONES.md`, `DEATH_SCREEN.md`, `CONSUMABLES.md`, `BREAKABLES.md`, `SOFTWALLS.md`, `SKINS.md`, `LOBBY.md`, `KILL_FEED.md`, `AIM_ASSIST.md`, `DECISIONS.md` (design answers already given).
 
 *Updated 2026-11-11.* Read the doc for the system you touch before changing it.
 

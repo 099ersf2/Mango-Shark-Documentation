@@ -2,6 +2,8 @@
 
 Players start each session in the lobby, a separate area with no guns, where they can open the skin shop. A portal takes them to the arena, and a return portal in the arena brings them back.
 
+> **2026-11-12.** With matchmaking, players leave a lobby server through the queue ([MATCHMAKING.md](MATCHMAKING.md)), and Siege is played on reserved servers. Two additions to `LobbyService`: `LobbyService.Release(player)` takes a player out of the lobby without moving them (a game mode places them), and the `Lobby.PreventFirstSpawn(player)` extension point (Any) skips the move to the lobby for a first character (match servers). **The lobby is currently off in the place**: `Lobby.ArenaPortal` and `ArenaReturnPortal` are missing, so the service warns and players spawn on the map with guns. The portals are still required; `findParts` has a marked line to require only `Lobby` and `LobbySpawnPoint` when that is wanted.
+
 ## Where things are
 
 | What | Where |

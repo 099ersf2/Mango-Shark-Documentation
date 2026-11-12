@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-11-12: Siege, global matchmaking, parties and classes
+
+See [docs/SIEGE.md](SIEGE.md), [docs/MATCHMAKING.md](MATCHMAKING.md) and [docs/CLASSES.md](CLASSES.md). Tested in Studio with one player only; nothing cross-server has run live.
+
+### Added
+
+- **Siege**, the only mode: attackers plant a defuser on both bombs of the site the defenders voted for; one round, one life. `Systems.Siege.SiegeService`, `SiegeMap`, `SpectateService`; `Content.Siege`; `Content.Match.Modes.Siege`.
+- **Global matchmaking:** a MemoryStore queue, one matchmaker at a time (a lease), party-aware team packing, a reserved server per match, and the return to the lobby. `Systems.Matchmaking.*`, `Helpers.Retry`, `Content.Matchmaking`. Studio forms matches on the Studio server.
+- **Parties** of up to five across lobby servers: invite, accept, leave, kick, promote.
+- **Classes:** five a side, one player per class per team, each with an ability. `Content.Classes`, `Systems.Classes.ClassService`, `Gadgets`, ten modules in `Systems.Classes.Abilities`; gadget models in `Assets.Models.Siege`.
+- **Defender cameras:** `Systems.Cameras.CameraService`, `Client.Gadgets.CameraController`, `Content.Cameras`, `StarterGui.CameraFeed`.
+- **Spectating** teammates, then enemies, after the death camera (same camera, Camera + 4).
+- **UI, built in Studio:** `Main.Matchmaking`, `Main.PartyInvite`, `Main.MenuButtons.PlayButton`, `StarterGui.SiegeSelect`, `Main.SiegeHUD`, `Main.SiegeScoreboard`, `StarterGui.CameraFeed`, `DroneFeed.NoSignal`, `Main.Mobile.AbilityButton` / `CameraButton` / `ScoreButton`, and templates `PartySlot`, `InviteRow`, `SiegeOption`, `SiegeClassCard`, `SiegeTeamCard`, `SiegeBoardRow`, `SiegeBoardTeam`, `SiegeKillRow`, `BombMarker`.
+- **Client modules:** `Client.Core.Matchmaking`, `Client.Core.SiegeSelect`, `Client.Core.Spectate`, `Client.Hud.SiegeHud`, `Client.Hud.Scoreboard`, `Client.Gadgets.CameraController`.
+- **Packets:** groups `Party`, `Queue`, `Siege`, `Class`, `Camera`, `Spectate`; `Drone.Scan`, `Drone.Marked`.
+- **Keys:** Play (K), Class ability (T). Teams `Attackers` and `Defenders`. Effects `GadgetPlace`, `GadgetDestroyed`, `Flashbang`, `AbilityPulse`.
+- **Extension points:** `Siege.*`, `Party.*`, `Queue.*`, `Matchmaking.*`, `Classes.*`, `Camera.*`, `Spectate.Changed`, `Drone.PreventRespawn`, `Drone.PreventView`, `Lobby.PreventFirstSpawn`, `Loadout.PreventApply`, `Death.PreventSpectate` (all in [API.md](API.md)).
+
+### Changed
+
+- **Drones:** a scan leaves a static mark where the enemy stood (30 s, replaced by the next scan) instead of a highlight and marker that followed them; the scan cooldown is 5 s and fully enforced by the server. New: `DroneService.Place`, `Mark`, `SetEnabled`, `SetLockedIn`, `Lock`, `CanView`; the NO SIGNAL screen.
+- **MatchService** keeps `External` modes: for those it never starts, shuffles, respawns or ends anything itself. New: `BeginExternal`, `SetClock`, `Finish`, `Reset`, `Kills`, `Refresh`.
+- **MatchHud** no longer owns the scoreboard (`Client.Hud.Scoreboard` does).
+- **LoadoutService:** `LoadoutService.Arm(player, guns)`; `Loadout.PreventApply`.
+- **LobbyService:** `LobbyService.Release(player)`; `Lobby.PreventFirstSpawn`.
+- **DeathCamService:** `DeathCamService.Release(player)`; `Death.PreventSpectate`.
+
+### Removed (archived, nothing deleted)
+
+In `ServerStorage.Archive.OldMatchModes`: the Team Deathmatch, Free-for-All and Elimination modes; the admin Match menu (`Client.Core.MatchMenu`, `Main.MatchMenu`, `MenuButtons.MatchButton`); the `match`, `matchmode` and `matchset` commands; the old scoreboard frame and its `ScoreboardRow` / `ScoreboardTeam` templates; and copies of `MatchService`, `Packets`, `PlayerSettings` and `Content.Match.Settings` as they were. `Packets.Match.Admin` and the Match key (M) are gone. In `ServerStorage.Archive.OldDroneSpot`: the `SpotHighlight` template.
+
 ## 2026-11-11: NPC guard mode
 
 See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Guard mode).

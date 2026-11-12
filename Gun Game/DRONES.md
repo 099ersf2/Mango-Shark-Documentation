@@ -4,6 +4,37 @@ Small ground drones in the style of Rainbow Six Siege's. You throw one out and l
 
 Built 2026-11-11. It replaced an older drone system (a loose `DroneService` Script, a `DroneController` LocalScript and `DroneRemote`), which is kept, disabled, in `ServerStorage.Archive.OldDroneSystem` for reference.
 
+## Changed on 2026-11-12 (Siege)
+
+Where this section and the rest of the page disagree, this section is right.
+
+**Scanning replaced spotting.** Fire in a drone scans the enemy in the crosshair (same range, angle and clear view as before):
+- The team gets a **static mark** where the enemy stood at that moment (`Packets.Drone.Marked`: a key, a position, seconds). It does not follow them.
+- It lasts 30 s (`SPOT_TIME`). Scanning the same enemy again replaces it.
+- The cooldown is 5 s (`SPOT_COOLDOWN`), and the server enforces all of it (`Packets.Drone.Scan`).
+- The highlight and the following marker are gone (`SpotHighlight` is archived in `ServerStorage.Archive.OldDroneSpot`; `Packets.Drone.Spot` and `Spotted` no longer exist).
+
+**Controls for a game mode** (`DroneService`; Siege uses all of them, see [SIEGE.md](SIEGE.md#drones-in-siege)):
+
+| Call | What it does |
+| --- | --- |
+| `Place(player, cframe)` | Puts the player's drone down there, with no throw. It uses a charge and a slot; the owner drives it at once |
+| `SetEnabled(player, on)` | `false`: no drone for this player. The slot and button hide, every drone action is refused (`DronesEnabled` attribute) |
+| `SetLockedIn(player, on)` | `true`: held in the drone's view with no body. The client goes in by itself and can't leave (`DroneLockedIn`) |
+| `Lock(player)` | Their drones stay in the world and can be destroyed, but the server takes their physics back and refuses every view and scan (`DroneLocked` on the drone) |
+| `CanView(player)` | May this player look through their drone now |
+| `Mark(players, key, position, seconds)` | Shows these players a static mark |
+
+**In Siege:**
+- One drone per attacker per match, placed by the server at their spawn. Throwing is refused (`Drone.PreventDeploy`).
+- **A destroyed drone never comes back** (`Drone.PreventRespawn`). The player's `DroneLost` attribute is set and the client shows the **NO SIGNAL** screen (`StarterGui.DroneFeed.NoSignal`): at once if they are in the drone, and for 2.5 s (`NO_SIGNAL_TIME`) whenever they try the drone later.
+- **A dead attacker cannot use their drone.** It is locked on death: it remains in the world, can still be destroyed, and cannot be viewed or controlled.
+- Defenders have no drone.
+
+**New extension points:** `Drone.PreventRespawn(player)` and `Drone.PreventView(player)` (Any). `Drone.Spotted` now also passes the position: `(player, target, position)`.
+
+**Tested 2026-11-12 (Studio, one player):** a placed drone stood 0.9 studs from the spawn and the client went into it by itself while held; destroyed in the prep phase, `DroneLost` was set, no drone came back, `Place` and `Deploy` were refused, and NO SIGNAL showed and stayed until the hold ended. **Not verified:** a scan of a real enemy and its mark, the lock on death with a living drone, and the drone camera itself (Studio was not rendering frames).
+
 ## How it plays
 
 | | |

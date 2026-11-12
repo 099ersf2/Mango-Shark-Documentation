@@ -4,6 +4,9 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 
 | Doc | Read it when |
 | --- | --- |
+| [Siege](Gun%20Game/SIEGE.md) | You are working on the game mode: the phases, the map it needs, planting, cameras, spectating, the scoreboard |
+| [Matchmaking and parties](Gun%20Game/MATCHMAKING.md) | You are working on the queue, parties, the matchmaker, or how players reach a reserved server and come back |
+| [Classes](Gun%20Game/CLASSES.md) | You are adding or tuning a Siege class or its ability |
 | [Gun animation range](Gun%20Game/GUN_SHOWCASE.md) | You want to see every gun's third-person animations side by side (the `range` command) |
 | [Third-person gun animation](Gun%20Game/THIRD_PERSON_GUNS.md) | You are changing how other players and NPCs hold, aim, shoot and reload guns |
 | [Death screen](Gun%20Game/DEATH_SCREEN.md) | You are working on what a player sees after dying, or spectating |
