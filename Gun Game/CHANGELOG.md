@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-11-12: UI revamp (MVP pass)
+
+See [docs/UI.md](UI.md). Laid out and checked by measurement only: nobody has seen it rendered yet.
+
+### Added
+
+- **A big green PLAY button, bottom center** (`Main.Lobby`). Pressing it queues the party at once; while searching it is red and cancels. PARTY sits to its left and LOADOUT to its right, with the queue status above.
+- **Party is its own menu** (`Main.Party`, key L): member rows with avatars, LEAD and KICK, LEAVE PARTY, and the invite list. It is no longer inside a Play menu.
+- **`Client.Core.UIFeel`:** every button in the game squashes when pressed, grows on hover, and has a sound; refused buttons buzz; menus pop in. Six new UI sounds (`UIOpen`, `UIClose`, `UIConfirm`, `UIError`, `UITick`, `UINotify`), placeholders made from the two the game had.
+- **Siege team cards** in the style of an operator line-up, dealt in on the reveal; the reveal reads OBJECTIVE LOCATION or INSERTION POINT.
+- Sounds and effects on the moments that matter: search started, match found, invite received, pick accepted, the last 5 seconds of selection, a new phase, an ability used or refused, the round's end.
+- Keys: **Party (L)**. Play (K) now queues or cancels.
+
+### Changed
+
+- **One look** for the Loadout, Settings, Skin shop and Scoreboard menus and their rows: the same panel, heavy titles, bold buttons, round corners.
+- **Touch sizes:** close buttons 44 × 40 (were 36), the top-right menu buttons 120 × 44 and wrapping onto rows (were 132 × 36 in one line), invite buttons 42 tall (were 30), party rows 44 tall, the health bar 40% thicker, weapon slots 30% taller. The SCORE touch button moved out of the combat buttons to the top of the Siege HUD.
+- The top-right menu buttons hide during Prep and Action.
+
+### Removed (archived in `ServerStorage.Archive.OldUI`)
+
+- The Play menu that held the queue and the party together (`Main.Matchmaking`) and its button (`MenuButtons.PlayButton`).
+
 ## 2026-11-12: Siege bombs are in place from the prep phase
 
 See [docs/SIEGE.md](SIEGE.md#the-bombs).

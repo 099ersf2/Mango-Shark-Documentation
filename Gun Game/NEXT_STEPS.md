@@ -2,6 +2,16 @@
 
 This list tracks verification not available in the solo Studio session.
 
+## UI revamp (2026-11-12)
+
+- [ ] **Look at it.** Nothing was seen rendered. Check colors, spacing and text fit in the lobby, the Party menu, the selection and reveal screens, and the restyled Loadout and Settings menus, on a desktop and at phone size.
+- [ ] Press things: PLAY (green, then red CANCEL with the timer counting), the Party menu, an invite between two players, the selection pages.
+- [ ] Watch and listen: buttons squash on press and grow on hover, menus pop in, and each sound is distinct and not too loud.
+- [ ] A real phone: the compact lobby bar while the fire button shows, the SCORE pill, 44 px rows.
+- [ ] Replace the six placeholder UI sounds, and add class icons.
+- [ ] Decide whether `LobbyHubUI`'s Career, Backpack and Map panels get rebuilt in Studio in the new look (they are another developer's, built in code).
+- [ ] Decide whether the combat touch buttons get a new layout.
+
 ## Siege, matchmaking, classes (2026-11-12)
 
 **Before Siege can be played at all**

@@ -124,7 +124,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 
 | Function | What it does |
 | --- | --- |
-| `Client.Core.Matchmaking.Open()` | Opens the Play menu (`Menus` name `Play`) |
+| `Client.Core.UIFeel.Play(kind)` / `Pop(object)` / `Pulse(object)` | A UI sound (`Hover`, `Press`, `Open`, `Close`, `Confirm`, `Error`, `Tick`, `Notify`) / pop something in / a quick grow and settle. Needs a `UIScale` named `Feel` in the object ([UI.md](UI.md#feel)) |
+| `Client.Core.Matchmaking.Play()` / `OpenParty()` | The lobby's PLAY button (queue or cancel) / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
 | `Client.Core.SiegeSelect` | No API: the selection and reveal screens |
 | `Client.Hud.SiegeHud.UseAbility()` | Uses the class ability |
 | `Client.Hud.Scoreboard` | No API: the scoreboard (hold Tab) |

@@ -4,6 +4,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 
 | Doc | Read it when |
 | --- | --- |
+| [UI](Gun%20Game/UI.md) | You are adding or changing any UI: the look, the lobby's PLAY bar, button sounds and effects, touch sizes |
 | [Siege](Gun%20Game/SIEGE.md) | You are working on the game mode: the phases, the map it needs, planting, cameras, spectating, the scoreboard |
 | [Matchmaking and parties](Gun%20Game/MATCHMAKING.md) | You are working on the queue, parties, the matchmaker, or how players reach a reserved server and come back |
 | [Classes](Gun%20Game/CLASSES.md) | You are adding or tuning a Siege class or its ability |

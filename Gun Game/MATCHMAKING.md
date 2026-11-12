@@ -27,15 +27,16 @@ The place is one place with two kinds of server (`Systems.Matchmaking.ServerRole
 | Team packing (pure logic) | `Systems.Matchmaking.TeamPacker` |
 | The match server's side | `Systems.Matchmaking.MatchHost` |
 | Client | `ReplicatedStorage.Modules.Client.Core.Matchmaking` |
-| UI | `StarterGui.Main.Matchmaking` (the Play menu), `Main.PartyInvite`, `Main.MenuButtons.PlayButton`; templates `PartySlot`, `InviteRow` |
+| UI | `StarterGui.Main.Lobby` (the PLAY bar), `Main.Party` (the Party menu), `Main.PartyInvite`; templates `PartySlot`, `InviteRow` |
 | Packets | `Packets.Party` (`Request`, `State`, `Invite`, `InviteClosed`), `Packets.Queue` (`Request`, `State`) |
 
 ## How it plays
 
-- **Play [K]** (or the Play button) opens the Play menu. It hides during a match.
-- **Queue panel:** Find match, the queue timer, Cancel, and a status line. Only the party leader can queue or cancel; members see the timer.
-- **Party panel:** five slots; the leader can Promote or Kick a member; anyone can Leave.
-- **Invite list:** two tabs. *This server* lists players here. *Friends* lists friends who are online in this game. Only the leader invites.
+The UI was rebuilt on 2026-11-12 ([UI.md](UI.md#the-lobby)): the queue and the party are no longer one menu.
+
+- **PLAY** is a big green button in the bottom center of the lobby (`Main.Lobby.Play`, key K). Pressing it queues the party at once. While searching it is red and cancels, with the status and timer above it. Only the party leader can use it; for a member it is grey. The bar hides during a match.
+- **PARTY** (beside PLAY, key L) opens the Party menu (`Main.Party`): five member rows; the leader can make a member the leader (LEAD) or KICK them; anyone can LEAVE PARTY.
+- **Invite list** (in the Party menu): two tabs. *This server* lists players here. *Friends* lists friends who are online in this game. Only the leader invites.
 - **Invite popup:** "NAME invited you to their party", Accept or Decline, for 30 s.
 - A change to a queued party (someone joins, leaves, is kicked or disconnects) takes it out of the queue.
 
