@@ -37,6 +37,7 @@ Every module loads through ModuleLoader (`Init`, then `Start`). Require modules 
 | Damage someone, no credit | `Combat.DealDamage(humanoid, 30)` |
 | Knock someone back | `Combat.Knockback(character, direction, 60)` |
 | Spawn NPCs | `NPCService.Spawn("Soldier", cframe)`, or `spawnnpc Soldier 3` |
+| Make an NPC guard a room | Tag a part covering the room `NPCRoom`, then `NPCService.SetMode(npc, "Guard", roomPart)`, or give its `NPCSpawn` `Mode = "Guard"` |
 | Remove every NPC | `NPCService.Clear()`, or `clearnpcs` |
 | Break part of a board | `BreakableService.Damage(boardPartOrModel, 50, player, "Trap")` |
 | Explosion damage to boards | `BreakableService.DamageRadius(position, 12, 100, player, "Explosion")` |
@@ -238,6 +239,7 @@ See [DRONES.md](DRONES.md).
 | `NPCService.Clear()` | Removes every NPC |
 | `NPCService.Count()` / `NPCService.ProfileNames()` | How many are alive / the profile names |
 | `NPCService.Agents()` | The live agents (`Brain.Agent`), read only, for tests and debug tools |
+| `NPCService.SetMode(model, mode: string, room: BasePart?): boolean` | `"Guard"`: the NPC stays in the `NPCRoom` part (nil: the one it stands in), patrols it, repairs its doors and windows and fights first; `"Roam"`: normal ([ADDING_NPCS.md](ADDING_NPCS.md), Guard mode) |
 | `Tactics.Danger` / `Vault` / `Fortify` / `Pursue` / `Suspicion` / `Breach` / `TryGrenade(agent, now)`, `Tactics.OnHurt(agent, attacker)` | The reflexes around the tree (dodge grenades, climb windows, board up doors and windows, chase a target behind glass, shoot to test, break in or out, throw, turn toward a hit); see [ADDING_NPCS.md](ADDING_NPCS.md) |
 | `Brain.*` | Helpers behavior-tree tasks use: `CanSee` (sees through windows), `SeeThrough`, `Penetrable`, `ShootThrough`, `BreachPoint`, `FindEntry`, `Connected`, `Ground`, `FindExit`, `FindFortify`, `BlockedAhead`, `Blocked` (soft walls and boards aren't cover), `AimPoint`, `Eye`, `MoveTo`, `MoveDirect`, `Stop`, `IsMoving`, `Ammo`, `IsReloading`, `SetLastKnown`, `FlatDistance`, `NewPath`, `AdvancePath` |
 | Tasks (`Systems.NPC.Tasks.*`) | `FindTarget`, `HasLineOfSight`, `InRange`, `LowHealth`, `NeedsReload`, `MoveToCover`, `Reload`, `AimAndShoot`, `Strafe`, `Chase`, `Patrol`: each has `run(agent)`, some `start` / `finish`. See [ADDING_NPCS.md](ADDING_NPCS.md) |
@@ -545,6 +547,7 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | Attribute | On | Meaning |
 | --- | --- | --- |
 | `InLobby` | Player | In the lobby (no guns) |
+| `NPCMode`, `GuardRoom` | NPC model | `"Roam"` or `"Guard"` / the guarded `NPCRoom`'s name (`NPCService.SetMode`) |
 | `Team` | Player, NPC model, SpawnLocation (you set) | A `Content.Match.Teams` Id: the player's team (our team system), an NPC's side, or which team a spawn belongs to |
 | `GunAiming` | Player character, NPC model | Aiming down sights (players) or aiming at a target (NPCs); the third-person aim pose ([THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md)) |
 | `Reloading` | Gun Tool | True while the gun reloads (the third-person reload) |
@@ -578,7 +581,8 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | `SoftWallDebris` | (set by the game) | Falling soft-wall pieces |
 | `SkinShopPrompt` | A ProximityPrompt | Opens the skin shop (lobby only) |
 | `NPC` | (set by the game) | Spawned NPCs |
-| `NPCSpawn` | A part | An NPC spawn point |
+| `NPCSpawn` | A part | An NPC spawn point. Attributes: `Profile`; `Mode = "Guard"` and optional `Room` (an `NPCRoom` part's name) spawn a room guard |
+| `NPCRoom` | A part covering a room | A room a Guard-mode NPC keeps: it stays inside, patrols, and rebuilds the boards on or near its walls |
 | `ScribeFragment` | A ModuleScript | Adds player data fields |
 | `SmokeCloud` | (set by the game) | A live smoke cloud part, with a `Radius` attribute |
 | `NPCSecure` | A part inside a room | Idle NPCs go clear that room, breaking in through boards or soft walls if they must; optional `Team` attribute |

@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-11: NPC guard mode
+
+See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Guard mode).
+
+### Added
+
+- **Guard mode for every NPC** (for a future game mode). A guard:
+  - stays in its room (a part tagged `NPCRoom`);
+  - patrols it and watches its doors and windows;
+  - rebuilds any damaged door or window board of the room, at any health, the most broken first, so the room can't be sieged;
+  - always fights first: an enemy it can shoot, or a hit it just took, stops a repair, and it fights from inside the room;
+  - never chases, pursues through glass or breaks out.
+- **Turning it on:** `NPCService.SetMode(npc, "Guard", room)` / `"Roam"`, or `Mode = "Guard"` (and optional `Room`) on an `NPCSpawn` part. NPC models show `NPCMode` and `GuardRoom`.
+
+Partly tested in a playtest on a temporary room in the NPC test area:
+- **Patrol:** a guard patrolled and never left the room (0 of 16 samples outside).
+- **Repair:** with an enemy visible through the broken window, it fought instead of repairing, as designed.
+- **Not tested:** a full repair with no enemy in view, and a repair interrupted by a hit. Those weren't checked; see [NEXT_STEPS.md](NEXT_STEPS.md).
+
 ## 2026-11-11: Shotgun idles fixed
 
 ### Fixed

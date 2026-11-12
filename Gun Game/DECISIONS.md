@@ -4,6 +4,15 @@ The answers to open design questions, so the code and the docs follow the same r
 
 ## 2026-11-11
 
+### NPC guard mode
+
+| Question | Decision |
+| --- | --- |
+| How is a room defined? | **A part tagged `NPCRoom` covering it**; its doors and windows are the boards on or near its box |
+| How does a game mode use it? | **`NPCService.SetMode(npc, "Guard", room)`**, or `Mode = "Guard"` on an `NPCSpawn` part |
+| Repair or fight? | **Fight first**: a visible enemy, or a hit in the last 3 s, stops a repair |
+| May a guard leave its room? | **No**: moves are kept inside; it doesn't chase, pursue or break out |
+
 ### Third-person gun animation
 
 | Question | Decision |

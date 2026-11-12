@@ -154,6 +154,45 @@ Tune the numbers at the top of `Systems.NPC.Tactics` (`SUSPECT_*`, `BREACH_*`, `
 
 **Tested 2026-11-10** (a room point behind the intact door board DoorBoard3, the NPC 23–29 studs outside, its sight and hearing turned off so the live player didn't pull it away): the way round was 188 studs against 22 straight, so it chose to breach DoorBoard3. The Breacher fired one shotgun blast (all 6 pieces off) and secured the room 2 s after starting; the Grenadier bashed all 6 pieces off and secured it in 6–8 s. The Grenadier didn't throw a grenade there because every arc hit the roof over the door, which is right. Grenade breaching through a clear arc wasn't run separately (a clear-arc throw over a wall was).
 
+## Guard mode (room defenders)
+
+Added 2026-11-11 for a future game mode. Any NPC can be put in **Guard** mode. It then:
+- **stays in one room;**
+- **patrols it;**
+- **keeps its doors and windows boarded up,** so the room can't be sieged;
+- **always fights first** when attacked.
+
+The default mode, **Roam**, is the normal behavior: hunting, chasing and securing rooms anywhere.
+
+**Mark a room:** cover it with a part tagged **`NPCRoom`**: anchored, invisible, no collision, no query, no touch. Size it to the room, floor to just under the ceiling. Its doors and windows are the board models (Systems.Breakables) on or within 3 studs outside its box.
+
+**Make a guard:**
+- **On a spawn point:** give an `NPCSpawn` part `Mode = "Guard"`. The NPC guards the `NPCRoom` the spawn point is in, or the one named by its `Room` attribute (the room part's name). It is a guard again every respawn.
+- **From code (a game mode):**
+
+```lua
+NPCService.SetMode(npcModel, "Guard", roomPart)   -- roomPart nil: the NPCRoom it stands in
+NPCService.SetMode(npcModel, "Roam")              -- back to normal
+```
+
+`SetMode` returns false if the model isn't an NPC, or if Guard mode has no room. The model's `NPCMode` attribute shows the mode, and `GuardRoom` names the room.
+
+**What a guard does:**
+
+| | |
+| --- | --- |
+| Stays in the room | Every move goes through `Brain.MoveTo`, which keeps it inside the room's box, 1.5 studs in from the walls (`Brain.InRoom`). A chase or hunt stops at the wall, and it fights from inside. `Tactics.Pursue` (chasing through glass) and `Tactics.Breach` (breaking through boards) are off, so it never leaves |
+| Patrols | `Tasks.Patrol`: walks to a random spot on the room's floor, then stands 1.5 to 4 s watching one of the room's doors or windows (or the room's middle), then another spot |
+| Repairs | `Tactics.Fortify`: any damaged board of the room, at any health. The most broken goes first (a breach in progress), then the nearest (`Brain.FindRoomRepair`). It walks to the board's inside and puts a piece back every 0.6 s until it is whole. When all are whole it checks again every second (`GUARD_SCAN`). Empty buildable doors (`DoorBoardBuild`, 0/6) count as damaged, so a guard builds its room's open doorways shut |
+| Fights first | It drops a repair at once for an enemy it can see and shoot, or for 3 s after it is hit (`GUARD_FIGHT_TIME`). A hit from someone it can't see turns it toward them, as usual. It goes back to the repair 1.5 s after the fight ends (`GUARD_RETRY`) |
+
+Tuning: `GUARD_WAIT`, `GUARD_ARRIVED` (Tasks.Patrol), `GUARD_FIGHT_TIME`, `GUARD_RETRY`, `GUARD_SCAN` (Tactics), `ROOM_MARGIN`, `ROOM_BOARD_REACH` (Brain).
+
+**Tested (2026-11-11, Studio playtest, partly).** I used a test room over the hall at about x -38, z -500 in the NPC test area: 9.4 × 42.2 studs, with two windows, two buildable doors and a boarded door. It was made at runtime only; there is no `NPCRoom` saved in the place.
+- **Patrol:** the Breacher, set to Guard mode, patrolled it and stayed inside: 0 of 16 position samples were outside, and it walked between spots along the hall.
+- **Repair:** when a window was broken, it went to the window. It rebuilt only 1 of 6 pieces in 12 s, because the test player stood outside in view through the open window, and it fought (shot at the player) instead. That is the fight-first rule working, but it kept the repair itself from being checked properly.
+- **Not tested:** a later run with the player out of view didn't happen, because the place's NPC cap was 0. So these are still to check: a full repair with no enemy in view, a repair stopped by a hit and then finished, and `NPCSpawn` `Mode`.
+
 ## Write a task module
 
 A task is a `ModuleScript` with `start`, `run` and `finish`. Only `run` is required. `run` gets the NPC's agent and returns one of:

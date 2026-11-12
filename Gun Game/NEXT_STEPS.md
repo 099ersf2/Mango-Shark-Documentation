@@ -25,3 +25,9 @@ This list tracks verification not available in the solo Studio session.
 - [ ] Watch another player in a two-player test: aim pitch, aiming, sprinting, shooting and reloading in third person.
 - [ ] Look at each gun from the side and front; tune `POSES` in `Client.Guns.ThirdPersonGuns` if a hold looks off.
 
+
+## NPC guard mode (2026-11-11)
+- [ ] Put an `NPCRoom` part over a room, make an NPC a guard (`Mode = "Guard"` on its `NPCSpawn`, or `NPCService.SetMode`), break one of the room's boards out of the guard's view, and check it rebuilds it.
+- [ ] Shoot the guard while it repairs: it should fight from inside the room, then finish the repair.
+- [ ] Note: the NPC cap (`MAX_NPCS`) was 0 and the lobby was off in the last playtest (not from this change).
+
