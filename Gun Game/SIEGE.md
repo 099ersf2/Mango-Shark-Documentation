@@ -1,6 +1,6 @@
 # Siege
 
-Siege is the game's only mode since 2026-11-11. Two teams of up to five: **attackers** must plant a defuser on both bombs of one site; **defenders** hold that site until the clock runs out. One match is one round, and everyone has one life.
+Siege is the game's only mode since 2026-11-11. Two teams of up to five. The **defenders'** two bombs are already in place at one site; the **attackers** must plant a defuser on both. The defenders only have to keep them away from the bombs until the clock runs out. Nobody plants a bomb: only defusers are planted. One match is one round, and everyone has one life.
 
 Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): every match is played on its own reserved server. Classes and their abilities are in [CLASSES.md](CLASSES.md). Team Deathmatch, Free-for-All and Elimination are archived (`ServerStorage.Archive.OldMatchModes`).
 
@@ -21,7 +21,7 @@ Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): ev
 | --- | --- |
 | Numbers and names | `ReplicatedStorage.Content.Siege` |
 | The mode entry (an `External` mode) | `Content.Match.Modes.Siege` |
-| The match (phases, picks, spawning, planting, discovery, win rules) | `ServerScriptService.Modules.Systems.Siege.SiegeService` |
+| The match (phases, picks, spawning, the bombs, defusers, discovery, win rules) | `ServerScriptService.Modules.Systems.Siege.SiegeService` |
 | Finding and checking the map | `Systems.Siege.SiegeMap` |
 | Spectating after death | `Systems.Siege.SpectateService`, `Client.Core.Spectate` |
 | Defender cameras | `Systems.Cameras.CameraService`, `Client.Gadgets.CameraController`, `Content.Cameras` |
@@ -48,7 +48,7 @@ The map must hold:
 │       └─ BombB                 (the blue B mark)
 ├─ Sites
 │   └─ <SiteName>
-│       ├─ BombA                 a part: the room volume an attacker stands in to plant bomb A
+│       ├─ BombA                 a part, or a folder of parts: the room an attacker stands in to plant a defuser on bomb A
 │       └─ BombB
 ├─ DefenseSpawnLocations
 │   └─ <SiteName>                a part, or a folder of parts. One is picked at random; every defender spawns there
@@ -64,7 +64,7 @@ The map must hold:
 
 When a match starts the map is checked, and every problem is warned in plain words, for example `Site "MainFloor": missing site volume Workspace.CurrentMap.Sites.MainFloor.BombA`. **A map with any problem cannot host a match**: the round ends at once with "The map is not set up for Siege".
 
-**The map in the place on 2026-11-12 does not pass yet** (14 problems): no `AttackerSpawnLocations`, no cameras, two bomb folders both named `MainFloor`, site volumes named `Part` and `Part1` instead of `BombA` and `BombB`, only one site in `Sites`, and `DefenseSpawnLocations` holding four spawns named after outdoor places instead of sites. See [NEXT_STEPS.md](NEXT_STEPS.md).
+**The map in the place does not pass yet.** The folders and names are now right (four sites: Basement, MainFloor, UpstairsBedroom, UpstairsStage). On the last check (2026-11-12) 13 things were still empty: seven of the eight bomb-room folders in `Sites` have no parts (only `UpstairsBedroom.BombA` has), the four `DefenseSpawnLocations/<site>` folders have no parts, `AttackerSpawnLocations` has 4 parts and needs 5, and there are no cameras. See [NEXT_STEPS.md](NEXT_STEPS.md).
 
 ## Phases
 
@@ -90,22 +90,32 @@ All times are in `Content.Siege`.
 
 | Winner | Reason | When |
 | --- | --- | --- |
-| Attackers | Both defusers planted | The second bomb is planted |
+| Attackers | Both defusers planted | The second defuser is planted |
 | Attackers | Every defender left the game | No defender is on the server any more |
 | Defenders | Every attacker was eliminated | No attacker is alive |
 | Defenders | Every attacker left the game | No attacker is on the server any more |
 | Defenders | Time ran out | The Action clock reached zero before both defusers were planted |
 
-## Planting
+## The bombs
 
-An attacker plants a bomb by staying inside its room (`Sites/<site>/BombA` or `BombB`) for 8 seconds (`PLANT_TIME`).
+**Nobody plants a bomb.** The two bombs are the defenders' and are already in place when the round begins.
 
+- When Prep starts, the server stands a copy of the bomb model on `Bombs/<site>/BombA` and `BombB` of the chosen site, in `workspace.SiegeBombs`. Each copy is anchored, turned like the map's bomb part, and sits with its base on that part's base.
+- The model is `Content.Siege.BOMB_MODEL` (`"Bomb"`): looked for in `Assets.Models.Siege` first, then as a model of that name in Workspace. Today it is `Workspace.Bomb`.
+- The bombs are removed when the match ends. Only the chosen site gets bombs.
+- **Defenders have nothing to plant or defuse.** Their job is to keep the attackers out of the two bomb rooms until the clock runs out.
+
+## Defusers
+
+The only thing that is planted is a **defuser**, and only attackers plant it. An attacker plants a defuser on a bomb by staying inside that bomb's room (`Sites/<site>/BombA` or `BombB`) for 8 seconds (`PLANT_TIME`).
+
+- A room is a part, or a folder of parts when one box doesn't fit the room.
 - The server checks who is inside every 0.15 s with a spatial query (`GetPartBoundsInBox`); `Touched` is not used. A player is inside when their `HumanoidRootPart` is.
 - The progress bar shows only while the attacker is inside.
 - **Leaving the room resets the progress to zero. So does dying.** There is no partial progress to come back to.
-- Each attacker has their own progress; the first to finish plants.
-- A bomb is planted once. Everyone sees "Defuser planted on Bomb A" (the `Announcement` effect).
-- Planting the second bomb ends the round at once.
+- Each attacker has their own progress; the first to finish plants the defuser.
+- Each bomb takes one defuser. Everyone sees "Defuser planted on Bomb A" (the `Announcement` effect).
+- The second defuser ends the round at once.
 
 ## Drones in Siege
 
@@ -198,8 +208,9 @@ The map in the place fails the check, so for these tests a temporary script adde
 | Refused picks | An attacker voting a site, an unknown spawn, the other team's class, a gun the class does not allow, wrong types: all ignored |
 | Attacker in Prep | No body, one drone 0.9 studs from the spawn, held in its view (the client went in by itself) |
 | Attacker in Action | Body at the chosen spawn (0.0 studs off, 3.9 above), class guns in hand |
-| Plant reset | Entered room A, left after 1 s, came back: not planted 1.5 s later, planted after a full 2 s (test value) |
-| Both bombs planted | Round ended: Attackers, "Both defusers planted" |
+| Defuser progress reset | Entered room A, left after 1 s, came back: no defuser 1.5 s later, defuser planted after a full 2 s (test value) |
+| A defuser on both bombs | Round ended: Attackers, "Both defusers planted" |
+| Bombs in place (2026-11-12) | In Reveal: 0 bombs. One second into Prep: 2 at the chosen site, 6 of 6 parts anchored and visible, 0.00 studs off the bomb part's center, base on its base. After the match: 0 |
 | Only defender dead | 3 s later the phase was still Action. At time up: Defenders, "Time ran out" |
 | Only attacker dead | Round ended: Defenders, "Every attacker was eliminated" |
 | Drone destroyed in Prep | `DroneLost` set, no new drone, `Place` and `Deploy` refused, NO SIGNAL shown and kept until Prep ended |

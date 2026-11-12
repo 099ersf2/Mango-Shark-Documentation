@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-11-12: Siege bombs are in place from the prep phase
+
+See [docs/SIEGE.md](SIEGE.md#the-bombs).
+
+### Added
+
+- **The bombs are placed for the defenders.** When Prep starts, a copy of the bomb model (`Content.Siege.BOMB_MODEL`, today `Workspace.Bomb`) is stood on `BombA` and `BombB` of the chosen site, in `workspace.SiegeBombs`, and removed after the match. Checked in Studio: 2 bombs one second into Prep, every part anchored and visible, centered on the map's bomb part; 0 after the match.
+- **A bomb's room can be a folder of parts**, not only one part (`Sites/<site>/BombA`), for rooms one box doesn't fit.
+
+### Changed
+
+- **Wording:** nobody plants a bomb. Only attackers plant anything, a defuser; defenders keep them away from the bombs. The HUD chips read NO DEFUSER / DEFUSER PLANTED, and the defenders' objective reads "Keep the attackers off both bombs". The docs and code comments say the same.
+
+### Fixed
+
+- The end-of-match cleanup called a helper before it was defined, which left a match stuck in its End phase with a repeating error (introduced and fixed the same day, before any push).
+
 ## 2026-11-12: Siege, global matchmaking, parties and classes
 
 See [docs/SIEGE.md](SIEGE.md), [docs/MATCHMAKING.md](MATCHMAKING.md) and [docs/CLASSES.md](CLASSES.md). Tested in Studio with one player only; nothing cross-server has run live.
