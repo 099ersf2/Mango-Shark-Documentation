@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-12: Queue modes (1 V 1), Fredoka One, lobby clean-up
+
+### Added
+
+- **Queue modes.** A party queues for one mode and is only matched with tickets of that mode ([MATCHMAKING.md](MATCHMAKING.md#queue-modes)). Modes are rows in `Content.Matchmaking.MODES`: **1 V 1** (the default, so two players are enough) and **5 V 5**. The ticket carries the mode (`G`), the match record too (`Mode`).
+- **A mode button above PLAY** (`Main.Lobby.ModeButton`) and a key, **GameMode (M)**: each press moves to the next mode. The search status shows the mode.
+- `QueueService.Join(player, modeId)`, `Content.Matchmaking.GetMode` / `NextMode`, `Client.Core.Matchmaking.NextMode()`.
+
+### Changed
+
+- **Every piece of text is Fredoka One** (221 labels, buttons and text boxes in `StarterGui`, the UI templates and the world, plus the text `LobbyHubUI` and the banner effect build in code). Cmdr's console keeps its own fonts.
+- `Queue.Request` takes the mode's Id as a second value; `Queue.State` has `Mode`.
+- `Content.Matchmaking.MAX_WAIT` is gone: each mode has its own `MaxWait`.
+
+### Removed
+
+- **The Loadout menu no longer opens by itself on join.** It still opens from the lobby bar's LOADOUT button and with B.
+- **The Career and Maps buttons** are no longer shown in the lobby (`Client.Core.LobbyHubUI`). Their panels and code are still there; Backpack still shows.
+
 ## 2026-11-12: No strafe tilt in the lobby
 
 ### Changed

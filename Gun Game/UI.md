@@ -24,7 +24,7 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 | Primary | green `#3ecf5e` with a `#1f8f3b` edge |
 | Danger | red `#e5484d`; quiet danger (Leave, Kick, Decline) `#5a2a2d` |
 | Accent text | gold `#ffd678`; muted `#9aa3b2` |
-| Font | Builder Sans: ExtraBold for titles and the big numbers, Bold for buttons and labels |
+| Font | **Fredoka One** (`rbxasset://fonts/families/FredokaOne.json`) on every piece of text in the game. It has one weight, so size and color carry the hierarchy. New UI must use it. Cmdr's admin console keeps its own fonts |
 | Menus | Scale-sized with a maximum size; `Main` uses Global ZIndex (menus 11, things on a menu 12 and up) |
 
 ## The lobby
@@ -33,8 +33,9 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 
 | Part | What it does |
 | --- | --- |
-| `Play` | **The big green button, bottom center.** Pressing it queues the party at once (there is one mode). While searching it is red and reads CANCEL. For a party member who is not the leader it is grey and refuses |
-| `Status` | Above PLAY while searching: the status and the queue timer. "MATCH FOUND" pops in |
+| `Play` | **The big green button, bottom center.** Pressing it queues the party for the picked mode; its small line reads the mode (SIEGE · 1 V 1). While searching it is red and reads CANCEL. For a party member who is not the leader it is grey and refuses |
+| `ModeButton` | Above PLAY: the picked queue mode ([MATCHMAKING.md](MATCHMAKING.md#queue-modes)). A press, or the GameMode key (M), moves to the next mode. Shown to the party's leader while not searching. At least 40 px tall |
+| `Status` | Above PLAY while searching, in the mode button's place: the status, the mode and the queue timer. "MATCH FOUND" pops in |
 | `PartyButton` | Opens the Party menu; shows the party's size |
 | `LoadoutButton` | Opens the Loadout menu. It replaces the Loadout button that was among the top-right menu buttons |
 | `Message` | A line under the bar when the server refuses something |
@@ -132,7 +133,7 @@ Two things found and fixed in that run: the bar still said MATCH FOUND after the
 
 ## Not redone yet
 
-- **`Client.Core.LobbyHubUI`** (another developer's Career, Backpack and Map panels) builds its UI in code with its own colors. Its buttons get the click and hover sounds, and its menu buttons inherit the new button style, but the panels are untouched.
+- **`Client.Core.LobbyHubUI`** (another developer's Career, Backpack and Map panels) builds its UI in code with its own colors. Its Career and Maps buttons are hidden since 2026-11-12 (the panels and their code remain); Backpack still shows in the lobby. Its buttons get the click and hover sounds, and its menu buttons inherit the new button style, but the panels are untouched.
 - **The combat touch buttons** (`Main.Mobile`) keep their layout. Only the SCORE button moved out; ABILITY and CAMS were added on free cells.
 - **The gun HUD** (ammo, crosshair, hitmarker), the kill feed, the death screen, the drone and camera feeds: fonts and corners only.
 - **Icons.** There are none: classes show a letter, buttons are text.

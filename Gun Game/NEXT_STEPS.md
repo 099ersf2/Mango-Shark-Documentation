@@ -2,6 +2,15 @@
 
 This list tracks verification not available in the solo Studio session.
 
+## Queue modes, font, lobby clean-up (2026-11-12)
+
+- [ ] Two real players queue 1 V 1 and get matched against each other; a party of two is refused for 1 V 1 with a clear message.
+- [ ] Two players in different modes at once are never matched together (checked with made-up tickets only).
+- [ ] **Look at the font.** Every label is now Fredoka One, which is wider than Builder Sans: check for clipped or shrunken text, mostly in the Settings rows, the scoreboard and the kill feed.
+- [ ] The mode button by mouse and touch (only its key was pressed in the test), on a phone (compact bar) and with a gamepad.
+- [ ] Decide whether two friends in one party should be able to 1 V 1 each other (today a party is never split, so they queue separately).
+- [ ] Decide the default mode once the game has players (`DEFAULT_MODE` is `1v1`).
+
 ## UI revamp (2026-11-12)
 
 - [ ] **Look at it.** Nothing was seen rendered. Check colors, spacing and text fit in the lobby, the Party menu, the selection and reveal screens, and the restyled Loadout and Settings menus, on a desktop and at phone size.

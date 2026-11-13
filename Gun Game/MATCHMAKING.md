@@ -59,6 +59,21 @@ The UI was rebuilt on 2026-11-12 ([UI.md](UI.md#the-lobby)): the queue and the p
 - **The owner server dies:** copies with no heartbeat for 100 s are dropped.
 - **Party state through a match:** when a party's match is found, its owner saves it in MemoryStore (`PARTY_MAP`, 30 minutes). Returning players carry only `{ PartyId }` in their teleport data. The lobby server reads the saved party, checks the player is in it, and rebuilds it: the first server to see a returning member claims ownership, later ones rejoin through it.
 
+## Queue modes
+
+A party queues for one **mode**, and only tickets of the same mode are matched together. Modes are rows in `Content.Matchmaking.MODES`:
+
+| Id | Name | Team size (each side) | Smallest match | Wait before a smaller match |
+| --- | --- | --- | --- | --- |
+| `1v1` | 1 V 1 | 1 | 1 v 1 | 60 s (never smaller than 1 v 1) |
+| `5v5` | 5 V 5 | 5 | 1 v 1 | 60 s |
+
+- `DEFAULT_MODE` is `1v1`: the lobby bar starts on it, so two players are enough for a match.
+- The leader picks the mode on the lobby bar (the button above PLAY, or the GameMode key, M). The pick travels with the queue request; the server checks the mode exists and that the party fits on one side of it. A party of two can't queue for 1 V 1.
+- The mode's Id is in the ticket (`G`) and in the match record (`Mode`).
+- **To add a mode**, add a row to `MODES` (Id, Name, TeamSize, MinTeamSize, MaxWait). Nothing else changes. Never reuse an old Id.
+- All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
+
 ## The queue
 
 A MemoryStore **SortedMap** (`QUEUE_MAP`).
@@ -67,10 +82,10 @@ A MemoryStore **SortedMap** (`QUEUE_MAP`).
 | --- | --- |
 | Key | The PartyId, so a party can never have two tickets |
 | Sort key | The time it queued (Unix seconds): the oldest ticket is first |
-| Value | `{ P = PartyId, M = member UserIds, N = party size, T = queue time, J = owner server JobId, L = leader UserId }` |
+| Value | `{ P = PartyId, M = member UserIds, N = party size, T = queue time, J = owner server JobId, L = leader UserId, G = mode Id }` |
 | Lifetime | 150 s (`TICKET_TTL`). The owner server refreshes it every 50 s, so a dead server's tickets expire by themselves |
 
-The matchmaker also drops malformed tickets, and any ticket naming a player that an older ticket already names (the older one wins), so a player is never in two matches.
+The matchmaker also drops malformed tickets (an unknown mode, or a party too large for its mode, included), and any ticket naming a player that an older ticket already names (the older one wins), so a player is never in two matches.
 
 ## The matchmaker
 
@@ -80,22 +95,22 @@ Only one lobby server forms matches at a time.
 - A server takes the lease only if it is free, expired, or already its own. The update is atomic (`UpdateAsync`).
 - If the holder dies it stops renewing; the lease runs out and the next server to try takes it.
 
-Each pass the holder reads the 100 oldest tickets and asks `TeamPacker` for matches (up to 4 per pass).
+Each pass the holder reads the 100 oldest tickets, sorts them by mode, and asks `TeamPacker` for matches one mode at a time, each with that mode's sizes (up to 4 matches per pass in all).
 
 ### Team filling
 
-`TEAM_SIZE` is 5 attackers and 5 defenders; `MIN_TEAM_SIZE` is 1 each.
+Sizes come from the ticket's mode (`TeamSize`, `MinTeamSize`, `MaxWait`). `TEAM_SIZE` and `MIN_TEAM_SIZE` are the largest and smallest any mode uses; the map check and the mid-match check read them.
 
 1. The oldest ticket is always in the match that forms, so nobody is starved.
 2. A party is one item. It is never split between matches or between the two sides.
-3. A full match (5 v 5) is taken whenever one exists among the 14 oldest tickets; among full matches, the one using the oldest tickets.
-4. Once the oldest ticket has waited `MAX_WAIT` (60 s), a smaller match may form: the most players that fit, then the most even sides, then the oldest tickets. Each side at least its minimum.
+3. A full match (both sides at the mode's team size) is taken whenever one exists among the 14 oldest tickets; among full matches, the one using the oldest tickets.
+4. Once the mode's oldest ticket has waited its `MaxWait` (60 s), a smaller match may form: the most players that fit, then the most even sides, then the oldest tickets. Each side at least its minimum.
 5. Which side a group gets is random when both arrangements are legal.
 
 ## Forming a match
 
 1. `TeleportService:ReserveServer` gives the access code and the reserved server's `PrivateServerId`.
-2. The **match record** is saved in a MemoryStore HashMap (`MATCH_MAP`, 30 minutes): `{ Id, Teams = { Attackers, Defenders }, Map, Code, ServerId, Expected, Parties, Created }`.
+2. The **match record** is saved in a MemoryStore HashMap (`MATCH_MAP`, 30 minutes): `{ Id, Mode, Teams = { Attackers, Defenders }, Map, Code, ServerId, Expected, Parties, Created }`.
 3. The tickets are removed from the queue.
 4. `{ K = "Match", I = MatchId, U = UserIds }` is published on `MATCH_TOPIC`.
 5. Each lobby server reads the record for the players it has, saves their parties, and teleports them with the access code. **The teleport data is only `{ MatchId }`.**
@@ -139,7 +154,7 @@ Characters don't load by themselves on a match server (`Players.CharacterAutoLoa
 ```lua
 local Matchmaking = ServerScriptService.Modules.Systems.Matchmaking
 local QueueService = require(Matchmaking.QueueService)
-QueueService.Join(player)        -- ok, message (leader only)
+QueueService.Join(player, modeId) -- ok, message (leader only). No mode: DEFAULT_MODE
 QueueService.Leave(player)
 QueueService.IsQueued(player)
 
@@ -178,6 +193,17 @@ ServerRole.Kind()                -- "Lobby", "Match" or "Studio"
 | Join, then wait | A match formed 5.3 s later (the 4 s Studio wait plus the 3 s tick), on the forced side; the host fired `MatchReady` and `Arrived` |
 | Team packing, made-up tickets | 10 solos → 5 v 5. Parties of 5 and 5 → one each side. Parties of 4, 3, 2, 1 → 3+2 against 4+1, nobody split. Three parties of 3 → no match before 60 s, then 3 v 3 with the third party left queued. A solo alone → no match. Parties of 5, 4, 4, 1, 1 → 5 against 4+1 |
 | Play menu | The Play button hides during a match and comes back after |
+
+## Tested (2026-11-12, queue modes, Studio, one player)
+
+| Check | Result |
+| --- | --- |
+| Queue for a mode that doesn't exist | Refused: "That game mode does not exist." |
+| The mode button's key (M) | 1 V 1 → 5 V 5 → 1 V 1; PLAY's small line follows |
+| Queue 1 V 1 with made-up tickets in the queue (a 1v1 solo, a 5v5 solo, an unknown mode, a party of two marked 1v1) | The 1v1 match formed with the player and the 1v1 solo, one each side, record `Mode = "1v1"`. The 5v5 solo formed its own match (Studio lets one side be empty). The unknown-mode ticket and the oversized party were in no match |
+| Team packing with the live 1v1 limits | One solo: no match, however long it waited. Three solos: 1 v 1 with the two oldest |
+
+Not verified: two real players queueing 1 V 1 against each other, a party refused for 1 V 1 from the UI, and everything on live servers (below).
 
 **Not verified. None of this has run on live servers:**
 - MemoryStore and MessagingService themselves (Studio used the local stand-ins).

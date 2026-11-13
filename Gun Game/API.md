@@ -82,8 +82,9 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | I want to… | Do this (server unless noted) |
 | --- | --- |
 | Know what kind of server this is | `ServerRole.Kind()`: `"Lobby"`, `"Match"` or `"Studio"` |
-| Queue a player's party | `QueueService.Join(player)` (the leader only) |
-| Start a Siege match alone in Studio | Set the workspace attribute `SiegeTestTeam` to `Attackers` or `Defenders`, then queue from the Play menu (K) |
+| Queue a player's party | `QueueService.Join(player, modeId?)` (the leader only; no mode: `Content.Matchmaking.DEFAULT_MODE`) |
+| Add a queue mode (2v2, 3v3…) | Add a row to `Content.Matchmaking.MODES` ([MATCHMAKING.md](MATCHMAKING.md#queue-modes)) |
+| Start a Siege match alone in Studio | Set the workspace attribute `SiegeTestTeam` to `Attackers` or `Defenders`, then press PLAY (K) |
 | Know the Siege phase / a player's side | `SiegeService.Phase()` / `SiegeService.TeamOf(player)` |
 | End the round now | `SiegeService.ForceEnd("Attackers", "BombsPlanted")` |
 | Check the map | `SiegeMap.Load()` returns the map's info, or nil and warns every problem |
@@ -104,7 +105,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `TeamPacker.Pack(tickets, now, limits)` | The next match's two sides, or nil |
 | `PartyService.Of(player)` / `Get(partyId)` / `Ensure(player)` / `IsLeader(player)` / `Owns(party)` / `UserIds(party)` | Parties |
 | `PartyService.Park(party)` / `Restore(player, partyId)` / `SetTravelling(userId, on)` | Keeping a party through a match |
-| `QueueService.Join(player)` / `Leave(player)` / `IsQueued(player)` | The queue |
+| `QueueService.Join(player, modeId?)` / `Leave(player)` / `IsQueued(player)` | The queue. `modeId` is a `Content.Matchmaking.MODES` Id |
+| `Content.Matchmaking.GetMode(id)` / `NextMode(id)` | A queue mode by Id (or nil) / the mode after it, wrapping |
 | `MatchHost.Record()` / `TeamOf(userId)` / `ReturnAll()` / `Clear()` | The match server's record and the return to the lobby |
 | `SiegeMap.Find()` / `Check(map)` / `Load()` | The Workspace map and its problems |
 | `SiegeService.Phase()` / `IsPlaying(player)` / `TeamOf(player)` / `IsAlive(player)` / `Players(team?, aliveOnly?)` / `Site()` | The running match |
@@ -125,7 +127,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Function | What it does |
 | --- | --- |
 | `Client.Core.UIFeel.Play(kind)` / `Pop(object)` / `Pulse(object)` | A UI sound (`Hover`, `Press`, `Open`, `Close`, `Confirm`, `Error`, `Tick`, `Notify`) / pop something in / a quick grow and settle. Needs a `UIScale` named `Feel` in the object ([UI.md](UI.md#feel)) |
-| `Client.Core.Matchmaking.Play()` / `OpenParty()` | The lobby's PLAY button (queue or cancel) / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
+| `Client.Core.Matchmaking.Play()` / `NextMode()` / `OpenParty()` | The lobby's PLAY button (queue or cancel, for the picked mode) / moves to the next queue mode / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
 | `Client.Core.SiegeSelect` | No API: the selection and reveal screens |
 | `Client.Hud.SiegeHud.UseAbility()` | Uses the class ability |
 | `Client.Hud.Scoreboard` | No API: the scoreboard (hold Tab) |
@@ -140,8 +142,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Party.Request` | Client → server, answered (ok, message) | action (`Invite`, `Accept`, `Decline`, `Leave`, `Kick`, `Promote`), argument |
 | `Party.State` | Server → one client | `{ Id, Leader, Max, Members = { { UserId, Name, Here } } }` or nil |
 | `Party.Invite` / `Party.InviteClosed` | Server → one client | PartyId, leader name, leader UserId, seconds / PartyId |
-| `Queue.Request` | Client → server, answered (ok, message) | `Join` or `Leave` |
-| `Queue.State` | Server → one client | `{ Queued, Since, Status, Size }` |
+| `Queue.Request` | Client → server, answered (ok, message) | `Join` or `Leave`, and the queue mode's Id (`""` for the default) |
+| `Queue.State` | Server → one client | `{ Queued, Since, Status, Size, Mode }` |
 | `Siege.State` | Server → one client | The match as their team may see it |
 | `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`), value |
 | `Siege.Plant` | Server → one attacker | bomb (`""` for none), server time it started, seconds |
@@ -207,7 +209,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `SiegeTestTeam` | Workspace (you set, Studio only) | Puts everyone queued on that side |
 | Tag `Camera` | A part or model in the map | A security camera |
 | `workspace.SiegeCameras`, `workspace.SiegeGadgets` | | Made at runtime |
-| Keys | | `Play` (K), `ClassAbility` (T) in `Shared.PlayerSettings.Actions`; the `Match` action is gone. A player's class is **never** an attribute |
+| Keys | | `Play` (K), `Party` (L), `GameMode` (M), `ClassAbility` (T) in `Shared.PlayerSettings.Actions`; the `Match` action is gone. A player's class is **never** an attribute |
 
 ---
 

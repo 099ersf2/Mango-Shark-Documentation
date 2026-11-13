@@ -347,7 +347,7 @@ Grenades and smoke bombs (`docs/CONSUMABLES.md`) are the reference example. Copy
   - Prefer checks in Edit mode, such as compiling a script with `loadstring(source)`.
   - Clean up any test copies you make; a timed-out tool call can leave a clone behind.
 - **Playtests:**
-  - The Loadout menu opens on join (and after a death), and gameplay input is ignored while it's open (`Menus.IsOpen()`). Close it from a temporary LocalScript (`Menus.Close(name)`) before testing input-driven features.
+  - Gameplay input is ignored while a menu is open (`Menus.IsOpen()`). The Loadout menu no longer opens by itself on join (2026-11-12); if a test opens a menu, close it from a temporary LocalScript (`Menus.Close(name)`).
   - The lobby is the first spawn, and most features are refused there. Use `LobbyService.SendToArena(player)` from a temporary server Script; the command-bar copy of the module has no state.
   - NPCs shoot the test player and kill it. Give it high health, or move hostile NPCs aside for the test (put them back after).
   - **Long tool calls time out** and can drop the Studio connection. Start long tests in a temporary Script that logs to a `workspace` attribute, return at once, then read the attribute in short follow-up calls.
