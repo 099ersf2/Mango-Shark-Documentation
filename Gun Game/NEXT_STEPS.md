@@ -1,5 +1,15 @@
 # Next steps
 
+## Mobile UI pass (2026-11-13)
+
+Laid out at 844 × 390 in Studio, not run on a device.
+
+- [ ] **A real phone:** the icon buttons are easy to hit, nothing overlaps, the selection screen's text is readable at scale 0.645.
+- [ ] **A tablet** (about 1180 × 820): the larger 120 px buttons and the selection screen at scale 1.
+- [ ] **A real Siege match on a phone:** the timer pill and SCORE, the slim announcement banner, the death card above the spectate bar, and the round-end panel hiding them.
+- [ ] **The drone button's labels** (`OUT`, `LOST`, `x1`, `12s`) and the ability's (`x1`, `12s`) fit under the icon.
+- [ ] **Smoke picked:** the grenade button shows the smoke icon.
+
 ## Fixes and features of 2026-11-12 (none of it has been run)
 
 No playtest was asked for. Everything below compiles and its UI parts exist; nothing has been seen working.

@@ -215,6 +215,9 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Planted` | A bomb in the map | A defuser is on it |
 | `SiegeTestTeam` | Workspace (you set, Studio only) | Puts everyone queued on that side |
 | Tag `Camera` | A part or model in the map | A security camera |
+| Tag `FitScale` (and `DesignHeight`, `WidthShare`, `BelowTopbar`) | A UIScale in a full-screen menu frame | `Client.Core.UI` scales the menu to fit the screen, under the top bar ([UI.md](UI.md#full-screen-menus-that-fit-fitscale)). On `SiegeSelect.Screen.Content.Fit` |
+| `Main.MenuButtons.TouchScale` | UIScale | 0.8 on small touch screens |
+| `Main.Mobile.<Button>.Icon.Glyph` | ImageLabel | The touch button's icon. `Content.Consumables` entries have an `Icon` for the grenade button |
 | `workspace.SiegeCameras`, `workspace.SiegeGadgets` | | Made at runtime |
 | Keys | | `Play` (K), `Party` (L), `ClassAbility` (T) in `Shared.PlayerSettings.Actions`; the `Match`, `Loadout` and `GameMode` actions are gone. A player's class is **never** an attribute |
 

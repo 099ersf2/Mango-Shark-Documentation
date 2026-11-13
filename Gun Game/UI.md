@@ -18,7 +18,37 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 
 The ScreenGuis (`Main`, `SiegeSelect`, `DroneFeed`, `CameraFeed`, `ScanAlert`) are no longer in `StarterGui`. Another developer moved them under the LocalScript `ReplicatedFirst.UILoader`, which parents them into `PlayerGui` when the client starts. **Edit the UI there.** Where this doc says `StarterGui.Main…`, read `ReplicatedFirst.UILoader.Main…`. Templates are still in `Assets.UI.Templates`.
 
+## Mobile pass (2026-11-13)
+
+Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.
+
+| What | Now |
+| --- | --- |
+| Touch buttons | Icons (`Mobile.<Button>.Icon.Glyph`), not words. FIRE 1.15 of the jump button; AIM 0.72; crouch and reload 0.62; melee and grenade 0.6; sprint 0.65; drone or camera and ability 0.66; admin 0.55. Left row (drone or camera, ability, admin) 2.55 buttons up from the bottom; right arc around the jump button with a gap between each |
+| Button labels | Hidden, except the grenade (`2`), drone (`x1`, `OUT`, `LOST`, `12s`) and ability (`x1`, `12s`) counts, shown small under the icon |
+| Phone boost | Health, ammo box, weapon slots and kill feed are 1.15 times their desktop size on a phone (was 1.6) |
+| Siege top | Timer pill (`SiegeHUD.Timer`, 0.11 × 0.07 of the screen, 4 px from the top), SCORE beside it, then the objective line, then the A and B chips (one line each) |
+| Announcement banner | `Content.Effects.Parts.Banner`: 36% of the screen width (240 to 460 px), at 30% of the screen height, smaller text below 500 px tall |
+| Death screen | Card 320 × 56, SPECTATING line and countdown 320 × 46, both at the bottom centre above Siege's spectate bar (340 × 40, 6 px from the bottom) |
+| Round end | `SiegeHUD.End` is ZIndex 12 (its contents 13+, and `SiegeKillRow`); when it opens it hides the death screen and the spectate bar |
+| Menu buttons | `MenuButtons.TouchScale` = 0.8 on small touch screens |
+| Roblox's health bar | Off (`Client.Core.UI`); the HUD has its own |
+
+### Full-screen menus that fit (`FitScale`)
+
+The Siege selection screen is laid out in pixels. A UIScale named `Fit` in `SiegeSelect.Screen.Content`, tagged `FitScale`, makes it fit any screen:
+
+| Attribute | Meaning |
+| --- | --- |
+| `DesignHeight` | Pixels of height the layout needs (490). The scale is the free height over this, between 0.55 and 1 |
+| `WidthShare` | Share of the screen width the frame covers (0.94), kept whatever the scale |
+| `BelowTopbar` | The frame starts under Roblox's top bar (`GuiService.TopbarInset`, 58 px) |
+
+`Client.Core.UI` sets the scale and the frame's size and place when the menu arrives in `PlayerGui` and whenever the screen or the top bar changes. On a 844 × 390 phone the scale is 0.645: three class cards show, the Loadout column fits above Ready, and all four site names show in full. On a desktop it is 1 (no change). `Client.Core.SiegeSelect` divides the roster's on-screen width by the scale when it sizes the pages. To fit another pixel-built menu, give it the same tagged UIScale.
+
 ## Touch buttons (2026-11-12, not run)
+
+The sizes below were replaced on 2026-11-13 (see above); the way they are placed is the same.
 
 `Client.Core.UI` places and sizes every button in `Main.Mobile` from one table, `TOUCH_BUTTONS`, in units of one touch button (70 px on a phone, 120 on a tablet; the `Mobile` frame sits exactly on Roblox's jump button).
 
@@ -160,7 +190,7 @@ Measured by laying the UI out in a frame of that size (no rendering needed).
 | Menu buttons | 120 × 44, wrapping onto rows (were 132 × 36 in one line) | the same |
 | Party menu | 763 × 330, two columns of 359 | 780 × 430 |
 | Invite popup buttons | 192 × 42 (were 30 tall) | the same |
-| Weapon slots | 67 × 21 before the phone boost of 1.6 (were 15 tall) | 190 × 60 |
+| Weapon slots | 67 × 21 before the phone boost (1.6, now 1.15) (were 15 tall) | 190 × 60 |
 | Buttons under 40 px | only the weapon slots | none |
 
 ## Where things are

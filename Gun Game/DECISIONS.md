@@ -2,6 +2,14 @@
 
 The answers to open design questions, so the code and the docs follow the same rules. Newest first. Each entry says what was decided and where it lives in the place.
 
+## 2026-11-13
+
+### Mobile UI
+
+- **Touch buttons are icons**, not words, like other Roblox shooters. The user asked for images (grenade, bullet or gun for fire, sprint, and so on) taken from the toolbox. Counts and cooldowns stay as a small label on the grenade, drone and ability buttons.
+- **Phone sizes follow the reference games** the user showed (BedWars, Rivals and similar): small buttons about 0.6 of Roblox's jump button, FIRE about 1.15. The guide's rule 4 still holds: the touch buttons are placed by `Client.Core.UI`'s own math, not Scale.
+- **The Siege selection screen stays full screen** (the user likes it) but starts under Roblox's top bar and shrinks to fit a phone.
+
 ## 2026-11-12
 
 ### Siege and matchmaking

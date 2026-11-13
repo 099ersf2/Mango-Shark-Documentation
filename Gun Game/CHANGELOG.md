@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-11-13: Mobile UI pass (icons, smaller buttons, no overlaps)
+
+Checked in Studio by laying the screens out in an 844 × 390 frame (a phone in landscape) and with one playtest on the desktop-sized Studio window: console clean. Not run on a real phone, a tablet or a gamepad, and not in a real two-player Siege match.
+
+### Added
+
+- **Icons on the touch buttons**, from the Creator Store: fire (bullet), aim (crosshair), reload, crouch, melee (knife), sprint, grenade or smoke, camera, drone, ability (lightning), admin console. Each is an ImageLabel `Glyph` inside the button's `Icon`. Only the grenade, drone and ability buttons keep a small label (the count or the cooldown).
+- `Content.Consumables` entries have an `Icon` (the grenade and smoke pictures on the button).
+- **Full-screen menus fit any screen** (`FitScale` tag on a UIScale, run by `Client.Core.UI`). The Siege selection screen starts under Roblox's top bar and shrinks to fit a phone, so nothing hides behind the Roblox buttons.
+- `Main.MenuButtons.TouchScale` shrinks the top-right buttons to 0.8 on small touch screens.
+
+### Changed
+
+- Touch buttons are about 30% smaller and re-spaced like other Roblox shooters: FIRE 1.15 of the jump button, the others 0.55 to 0.72, with a gap between every pair.
+- The phone boost for the health bar, ammo box, weapon slots and kill feed is 1.15 (was 1.6).
+- Siege HUD: a compact timer pill at the top with SCORE beside it (it sat on top of the timer), the objective line and the A and B chips under it, each on one line ("PLANTED" instead of "DEFUSER PLANTED").
+- The announcement banner ("Preparation phase", "Defuser planted…") is slimmer and sits above the crosshair, below the timer, instead of over it.
+- Selection screen: small text is 1 to 2 px bigger, the Loadout column is more compact, so nothing spills under the Ready button on a phone.
+- Death screen: a compact card, the SPECTATING line and the countdown stack at the bottom centre, above Siege's spectate bar, instead of on top of each other.
+
+### Fixed
+
+- The round-end panel no longer draws over the still-visible death and spectate texts: it hides them and draws above them, and its kill rows draw above the panel.
+- The empty grey bar at the top right after dying: Roblox's own health bar, now turned off (the HUD has its own).
+
 ## 2026-11-12: Camera and drone scans reveal players and cameras
 
 Single-client Studio startup check passed and all nine changed Luau sources parsed. Multiplayer scanning and class reveal were not exercised.
