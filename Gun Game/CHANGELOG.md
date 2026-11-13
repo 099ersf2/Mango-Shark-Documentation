@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-12: Drone scan reveals nearby enemies with a popup
+
+Not playtested (compile-checked only).
+
+### Changed
+
+- **A scan no longer needs the enemy in the crosshair:** with nobody there, it takes the nearest enemy within 40 studs in clear view (`NEARBY_RANGE` in `DroneService`).
+- **Every attacker gets a popup** on a scan of a defender: "ENEMY SCANNED" with the defender's name and class (`SiegeService.onSpotted`). The class shows on the attackers' scoreboard (Tab) from then on, and the mark where the defender stood goes to the whole team, as before.
+
 ## 2026-11-12: Party shows again after a match
 
 Not playtested (it needs live servers and two players).

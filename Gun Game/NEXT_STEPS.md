@@ -4,6 +4,7 @@
 
 No playtest was asked for. Everything below compiles and its UI parts exist; nothing has been seen working.
 
+- [ ] **Scan popup:** every attacker sees ENEMY SCANNED with the name and class, also when the defender is only nearby and not in the crosshair.
 - [ ] **Drone scan** on a defender standing in the site: the mark appears where they stood, and their class shows on the attackers' scoreboard.
 - [ ] **Drone on a phone:** the DRIVE stick drives, another finger looks, HOP / SPOT / BOOST still work.
 - [ ] **Drone against a wall:** the camera stays on the drone's side.
