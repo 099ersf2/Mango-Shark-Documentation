@@ -34,7 +34,7 @@ In Siege every player picks a class: a default loadout, the guns they may swap t
 | --- | --- | --- | --- | --- |
 | **Warden** | Rifle, Pistol (Rifle or SMG) | Bulletproof Camera | 1, 3 s | A camera on the surface you look at. Every defender can use it. Bullets do nothing to it; a bash or an explosion breaks it (60 health) |
 | **Trapper** | Shotgun, Pistol (Shotgun or SMG) | Trap Mine | 2, 4 s | A mine on the surface you look at. Live after 1.5 s; blows when an attacker is within 6 studs: up to 80 within 10 studs. Attackers can shoot it (10 health) |
-| **Reinforcement Expert** | LMG, Pistol (LMG or Rifle) | Reinforce | 3, 4 s | Rebuilds the board you look at and reinforces it for the match: it takes 25% damage (50% from explosions) |
+| **Reinforcement Expert** | LMG, Pistol (LMG or Rifle) | Reinforce | 3, 4 s | Replaces the board or door board you look at with its reinforced model for the rest of the match (metal plates, tougher pieces). The original comes back when the match ends |
 | **Medic** | SMG, Pistol (SMG or Shotgun) | Healing Station | 1, 30 s | A station that heals defenders within 12 studs by 8 a second for 25 s. Attackers can destroy it (60 health) |
 | **Anchor** | BurstRifle, Revolver (Rifle or LMG) | Stim | 2, 15 s | Heals you 50 at once. Refused at full health |
 
@@ -97,7 +97,7 @@ How the abilities reach other systems, without editing them:
 | Smoke Screen | `ConsumableService.Detonate` (found by name, in a `pcall`) |
 | Recon Pulse | `DroneService.Mark` |
 | Bulletproof Camera | `CameraService.Add`; `Gun.DamageMultiplier` returns 0 for bullets |
-| Reinforce | `BreakableService.Reset`, `Breakable.DamageMultiplier` |
+| Reinforce | Swaps in `Assets.Models.Siege.ReinforcedBoard` / `ReinforcedDoorBoard`, tagged `ReinforcedBoard` / `ReinforcedDoor` so `BreakableService` runs it as that breakable type (`Content.Breakables.Definitions`). The original board waits in `ServerStorage.ReinforceStash` and is put back by `Reinforce.Reset` |
 
 ## Adding a class
 
@@ -138,7 +138,7 @@ return MyAbility
 
 ## Limits
 
-- Reinforce does not slow bullets through a board's planks: the shipped planks are soft walls that break by hole count, a path that doesn't ask `Breakable.DamageMultiplier`. Bashes and explosions are slowed.
+- Reinforce (changed 2026-11-12, not run): it no longer cuts the damage the original board takes; the reinforced model's own piece health (120 a plank) is what makes it tougher, and the class's `DamageMultiplier` / `ExplosionMultiplier` tuning is no longer read. The reinforced model is scaled to the original's width. `Definitions.ReinforcedDoor` names its model `ReinforcedDoor`, but the asset is `ReinforcedDoorBoard`: the ability uses the asset directly, but a part tagged `ReinforcedDoor` in a map would find no model.
 - "Facing" a flashbang uses the character's head direction.
 - A class's guns can be seen by other clients (see [SIEGE.md](SIEGE.md#limits)).
 - Sounds are placeholders made from existing sounds.

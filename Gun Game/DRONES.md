@@ -35,6 +35,17 @@ Where this section and the rest of the page disagree, this section is right.
 
 **Tested 2026-11-12 (Studio, one player):** a placed drone stood 0.9 studs from the spawn and the client went into it by itself while held; destroyed in the prep phase, `DroneLost` was set, no drone came back, `Place` and `Deploy` were refused, and NO SIGNAL showed and stayed until the hold ended. **Not verified:** a scan of a real enemy and its mark, the lock on death with a living drone, and the drone camera itself (Studio was not rendering frames).
 
+## Changed on 2026-11-12 (fixes)
+
+> **Not run.** Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
+
+| Problem | Cause | Now |
+| --- | --- | --- |
+| A scan found nobody | The line of sight was one ray that stopped at the first part it met. A defender stands inside the site's room volume (an invisible box), so the ray always stopped there. The aim also had to be within 6° of the torso's center, and a drone on the floor looks at legs | The ray passes through anything invisible or non-colliding, and through other characters; only a visible, solid part blocks. The body part nearest the crosshair counts (head, torso, legs, feet, arms). The mark, and in Siege the defender's class on the scoreboard, follow from a scan that lands |
+| Touch could not drive | Driving read Roblox's default thumbstick, which is not reliable while the body is parked or missing | The feed has its own stick (`DroneFeed.Feed.Touch.Stick`, bottom left). A finger that goes down on it drives; any other finger looks |
+| The camera looked through walls | It sits 0.85 studs ahead of the drone's body, so against a wall it was on the other side | A ray from the body to the lens; something solid there pulls the camera back to the body (`CAMERA_MARGIN`, 0.3 studs) |
+| NO SIGNAL could not be left | Asking for a destroyed drone showed the screen for 2.5 s, and pressing the key again only restarted it | The Drone key, the DroneView key, B and the EXIT button close it. In the drone, a destroyed drone's NO SIGNAL now stays until you leave, with the leave controls on its bottom line (`NoSignal.Hints`, and `NoSignal.Exit` on touch) |
+
 ## How it plays
 
 | | |

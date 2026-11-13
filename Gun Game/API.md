@@ -105,7 +105,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `TeamPacker.Pack(tickets, now, limits)` | The next match's two sides, or nil |
 | `PartyService.Of(player)` / `Get(partyId)` / `Ensure(player)` / `IsLeader(player)` / `Owns(party)` / `UserIds(party)` | Parties |
 | `PartyService.Park(party)` / `Restore(player, partyId)` / `SetTravelling(userId, on)` | Keeping a party through a match |
-| `QueueService.Join(player, modeId?)` / `Leave(player)` / `IsQueued(player)` | The queue. `modeId` is a `Content.Matchmaking.MODES` Id |
+| `QueueService.Join(player, modeId?)` / `JoinPrivate(player)` / `Leave(player)` / `IsQueued(player)` | The queue. `modeId` is a `Content.Matchmaking.MODES` Id. `JoinPrivate` forms a match of the leader's party only, at once |
 | `Content.Matchmaking.GetMode(id)` / `ModesIn(categoryId)` | A queue mode by Id (or nil) / the modes of one category |
 | `MatchHost.Record()` / `TeamOf(userId)` / `ReturnAll()` / `Clear()` | The match server's record and the return to the lobby |
 | `SiegeMap.Find()` / `Check(map)` / `Load()` | The Workspace map and its problems |
@@ -127,6 +127,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Function | What it does |
 | --- | --- |
 | `Client.Core.UIFeel.Play(kind)` / `Pop(object)` / `Pulse(object)` | A UI sound (`Hover`, `Press`, `Open`, `Close`, `Confirm`, `Error`, `Tick`, `Notify`) / pop something in / a quick grow and settle. Needs a `UIScale` named `Feel` in the object ([UI.md](UI.md#feel)) |
+| `Client.Hud.Nameplates.Refresh()` | Sets every other player's name and health display again: shown for teammates, hidden for enemies ([UI.md](UI.md)) |
+| `Client.Core.Matchmaking.PlayWithParty()` | The lobby's PLAY WITH PARTY button |
 | `Client.Core.Music.Play(kind)` / `.CurrentSong` / `.Playlist` | Crossfades to a random song of a kind (`Background`, `Start`, `Panic`, `End`) / the Sound playing now / the background folder ([MUSIC.md](MUSIC.md)) |
 | `Client.Core.ModeMenu.Selected()` / `Pick(modeId)` / `Open()` / `.Changed` | The picked queue mode's Id / picks one / opens the Game Modes panel (`Menus` name `Modes`) / fires with the new Id |
 | `Client.Core.Matchmaking.Play()` / `OpenModes()` / `OpenParty()` | The lobby's PLAY button (queue or cancel, for the picked mode) / opens the Game Modes panel (leader only, not while searching) / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
@@ -144,10 +146,10 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Party.Request` | Client → server, answered (ok, message) | action (`Invite`, `Accept`, `Decline`, `Leave`, `Kick`, `Promote`), argument |
 | `Party.State` | Server → one client | `{ Id, Leader, Max, Members = { { UserId, Name, Here } } }` or nil |
 | `Party.Invite` / `Party.InviteClosed` | Server → one client | PartyId, leader name, leader UserId, seconds / PartyId |
-| `Queue.Request` | Client → server, answered (ok, message) | `Join` or `Leave`, and the queue mode's Id (`""` for the default) |
+| `Queue.Request` | Client → server, answered (ok, message) | `Join`, `Private` (a match of the party only) or `Leave`, and the queue mode's Id (`""` for the default) |
 | `Queue.State` | Server → one client | `{ Queued, Since, Status, Size, Mode }` |
 | `Siege.State` | Server → one client | The match as their team may see it |
-| `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`), value |
+| `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`, `Ready`), value (`Ready`: `"1"` done picking, `"0"` changing picks) |
 | `Siege.Plant` | Server → one attacker | bomb (`""` for none), server time it started, seconds |
 | `Siege.Board` | Server → one client | Scoreboard rows, filtered for their team |
 | `Siege.RequestState` | Client → server | — |

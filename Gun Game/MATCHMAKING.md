@@ -76,6 +76,22 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 - **To add a mode**, add a row to `MODES` (Id, Name, Category, Tag, Color, TagColor, Image, Icon, Description, TeamSize, MinTeamSize, MaxWait). Nothing else changes: the panel and the matchmaker read the table. Never reuse an old Id. To add a category, add a row to `CATEGORIES`.
 - All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
 
+## Play with party (2026-11-12)
+
+> **Not run.** Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
+
+The lobby bar's **PLAY WITH PARTY** button (`Main.Lobby.PartyPlay`, above PLAY) starts a match with only the party's own members in it.
+
+- Request: `Queue.Request` with the action `Private`. Server: `QueueService.JoinPrivate(player)`.
+- Only the leader may, on the server that owns the party, and not while the party is searching.
+- It needs `PRIVATE_MIN_PLAYERS` (2) members; in Studio one is enough. The button shows from that size up.
+- **Teams:** the members are shuffled and dealt into two teams as even as their number allows (2 → 1 v 1, 3 → 2 v 1, 4 → 2 v 2, 5 → 3 v 2). Which half attacks is random.
+- There is no ticket and no wait: the match is formed at once through the same steps as a queued one (reserve a server, save the record, publish, teleport). The record's `Mode` is `Private`. Nobody outside the party is ever added.
+
+## Leaving a queued party (2026-11-12)
+
+A member who leaves a queued party (leaves, is kicked, disconnects) takes the whole party out of the queue; that was already so. What was missing: **the member who left was never told**, so their bar kept showing the search. `dequeue` now tells every player who was on the ticket, on this server and (through the `Queue` party message's new `U` list) on others. Once the match is found the ticket is gone, and a leave changes nothing: the match goes ahead.
+
 ## The queue
 
 A MemoryStore **SortedMap** (`QUEUE_MAP`).
@@ -157,6 +173,7 @@ Characters don't load by themselves on a match server (`Players.CharacterAutoLoa
 local Matchmaking = ServerScriptService.Modules.Systems.Matchmaking
 local QueueService = require(Matchmaking.QueueService)
 QueueService.Join(player, modeId) -- ok, message (leader only). No mode: DEFAULT_MODE
+QueueService.JoinPrivate(player)  -- ok, message: a match of the leader's party only, formed at once
 QueueService.Leave(player)
 QueueService.IsQueued(player)
 

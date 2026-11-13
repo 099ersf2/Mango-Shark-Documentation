@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-11-12: Drone, camera and slide fixes; ready list; play with party; touch layout
+
+Not playtested (by request): compile-checked, and the touch layout worked out by arithmetic for three screen sizes.
+
+### Added
+
+- **PLAY WITH PARTY** in the lobby: a match of the party's own members only, dealt into two even teams (`QueueService.JoinPrivate`, [MATCHMAKING.md](MATCHMAKING.md#play-with-party-2026-11-12)).
+- **Selection:** a team list down the right side with each teammate's picture, name and READY or PICKING; when everyone in the match is ready the clock is skipped. A Consumable row on the Class page.
+- **`Client.Hud.Nameplates`:** enemies show no name and no health bar; teammates show both.
+- The drone feed's own touch stick, and control hints and touch buttons on the NO SIGNAL screens.
+
+### Fixed
+
+- **Drone scans found nobody:** the line of sight stopped at invisible room volumes and other triggers, and the aim had to be near the torso's center. Now only visible, solid parts block, and any body part near the crosshair counts.
+- **Touch could not drive the drone.**
+- **The drone camera looked through walls.**
+- **NO SIGNAL could not be closed** with the drone keys.
+- **A destroyed camera was 4% see-through;** it is opaque now.
+- **A player who left a queued party kept seeing the search.**
+- **Sliding was inconsistent:** a crouch press is judged by sprint intent and waits up to 0.3 s for a slide to be possible ([MOVEMENT.md](MOVEMENT.md)).
+- **Touch buttons:** the left ones were placed from the right corner and slid off narrow phones; the right ones ran up the whole edge. All are now laid out from one table ([UI.md](UI.md)).
+
+### Changed
+
+- **Reinforce** replaces the board with its reinforced model (`Assets.Models.Siege.ReinforcedBoard` / `ReinforcedDoorBoard`) instead of cutting the damage the original takes. The original is kept and put back when the match ends.
+- The UI's ScreenGuis live under `ReplicatedFirst.UILoader` (another developer's move); the docs say so now.
+
 ## 2026-11-12: Match music (start, panic, end)
 
 See [MUSIC.md](MUSIC.md). Not playtested (by request): compile-checked only.

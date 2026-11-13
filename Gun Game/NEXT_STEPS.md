@@ -1,5 +1,22 @@
 # Next steps
 
+## Fixes and features of 2026-11-12 (none of it has been run)
+
+No playtest was asked for. Everything below compiles and its UI parts exist; nothing has been seen working.
+
+- [ ] **Drone scan** on a defender standing in the site: the mark appears where they stood, and their class shows on the attackers' scoreboard.
+- [ ] **Drone on a phone:** the DRIVE stick drives, another finger looks, HOP / SPOT / BOOST still work.
+- [ ] **Drone against a wall:** the camera stays on the drone's side.
+- [ ] **Destroyed drone and camera:** NO SIGNAL shows nothing of the world, shows how to leave, and 5 / X / B / EXIT leave it. A destroyed camera still lets you go to the next one.
+- [ ] **Names and health:** teammates show both, enemies neither. Check a player who changes team mid-game.
+- [ ] **Reinforce** on a board and on a door board: the reinforced model stands exactly in the old one's place and size, breaks piece by piece, and the original is back after the match.
+- [ ] **Selection:** the team list on the right, READY turning green for teammates, the clock skipping when everyone is ready, the consumable row. On a phone the loadout panel is short: check the consumable row can be reached.
+- [ ] **Play with party** with 2, 3, 4 and 5 members: even teams, nobody else in the match, the party intact afterwards. Live servers only.
+- [ ] **Leave a queued party:** the party leaves the queue and the member who left sees no search. With the member on another lobby server too.
+- [ ] **Sliding:** crouch while sprinting right after firing, right after a slide, and in the air before landing. Tune `Config.SlideBuffer` (0.3 s) if it feels late or too eager.
+- [ ] **Touch layout** on a real phone and a tablet: reach, and whether FIRE and AIM sit right for the thumb. Positions are one table, `TOUCH_BUTTONS` in `Client.Core.UI`.
+- [ ] Fix `Definitions.ReinforcedDoor`'s model name (`ReinforcedDoor`, the asset is `ReinforcedDoorBoard`) if maps will tag parts with it.
+
 ## Music (2026-11-12)
 
 - [ ] **Listen to a whole match.** None of it has run: the start song on the selection screen, the 4 s crossfade into a panic song at 0:30, the end song, and the background songs coming back after.

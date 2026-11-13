@@ -86,6 +86,17 @@ All times are in `Content.Siege`.
 
 **Who is told what:** every snapshot is built for the team of the player it goes to. Votes, spawn picks and class picks are only sent to the team that made them. Attackers are not sent the site until one of their drones finds it.
 
+## Selection: ready, the team list, the consumable (2026-11-12)
+
+> **Not run.** Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
+
+- **Ready.** The Class page's READY button sends the pick `Ready` = `"1"`; "Change picks" on the Waiting page sends `"0"`. Being ready does not lock anything: what is still unpicked when Selection ends is filled in at random, as before.
+- **The clock is skipped** when every player still in the match, on both teams, is ready (`everyoneReady` in the match tick). Alone in Studio, your own READY ends Selection.
+- **The team list** (`SiegeSelect.Screen.Content.Roster`, rows from `Templates.SiegeReadyRow`) stands down the right side all through Selection: each teammate's picture, name, and READY (green, outlined) or PICKING, with "2 / 5 READY" on top. Only your own team is in it; the snapshot's `Cards` carry `Ready`, and `Me.Ready` is your own.
+- **Consumable.** The Class page's loadout panel has a Consumable row (grenade or smoke bomb). It sends the existing `Packets.Consumable.Pick`, which saves the choice; nothing in Siege's own rules changed for it.
+
+Since another developer's change, attackers get a body during Prep, parked at the lobby spawn (`startPrep`), while they drive their drone; they are spawned again at their spawn when Action starts.
+
 ## Winning
 
 | Winner | Reason | When |
@@ -136,6 +147,10 @@ See [DRONES.md](DRONES.md) for the drone itself.
 - Attackers can destroy a camera (20 health). A destroyed camera stays in the list and shows NO SIGNAL.
 - Cameras are damaged through the normal combat path: each has a hit box with a Humanoid, so guns, bashes and explosions hurt it with no change to the gun system. Defenders can't hurt them.
 - The Warden's gadget camera is bulletproof: bullets do nothing, a bash or an explosion still breaks it.
+
+### Destroyed cameras (2026-11-12)
+
+A destroyed camera shows nothing of the world: its NO SIGNAL screen is fully opaque (it was 4% see-through). It keeps the controls on its bottom line and has its own PREV, NEXT and EXIT touch buttons, so a defender can still move to the next camera or leave. Not run.
 
 ## Spectating
 

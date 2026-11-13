@@ -98,6 +98,15 @@ The Settings menu's **Movement** section has these toggles:
 
 While a menu is open, movement keys are ignored. Shift-lock is turned off in `StarterPlayer`, because Left Shift is the sprint key.
 
+### Slide input (2026-11-12, not run)
+
+A crouch press used to slide only if, on that exact frame, the state was Sprint and the slide cooldown was over. Sprint is held back by many things for a moment (the gun just fired, a reload, moving a little sideways, a jump), so the same press sometimes slid and sometimes only crouched.
+
+- **Intent, not the frame's state:** the press means "slide" when the state is a sprint, or when sprint is asked for (held or toggled) in Walk or Air. Speed still has to be at least 14 studs/s.
+- **A short wait instead of a miss:** if a slide is not possible that instant (the 0.45 s cooldown, in the air), the press is held back for `Config.SlideBuffer` (0.3 s) and becomes the slide the moment one is possible. When the time is up it becomes a plain crouch. Letting go first (hold-to-crouch) drops it.
+- A press while already crouched is never turned into a slide.
+- The server's rule is unchanged: a slide needs the ground (or having just left it) and the cooldown.
+
 ## Guns and movement
 
 - **Sprinting blocks firing and aiming.** Pulling the trigger or pressing aim ends the sprint, and the gun fires or aims once its `SprintOutTime` has passed. Holding the trigger or aim stops a new sprint from starting.

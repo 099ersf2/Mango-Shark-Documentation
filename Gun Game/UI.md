@@ -14,6 +14,28 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 | **Touch targets are at least 40 px, 44 where there is room** | Apple's and Google's guidance is 44 to 48 |
 | **Build it in Studio** | Scripts only show, hide, fill in text and color, and lay out. See the AI coding guide |
 
+## Where the UI lives now
+
+The ScreenGuis (`Main`, `SiegeSelect`, `DroneFeed`, `CameraFeed`) are no longer in `StarterGui`. Another developer moved them under the LocalScript `ReplicatedFirst.UILoader`, which parents them into `PlayerGui` when the client starts. **Edit the UI there.** Where this doc says `StarterGui.Main…`, read `ReplicatedFirst.UILoader.Main…`. Templates are still in `Assets.UI.Templates`.
+
+## Touch buttons (2026-11-12, not run)
+
+`Client.Core.UI` places and sizes every button in `Main.Mobile` from one table, `TOUCH_BUTTONS`, in units of one touch button (70 px on a phone, 120 on a tablet; the `Mobile` frame sits exactly on Roblox's jump button).
+
+| Group | Buttons | Placed from |
+| --- | --- | --- |
+| Right thumb | FIRE (1.3, the biggest, beside the jump button), AIM (0.9, above the jump button), crouch, reload (0.8), melee, grenade (0.7) | The jump button's center |
+| Left | Sprint (0.8, beside the thumbstick); drone or camera, ability, admin console in a row above it | The screen's bottom-left corner |
+
+- Worked out for 812 × 375, 667 × 375 and 1180 × 820: no button overlaps another or the jump button, none is off screen, the smallest is 46 px and the closest gap 4 px.
+- The right cluster's top is at y = 152 on a 375-tall phone. Before, it ran up the whole edge: the grenade button's top was at y = 4.
+- Before, the left buttons were placed from the right corner, so on a screen narrower than about 893 px the sprint button was partly or wholly off the left edge.
+- To move a button, change its row in `TOUCH_BUTTONS`. The sword's Swing and Grab buttons are not in the table and keep their Studio place.
+
+## Names and health bars (2026-11-12, not run)
+
+`Client.Hud.Nameplates` sets, on each client, how other players' characters show their name and health: a teammate (same `Team` attribute) always shows both; an enemy shows neither; with no teams (the lobby) it is Roblox's default. Display only.
+
 ## The look
 
 | Thing | Value |
@@ -68,6 +90,7 @@ Categories and modes have the same card fields in `Content.Matchmaking`:
 | `Status` | Above PLAY while searching: the status, the mode and the queue timer. "MATCH FOUND" pops in |
 | `PartyButton` | Opens the Party menu; shows the party's size |
 | ~~`LoadoutButton`~~ | Removed on 2026-11-12 (archived as `ServerStorage.Archive.OldUI.LobbyLoadoutButton`): loadouts are not picked in the lobby |
+| `PartyPlay` | **PLAY WITH PARTY**, above PLAY (in the status's place while not searching). Starts a match of the party's own members, dealt into two even teams ([MATCHMAKING.md](MATCHMAKING.md#play-with-party-2026-11-12)). Shown from 2 members (always in Studio); refuses for a member who is not the leader |
 | `Message` | A line under the bar when the server refuses something |
 
 The bar sits just above the health bar. On a touch screen while the fire button is showing it goes compact: PLAY is narrower and the two side buttons move above it, clear of the right thumb.
