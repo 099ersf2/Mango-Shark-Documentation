@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-11-12: Camera and drone scans reveal players and cameras
+
+Single-client Studio startup check passed and all nine changed Luau sources parsed. Multiplayer scanning and class reveal were not exercised.
+
+### Added
+
+- **Defender cameras scan attackers.** Interact (DPad Up; touch `SCAN`) asks the server to scan an enemy player in a live camera's view (150 studs, 6°, clear line of sight, five-second cooldown). A successful scan reveals the attacker's class to defenders for the match and alerts the target.
+- **Drone scans can reveal enemy cameras.** When no player or NPC is selected, a scan can mark a live enemy camera for the drone user's team with key `Camera:<CameraId>` for `SPOT_TIME`.
+- A red `SCANNED` notice appears for `SCANNED_ALERT_TIME` after a player is scanned by either system.
+- API additions: `Packets.Camera.Scan`, `Packets.Scan.Alert`, and the `Camera.Scanned(spotter, targetModel)` extension.
+
+### Changed
+
+- Enemy classes are hidden from both teams until revealed by their side's scan: drones reveal defenders to attackers; cameras reveal attackers to defenders.
+- Camera and drone feeds show the match timer over both live and NO SIGNAL screens.
+- Cycling away from a destroyed camera is no longer blocked by the normal view-switch cooldown.
+
 ## 2026-11-12: Drone scan reveals nearby enemies with a popup
 
 Not playtested (compile-checked only).

@@ -16,7 +16,7 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 
 ## Where the UI lives now
 
-The ScreenGuis (`Main`, `SiegeSelect`, `DroneFeed`, `CameraFeed`) are no longer in `StarterGui`. Another developer moved them under the LocalScript `ReplicatedFirst.UILoader`, which parents them into `PlayerGui` when the client starts. **Edit the UI there.** Where this doc says `StarterGui.Main…`, read `ReplicatedFirst.UILoader.Main…`. Templates are still in `Assets.UI.Templates`.
+The ScreenGuis (`Main`, `SiegeSelect`, `DroneFeed`, `CameraFeed`, `ScanAlert`) are no longer in `StarterGui`. Another developer moved them under the LocalScript `ReplicatedFirst.UILoader`, which parents them into `PlayerGui` when the client starts. **Edit the UI there.** Where this doc says `StarterGui.Main…`, read `ReplicatedFirst.UILoader.Main…`. Templates are still in `Assets.UI.Templates`.
 
 ## Touch buttons (2026-11-12, not run)
 
@@ -106,6 +106,19 @@ Keys: **Play (K)** queues or cancels; **Party (L)** opens the Party menu.
 - **HUD chips:** NO DEFUSER / DEFUSER PLANTED.
 - **SCORE** on touch is a pill at the top of the Siege HUD, out of the combat buttons.
 
+## Camera and drone feeds (2026-11-12)
+
+The feed and alert ScreenGuis are built in `ReplicatedFirst.UILoader` and moved into `PlayerGui` by `UILoader`.
+
+| UI | Behavior |
+| --- | --- |
+| `CameraFeed.Feed.Timer`, `CameraFeed.NoSignal.Timer` | Mirror `Main.SiegeHUD.Timer`, including its text color; the match timer remains visible over NO SIGNAL |
+| `CameraFeed.Feed.Touch.Scan` | Touch scan button while viewing a live camera |
+| `DroneFeed.Feed.Timer`, `DroneFeed.NoSignal.Timer` | Mirror the same match timer on live and NO SIGNAL feeds |
+| `ScanAlert.Label` | Independent red `SCANNED` notice shown for `SCANNED_ALERT_TIME` after a camera or drone scan finds a player |
+
+Camera scan controls are Interact on keyboard, DPad Up on gamepad, and `SCAN` on touch. See [SIEGE.md](SIEGE.md#defender-cameras) for server validation and class reveal behavior.
+
 ## Feel
 
 `Client.Core.UIFeel` gives every `GuiButton` under PlayerGui the same behavior, including buttons other modules clone or build.
@@ -188,6 +201,6 @@ Two things found and fixed in that run: the bar still said MATCH FOUND after the
 
 - **`Client.Core.LobbyHubUI`** (another developer's Career, Backpack and Map panels) builds its UI in code with its own colors. Its Career and Maps buttons are hidden since 2026-11-12 (the panels and their code remain); Backpack still shows in the lobby. Its buttons get the click and hover sounds, and its menu buttons inherit the new button style, but the panels are untouched.
 - **The combat touch buttons** (`Main.Mobile`) keep their layout. Only the SCORE button moved out; ABILITY and CAMS were added on free cells.
-- **The gun HUD** (ammo, crosshair, hitmarker), the kill feed, the death screen, the drone and camera feeds: fonts and corners only.
+- **The gun HUD** (ammo, crosshair, hitmarker), the kill feed, the death screen, the drone and camera feeds: fonts and corners only. The feeds now also have match-timer labels, the camera feed has a touch scan button, and `ScanAlert` is a separate red player notice.
 - **Icons.** There are none: classes show a letter, buttons are text.
 - Hover and press scaling nudges neighbors by a pixel or two inside list layouts.

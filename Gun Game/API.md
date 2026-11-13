@@ -135,7 +135,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Client.Core.SiegeSelect` | No API: the selection and reveal screens |
 | `Client.Hud.SiegeHud.UseAbility()` | Uses the class ability |
 | `Client.Hud.Scoreboard` | No API: the scoreboard (hold Tab) |
-| `Client.Gadgets.CameraController.Use()` / `View(model)` / `Cycle(direction)` / `Exit(tellServer?)` | Security cameras |
+| `Client.Gadgets.CameraController.Use()` / `View(model)` / `Cycle(direction)` / `Scan()` / `Exit(tellServer?)` | Security cameras |
 | `Client.Core.Spectate.Cycle(direction)` | Next or previous player to watch |
 | `DroneController.Exit(force?)` | Leaving is refused while `DroneLockedIn`, unless forced |
 
@@ -157,6 +157,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Class.State` | Server → the owner only | `{ ClassId, Charges, ReadyAt, Guns }` or nil |
 | `Class.Flash` | Server → one client | seconds blinded |
 | `Camera.View` | Client → server, answered (ok) | CameraId, or `""` to stop |
+| `Camera.Scan` | Client → server, answered (scanned) | CameraId; server checks live view, team, cooldown, range, angle and line of sight |
+| `Scan.Alert` | Server → the player scanned by a camera or drone | — |
 | `Spectate.Next` / `Spectate.Mode` | Client → server / server → one client | 1 or -1 / `Team`, `Enemy` or `""` |
 | `Drone.Scan` | Client → server, answered (scanned) | drone, unit look |
 | `Drone.Marked` | Server → the scanner's team | key, position, seconds |
@@ -180,6 +182,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Ability points | | `Classes.BreachDetonated`, `PreventFlash`, `FlashTimeMultiplier`, `Flashed`, `PreventPulseMark`, `Pulsed`, `PreventMineTrigger`, `MineDetonated`, `HealMultiplier`, `Healed` ([CLASSES.md](CLASSES.md#extension-points)) |
 | `Camera.PreventView` / `Camera.PreventDamage` | Any | player, model / attacker, model |
 | `Camera.Viewed` / `Camera.Destroyed` | Fire | player, model? / model, killer? |
+| `Camera.Scanned` | Fire | spotter, targetModel (a live defender camera scanned a player; Siege uses it to reveal attacker classes; `Camera.PreventView` also gates scans) |
 | `Spectate.Changed` | Fire | viewer, model?, mode |
 | `Drone.PreventRespawn` / `Drone.PreventView` | Any | player |
 | `Drone.Spotted` | Fire | player, target, **position** (added) |
@@ -194,10 +197,10 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Content.Matchmaking` | Party size, team sizes and minimums, waits, lifetimes, retry numbers, MemoryStore and topic names, the Studio settings |
 | `Content.Siege` | Phase times, plant time, map folder names, bomb labels and colors, texts, win reasons |
 | `Content.Classes` | Every class and ability; `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |
-| `Content.Cameras` | Camera health, hit box, view limits, attribute names |
+| `Content.Cameras` | Camera health, hit box, view limits, scan range/angle/cooldown/ray steps, attribute names |
 | `Content.Match.Modes.Siege` | The mode entry (`External = true`) |
 | `Content.Match.Teams` | Also `Attackers` and `Defenders` |
-| `Content.Drones` | Also `NO_SIGNAL_TIME` and the `DronesEnabled`, `DroneLockedIn`, `DroneLost`, `DroneLocked` attribute names; `SPOT_TIME` is 30, `SPOT_COOLDOWN` is 5 |
+| `Content.Drones` | Also `NO_SIGNAL_TIME`, `SCANNED_ALERT_TIME`, `CAMERA_MARK_COLOR`, scan range/angle and the `DronesEnabled`, `DroneLockedIn`, `DroneLost`, `DroneLocked` attribute names; `SPOT_TIME` is 30, `SPOT_COOLDOWN` is 5 |
 
 ### Attributes, tags, folders, keys
 

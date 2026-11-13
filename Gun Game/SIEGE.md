@@ -14,6 +14,7 @@ Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): ev
 | **A tied site vote is drawn among the tied sites only** | A site with fewer votes is never picked. With no votes at all, every site is tied |
 | **One drone per attacker per match** | A destroyed drone is never replaced. Trying it again shows NO SIGNAL |
 | **A defender's class is hidden from attackers** | Until a drone scan of that defender. The server never sends it before then |
+| **An attacker's class is hidden from defenders** | Until a camera scan of that attacker. The server never sends it before then |
 
 ## Where things are
 
@@ -29,9 +30,9 @@ Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): ev
 | Selection screens | `Client.Core.SiegeSelect` → `StarterGui.SiegeSelect` |
 | HUD | `Client.Hud.SiegeHud` → `StarterGui.Main.SiegeHUD` |
 | Scoreboard | `Client.Hud.Scoreboard` → `StarterGui.Main.SiegeScoreboard` |
-| Camera feed | `StarterGui.CameraFeed` |
+| Camera feed, drone feed, scan alert | `ReplicatedFirst.UILoader.CameraFeed`, `DroneFeed`, `ScanAlert` |
 | Templates | `SiegeOption`, `SiegeClassCard`, `SiegeTeamCard`, `SiegeBoardRow`, `SiegeBoardTeam`, `SiegeKillRow`, `BombMarker` in `Assets.UI.Templates` |
-| Packets | `Packets.Siege` (`State`, `Pick`, `Plant`, `Board`, `RequestState`), `Packets.Camera.View`, `Packets.Spectate` (`Next`, `Mode`) |
+| Packets | `Packets.Siege` (`State`, `Pick`, `Plant`, `Board`, `RequestState`), `Packets.Camera.View`, `Packets.Camera.Scan`, `Packets.Scan.Alert`, `Packets.Spectate` (`Next`, `Mode`) |
 | Teams | `Attackers` and `Defenders` in `Content.Match.Teams` |
 
 ## The map
@@ -136,15 +137,19 @@ See [DRONES.md](DRONES.md) for the drone itself.
 - In Prep the attacker is held in the drone's view. In Action they go in and out with the Drone key (5), DPad Left, or the touch DRONE button.
 - A destroyed drone is gone for the match: the NO SIGNAL screen shows at once, and again for 2.5 s whenever the attacker tries the drone later.
 - **Scan** (Fire in the drone, every 5 s): marks where the defender in the crosshair stands, for all attackers, for 30 s. The mark does not follow the defender; a new scan of the same defender replaces it. The first scan of a defender also reveals their class to the attackers for the rest of the match.
+- If no player or NPC is selected, a drone scan can instead mark a live enemy security camera for the team. See [DRONES.md](DRONES.md#camera-scans-and-feed-ui).
 - **Site located**: the first time any attacker's drone is inside any part of `Sites/<site>`, the attackers are told "Site located" and get a red A and a blue B mark on the bombs. Once per match.
 - A dead attacker's drone is locked: the server takes its physics back and refuses every view and scan.
 
 ## Defender cameras
 
 - Every part or model in the map's `Cameras` folder, and anything tagged `Camera`, is a camera.
-- A living defender opens the cameras with the Drone key (5; a defender has no drone), DPad Left, or the touch CAMS button. Fire is the next camera, Aim the previous one, and 5 or X leaves. The view turns up to 55° each way.
+- A living defender opens the cameras with the Drone key (5; a defender has no drone), DPad Left, or the touch CAMS button. Fire is the next camera, Aim the previous one, and Interact scans; DPad Up and the touch `SCAN` button do the same. The Drone key or DroneView key (5 or X) leaves. The view turns up to 55° each way.
 - The feed shows the camera's name and LIVE or OFFLINE.
+- **Scan** (every 5 s): a live camera asks the server to find the enemy player nearest its crosshair, within 150 studs and 6°, with clear line of sight. A successful scan reveals that attacker's class to defenders for the rest of the match. The scanned player sees a red `SCANNED` notice for 2.5 s.
+- The live feed and the opaque NO SIGNAL screen both show the match timer. The drone feed does the same.
 - Attackers can destroy a camera (20 health). A destroyed camera stays in the list and shows NO SIGNAL.
+- Cycling from a destroyed camera switches immediately (without waiting for the normal view-switch cooldown) and prefers a live camera. If every camera is offline, the offline feeds remain cycleable so the player can still leave.
 - Cameras are damaged through the normal combat path: each has a hit box with a Humanoid, so guns, bashes and explosions hurt it with no change to the gun system. Defenders can't hurt them.
 - The Warden's gadget camera is bulletproof: bullets do nothing, a bash or an explosion still breaks it.
 
@@ -172,7 +177,7 @@ A destroyed camera shows nothing of the world: its NO SIGNAL screen is fully opa
 
 Hold Tab (the Scoreboard key), or the touch SCORE button. Columns: Player, Status (ALIVE / DEAD), Kills, Class.
 
-- A defender sees every class.
+- A defender sees their own team's classes, and an attacker's class only after a camera scan revealed it. Otherwise `?`.
 - An attacker sees their own team's classes, and a defender's class only after a drone scan revealed it. Otherwise `?`.
 - The server builds each player's rows; a hidden class is never sent.
 
@@ -198,8 +203,9 @@ SiegeService.ForceEnd(winner?, reason)   -- ends the round now (tests)
 | `Siege.Planted` | Fire | player, bombName | A defuser was planted |
 | `Siege.SiteLocated` | Fire | player | A drone found the site |
 | `Siege.Ended` | Fire | winner?, reasonKey | The round ended |
-| `Camera.PreventView` / `Camera.PreventDamage` | Any | player, model / attacker, model | Refuse a view / protect a camera |
+| `Camera.PreventView` / `Camera.PreventDamage` | Any | player, model / attacker, model | Refuse a view or scan / protect a camera |
 | `Camera.Viewed` / `Camera.Destroyed` | Fire | player, model? / model, killer? | |
+| `Camera.Scanned` | Fire | spotter, targetModel | A live camera scanned a player |
 | `Spectate.Changed` | Fire | viewer, model?, mode | A spectator's target changed |
 
 SiegeService changes other systems only through their extension points: `Loadout.PreventApply`, `Lobby.PreventFirstSpawn`, `Drone.PreventDeploy`, `Drone.PreventRespawn`, `Drone.PreventView`, `Queue.PreventJoin`, `Classes.PreventAbility`, `Classes.AllowBodiless`, `Death.PreventSpectate`.

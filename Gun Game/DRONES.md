@@ -46,6 +46,17 @@ Where this section and the rest of the page disagree, this section is right.
 | The camera looked through walls | It sits 0.85 studs ahead of the drone's body, so against a wall it was on the other side | A ray from the body to the lens; something solid there pulls the camera back to the body (`CAMERA_MARGIN`, 0.3 studs) |
 | NO SIGNAL could not be left | Asking for a destroyed drone showed the screen for 2.5 s, and pressing the key again only restarted it | The Drone key, the DroneView key, B and the EXIT button close it. In the drone, a destroyed drone's NO SIGNAL now stays until you leave, with the leave controls on its bottom line (`NoSignal.Hints`, and `NoSignal.Exit` on touch) |
 
+## Camera scans and feed UI (2026-11-12)
+
+Where this section and earlier scan descriptions disagree, this section is current.
+
+- A drone scan still prioritizes the player or NPC in its crosshair. If none is selected, it can instead find a live enemy security camera within the drone scan's angle and range, with clear line of sight. The server sends the normal `Drone.Marked` packet to the team using key `Camera:<CameraId>` and the camera's current position. This is a static mark, not a tracking highlight; it lasts `SPOT_TIME`. The client uses `CAMERA_MARK_COLOR`.
+- A successful drone player scan still sends `Packets.Scan.Alert` to the scanned player. The camera service sends the same alert packet for a successful camera scan. `ScanAlert.Label` shows the red `SCANNED` notice for `SCANNED_ALERT_TIME` (2.5 s).
+- Both `DroneFeed.Feed.Timer` and `DroneFeed.NoSignal.Timer` mirror `Main.SiegeHUD.Timer`, so the game timer stays visible in live and NO SIGNAL views. Camera feeds have the same pair of timer labels.
+- The camera feed's touch `SCAN` button and Interact/DPad Up inputs are documented in [SIEGE.md](SIEGE.md#defender-cameras). A camera can be cycled away from immediately after it is destroyed.
+
+The feed and alert ScreenGuis are built under `ReplicatedFirst.UILoader` and moved into `PlayerGui` by `UILoader`.
+
 ## How it plays
 
 | | |
