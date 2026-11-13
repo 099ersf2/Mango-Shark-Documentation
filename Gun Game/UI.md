@@ -39,11 +39,23 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 | `Back` | On a category's page: back to the categories |
 | `Close` | EXIT |
 
+### What a card shows
+
+Categories and modes have the same card fields in `Content.Matchmaking`:
+
+| Field | What it does |
+| --- | --- |
+| `Tag`, `TagColor` | The small ribbon in the corner and its color. `""` hides the ribbon |
+| `Color` | The card's color (the whole card when there is no image) |
+| `Image` | A picture that fills the card, cropped to fit, for example `"rbxassetid://123"`. `""` for none. A dark fade sits over its lower half so the name stays readable |
+| `Icon` | The big faded text in the middle. `""` lets the panel choose: nothing over an image; otherwise a mode shows its team sizes ("1v1") and a category its first letter (or "1v1" when it holds one mode). Any other text is shown as written, over an image too. `" "` (a space) shows no text |
+| `Description` | The text in the box under the row |
+
 - The picked mode's card, and its category's, have a gold outline and say SELECTED. Hovering a card outlines it.
 - Picking a mode closes the panel with the confirm sound; the MODE button on the lobby bar pulses and shows the new mode.
 - Only the party's leader can open it, and not while searching. It closes when a match starts or the player stops being leader.
 - Sizes: at 812 × 375 a card is 130 × 142 and EXIT is 200 × 44; at 1920 × 1080 a card is 240 × 410.
-- The cards are flat color with a big faded "1v1"; there is no art yet.
+- No card has an image yet: set `Image` on a row to give it one.
 
 ## The lobby
 

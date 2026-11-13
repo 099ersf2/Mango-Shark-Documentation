@@ -9,7 +9,7 @@ This list tracks verification not available in the solo Studio session.
 - [ ] **Look at the font.** Every label is now Fredoka One, which is wider than Builder Sans: check for clipped or shrunken text, mostly in the Settings rows, the scoreboard and the kill feed.
 - [ ] **The Game Modes panel has not been run at all** (no playtest was asked for; it compiles and its parts exist). Open it from MODE, pick each category, check the outline, the description box and SELECTED, then EXIT. On a phone and with a gamepad too.
 - [ ] A category with two or more modes (none exists yet): its second page and BACK have never been shown.
-- [ ] Art for the mode cards (they are flat color with a faded "1v1").
+- [ ] Upload pictures for the cards and set `Image` on the rows in `Content.Matchmaking`. A card with an image has never been shown: check the crop, the dark fade, and that the name is readable.
 - [ ] Decide what happens to the Loadout menu and the grenade / smoke picker inside it: nothing opens them now.
 - [ ] Decide whether two friends in one party should be able to 1 V 1 each other (today a party is never split, so they queue separately).
 - [ ] Decide the default mode once the game has players (`DEFAULT_MODE` is `1v1`).

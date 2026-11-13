@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-12: Images, tags and colors on mode cards
+
+Not playtested (by request): compile-checked only.
+
+### Added
+
+- **`Image` on categories and modes** (`Content.Matchmaking`): a picture that fills the card, under a dark fade so the name stays readable. `Assets.UI.Templates.ModeCard` has new `Art` and `Shade` parts.
+- **`Tag`, `TagColor` and `Color` on modes.** A mode's card used its category's; now each mode has its own (1 V 1: red, DUEL; 5 V 5: blue, TEAM).
+- **`Icon` on categories and modes:** the big faded text on the card. `""` keeps the automatic text (none over an image); anything else is shown as written ([UI.md](UI.md#what-a-card-shows)).
+
 ## 2026-11-12: Game Modes panel; no loadout picking in the lobby
 
 Not playtested (by request): compile-checked, and the panel measured at phone and desktop sizes.

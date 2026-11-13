@@ -68,11 +68,12 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 | `1v1` | 1 V 1 | 1 | 1 v 1 | 60 s (never smaller than 1 v 1) |
 | `5v5` | 5 V 5 | 5 | 1 v 1 | 60 s |
 
-- `DEFAULT_MODE` is `1v1`: the lobby bar starts on it, so two players are enough for a match.
+- `DEFAULT_MODE` is the mode the lobby bar starts on (`5v5` today; with `1v1` two players are enough for a match).
 - The leader picks the mode in the **Game Modes panel** (the MODE button right of PLAY; [UI.md](UI.md#the-game-modes-panel)). It has no key. The pick travels with the queue request; the server checks the mode exists and that the party fits on one side of it. A party of two can't queue for 1 V 1.
 - The mode's Id is in the ticket (`G`) and in the match record (`Mode`).
-- **Categories.** Each mode names a category (`CATEGORIES`: Id, Name, Tag, Color, TagColor, Description). Today: **DUELS** holds 1 V 1 and **SQUADS** holds 5 V 5. The panel shows one card per category that has a mode.
-- **To add a mode**, add a row to `MODES` (Id, Name, Category, Description, TeamSize, MinTeamSize, MaxWait). Nothing else changes: the panel and the matchmaker read the table. Never reuse an old Id. To add a category, add a row to `CATEGORIES`.
+- **Categories.** Each mode names a category (`CATEGORIES`). The panel shows one card per category that has a mode. Since the owner's edit on 2026-11-12 there is one category, **SIEGE**, holding both modes, and `DEFAULT_MODE` is `5v5` (the table above still lists the modes correctly).
+- **Card look.** A category row and a mode row both carry `Tag`, `TagColor`, `Color`, `Image` and `Icon` ([UI.md](UI.md#what-a-card-shows)).
+- **To add a mode**, add a row to `MODES` (Id, Name, Category, Tag, Color, TagColor, Image, Icon, Description, TeamSize, MinTeamSize, MaxWait). Nothing else changes: the panel and the matchmaker read the table. Never reuse an old Id. To add a category, add a row to `CATEGORIES`.
 - All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
 
 ## The queue
