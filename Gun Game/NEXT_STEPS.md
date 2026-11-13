@@ -1,5 +1,13 @@
 # Next steps
 
+## Music (2026-11-12)
+
+- [ ] **Listen to a whole match.** None of it has run: the start song on the selection screen, the 4 s crossfade into a panic song at 0:30, the end song, and the background songs coming back after.
+- [ ] End a round early and check the end song comes in without the panic song.
+- [ ] Check the levels against gunfire; a song's loudness is the `Volume` on its Sound.
+- [ ] `Assets.Music.Panic` holds "Global Strike 30 sec edit" twice, so it plays twice as often as "Urgent Action". Remove one if that is not meant.
+- [ ] Decide what the unused `Alpha` and `Folder` folders in `Assets.Music` are for.
+
 This list tracks verification not available in the solo Studio session.
 
 ## Queue modes, font, lobby clean-up (2026-11-12)

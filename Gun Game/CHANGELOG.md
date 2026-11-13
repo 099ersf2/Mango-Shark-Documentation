@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-11-12: Match music (start, panic, end)
+
+See [MUSIC.md](MUSIC.md). Not playtested (by request): compile-checked only.
+
+### Added
+
+- **A panic song in the last 30 seconds** of the Action phase: the playing song fades to 0 over 4 s while a random song from `Assets.Music.Panic` rises from 0 to its volume (0.5).
+- **An end song** from `Assets.Music.End` when the match ends, and **a start song** from `Assets.Music.Start` when a match begins.
+- `Content.Music` (folder names, the 30 seconds, the fade times) and `Client.Core.Music.Play(kind)`.
+
+### Changed
+
+- `Client.Core.Music` was rewritten: it plays its own Sounds (in the Music sound group) so it can crossfade, and never picks the same song twice running. The old module is in `ServerStorage.Archive.OldMusic`; the `Music` effect in `Content.Effects.Registry` is no longer used.
+
 ## 2026-11-12: Images, tags and colors on mode cards
 
 Not playtested (by request): compile-checked only.
