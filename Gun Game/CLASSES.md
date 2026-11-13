@@ -97,7 +97,7 @@ How the abilities reach other systems, without editing them:
 | Smoke Screen | `ConsumableService.Detonate` (found by name, in a `pcall`) |
 | Recon Pulse | `DroneService.Mark` |
 | Bulletproof Camera | `CameraService.Add`; `Gun.DamageMultiplier` returns 0 for bullets |
-| Reinforce | Swaps in `Assets.Models.Siege.ReinforcedBoard` / `ReinforcedDoorBoard`, tagged `ReinforcedBoard` / `ReinforcedDoor` so `BreakableService` runs it as that breakable type (`Content.Breakables.Definitions`). The original board waits in `ServerStorage.ReinforceStash` and is put back by `Reinforce.Reset` |
+| Reinforce | Swaps in `Assets.Models.ReinforcedBoard` / `ReinforcedDoor` (the folder the other breakables' models are in; `Assets.Models.Siege` is looked in too), tagged `ReinforcedBoard` / `ReinforcedDoor` so `BreakableService` runs it as that breakable type (`Content.Breakables.Definitions`). The original board waits in `ServerStorage.ReinforceStash` and is put back by `Reinforce.Reset` |
 
 ## Adding a class
 
@@ -138,7 +138,7 @@ return MyAbility
 
 ## Limits
 
-- Reinforce (changed 2026-11-12, not run): it no longer cuts the damage the original board takes; the reinforced model's own piece health (120 a plank) is what makes it tougher, and the class's `DamageMultiplier` / `ExplosionMultiplier` tuning is no longer read. The reinforced model is scaled to the original's width. `Definitions.ReinforcedDoor` names its model `ReinforcedDoor`, but the asset is `ReinforcedDoorBoard`: the ability uses the asset directly, but a part tagged `ReinforcedDoor` in a map would find no model.
+- Reinforce (changed 2026-11-12, not run): it no longer cuts the damage the original board takes; the reinforced model's own piece health (120 a plank, 630 in all) is what makes it tougher, and the class's `DamageMultiplier` / `ExplosionMultiplier` tuning is no longer read. A normal board breaks after 8 bullets (a door after 10) whatever the gun; a reinforced one is not in that count and takes each bullet's damage instead. **Door frames whose boards are not built yet** (16 of the map's 20 door boards start empty) have nothing for a look to hit, so the ability takes the board nearest the line of sight (within 4 studs of it, and within Range) and stands a whole reinforced door there. Checked in Edit mode on a copy: the reinforced board and door stand exactly on the original's root (0.000 studs off, no rescale needed) and each has its 5 planks and spray paint.
 - "Facing" a flashbang uses the character's head direction.
 - A class's guns can be seen by other clients (see [SIEGE.md](SIEGE.md#limits)).
 - Sounds are placeholders made from existing sounds.

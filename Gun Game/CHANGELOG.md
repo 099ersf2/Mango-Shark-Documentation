@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-12: The other team in the ready list; Reinforce works again
+
+Not playtested. The Reinforce swap was checked in Edit mode on copies of a board and a door.
+
+### Added
+
+- **The ready list shows the other team too,** in its own section under a red ENEMY TEAM heading with the side's name, red names and dark red rows. Only who they are and whether they are ready is sent; never their picks ([SIEGE.md](SIEGE.md)).
+
+### Fixed
+
+- **Reinforce refused every board and door** ("That can't be reinforced"). The reinforced models had been moved from `Assets.Models.Siege` to `Assets.Models` and renamed (`ReinforcedDoor`), and the ability only looked in the old place. It now looks in `Assets.Models` first and says "The reinforced model is missing" if a model is ever gone.
+- **Reinforce could not target an empty door frame** (a door whose boards are not built yet has nothing to aim at). It now takes the board nearest the line of sight.
+
 ## 2026-11-12: Drone, camera and slide fixes; ready list; play with party; touch layout
 
 Not playtested (by request): compile-checked, and the touch layout worked out by arithmetic for three screen sizes.

@@ -148,7 +148,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Party.Invite` / `Party.InviteClosed` | Server → one client | PartyId, leader name, leader UserId, seconds / PartyId |
 | `Queue.Request` | Client → server, answered (ok, message) | `Join`, `Private` (a match of the party only) or `Leave`, and the queue mode's Id (`""` for the default) |
 | `Queue.State` | Server → one client | `{ Queued, Since, Status, Size, Mode }` |
-| `Siege.State` | Server → one client | The match as their team may see it |
+| `Siege.State` | Server → one client | The match as their team may see it. During Selection also `Others` and `OtherTeam`: the other team's players as UserId, Name and Ready, nothing else |
 | `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`, `Ready`), value (`Ready`: `"1"` done picking, `"0"` changing picks) |
 | `Siege.Plant` | Server → one attacker | bomb (`""` for none), server time it started, seconds |
 | `Siege.Board` | Server → one client | Scoreboard rows, filtered for their team |

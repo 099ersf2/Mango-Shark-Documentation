@@ -9,6 +9,8 @@ No playtest was asked for. Everything below compiles and its UI parts exist; not
 - [ ] **Drone against a wall:** the camera stays on the drone's side.
 - [ ] **Destroyed drone and camera:** NO SIGNAL shows nothing of the world, shows how to leave, and 5 / X / B / EXIT leave it. A destroyed camera still lets you go to the next one.
 - [ ] **Names and health:** teammates show both, enemies neither. Check a player who changes team mid-game.
+- [ ] **The ready list with two teams:** the enemy section is clearly the enemy (red heading and names), and its READY changes live.
+- [ ] **Reinforce on an empty door frame** (most of the map's doors): a whole reinforced door appears in the frame you are looking at, not a neighbouring one.
 - [ ] **Reinforce** on a board and on a door board: the reinforced model stands exactly in the old one's place and size, breaks piece by piece, and the original is back after the match.
 - [ ] **Selection:** the team list on the right, READY turning green for teammates, the clock skipping when everyone is ready, the consumable row. On a phone the loadout panel is short: check the consumable row can be reached.
 - [ ] **Play with party** with 2, 3, 4 and 5 members: even teams, nobody else in the match, the party intact afterwards. Live servers only.
