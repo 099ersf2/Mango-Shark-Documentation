@@ -143,7 +143,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 
 | Packet | Direction | Arguments |
 | --- | --- | --- |
-| `Party.Request` | Client → server, answered (ok, message) | action (`Invite`, `Accept`, `Decline`, `Leave`, `Kick`, `Promote`), argument |
+| `Party.Request` | Client → server, answered (ok, message) | action (`Invite`, `Accept`, `Decline`, `Leave`, `Kick`, `Promote`, or `Sync` to be sent `Party.State` again), argument |
 | `Party.State` | Server → one client | `{ Id, Leader, Max, Members = { { UserId, Name, Here } } }` or nil |
 | `Party.Invite` / `Party.InviteClosed` | Server → one client | PartyId, leader name, leader UserId, seconds / PartyId |
 | `Queue.Request` | Client → server, answered (ok, message) | `Join`, `Private` (a match of the party only) or `Leave`, and the queue mode's Id (`""` for the default) |

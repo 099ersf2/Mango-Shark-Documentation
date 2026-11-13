@@ -14,6 +14,7 @@ No playtest was asked for. Everything below compiles and its UI parts exist; not
 - [ ] **Reinforce** on a board and on a door board: the reinforced model stands exactly in the old one's place and size, breaks piece by piece, and the original is back after the match.
 - [ ] **Selection:** the team list on the right, READY turning green for teammates, the clock skipping when everyone is ready, the consumable row. On a phone the loadout panel is short: check the consumable row can be reached.
 - [ ] **Play with party** with 2, 3, 4 and 5 members: even teams, nobody else in the match, the party intact afterwards. Live servers only.
+- [ ] **Party after a match** (live servers): play a match as a party of two or more, come back, and check the party shows on every member's screen within a few seconds, without opening the Party menu.
 - [ ] **Leave a queued party:** the party leaves the queue and the member who left sees no search. With the member on another lobby server too.
 - [ ] **Sliding:** crouch while sprinting right after firing, right after a slide, and in the air before landing. Tune `Config.SlideBuffer` (0.3 s) if it feels late or too eager.
 - [ ] **Touch layout** on a real phone and a tablet: reach, and whether FIRE and AIM sit right for the thumb. Positions are one table, `TOUCH_BUTTONS` in `Client.Core.UI`.

@@ -88,6 +88,14 @@ The lobby bar's **PLAY WITH PARTY** button (`Main.Lobby.PartyPlay`, above PLAY) 
 - **Teams:** the members are shuffled and dealt into two teams as even as their number allows (2 → 1 v 1, 3 → 2 v 1, 4 → 2 v 2, 5 → 3 v 2). Which half attacks is random.
 - There is no ticket and no wait: the match is formed at once through the same steps as a queued one (reserve a server, save the record, publish, teleport). The record's `Mode` is `Private`. Nobody outside the party is ever added.
 
+## Party sync (2026-11-12, not run)
+
+**The bug:** back in the lobby after a match, a player's screen showed no party, while inviting the same people was refused because they were already in it. The server was right and the screen was behind.
+
+**Why:** the server sends `Party.State` only when a party changes. A returning player is put back in their party the moment they join the lobby server, and that message could go out before their client was listening for it. Nothing sent it again.
+
+**Now:** the client asks. `Party.Request` has a `Sync` action that makes the server send that player's `Party.State` once more. `Client.Core.Matchmaking` sends it when it starts, again 3, 8 and 20 seconds later (restoring a party reads MemoryStore, which takes a moment), when a match ends, and whenever the Party menu opens.
+
 ## Leaving a queued party (2026-11-12)
 
 A member who leaves a queued party (leaves, is kicked, disconnects) takes the whole party out of the queue; that was already so. What was missing: **the member who left was never told**, so their bar kept showing the search. `dequeue` now tells every player who was on the ticket, on this server and (through the `Queue` party message's new `U` list) on others. Once the match is found the ticket is gone, and a leave changes nothing: the match goes ahead.

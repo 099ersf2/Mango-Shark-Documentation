@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-12: Party shows again after a match
+
+Not playtested (it needs live servers and two players).
+
+### Fixed
+
+- **Back from a match, the screen showed no party** although the server still had it (inviting the same players was refused as "already in your party"). The party message could be sent before the returning client was listening. The client now asks for its party when it starts, a few times in the first seconds, when a match ends, and when the Party menu opens (`Party.Request` action `Sync`, [MATCHMAKING.md](MATCHMAKING.md#party-sync-2026-11-12-not-run)).
+
 ## 2026-11-12: The other team in the ready list; Reinforce works again
 
 Not playtested. The Reinforce swap was checked in Edit mode on copies of a board and a door.
