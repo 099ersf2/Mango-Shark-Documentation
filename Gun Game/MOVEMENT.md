@@ -178,6 +178,7 @@ Other players see crouch and slide through `Client.Movement.MovementPoses`, driv
 
 Change `Content.Movement.Config`, then start a new playtest; it's read once at load. Some starting points:
 
+- **Strafe tilt** (`StrafeTilt`) is off in the lobby (`InLobby`), where there's no gun in hand.
 - **Snappier sprint:** raise `Acceleration`.
 - **Longer slides:** lower `SlideFriction`, or raise `SlideStartSpeed`. Keep `SlideBurstWindow` longer than `SlideMaxTime`, or the server's speed check logs slides as too fast.
 

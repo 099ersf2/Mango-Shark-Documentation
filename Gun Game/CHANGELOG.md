@@ -1,75 +1,10 @@
 # Changelog
 
-## 2026-11-12: UI revamp (MVP pass)
-
-See [docs/UI.md](UI.md). Laid out and checked by measurement only: nobody has seen it rendered yet.
-
-### Added
-
-- **A big green PLAY button, bottom center** (`Main.Lobby`). Pressing it queues the party at once; while searching it is red and cancels. PARTY sits to its left and LOADOUT to its right, with the queue status above.
-- **Party is its own menu** (`Main.Party`, key L): member rows with avatars, LEAD and KICK, LEAVE PARTY, and the invite list. It is no longer inside a Play menu.
-- **`Client.Core.UIFeel`:** every button in the game squashes when pressed, grows on hover, and has a sound; refused buttons buzz; menus pop in. Six new UI sounds (`UIOpen`, `UIClose`, `UIConfirm`, `UIError`, `UITick`, `UINotify`), placeholders made from the two the game had.
-- **Siege team cards** in the style of an operator line-up, dealt in on the reveal; the reveal reads OBJECTIVE LOCATION or INSERTION POINT.
-- Sounds and effects on the moments that matter: search started, match found, invite received, pick accepted, the last 5 seconds of selection, a new phase, an ability used or refused, the round's end.
-- Keys: **Party (L)**. Play (K) now queues or cancels.
+## 2026-11-12: No strafe tilt in the lobby
 
 ### Changed
 
-- **One look** for the Loadout, Settings, Skin shop and Scoreboard menus and their rows: the same panel, heavy titles, bold buttons, round corners.
-- **Touch sizes:** close buttons 44 × 40 (were 36), the top-right menu buttons 120 × 44 and wrapping onto rows (were 132 × 36 in one line), invite buttons 42 tall (were 30), party rows 44 tall, the health bar 40% thicker, weapon slots 30% taller. The SCORE touch button moved out of the combat buttons to the top of the Siege HUD.
-- The top-right menu buttons hide during Prep and Action.
-
-### Removed (archived in `ServerStorage.Archive.OldUI`)
-
-- The Play menu that held the queue and the party together (`Main.Matchmaking`) and its button (`MenuButtons.PlayButton`).
-
-## 2026-11-12: Siege bombs are in place from the prep phase
-
-See [docs/SIEGE.md](SIEGE.md#the-bombs).
-
-### Added
-
-- **The bombs are placed for the defenders.** When Prep starts, a copy of the bomb model (`Content.Siege.BOMB_MODEL`, today `Workspace.Bomb`) is stood on `BombA` and `BombB` of the chosen site, in `workspace.SiegeBombs`, and removed after the match. Checked in Studio: 2 bombs one second into Prep, every part anchored and visible, centered on the map's bomb part; 0 after the match.
-- **A bomb's room can be a folder of parts**, not only one part (`Sites/<site>/BombA`), for rooms one box doesn't fit.
-
-### Changed
-
-- **Wording:** nobody plants a bomb. Only attackers plant anything, a defuser; defenders keep them away from the bombs. The HUD chips read NO DEFUSER / DEFUSER PLANTED, and the defenders' objective reads "Keep the attackers off both bombs". The docs and code comments say the same.
-
-### Fixed
-
-- The end-of-match cleanup called a helper before it was defined, which left a match stuck in its End phase with a repeating error (introduced and fixed the same day, before any push).
-
-## 2026-11-12: Siege, global matchmaking, parties and classes
-
-See [docs/SIEGE.md](SIEGE.md), [docs/MATCHMAKING.md](MATCHMAKING.md) and [docs/CLASSES.md](CLASSES.md). Tested in Studio with one player only; nothing cross-server has run live.
-
-### Added
-
-- **Siege**, the only mode: attackers plant a defuser on both bombs of the site the defenders voted for; one round, one life. `Systems.Siege.SiegeService`, `SiegeMap`, `SpectateService`; `Content.Siege`; `Content.Match.Modes.Siege`.
-- **Global matchmaking:** a MemoryStore queue, one matchmaker at a time (a lease), party-aware team packing, a reserved server per match, and the return to the lobby. `Systems.Matchmaking.*`, `Helpers.Retry`, `Content.Matchmaking`. Studio forms matches on the Studio server.
-- **Parties** of up to five across lobby servers: invite, accept, leave, kick, promote.
-- **Classes:** five a side, one player per class per team, each with an ability. `Content.Classes`, `Systems.Classes.ClassService`, `Gadgets`, ten modules in `Systems.Classes.Abilities`; gadget models in `Assets.Models.Siege`.
-- **Defender cameras:** `Systems.Cameras.CameraService`, `Client.Gadgets.CameraController`, `Content.Cameras`, `StarterGui.CameraFeed`.
-- **Spectating** teammates, then enemies, after the death camera (same camera, Camera + 4).
-- **UI, built in Studio:** `Main.Matchmaking`, `Main.PartyInvite`, `Main.MenuButtons.PlayButton`, `StarterGui.SiegeSelect`, `Main.SiegeHUD`, `Main.SiegeScoreboard`, `StarterGui.CameraFeed`, `DroneFeed.NoSignal`, `Main.Mobile.AbilityButton` / `CameraButton` / `ScoreButton`, and templates `PartySlot`, `InviteRow`, `SiegeOption`, `SiegeClassCard`, `SiegeTeamCard`, `SiegeBoardRow`, `SiegeBoardTeam`, `SiegeKillRow`, `BombMarker`.
-- **Client modules:** `Client.Core.Matchmaking`, `Client.Core.SiegeSelect`, `Client.Core.Spectate`, `Client.Hud.SiegeHud`, `Client.Hud.Scoreboard`, `Client.Gadgets.CameraController`.
-- **Packets:** groups `Party`, `Queue`, `Siege`, `Class`, `Camera`, `Spectate`; `Drone.Scan`, `Drone.Marked`.
-- **Keys:** Play (K), Class ability (T). Teams `Attackers` and `Defenders`. Effects `GadgetPlace`, `GadgetDestroyed`, `Flashbang`, `AbilityPulse`.
-- **Extension points:** `Siege.*`, `Party.*`, `Queue.*`, `Matchmaking.*`, `Classes.*`, `Camera.*`, `Spectate.Changed`, `Drone.PreventRespawn`, `Drone.PreventView`, `Lobby.PreventFirstSpawn`, `Loadout.PreventApply`, `Death.PreventSpectate` (all in [API.md](API.md)).
-
-### Changed
-
-- **Drones:** a scan leaves a static mark where the enemy stood (30 s, replaced by the next scan) instead of a highlight and marker that followed them; the scan cooldown is 5 s and fully enforced by the server. New: `DroneService.Place`, `Mark`, `SetEnabled`, `SetLockedIn`, `Lock`, `CanView`; the NO SIGNAL screen.
-- **MatchService** keeps `External` modes: for those it never starts, shuffles, respawns or ends anything itself. New: `BeginExternal`, `SetClock`, `Finish`, `Reset`, `Kills`, `Refresh`.
-- **MatchHud** no longer owns the scoreboard (`Client.Hud.Scoreboard` does).
-- **LoadoutService:** `LoadoutService.Arm(player, guns)`; `Loadout.PreventApply`.
-- **LobbyService:** `LobbyService.Release(player)`; `Lobby.PreventFirstSpawn`.
-- **DeathCamService:** `DeathCamService.Release(player)`; `Death.PreventSpectate`.
-
-### Removed (archived, nothing deleted)
-
-In `ServerStorage.Archive.OldMatchModes`: the Team Deathmatch, Free-for-All and Elimination modes; the admin Match menu (`Client.Core.MatchMenu`, `Main.MatchMenu`, `MenuButtons.MatchButton`); the `match`, `matchmode` and `matchset` commands; the old scoreboard frame and its `ScoreboardRow` / `ScoreboardTeam` templates; and copies of `MatchService`, `Packets`, `PlayerSettings` and `Content.Match.Settings` as they were. `Packets.Match.Admin` and the Match key (M) are gone. In `ServerStorage.Archive.OldDroneSpot`: the `SpotHighlight` template.
+- The camera no longer tilts when strafing (A/D) in the lobby, where there's no gun in hand (`Client.Movement.MovementCamera`, the `InLobby` attribute). It still tilts in the arena.
 
 ## 2026-11-11: NPC guard mode
 
