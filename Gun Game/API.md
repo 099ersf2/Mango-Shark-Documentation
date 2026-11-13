@@ -106,7 +106,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `PartyService.Of(player)` / `Get(partyId)` / `Ensure(player)` / `IsLeader(player)` / `Owns(party)` / `UserIds(party)` | Parties |
 | `PartyService.Park(party)` / `Restore(player, partyId)` / `SetTravelling(userId, on)` | Keeping a party through a match |
 | `QueueService.Join(player, modeId?)` / `Leave(player)` / `IsQueued(player)` | The queue. `modeId` is a `Content.Matchmaking.MODES` Id |
-| `Content.Matchmaking.GetMode(id)` / `NextMode(id)` | A queue mode by Id (or nil) / the mode after it, wrapping |
+| `Content.Matchmaking.GetMode(id)` / `ModesIn(categoryId)` | A queue mode by Id (or nil) / the modes of one category |
 | `MatchHost.Record()` / `TeamOf(userId)` / `ReturnAll()` / `Clear()` | The match server's record and the return to the lobby |
 | `SiegeMap.Find()` / `Check(map)` / `Load()` | The Workspace map and its problems |
 | `SiegeService.Phase()` / `IsPlaying(player)` / `TeamOf(player)` / `IsAlive(player)` / `Players(team?, aliveOnly?)` / `Site()` | The running match |
@@ -127,7 +127,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Function | What it does |
 | --- | --- |
 | `Client.Core.UIFeel.Play(kind)` / `Pop(object)` / `Pulse(object)` | A UI sound (`Hover`, `Press`, `Open`, `Close`, `Confirm`, `Error`, `Tick`, `Notify`) / pop something in / a quick grow and settle. Needs a `UIScale` named `Feel` in the object ([UI.md](UI.md#feel)) |
-| `Client.Core.Matchmaking.Play()` / `NextMode()` / `OpenParty()` | The lobby's PLAY button (queue or cancel, for the picked mode) / moves to the next queue mode / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
+| `Client.Core.ModeMenu.Selected()` / `Pick(modeId)` / `Open()` / `.Changed` | The picked queue mode's Id / picks one / opens the Game Modes panel (`Menus` name `Modes`) / fires with the new Id |
+| `Client.Core.Matchmaking.Play()` / `OpenModes()` / `OpenParty()` | The lobby's PLAY button (queue or cancel, for the picked mode) / opens the Game Modes panel (leader only, not while searching) / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
 | `Client.Core.SiegeSelect` | No API: the selection and reveal screens |
 | `Client.Hud.SiegeHud.UseAbility()` | Uses the class ability |
 | `Client.Hud.Scoreboard` | No API: the scoreboard (hold Tab) |
@@ -209,7 +210,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `SiegeTestTeam` | Workspace (you set, Studio only) | Puts everyone queued on that side |
 | Tag `Camera` | A part or model in the map | A security camera |
 | `workspace.SiegeCameras`, `workspace.SiegeGadgets` | | Made at runtime |
-| Keys | | `Play` (K), `Party` (L), `GameMode` (M), `ClassAbility` (T) in `Shared.PlayerSettings.Actions`; the `Match` action is gone. A player's class is **never** an attribute |
+| Keys | | `Play` (K), `Party` (L), `ClassAbility` (T) in `Shared.PlayerSettings.Actions`; the `Match`, `Loadout` and `GameMode` actions are gone. A player's class is **never** an attribute |
 
 ---
 

@@ -27,6 +27,24 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 | Font | **Fredoka One** (`rbxasset://fonts/families/FredokaOne.json`) on every piece of text in the game. It has one weight, so size and color carry the hierarchy. New UI must use it. Cmdr's admin console keeps its own fonts |
 | Menus | Scale-sized with a maximum size; `Main` uses Global ZIndex (menus 11, things on a menu 12 and up) |
 
+## The Game Modes panel
+
+`StarterGui.Main.Modes` (`Menus` name `Modes`), client `Client.Core.ModeMenu`. A dimmed full screen in the style of a game-select screen: a big title, a row of tall cards, a description box under the row, and EXIT.
+
+| Part | What it does |
+| --- | --- |
+| `Title` | SELECT A MODE, or the open category's name |
+| `Cards` | A row of `Assets.UI.Templates.ModeCard`. First page: one card per category (`Content.Matchmaking.CATEGORIES`) with its tag ribbon, name and "N MODES". Pressing a category shows its modes as cards; a category with a single mode picks that mode at once |
+| `Info` | The name and description of the card the mouse or gamepad points at; on touch, of the picked mode |
+| `Back` | On a category's page: back to the categories |
+| `Close` | EXIT |
+
+- The picked mode's card, and its category's, have a gold outline and say SELECTED. Hovering a card outlines it.
+- Picking a mode closes the panel with the confirm sound; the MODE button on the lobby bar pulses and shows the new mode.
+- Only the party's leader can open it, and not while searching. It closes when a match starts or the player stops being leader.
+- Sizes: at 812 × 375 a card is 130 × 142 and EXIT is 200 × 44; at 1920 × 1080 a card is 240 × 410.
+- The cards are flat color with a big faded "1v1"; there is no art yet.
+
 ## The lobby
 
 `StarterGui.Main.Lobby`, shown whenever no match is running and no menu is open. Client: `Client.Core.Matchmaking`.
@@ -34,10 +52,10 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 | Part | What it does |
 | --- | --- |
 | `Play` | **The big green button, bottom center.** Pressing it queues the party for the picked mode; its small line reads the mode (SIEGE · 1 V 1). While searching it is red and reads CANCEL. For a party member who is not the leader it is grey and refuses |
-| `ModeButton` | Above PLAY: the picked queue mode ([MATCHMAKING.md](MATCHMAKING.md#queue-modes)). A press, or the GameMode key (M), moves to the next mode. Shown to the party's leader while not searching. At least 40 px tall |
-| `Status` | Above PLAY while searching, in the mode button's place: the status, the mode and the queue timer. "MATCH FOUND" pops in |
+| `ModeButton` | Right of PLAY: shows the picked queue mode and opens the Game Modes panel. It refuses (buzz, and a line under the bar) for a party member who is not the leader, and while searching. No key |
+| `Status` | Above PLAY while searching: the status, the mode and the queue timer. "MATCH FOUND" pops in |
 | `PartyButton` | Opens the Party menu; shows the party's size |
-| `LoadoutButton` | Opens the Loadout menu. It replaces the Loadout button that was among the top-right menu buttons |
+| ~~`LoadoutButton`~~ | Removed on 2026-11-12 (archived as `ServerStorage.Archive.OldUI.LobbyLoadoutButton`): loadouts are not picked in the lobby |
 | `Message` | A line under the bar when the server refuses something |
 
 The bar sits just above the health bar. On a touch screen while the fire button is showing it goes compact: PLAY is narrower and the two side buttons move above it, clear of the right thumb.
@@ -115,7 +133,7 @@ Studio, one player, one full match as a defender.
 | Check | Result |
 | --- | --- |
 | Client and server output | No errors or warnings from this code |
-| Lobby bar | Hidden during the match, back after it, PLAY green, party "1 / 5", loadout key "[B]" |
+| Lobby bar | Hidden during the match, back after it, PLAY green, party "1 / 5" (the loadout button it also checked is gone since) |
 | Menu buttons | Hidden in Prep, back in the lobby |
 | Reveal | "OBJECTIVE LOCATION", the site in capitals, a card 151 × 434 with the class, its letter, and the team's color |
 | HUD | Objective line and "NO DEFUSER" chips shown in Prep |

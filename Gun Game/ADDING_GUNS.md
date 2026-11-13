@@ -175,7 +175,7 @@ It lands in your next free slot; switch to it with that slot's key, or the mouse
 
 ## Adding a loadout
 
-Players pick a loadout in the Loadout menu (it opens when they join, and with `B`). `Systems.Guns.LoadoutService` gives its guns on every spawn, sets each Tool's `Slot` attribute and equips slot 1. The pick is saved in the player's data.
+Since 2026-11-12 nothing opens the Loadout menu (no key, no button, not on join) and the server refuses a pick in the lobby; a player has their saved loadout, or the default. Before that, players picked a loadout in the Loadout menu. `Systems.Guns.LoadoutService` gives its guns on every spawn, sets each Tool's `Slot` attribute and equips slot 1. The pick is saved in the player's data.
 
 Add an entry to the list in `ReplicatedStorage.Content.Guns.Loadouts`, at most three guns, in slot order. The knife always takes the slot after the last gun (slot 3 in a two-gun loadout, slot 4 in a three-gun one):
 

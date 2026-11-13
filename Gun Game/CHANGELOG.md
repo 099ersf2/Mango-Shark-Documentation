@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-11-12: Game Modes panel; no loadout picking in the lobby
+
+Not playtested (by request): compile-checked, and the panel measured at phone and desktop sizes.
+
+### Added
+
+- **The Game Modes panel** (`Main.Modes`, `Client.Core.ModeMenu`): a full-screen game-select screen with one card per mode category (DUELS, SQUADS), a description box, and EXIT ([UI.md](UI.md#the-game-modes-panel)). Pressing a category shows its modes; a category with one mode picks it at once.
+- `Content.Matchmaking.CATEGORIES`; each mode has a `Category` and a `Description`; `Content.Matchmaking.ModesIn(categoryId)`.
+- `ModeMenu.Selected()` / `Pick(id)` / `Open()` / `Changed`; `Client.Core.Matchmaking.OpenModes()`.
+
+### Changed
+
+- **The lobby bar's MODE button** sits right of PLAY (where LOADOUT was) and opens the panel instead of stepping to the next mode.
+- `LoadoutService` refuses a loadout pick while the player's `InLobby` attribute is true, and always on a lobby server.
+
+### Removed
+
+- **The Loadout key (B) and the game-mode key (M).** Both actions are gone from `Shared.PlayerSettings` and the Settings menu.
+- **The lobby bar's LOADOUT button** (archived as `ServerStorage.Archive.OldUI.LobbyLoadoutButton`). Nothing opens the Loadout menu now, which also holds the grenade / smoke picker.
+- `Content.Matchmaking.NextMode`, `Client.Core.Matchmaking.NextMode`.
+
 ## 2026-11-12: Queue modes (1 V 1), Fredoka One, lobby clean-up
 
 ### Added

@@ -7,7 +7,10 @@ This list tracks verification not available in the solo Studio session.
 - [ ] Two real players queue 1 V 1 and get matched against each other; a party of two is refused for 1 V 1 with a clear message.
 - [ ] Two players in different modes at once are never matched together (checked with made-up tickets only).
 - [ ] **Look at the font.** Every label is now Fredoka One, which is wider than Builder Sans: check for clipped or shrunken text, mostly in the Settings rows, the scoreboard and the kill feed.
-- [ ] The mode button by mouse and touch (only its key was pressed in the test), on a phone (compact bar) and with a gamepad.
+- [ ] **The Game Modes panel has not been run at all** (no playtest was asked for; it compiles and its parts exist). Open it from MODE, pick each category, check the outline, the description box and SELECTED, then EXIT. On a phone and with a gamepad too.
+- [ ] A category with two or more modes (none exists yet): its second page and BACK have never been shown.
+- [ ] Art for the mode cards (they are flat color with a faded "1v1").
+- [ ] Decide what happens to the Loadout menu and the grenade / smoke picker inside it: nothing opens them now.
 - [ ] Decide whether two friends in one party should be able to 1 V 1 each other (today a party is never split, so they queue separately).
 - [ ] Decide the default mode once the game has players (`DEFAULT_MODE` is `1v1`).
 

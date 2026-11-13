@@ -69,9 +69,10 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 | `5v5` | 5 V 5 | 5 | 1 v 1 | 60 s |
 
 - `DEFAULT_MODE` is `1v1`: the lobby bar starts on it, so two players are enough for a match.
-- The leader picks the mode on the lobby bar (the button above PLAY, or the GameMode key, M). The pick travels with the queue request; the server checks the mode exists and that the party fits on one side of it. A party of two can't queue for 1 V 1.
+- The leader picks the mode in the **Game Modes panel** (the MODE button right of PLAY; [UI.md](UI.md#the-game-modes-panel)). It has no key. The pick travels with the queue request; the server checks the mode exists and that the party fits on one side of it. A party of two can't queue for 1 V 1.
 - The mode's Id is in the ticket (`G`) and in the match record (`Mode`).
-- **To add a mode**, add a row to `MODES` (Id, Name, TeamSize, MinTeamSize, MaxWait). Nothing else changes. Never reuse an old Id.
+- **Categories.** Each mode names a category (`CATEGORIES`: Id, Name, Tag, Color, TagColor, Description). Today: **DUELS** holds 1 V 1 and **SQUADS** holds 5 V 5. The panel shows one card per category that has a mode.
+- **To add a mode**, add a row to `MODES` (Id, Name, Category, Description, TeamSize, MinTeamSize, MaxWait). Nothing else changes: the panel and the matchmaker read the table. Never reuse an old Id. To add a category, add a row to `CATEGORIES`.
 - All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
 
 ## The queue
@@ -199,11 +200,11 @@ ServerRole.Kind()                -- "Lobby", "Match" or "Studio"
 | Check | Result |
 | --- | --- |
 | Queue for a mode that doesn't exist | Refused: "That game mode does not exist." |
-| The mode button's key (M) | 1 V 1 → 5 V 5 → 1 V 1; PLAY's small line follows |
+| The mode key, M (removed since: the mode is now picked in the Game Modes panel) | 1 V 1 → 5 V 5 → 1 V 1; PLAY's small line followed |
 | Queue 1 V 1 with made-up tickets in the queue (a 1v1 solo, a 5v5 solo, an unknown mode, a party of two marked 1v1) | The 1v1 match formed with the player and the 1v1 solo, one each side, record `Mode = "1v1"`. The 5v5 solo formed its own match (Studio lets one side be empty). The unknown-mode ticket and the oversized party were in no match |
 | Team packing with the live 1v1 limits | One solo: no match, however long it waited. Three solos: 1 v 1 with the two oldest |
 
-Not verified: two real players queueing 1 V 1 against each other, a party refused for 1 V 1 from the UI, and everything on live servers (below).
+Not verified: the Game Modes panel (built after this test, compile-checked only), two real players queueing 1 V 1 against each other, a party refused for 1 V 1 from the UI, and everything on live servers (below).
 
 **Not verified. None of this has run on live servers:**
 - MemoryStore and MessagingService themselves (Studio used the local stand-ins).
