@@ -128,7 +128,8 @@ Since another developer's change, attackers get a body during Prep, parked at th
 
 SiegeService also plays the Arcade mode [Clear House](CLEAR_HOUSE.md), players against NPC guards, when the match record's mode has `Kind = "ClearHouse"`. It's the same flow, except:
 
-- there are only attackers, and no site vote;
+- there are only attackers; Selection is a map vote and the attackers' classes (no site vote, the spawn is handed out);
+- there is no Prep: Reveal goes straight to Action;
 - there are no bombs and no cameras;
 - there is one round;
 - it has its own win rules.

@@ -4,9 +4,9 @@
 
 - [ ] **A real fight:**
   - kills on guards count for the player (end screen, Tab);
-  - guards' kills and damage show in the HOUSE GUARDS column;
   - guards re-board doors and windows in their room.
-- [ ] **Difficulty:** with 1 and with 5 players, tune `BASE_GUARDS`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`, `PROFILES` and `ACTION_TIME` in `Content.ClearHouse`.
+- [ ] **Difficulty:** with 1 and with 5 players, tune `ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`, `PROFILES` and `ACTION_TIME` in `Content.ClearHouse`.
+- [ ] **Map vote with several players:** the tie draw, and Bank played through to a win.
 - [ ] **A full squad of 5** on live servers: the match forms at once and everyone lands on the attacker side.
 - [ ] **Game Modes panel:** the ARCADE card and the CLEAR HOUSE card look right (`Icon = "PvE"`, orange). Add an `Image` if you like.
 - [ ] **Studio only:** after a match, the old map copy stays in Workspace (Siege does the same), so a second match in one Studio session plays over two overlapping Mansions.

@@ -1,12 +1,12 @@
 # Clear House (Arcade)
 
-Added 2026-11-14. Up to five players against NPC guards in the Mansion. Every door and window is boarded up. The players breach in and clear every room. No bombs, no defenders' cameras, one round.
+Added 2026-11-14. Up to five players against NPC guards in a house (Mansion or Bank, voted). Every door and window is boarded up. The players breach in and clear every room. No bombs, no defenders' cameras, one round.
 
 ## Where things are
 
 | What | Where |
 | --- | --- |
-| Category and mode | `Content.Matchmaking`: category `Arcade`, mode `ClearHouse` (`Kind = "ClearHouse"`, `Maps = { "Mansion" }`, `TeamSize = { Attackers = 5, Defenders = 0 }`) |
+| Category and mode | `Content.Matchmaking`: category `Arcade`, mode `ClearHouse` (`Kind = "ClearHouse"`, `Maps = { "Mansion", "Bank" }`, `TeamSize = { Attackers = 5, Defenders = 0 }`) |
 | Numbers | `Content.ClearHouse` (phase times, guard counts, profiles, room finder settings, texts) |
 | End reasons | `Content.Siege.REASONS`: `HouseCleared`, `HouseHeld` |
 | The match | `Systems.Siege.SiegeService`: the Siege flow with a `clearHouse` flag |
@@ -20,13 +20,16 @@ Added 2026-11-14. Up to five players against NPC guards in the Mansion. Every do
    - A full squad of 5 starts at once.
    - Otherwise, whoever is queued starts after `MaxWait` (20 s).
    - Parties are never split. `Matchmaking.PartyLimit(mode)` allows 5 here, since the other side is empty.
-2. **Map load.** The match server loads the Mansion. `ClearHouse.Prepare` then:
-   - puts every breakable back to whole (`BreakableService.Reset`), including Siege's empty `DoorBoardBuild` door frames;
-   - finds the rooms (below).
-3. **Selection** (Siege's 30 s): spawn and class, attackers' classes only. There's no site vote. The roster's enemy section reads HOUSE GUARDS.
-4. **Reveal** (15 s).
-5. **Prep** (`PREP_TIME`, 30 s): each player scouts with a drone, as in Siege, and the guards are placed in their rooms meanwhile. Guards see and shoot drones that come close.
-6. **Action** (`ACTION_TIME`, 480 s): players spawn at their spawns and get their second drone.
+2. **Selection** (Siege's 30 s):
+   - **Map vote** (the first page): every map of the mode's `Maps` that exists in `ReplicatedStorage.Maps`, with its votes (the `"Map"` pick). No map is loaded yet.
+   - **Class:** the attackers' classes only. The roster's enemy section reads HOUSE GUARDS.
+3. **Map load** (when Selection ends, `loadHouse` in SiegeService):
+   - The map with the most votes wins; a tie is drawn among the tied maps (no votes: all are tied). `record.Map` and `ActiveSiegeMap` are set to it.
+   - Each player gets a random free attacker spawn of that map.
+   - In its own thread, `ClearHouse.Prepare` puts every breakable back to whole (`BreakableService.Reset`, including Siege's empty `DoorBoardBuild` door frames) and finds the rooms (below); then `Populate` places the guards.
+4. **Reveal** (15 s): the spawn and the team. The guards are placed meanwhile.
+5. **No Prep.** Reveal goes straight to Action.
+6. **Action** (`ACTION_TIME`, 480 s): players spawn at their spawns, with their drones.
 7. **End.** The result screen shows VICTORY or DEFEAT, "x / y guards down", your team, and a HOUSE GUARDS column with one row per guard (kills, deaths, damage). Then everyone returns to the lobby.
 
 ## Winning and losing
@@ -59,13 +62,15 @@ There are no hand-placed room parts. `ClearHouse.Prepare` finds them, with every
 5. **Rooms.** Each joined group (union-find) of `MIN_ROOM_CELLS` to `MAX_ROOM_CELLS` points is a room. It becomes an invisible box tagged `NPCRoom` in the map's `ClearHouseRooms` folder, covering its points from floor to ceiling.
 6. **Guard spots.** Points joined on all four sides are the room's spots, where guards stand away from the walls.
 
-Rays only hit the map's collidable parts (`RespectCanCollide`), so room volumes, spawn markers and board roots don't count as walls. The finder waits a frame every `RAYS_PER_YIELD` raycasts. On the Mansion it finds 26 rooms in about 0.2 s.
+Rays only hit the map's collidable parts (`RespectCanCollide`), so room volumes, spawn markers and board roots don't count as walls. The finder waits a frame every `RAYS_PER_YIELD` raycasts. On the Mansion it finds 26 rooms in about 0.2 s; on Bank, 29 rooms in about 2.3 s (during Reveal).
 
 **Hand-drawn rooms instead:** put parts in a `Rooms` folder in the map. They're used as they are, with no grid.
 
 ## Placing the guards
 
-- **How many:** `BASE_GUARDS` (6) for one player, plus `GUARDS_PER_PLAYER` (2) for each other player, up to `MAX_GUARDS` (16). That makes 6 / 8 / 10 / 12 / 14 for 1 to 5 players.
+- **How many:** at least half the rooms found, rounded up (`ROOM_SHARE` 0.5), plus `GUARDS_PER_PLAYER` (2) for each player after the first. No cap besides `MAX_PER_ROOM`.
+  - Mansion (26 rooms): 13 / 15 / 17 / 19 / 21 for 1 to 5 players.
+  - Bank (29 rooms): 15 / 17 / 19 / 21 / 23.
 - **Which rooms:** rooms are drawn at random, bigger ones more often, one guard per room first. The rest go to the biggest rooms, up to `MAX_PER_ROOM` (3) each.
 - **Profiles:** drawn from `PROFILES` by weight: Soldier 3, Breacher 1, Grenadier 1.
 - **Spawning:** `NPCService.Spawn(profile, cframe, nil, true)`. The fourth argument passes the `MAX_NPCS` cap, which is 0 today. The guard is then put in Guard mode for its room.
@@ -86,8 +91,16 @@ Rays only hit the map's collidable parts (`RespectCanCollide`), so room volumes,
 - **Loss.** A second match: the player died in Action, giving DEFEAT, "0 / 6 guards down · Every attacker was eliminated".
 - **Test data undone.** Both test results were removed from the saved data: coins, wins, losses and both stats entries. `LastMode` was set to `5v5`, since the value before the test wasn't recorded.
 
+### Tested again (2026-11-14, map vote and no prep)
+
+- The Selection's first page read "Vote for the map" with MANSION and BANK. A vote for Bank showed "1 vote" and the outline.
+- The attacker classes were offered; the match loaded Bank, gave a spawn, and went from Reveal straight to Action (no Prep).
+- 29 rooms were found on Bank in 2.3 s and 15 guards placed.
+- A guard shot the idle test player: DEFEAT, "0 / 15 guards down · Every attacker was eliminated", and the HOUSE GUARDS column showed that guard's kill and 102 damage.
+- The loss was removed from the saved data (coins, losses, both stats entries; `LastMode` back to `5v5`).
+
 ### Not tested
 
-- Real fighting: kill credit to players, guards' kills and damage, and guards rebuilding boards.
+- Real fighting on the players' side: kill credit to players, and guards rebuilding boards.
 - A full squad of 5 on live servers.
 - How hard it is.

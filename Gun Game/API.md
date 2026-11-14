@@ -109,7 +109,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Content.Matchmaking.GetMode(id)` / `ModesIn(categoryId)` | A queue mode by Id (or nil) / the modes of one category |
 | `Content.Matchmaking.PartyLimit(mode)` | The largest party a mode allows: the smaller side, or the only side when the other is 0 |
 | `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Siege.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([CLEAR_HOUSE.md](CLEAR_HOUSE.md)) |
-| `Content.ClearHouse` | Clear House numbers: phase times, guard counts and profiles, room finder settings |
+| `Content.ClearHouse` | Clear House numbers: Action time, guard counts (`ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`) and profiles, room finder settings |
+| `Packets.Siege.Pick("Map", name)` / snapshot `Maps` | Clear House's map vote during Selection: `{ Name, Votes }` per map of the mode |
 | `MatchHost.Record()` / `TeamOf(userId)` / `ReturnAll()` / `Clear()` | The match server's record and the return to the lobby |
 | `SiegeMap.Find()` / `Check(map)` / `Load()` | The Workspace map and its problems |
 | `SiegeService.Phase()` / `IsPlaying(player)` / `TeamOf(player)` / `IsAlive(player)` / `Players(team?, aliveOnly?)` / `Site()` | The running match |

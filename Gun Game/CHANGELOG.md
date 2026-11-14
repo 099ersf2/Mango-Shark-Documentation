@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-11-14: Clear House map vote, no prep, guards by room count
+
+Tested in Studio with one player: map vote, Reveal straight to Action, 15 guards on Bank. The test loss was removed from the saved data afterwards.
+
+### Changed
+
+- **Map vote:** Clear House's Selection starts with a vote between the mode's maps, now Mansion and Bank.
+  - The map with the most votes is played; a tie is drawn among the tied maps.
+  - The map loads when Selection ends. Each player is then given a random free attacker spawn, since spawns belong to a map.
+- **Classes:** the attackers' classes, as before.
+- **No prep phase:** Reveal goes straight to Action. The doors and windows are boarded, the rooms found and the guards placed while Reveal runs.
+- **Guards:** half the map's rooms, rounded up (`ROOM_SHARE` 0.5), plus 2 for each player after the first. No upper limit besides 3 a room. Mansion (26 rooms): 13 to 21. Bank (29 rooms): 15 to 23.
+- `Content.ClearHouse`: `PREP_TIME`, `BASE_GUARDS`, `MAX_GUARDS` and `TEXT.Prep` removed; `ROOM_SHARE` added.
+- New Siege pick `"Map"` (Clear House only); the snapshot's `Maps` (`{ Name, Votes }`) during Clear House Selection.
+
 ## 2026-11-14: Arcade category, Clear House mode
 
 Tested in Studio with one player: a win (guards killed from a test script) and a loss. See [CLEAR_HOUSE.md](CLEAR_HOUSE.md). Both test results were removed from the saved data afterwards.
