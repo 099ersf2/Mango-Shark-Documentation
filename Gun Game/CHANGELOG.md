@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-13: Custom prompts, build or reinforce, startup fix
+
+Playtested in Studio with one player: startup clean, a drone thrown outside the lobby showed its feed and stayed in it for over 8 s. The new prompt cards were not seen in a playtest (it was stopped before a board was placed), and nothing was run on a phone or gamepad.
+
+### Added
+
+- **Custom proximity prompts** (`Client.Interact.CustomPrompts`): every prompt is drawn as the game's own card (key, action, object, hold bar), from `Assets.UI.Templates.PromptCard`. Prompts on the same object share one `PromptStack`, 2 cards per row, wrapping onto a new row. On touch, hold the card itself.
+- Prompt keys never clash: if two shown prompts use the same key or gamepad button, the one without `FixedKey` moves to a free one (E, F, T, G, Z, V / DPad Up, DPad Down, DPad Right, Y).
+
+### Changed
+
+- **A defender frame offers both choices:** build normal boards (Interact, E) or place a reinforced wall (the Reinforcement Expert's ability key, T), side by side. No board needs to be there first. Until now the build prompt was hidden from the Reinforcement Expert while they had charges.
+- Attackers never see or trigger the build prompt (its reach is 0 on their client; before, it was only hidden).
+
+### Fixed
+
+- `ClassService.BeginPlacement` errored (`attempt to call a nil value`, line 344): it called `BreakableService.PositionBuilder`, which doesn't exist. Reinforce placement never started.
+- **Drones (and every other client system) could fail to start.** `Client.Settings.Options` and `Keybinds` waited for saved data inside `Init`, so a slow or stuck data load held up every client module after them: no drone keys, no HUD. They now load in the background, use the defaults until the data arrives, then apply the saved values.
+
 ## 2026-11-13: Mobile UI pass (icons, smaller buttons, no overlaps)
 
 Checked in Studio by laying the screens out in an 844 × 390 frame (a phone in landscape) and with one playtest on the desktop-sized Studio window: console clean. Not run on a real phone, a tablet or a gamepad, and not in a real two-player Siege match.

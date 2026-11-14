@@ -1,5 +1,12 @@
 # Next steps
 
+## Prompts and reinforce (2026-11-13)
+
+- [ ] **See the prompt cards in a match:** a defender at an empty frame sees two cards (build boards E, Reinforce T) side by side; holding either fills its bar and builds it.
+- [ ] **Touch:** holding a card builds or reinforces; **gamepad:** the two cards show different buttons.
+- [ ] **Attackers** see no build card at a frame.
+- [ ] **Three or more prompts** on one object wrap onto a second row.
+
 ## Mobile UI pass (2026-11-13)
 
 Laid out at 844 × 390 in Studio, not run on a device.

@@ -97,7 +97,7 @@ How the abilities reach other systems, without editing them:
 | Smoke Screen | `ConsumableService.Detonate` (found by name, in a `pcall`) |
 | Recon Pulse | `DroneService.Mark` |
 | Bulletproof Camera | `CameraService.Add`; `Gun.DamageMultiplier` returns 0 for bullets |
-| Reinforce | Swaps in `Assets.Models.ReinforcedBoard` / `ReinforcedDoor` (the folder the other breakables' models are in; `Assets.Models.Siege` is looked in too), tagged `ReinforcedBoard` / `ReinforcedDoor` so `BreakableService` runs it as that breakable type (`Content.Breakables.Definitions`). The original board waits in `ServerStorage.ReinforceStash` and is put back by `Reinforce.Reset` |
+| Reinforce | Works on any window, door or hatch frame, built or empty: the player picks the normal build prompt (E) or the Reinforce prompt (T), shown side by side (`Client.Interact.CustomPrompts`, 2026-11-13). Swaps in `Assets.Models.ReinforcedBoard` / `ReinforcedDoor` (the folder the other breakables' models are in; `Assets.Models.Siege` is looked in too), tagged `ReinforcedBoard` / `ReinforcedDoor` so `BreakableService` runs it as that breakable type (`Content.Breakables.Definitions`). The original board waits in `ServerStorage.ReinforceStash` and is put back by `Reinforce.Reset` |
 
 ## Adding a class
 
