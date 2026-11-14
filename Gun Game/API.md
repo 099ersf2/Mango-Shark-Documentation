@@ -107,6 +107,9 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `PartyService.Park(party)` / `Restore(player, partyId)` / `SetTravelling(userId, on)` | Keeping a party through a match |
 | `QueueService.Join(player, modeId?)` / `JoinPrivate(player)` / `Leave(player)` / `IsQueued(player)` | The queue. `modeId` is a `Content.Matchmaking.MODES` Id. `JoinPrivate` forms a match of the leader's party only, at once |
 | `Content.Matchmaking.GetMode(id)` / `ModesIn(categoryId)` | A queue mode by Id (or nil) / the modes of one category |
+| `Content.Matchmaking.PartyLimit(mode)` | The largest party a mode allows: the smaller side, or the only side when the other is 0 |
+| `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Siege.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([CLEAR_HOUSE.md](CLEAR_HOUSE.md)) |
+| `Content.ClearHouse` | Clear House numbers: phase times, guard counts and profiles, room finder settings |
 | `MatchHost.Record()` / `TeamOf(userId)` / `ReturnAll()` / `Clear()` | The match server's record and the return to the lobby |
 | `SiegeMap.Find()` / `Check(map)` / `Load()` | The Workspace map and its problems |
 | `SiegeService.Phase()` / `IsPlaying(player)` / `TeamOf(player)` / `IsAlive(player)` / `Players(team?, aliveOnly?)` / `Site()` | The running match |
@@ -408,7 +411,7 @@ See [DRONES.md](DRONES.md).
 
 | Function | What it does |
 | --- | --- |
-| `NPCService.Spawn(profileId: string, where: CFrame, spawnPart: BasePart?)` | Spawns an NPC from `Content.NPC.Profiles` into `workspace.Enemies`. Refused past `MAX_NPCS` (10) |
+| `NPCService.Spawn(profileId: string, where: CFrame, spawnPart: BasePart?, ignoreCap: boolean?)` | Spawns an NPC from `Content.NPC.Profiles` into `workspace.Enemies`. Refused past `MAX_NPCS` (0 today) unless `ignoreCap` (Clear House's guards) |
 | `NPCService.Clear()` | Removes every NPC |
 | `NPCService.Count()` / `NPCService.ProfileNames()` | How many are alive / the profile names |
 | `NPCService.Agents()` | The live agents (`Brain.Agent`), read only, for tests and debug tools |

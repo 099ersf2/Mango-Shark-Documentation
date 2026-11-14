@@ -67,6 +67,7 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 | --- | --- | --- | --- | --- |
 | `1v1` | 1 V 1 | 1 | 1 v 1 | 60 s (never smaller than 1 v 1) |
 | `5v5` | 5 V 5 | 5 | 1 v 1 | 60 s |
+| `ClearHouse` | CLEAR HOUSE (category ARCADE) | 5 players, 0 defenders (NPC guards) | 1 player | 20 s |
 
 - `DEFAULT_MODE` is the mode the lobby bar starts on (`5v5` today; with `1v1` two players are enough for a match).
 - The leader picks the mode in the **Game Modes panel** (the MODE button right of PLAY; [UI.md](UI.md#the-game-modes-panel)). It has no key. The pick travels with the queue request; the server checks the mode exists and that the party fits on one side of it. A party of two can't queue for 1 V 1.
@@ -74,6 +75,8 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 - **Categories.** Each mode names a category (`CATEGORIES`). The panel shows one card per category that has a mode. Since the owner's edit on 2026-11-12 there is one category, **SIEGE**, holding both modes, and `DEFAULT_MODE` is `5v5` (the table above still lists the modes correctly).
 - **Card look.** A category row and a mode row both carry `Tag`, `TagColor`, `Color`, `Image` and `Icon` ([UI.md](UI.md#what-a-card-shows)).
 - **To add a mode**, add a row to `MODES` (Id, Name, Category, Tag, Color, TagColor, Image, Icon, Description, TeamSize, MinTeamSize, MaxWait). Nothing else changes: the panel and the matchmaker read the table. Never reuse an old Id. To add a category, add a row to `CATEGORIES`.
+- **Kind and Maps (2026-11-14).** A mode's `Kind` says how the match server plays it: nil for Siege, `"ClearHouse"` for [Clear House](CLEAR_HOUSE.md). `Maps` limits the maps it is played on; with no `Maps`, it uses `Content.Siege.MAP_POOL`.
+- **Party size.** `Matchmaking.PartyLimit(mode)` is the largest party allowed: the smaller side, or the only side when the other is 0. The queue and the matchmaker's ticket check both use it.
 - All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
 
 ## Play with party (2026-11-12)

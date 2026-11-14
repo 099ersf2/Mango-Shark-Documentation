@@ -124,6 +124,15 @@ Since another developer's change, attackers get a body during Prep, parked at th
   - `Players`;
   - `Mvp`.
 
+## Clear House (2026-11-14)
+
+SiegeService also plays the Arcade mode [Clear House](CLEAR_HOUSE.md), players against NPC guards, when the match record's mode has `Kind = "ClearHouse"`. It's the same flow, except:
+
+- there are only attackers, and no site vote;
+- there are no bombs and no cameras;
+- there is one round;
+- it has its own win rules.
+
 ## Winning
 
 Each row below decides a **round**. The match goes to the side with the most rounds (see Rounds).

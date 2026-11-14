@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-11-14: Arcade category, Clear House mode
+
+Tested in Studio with one player: a win (guards killed from a test script) and a loss. See [CLEAR_HOUSE.md](CLEAR_HOUSE.md). Both test results were removed from the saved data afterwards.
+
+### Added
+
+- **ARCADE category** in the Game Modes panel, with one mode, **CLEAR HOUSE**:
+  - up to 5 players against NPC guards in the Mansion;
+  - every door and window boarded up;
+  - no bombs, one round.
+- **The match:** Selection (spawn and class), Reveal, a 30 s drone Prep while the guards take their rooms, then Action.
+  - The players win when every guard is dead.
+  - They lose when every player is dead or has left, or after 8 minutes.
+- **Room finder** (`Systems.Siege.ClearHouse`): a grid flood fill over the map's floors, with walls, doors and windows as dividers, builds an `NPCRoom` box per room. A map may give hand-drawn rooms in a `Rooms` folder instead.
+- **Guards:**
+  - 6 for one player, plus 2 for each other player, up to 16, spread over random rooms (big rooms more often, at most 3 a room);
+  - Soldier, Breacher or Grenadier;
+  - in Guard mode, so each one stays in, patrols and re-boards its room;
+  - no respawns.
+- **Wins** are saved under `Mode:ClearHouse` and `Category:Arcade`, apart from Siege's stats. The overall Wins/Losses totals still count them.
+- `Content.ClearHouse`; `Content.Matchmaking.PartyLimit(mode)`; the mode fields `Kind` and `Maps`; `Content.Siege.ROUNDS.ClearHouse = 1` and the reasons `HouseCleared` / `HouseHeld`.
+
+### Changed
+
+- **Queue:** a party may be as large as the only side of a mode whose other side is empty (5 for Clear House). It was the smaller side, which would have been 0.
+- **Maps:** a mode with `Maps` only uses those maps.
+- `NPCService.Spawn(profileId, where, spawnPart?, ignoreCap?)`: the new `ignoreCap` passes the `MAX_NPCS` cap, which is 0 today.
+- **Siege screens in Clear House:**
+  - the roster's enemy section reads HOUSE GUARDS;
+  - the HUD objective counts the guards left, and the bomb chips are hidden;
+  - the result screen shows "x / y guards down" and a HOUSE GUARDS column.
+
 ## 2026-11-14: Shotgun loadouts use PumpShotgun
 
 Studio playtest: `GunService.Give(player, "PumpShotgun")` gave the gun with no warning, and every gun id in the class, lobby and NPC loadouts now has a definition.
