@@ -66,6 +66,10 @@ The feed and alert ScreenGuis are built under `ReplicatedFirst.UILoader` and mov
 
 ## Prep view and streaming (2026-11-13)
 
+- **Input while the body is parked:** `moveVector` falls back to WASD and the left stick when the default controls give no movement.
+- **Ownership:** `Drone.View` hands landed drones back to their owner.
+- **Viewmodel:** stays hidden for as long as the player is in a drone.
+
 - Every drone is `ModelStreamingMode.Persistent`.
 - While a player is held in their drone (`SetLockedIn`), `DroneService` points their `ReplicationFocus` at it (and clears it when the hold ends or the drone goes), so the world streams in around the drone, not the parked body.
 - Held players always see the drone view, or NO SIGNAL if they have no living drone, until released.

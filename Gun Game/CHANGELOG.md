@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-13: Prep drone drives, no gun over the drone view
+
+Compile-checked only (not playtested).
+
+### Fixed
+
+- **The gun viewmodel showed over the drone view in Prep.** The server arms the attacker's lobby body when it spawns, after the drone view has opened, and equipping a gun resets the viewmodel's hidden flag. While in a drone, `DroneController` now hides it again on every frame.
+- **The prep drone didn't move.**
+  - The drive input came only from the default controls, which give no movement while the body is parked (and its controls are off) in the lobby. When they report nothing, the keyboard (WASD) and the gamepad's left stick are now read directly.
+  - When a player starts looking through a drone (`Packets.Drone.View`), the server gives them network ownership of their landed drones again, so a body spawning or a short take-back can't leave the drone stuck under server physics.
+
 ## 2026-11-13: OWNED for passes and bundles, greyed prices on the detail page
 
 Compile-checked only.
