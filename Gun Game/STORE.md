@@ -93,6 +93,10 @@ A skin granted by a store item with a `Border` or `Glow` (like the Obsidian Pack
 
 On the Siege class page, a locked class the player doesn't own is greyed out, says LOCKED, and is sorted to the bottom. The server still refuses it.
 
+### Owned cards (2026-11-13)
+
+Owned items show ✓ OWNED (or ✓ ALL SKINS OWNED) above greyed, inactive price buttons. The gift button stays usable. % EXTRA is a bright ribbon on the top-left edge.
+
 ### Coin buttons (2026-11-13)
 
 Coin prices are a centered row: the coin image, then the amount (`Content.CoinIcon`, `Content.Amount`) on `StoreCard.Card.Prices.Coins`, `Main.Details.Actions.Coins` and `Main.Wallet.Coins`. Write the amount to `Amount`, not to the button's own Text.

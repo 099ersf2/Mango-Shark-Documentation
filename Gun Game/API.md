@@ -219,6 +219,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Tag `FitScale` (and `DesignHeight`, `WidthShare`, `BelowTopbar`) | A UIScale in a full-screen menu frame | `Client.Core.UI` scales the menu to fit the screen, under the top bar ([UI.md](UI.md#full-screen-menus-that-fit-fitscale)). On `SiegeSelect.Screen.Content.Fit` |
 | `Main.MenuButtons.TouchScale` | UIScale | 0.8 on small touch screens |
 | `Main.RoundResult` / `Main.MatchResult` | Frame | The Siege round banner and the final match screen (`Client.Hud.SiegeHud`); templates `RoundPip`, `MvpCard`, `TeamColumn`, `ResultRow` |
+| `Classes.Reinforced` (extension, Fire) | player, model | A reinforced wall was placed; Siege counts it as Built |
 | `TotalWins` | Player | Saved total wins, set by `StatsService`; the lobby leaderboard sorts by it |
 | `Content.Siege.ROUNDS` / `DEFAULT_ROUNDS` / `ROUND_END_TIME` / `MATCH_ENDING_REASONS` | Content | Rounds per mode, the pause between rounds, reasons that end the whole match |
 | `DronesMax` | Player | How many drones they may have out at once (`Content.Drones.MAX_ATTRIBUTE`). `DroneService.AddCharge(player)` raises it by one until the next refund |

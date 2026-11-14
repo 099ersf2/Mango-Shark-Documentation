@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-11-13: Prep drone streaming restored, reinforce counts as building, Store card fixes
+
+Compile-checked only (a playtest was not allowed this time).
+
+### Fixed
+
+- **The prep drone still wasn't viewable.** The earlier streaming fix had been lost from `DroneService`, and the drone template was back to `ModelStreamingMode.Default`, so the drone at the attacker spawn never reached a client whose body waits in the lobby. Restored and made sturdier:
+  - every placed drone is `Persistent`, and so is the template;
+  - while a player is held in their drone, `focusOn` points their `ReplicationFocus` at it, and clears it when the hold ends or the drone is cleared;
+  - the client goes into the drone as soon as one of its drones is there, without needing a body.
+- **End screen outlines were cut off.**
+  - A player's row outline was clipped by the rows list; it now has 3 px padding.
+  - The team columns and MVP cards have room for their edges.
+  - The totals now read KILLS, DAMAGE, BUILT in that order.
+- **Reinforce was silent for others.** Its sound part now sits in a `Persistent` model, so with streaming on it reaches everyone before the short sound ends. The player who reinforces also hears a local lock-in sound (`BoardPlace` and `FootstepMetal`, in `SiegeHud`).
+- **Daily deal text was covered.** The struck-through old price and the detail line now sit just above the price buttons (anchored to the bottom), with a slightly smaller picture.
+
+### Changed
+
+- **A reinforced wall counts as building** (`Classes.Reinforced`, fired by `Abilities.Reinforce`), so it adds to Built and to MASTER BUILDER.
+- **Owned Store items** keep their price buttons, greyed and unclickable, under a green ✓ OWNED line. Gifting still works.
+- **The % EXTRA tag** is brighter red, not tilted, and sits on the top-left edge of the card, level with the deal tag on the right.
+
 ## 2026-11-13: Store coin buttons, OWNED cards, skin tabs per gun
 
 Compile-checked only.
