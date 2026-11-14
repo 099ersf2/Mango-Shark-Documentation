@@ -17,6 +17,18 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
   - Pistol: Pistol, SiegePistol, Revolver.
   - A single-mesh gun takes the skin's `Swatch` color.
 
+## Developer pack and rainbow skins (2026-11-13)
+
+- `DevRifle`, `DevPistol` and `DevSMG` (`Developer = true`) are black with a moving rainbow.
+  - Admins give them with `givedevskins <players>` and take them with `takedevskins`; owned for good once given.
+  - They are never sold or in a crate, and are hidden from players who don't own them.
+- **Rainbow parts:**
+  - Parts matching `Rainbow` patterns, and Details with `Rainbow = true`, become Neon and are tagged `SkinRainbow`, with `RainbowOffset` set to their place along the gun ÷ `RAINBOW.Length`.
+  - Long rainbow Details are cut into `RAINBOW.Piece`-stud pieces.
+  - `Client.Guns.SkinRainbow` sets every tagged part's color to `hue = time × Speed + offset` each frame, on Tools and viewmodels alike.
+- **`Card`:** `{ Background = { top, bottom }, Border = "Rainbow" }` sets how the skin's Inventory card looks.
+- **SMG family:** `SMG` and `SiegeSMG`.
+
 ## Where things are
 
 | What | Where |

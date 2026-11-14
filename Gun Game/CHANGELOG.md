@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-11-13: Developer skin pack
+
+Compile-checked only. In Edit mode `Skins.Apply` was run on the Rifle, Pistol and SMG models: 35, 6 and 3+ rainbow parts were tagged, and putting the normal look back cleared every one.
+
+### Added
+
+- **Developer pack:** `DevRifle`, `DevPistol` and `DevSMG` in `Content.Guns.Skins`:
+  - black guns;
+  - neon rainbow parts (magazine, sights, rifle handguard);
+  - rainbow lines down both sides, cut into 0.2-stud pieces;
+  - the colors run along the gun as a moving gradient.
+  - **Not for sale:** never in a crate or the Store, and hidden in the Inventory from players who don't own them.
+- **Rainbow skins** (any skin can use them):
+  - a skin's `Rainbow` list of part-name patterns, and `Rainbow = true` on a Detail, make those parts Neon and tag them `SkinRainbow`, with a `RainbowOffset`;
+  - `Client.Guns.SkinRainbow` turns their colors every frame;
+  - the settings are in `Skins.RAINBOW`: Speed, Length, Saturation, Value, Piece.
+- **Skin cards:** a skin's `Card` sets its Inventory card: background colors and a `BORDERS` preset. The Developer skins have black cards with the moving Rainbow border.
+- **Commands (admins only, Cmdr):**
+  - `givedevskins <players>` (alias `devskins`) gives the pack for good (saved in `WeaponSkins`);
+  - `takedevskins <players>` takes it back and unequips it.
+  - Both go through `StoreService.GiveSkins(player, skinIds, take?)` and `StoreService.DeveloperSkins()`.
+- **SMG skin family:** `SMG` and `SiegeSMG` share one (`SMGSkin` saved field), so the Inventory gets an SMG tab.
+
 ## 2026-11-13: Prep drone streaming restored, reinforce counts as building, Store card fixes
 
 Compile-checked only (a playtest was not allowed this time).

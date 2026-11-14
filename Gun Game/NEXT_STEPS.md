@@ -1,5 +1,13 @@
 # Next steps
 
+## Developer skin pack (2026-11-13, not run)
+
+- [ ] `givedevskins me`, then the Inventory shows three black cards with the rainbow border under ALL, and under the RIFLE, PISTOL and SMG tabs.
+- [ ] Equipped, each gun is black, and its rainbow lines flow along it in first person, in third person and in the preview.
+- [ ] The side lines sit flush on the Rifle body, Pistol slide and SMG (their offsets were placed from the models' sizes, not seen). Adjust `Details` in `Content.Guns.Skins` if they float or sink.
+- [ ] A player without the pack doesn't see the skins anywhere.
+- [ ] `takedevskins me` removes and unequips them.
+
 ## Siege rounds and result screens (2026-11-13, not run)
 
 - [ ] **A 1v1 match:** three rounds at most, sides swap, the banner shows between rounds, and the match stops at 2 wins.
