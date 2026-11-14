@@ -2,6 +2,10 @@
 
 ## Siege drones (2026-11-13)
 
+- [ ] **Prep, in a real match:**
+  - Each attacker sees their drone's view at once, with the map around it loaded.
+  - With the drone destroyed, NO SIGNAL stays until Action, then the body spawns.
+
 - [ ] **A real match, as an attacker:**
   - In prep, held in the drone; if it is destroyed, NO SIGNAL stays until Action.
   - At Action, the body spawns, the Drone key throws the second drone, and switching between the two works.

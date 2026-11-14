@@ -64,6 +64,12 @@ The feed and alert ScreenGuis are built under `ReplicatedFirst.UILoader` and mov
 - A player held in their drone (`DroneLockedIn`) keeps it, and its view, even while their body is flagged `InLobby` (Siege prep).
 - Siege: the prep drone stays, and `AddCharge` gives each attacker a second one at Action, thrown with the Drone key.
 
+## Prep view and streaming (2026-11-13)
+
+- Every drone is `ModelStreamingMode.Persistent`.
+- While a player is held in their drone (`SetLockedIn`), `DroneService` points their `ReplicationFocus` at it (and clears it when the hold ends or the drone goes), so the world streams in around the drone, not the parked body.
+- Held players always see the drone view, or NO SIGNAL if they have no living drone, until released.
+
 ## How it plays
 
 | | |

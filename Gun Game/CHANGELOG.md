@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-13: Siege prep drone always shows
+
+Compile-checked only (not playtested, as asked).
+
+### Fixed
+
+- **The prep drone didn't show.** With streaming on, an attacker's drone stood at the attacker spawn while their body waited in the lobby, so the drone and the area around it never loaded on their client and there was nothing to look through. Drones are now `ModelStreamingMode.Persistent`, and while a player is held in their drone the server sets their `ReplicationFocus` to it, so the world around the drone streams in.
+- The attacker is held in the drone (`SetLockedIn`) before the drone is placed, so the body arriving in the lobby can never clear it.
+- A missing spawn no longer means no drone: the attacker's picked spawn, else any attacker spawn, is used. With none at all, the player gets NO SIGNAL (and a warning in the output).
+- While held (Prep), the client always shows the drone view, or NO SIGNAL when there is no drone, until the server lets go at Action. No body is needed for it.
+
 ## 2026-11-13: Siege attackers keep the prep drone and get a second one
 
 Playtested in Studio with one player, driving DroneService and DroneController directly (no full two-team match):
