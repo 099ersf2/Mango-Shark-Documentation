@@ -2,7 +2,8 @@
 
 ## Store and stats (2026-11-13)
 
-- [ ] **Create the developer products and the VIP pass,** and put their ids in `Shared.ProductIds` (all 0 except `Crate_Field`).
+- [ ] **Replace the placeholder icons** of the 8 new products and the VIP pass on the Creator Dashboard (created 2026-11-13; ids in `Shared.ProductIds` and [STORE.md](STORE.md#limits)).
+- [ ] **Buy one Robux item in a live server** to see the receipt give it.
 - [ ] **See the Store, the wallet bar, the reward toast and a coin-bought crate's reel** on screen.
 - [ ] **A real match:** the winners and losers get coins, a win or a loss, and the streak tag; back in the lobby, PLAY shows the last mode.
 - [ ] **Decide** whether any class should be locked and sold.

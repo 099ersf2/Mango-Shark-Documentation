@@ -157,6 +157,20 @@ Checked on 2026-11-13 in a Studio playtest, on the server (no screens, as asked)
 
 ## Limits
 
-- Robux items show SOON until their product or pass id is put in `Shared.ProductIds` (only the Field Crate has one).
+- Robux items show SOON until their product or pass id is put in `Shared.ProductIds`.
+- Every product and the VIP pass exist (created 2026-11-13 through Open Cloud, each with a placeholder colored icon; replace the icons on the Creator Dashboard).
+
+| Name in `Shared.ProductIds` | Id | Price |
+| --- | --- | --- |
+| `Crate_Field` (also `SkinCrate`) | 3730208338 | 499 |
+| `Crate_Gilded` | 3731059935 | 299 |
+| `Store_Tokens50` | 3731060058 | 99 |
+| `Store_Tokens150` | 3731060067 | 249 |
+| `Store_Tokens400` | 3731060078 | 499 |
+| `Store_Coins5000` | 3731060085 | 99 |
+| `Store_Coins15000` | 3731060095 | 249 |
+| `Store_StarterBundle` | 3731060107 | 199 |
+| `Store_ObsidianRifle` | 3731060114 | 149 |
+| `GamePasses.VIP` | 2089466749 | 399 |
 - Bundles and passes show OWNED only after the server refuses a second purchase. The card doesn't know beforehand.
 - Leaving a match before it ends records nothing.

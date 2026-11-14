@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-13: Store products created
+
+- The 8 new developer products and the VIP game pass are created on Roblox (through Open Cloud), at the prices the Store shows, and their ids are in `Shared.ProductIds`. Every Robux price in the Store is now live instead of SOON. The icons are placeholders. See [STORE.md](STORE.md#limits).
+
 ## 2026-11-13: Store, Siege Tokens, your own crates, wins and streaks
 
 Server side checked in a Studio playtest. The screens weren't seen (no playtest asked). See [STORE.md](STORE.md#testing).
