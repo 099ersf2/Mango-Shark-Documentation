@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-13: Prep drone frozen by streaming (found in a playtest)
+
+Playtested in Studio, one player, a 1v1 as the attacker:
+- **Before the fix:** in Prep the drone view showed, but the drone didn't move. Its velocity read -37 down while its position never changed, only 1 map part had loaded near it on the client, and the server had the player's `ReplicationFocus` at nil.
+- **After the fix:** 36 parts had loaded around the drone at once, holding W drove it 30 studs during Prep (clock at 00:23), no viewmodel was drawn, and there were no new errors.
+
+### Fixed
+
+- **The prep drone was frozen.** The place uses `StreamingIntegrityMode.PauseOutsideLoadedArea`, so a client-owned part outside the loaded area has its physics paused. In Prep the body waits in the lobby, so the area around the drone is only loaded if the player's `ReplicationFocus` is on the drone. It was set when the drone was placed but found cleared later (respawning the body was tested and is not what clears it). This is why drones worked in Action, with the body nearby, and not in Prep.
+  - `DroneService` now sets the focus again every check (0.25 s) for every held player, and after their body spawns.
+  - `focusOn` only writes the focus when it changes.
+
 ## 2026-11-13: Owned Store cards show an OWNED button
 
 Compile-checked only.

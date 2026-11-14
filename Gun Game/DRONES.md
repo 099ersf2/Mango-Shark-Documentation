@@ -66,6 +66,8 @@ The feed and alert ScreenGuis are built under `ReplicatedFirst.UILoader` and mov
 
 ## Prep view and streaming (2026-11-13)
 
+- **Physics pause:** with `PauseOutsideLoadedArea`, a drone outside the loaded area is frozen. A held player's `ReplicationFocus` must stay on their drone. `DroneService` sets it again every 0.25 s while held, and after a body spawns.
+
 - **Input while the body is parked:** `moveVector` falls back to WASD and the left stick when the default controls give no movement.
 - **Ownership:** `Drone.View` hands landed drones back to their owner.
 - **Viewmodel:** stays hidden for as long as the player is in a drone.
