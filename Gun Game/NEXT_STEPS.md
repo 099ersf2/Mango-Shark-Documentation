@@ -1,5 +1,12 @@
 # Next steps
 
+## Analytics (2026-11-14)
+
+- [ ] **Create the two journeys** on the Creator Hub (Analytics → Journeys), LobbyVisit and SiegeMatch, with the exact stages and nodes in [ANALYTICS.md](ANALYTICS.md).
+- [ ] **After publishing:** check the dashboards fill within a day (custom events, funnels, economy). Check the error report for rejected events.
+- [ ] **A full match:** PlayerKills, MatchFinished and the Match funnel's last step appear.
+- [ ] **Crate opening on a phone:** OPEN MORE and DONE are on screen, and the reel lands on the won skin.
+
 ## Mobile pass (2026-11-13, not seen on a phone)
 
 - [ ] **Store and Inventory on a phone:** whole cards visible, readable text, X close button, ⚔ Classes icon, filter chips scroll sideways.

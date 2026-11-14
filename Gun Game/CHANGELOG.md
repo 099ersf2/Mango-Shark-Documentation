@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-11-14: Analytics, crate opening on phones
+
+Studio playtest of a 1v1 up to the end of round 1. Every event logged up to there was printed with the right fields (see [ANALYTICS.md](ANALYTICS.md)). The crate opening screen was not seen on a phone.
+
+### Added
+
+- **Analytics** (`Systems.Analytics.AnalyticsService`, `Content.Analytics`, `Client.Core.AnalyticsClient`, `Packets.Analytics.MenuOpened`):
+  - economy events for Coins and Tokens;
+  - Queue and Match funnels, and an onboarding funnel;
+  - LobbyVisit and SiegeMatch journeys, which must be created on the Creator Hub;
+  - 23 custom events, covering:
+    - queue drop-offs and waits;
+    - top modes, classes, sites and spawns;
+    - which side wins rounds and how long rounds last;
+    - kills, deaths, damage and builds per player per match, by mode, category and result;
+    - leaving early, weapons, abilities, menus and purchases.
+- **New extension points for analytics:**
+  - `Siege.SelectionEnded(summary)`: every player's final picks each round, with `Random` set when the class was filled in;
+  - `Siege.RoundEnded` gets a 4th argument: mode, map, site and `Final`. At the end of a match it now also fires for the last round;
+  - `Siege.Ended` gets a 3rd argument: the match summary, with every player's kills, deaths, damage, builds, side and result;
+  - `Store.Bought` gets a 5th argument: the price paid.
+
+### Fixed
+
+- **Crate opening on phones:** the OPEN MORE and DONE buttons were below the bottom of the screen. `Main.Opening` now has a FitScale (design height 460, full width), so the reel and its buttons shrink to fit. The reel's width is read in design pixels, so the won skin still lands under the marker.
+- `Content.Store` had been rolled back to an earlier version, losing the `OwnedItems` saved field (bundle purchases would have errored on the server) and the ⚔ Classes icon. Both are back.
+
 ## 2026-11-13: Mobile pass for the Store, Inventory, Details and match result
 
 Compile-checked. Desktop checked in a playtest: the Store is unchanged (1180×700, scale 1), and the health bar is hidden in the lobby. **Not yet checked at phone size.**

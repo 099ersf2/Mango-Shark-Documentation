@@ -222,6 +222,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Classes.Reinforced` (extension, Fire) | player, model | A reinforced wall was placed; Siege counts it as Built |
 | `givedevskins` / `takedevskins` | Cmdr command (admins) | players: give or take the Developer skin pack (`StoreService.GiveSkins`) |
 | `SkinRainbow` / `RainbowOffset` | Tag / attribute on gun parts | Rainbow skin parts, animated by `Client.Guns.SkinRainbow` |
+| `Packets.Analytics.MenuOpened` | Client → server | A menu name from `Content.Analytics.MENUS`, for analytics |
+| `Siege.SelectionEnded` (extension, Fire) | summary | Each round's final picks (`Picks`: Player, Team, Class, Spawn, Random), Mode, Map, Site |
 | `TotalWins` | Player | Saved total wins, set by `StatsService`; the lobby leaderboard sorts by it |
 | `Content.Siege.ROUNDS` / `DEFAULT_ROUNDS` / `ROUND_END_TIME` / `MATCH_ENDING_REASONS` | Content | Rounds per mode, the pause between rounds, reasons that end the whole match |
 | `DronesMax` | Player | How many drones they may have out at once (`Content.Drones.MAX_ATTRIBUTE`). `DroneService.AddCharge(player)` raises it by one until the next refund |
