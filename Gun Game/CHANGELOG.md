@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-14: Shotgun loadouts use PumpShotgun
+
+Studio playtest: `GunService.Give(player, "PumpShotgun")` gave the gun with no warning, and every gun id in the class, lobby and NPC loadouts now has a definition.
+
+### Fixed
+
+- **The shotgun was never given.** The pump shotgun's definition id is `PumpShotgun`, but loadouts still asked for the old id `Shotgun`, so `GunService.Give` warned "no gun named Shotgun" and the player got nothing. Now `PumpShotgun` in:
+  - `Content.Classes` loadouts: Breacher (Mason), Hacker (Caleb), and the two other classes that carried it;
+  - `Content.Guns.Loadouts`: Breacher, Arsenal, Sprayer;
+  - `Content.NPC.Profiles.Breacher`;
+  - the per-gun settings in `Content.Guns.Melee` and `Content.Destruction.SoftWallConfig`, so its melee and wall holes apply again.
+- The `"Shotgun"` entries in class `Categories` are the category name and stay as they are.
+
 ## 2026-11-14: Analytics, crate opening on phones
 
 Studio playtest of a 1v1 up to the end of round 1. Every event logged up to there was printed with the right fields (see [ANALYTICS.md](ANALYTICS.md)). The crate opening screen was not seen on a phone.
