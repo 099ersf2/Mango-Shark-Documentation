@@ -1,5 +1,12 @@
 # Next steps
 
+## Mobile pass (2026-11-13, not seen on a phone)
+
+- [ ] **Store and Inventory on a phone:** whole cards visible, readable text, X close button, ⚔ Classes icon, filter chips scroll sideways.
+- [ ] **Match result on a phone:** fits the screen, MVP cards and both team columns visible.
+- [ ] **Lobby on a phone:** the wallet sits top-left without covering PARTY, and there is no health bar.
+- [ ] **Crate opening reel (`Main.Opening`):** not fitted yet; check it on a phone.
+
 ## Developer skin pack (2026-11-13, not run)
 
 - [ ] `givedevskins me`, then the Inventory shows three black cards with the rainbow border under ALL, and under the RIFLE, PISTOL and SMG tabs.

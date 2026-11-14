@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-11-13: Mobile pass for the Store, Inventory, Details and match result
+
+Compile-checked. Desktop checked in a playtest: the Store is unchanged (1180×700, scale 1), and the health bar is hidden in the lobby. **Not yet checked at phone size.**
+
+### Changed
+
+- **The Store, Inventory and Details panels are fitted menus.**
+  - Each has a `Fit` UIScale tagged `FitScale`, with `DesignHeight` 640 and `WidthShare` 0.95. On a phone they shrink as a whole instead of cutting cards off.
+  - The `Feel` UIScale on these panels was removed (only one UIScale works per frame), so they no longer pop when opened.
+- **FitScale changes** (`Client.Core.UI`):
+  - a `MinScale` attribute;
+  - `FitMode = "Dialog"`: a box built in pixels keeps its size and place and is scaled down to fit the screen both ways.
+  - The gift picker and the match result's `Body` (now a 1150×680 pixel box) use it.
+- **Cards per row** in the Store (2 to 5) and Inventory (2 to 6) come from the page's width, so cards keep their shape on any screen.
+- **Inventory filter chips:** the row scrolls sideways when they don't fit, and gun names are spaced (PUMP SHOTGUN).
+- **Lobby wallet panel:** on screens 600 px tall or less it is scaled to 0.72 and sits in the top-left corner, clear of PARTY, PLAY and MODE.
+- **Health bar:** hidden while in the lobby (`InLobby`).
+
+### Fixed
+
+- Close buttons were blank squares on phones: the ✕ glyph doesn't draw there and is now X.
+- The Classes tab icon (🪖) doesn't draw on phones and is now ⚔.
+
 ## 2026-11-13: Prep drone frozen by streaming (found in a playtest)
 
 Playtested in Studio, one player, a 1v1 as the attacker:
