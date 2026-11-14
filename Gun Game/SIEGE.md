@@ -12,7 +12,7 @@ Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): ev
 | **A team only loses by "leaving" when its players leave the server** | Being eliminated is not leaving. "Every defender left the game" and "every attacker left the game" are about players who are no longer on the server |
 | **Dead attackers cannot use drones** | When an attacker dies their drone stays in the world and can still be destroyed, but nobody can view or drive it again |
 | **A tied site vote is drawn among the tied sites only** | A site with fewer votes is never picked. With no votes at all, every site is tied |
-| **One drone per attacker per match** | A destroyed drone is never replaced. Trying it again shows NO SIGNAL |
+| **Two drones per attacker per match** | The prep drone, and a second one to throw when Action starts (2026-11-13). A destroyed drone is never replaced. NO SIGNAL shows when none is out and none is ready |
 | **A defender's class is hidden from attackers** | Until a drone scan of that defender. The server never sends it before then |
 | **An attacker's class is hidden from defenders** | Until a camera scan of that attacker. The server never sends it before then |
 

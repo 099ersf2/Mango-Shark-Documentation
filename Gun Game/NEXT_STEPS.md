@@ -1,5 +1,13 @@
 # Next steps
 
+## Siege drones (2026-11-13)
+
+- [ ] **A real match, as an attacker:**
+  - In prep, held in the drone; if it is destroyed, NO SIGNAL stays until Action.
+  - At Action, the body spawns, the Drone key throws the second drone, and switching between the two works.
+  - Scans from either drone mark defenders and cameras.
+- [ ] **Gamepad LB / RB and touch NEXT** switching.
+
 ## Prompts and reinforce (2026-11-13)
 
 - [ ] **See the prompt cards in a match:** a defender at an empty frame sees two cards (build boards E, Reinforce T) side by side; holding either fills its bar and builds it.

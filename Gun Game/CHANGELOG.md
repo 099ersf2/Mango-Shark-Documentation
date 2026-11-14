@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-11-13: Siege attackers keep the prep drone and get a second one
+
+Playtested in Studio with one player, driving DroneService and DroneController directly (no full two-team match):
+
+- The prep drone stayed in the world, and the player stayed held in it, with the body flagged InLobby.
+- At "Action" the player had DronesReady 1 and DronesMax 2. The Drone key threw the second drone and looked through it, and the touch NEXT button showed.
+- Switching went DRONE 2 → DRONE 1 → DRONE 2.
+- A scan from each drone at a target in front of it returned true.
+- Console clean.
+
+### Added
+
+- `DroneService.AddCharge(player)`: one more drone (a slot and a ready charge) until the next refund. A player's limit is the `DronesMax` attribute (`Content.Drones.MAX_ATTRIBUTE`).
+- **Switching drones** while in one, like the cameras: Aim (right mouse), LB / RB on gamepad, or the NEXT button on touch (`DroneFeed.Feed.Touch.Next`, shown only with a second drone). Scanning works from whichever drone you look through.
+
+### Changed
+
+- **Siege prep:** the attacker stays on the drone screen until Action, NO SIGNAL included. Their body waits in the lobby (InLobby), which used to clear the drone and refuse the view; a drone the player is held in now survives it.
+- **Siege Action:** the prep drone stays where it is and each attacker gets a second drone to throw (Drone key). A destroyed drone still never comes back. NO SIGNAL shows only when no drone is out and none is ready.
+- The Drone key on foot throws a ready drone first; after that it goes into one you already have out.
+
 ## 2026-11-13: Custom prompts, build or reinforce, startup fix
 
 Playtested in Studio with one player: startup clean, a drone thrown outside the lobby showed its feed and stayed in it for over 8 s. The new prompt cards were not seen in a playtest (it was stopped before a board was placed), and nothing was run on a phone or gamepad.

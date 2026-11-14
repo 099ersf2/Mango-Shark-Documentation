@@ -57,6 +57,13 @@ Where this section and earlier scan descriptions disagree, this section is curre
 
 The feed and alert ScreenGuis are built under `ReplicatedFirst.UILoader` and moved into `PlayerGui` by `UILoader`.
 
+## Two drones and switching (2026-11-13)
+
+- A player's drone limit is the `DronesMax` attribute (`Drones.CHARGES`, 1, unless a mode adds more). `DroneService.AddCharge(player)` adds a slot and a ready charge until the next refund (a new match, the lobby).
+- In a drone, Aim (right mouse), LB / RB or the touch NEXT button switch to your other living drone. Scans go out from whichever drone you look through.
+- A player held in their drone (`DroneLockedIn`) keeps it, and its view, even while their body is flagged `InLobby` (Siege prep).
+- Siege: the prep drone stays, and `AddCharge` gives each attacker a second one at Action, thrown with the Drone key.
+
 ## How it plays
 
 | | |

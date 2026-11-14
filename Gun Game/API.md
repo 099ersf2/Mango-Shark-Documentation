@@ -217,6 +217,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Tag `Camera` | A part or model in the map | A security camera |
 | Tag `FitScale` (and `DesignHeight`, `WidthShare`, `BelowTopbar`) | A UIScale in a full-screen menu frame | `Client.Core.UI` scales the menu to fit the screen, under the top bar ([UI.md](UI.md#full-screen-menus-that-fit-fitscale)). On `SiegeSelect.Screen.Content.Fit` |
 | `Main.MenuButtons.TouchScale` | UIScale | 0.8 on small touch screens |
+| `DronesMax` | Player | How many drones they may have out at once (`Content.Drones.MAX_ATTRIBUTE`). `DroneService.AddCharge(player)` raises it by one until the next refund |
+| `Client.Gadgets.DroneController.Cycle(direction)` | Client | Switch to the next (1) or previous (-1) living drone while in one |
 | `Assets.UI.Templates.PromptStack` / `PromptCard` | BillboardGui / TextButton | The custom proximity prompt: one stack per object, cards 2 per row (`Client.Interact.CustomPrompts`). Every prompt is Custom style on the client |
 | `FixedKey` | ProximityPrompt attribute | Its key is kept: `PromptKeys` doesn't move it to Interact, and `CustomPrompts` moves the other prompt on a clash |
 | `Main.Mobile.<Button>.Icon.Glyph` | ImageLabel | The touch button's icon. `Content.Consumables` entries have an `Icon` for the grenade button |
