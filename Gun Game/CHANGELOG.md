@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-11-13: Armory shop, crate reel, skins on every gun
+
+Compile-checked; the shop opened in a playtest and its cards, tabs and crate list filled in. Studio was not rendering frames, so the 3D previews and the reel were not seen moving. A real crate purchase was not made.
+
+### Added
+
+- **The shop is now the ARMORY** (`Main.SkinShop`, built in Studio):
+  - Tabs (All / Pistol / Rifle).
+  - A grid of skin cards, each with a 3D preview of the gun wearing the skin, its color stripe, and Equip / Equipped / In crate.
+  - A crate panel with the price, OPEN CRATE, every skin still in the crate with its chance, and a status line.
+  - New templates: `SkinCard`, `SkinTab`, `CrateItem`, `ReelCard`.
+- **Crate opening reel:**
+  - After a crate is bought, the won skin arrives in the player's data and the reel spins: a strip of skin cards slows down over 6 s onto the skin won, ticking as each card passes the gold marker.
+  - YOU GOT then shows the skin, with EQUIP / DONE.
+  - It is a show only: the server picks and grants the skin before the reel starts.
+  - `SkinShop.Preview(skinId)` plays it without buying, for testing.
+
+### Fixed
+
+- **Skins did nothing in matches.** A skin was for one gun Id (`Rifle`, `Pistol`), but Siege hands out other guns. Skins now belong to a family:
+  - Rifle skins show on the Rifle, BurstRifle, SiegeCarbine and Tactical bullpup.
+  - Pistol skins show on the Pistol, SiegePistol and Revolver.
+  - (`Content.Guns.Skins` `FAMILIES`, `Skins.FamilyOf`; `EquipField` uses the family.)
+- A gun that is one textured mesh shows the skin's color: its texture comes off while the skin is on, and comes back with "None". Checked on copies: the SiegePistol, BurstRifle, SiegeCarbine and Revolver recolor, and go back exactly on "None".
+
 ## 2026-11-13: Cameras show your own body
 
 Compile-checked only (not playtested).

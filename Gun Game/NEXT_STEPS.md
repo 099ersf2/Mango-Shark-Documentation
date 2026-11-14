@@ -1,5 +1,12 @@
 # Next steps
 
+## Armory and skins (2026-11-13)
+
+- [ ] **See the 3D previews and the reel spin** in a client that is rendering (Studio wasn't).
+- [ ] **Buy a real crate:** the reel lands on the skin the server gave, and EQUIP / DONE work.
+- [ ] **In a Siege match,** an equipped rifle or pistol skin shows on the class guns.
+- [ ] **The shop on a phone** (the grid is 3 columns; it may want 2).
+
 ## Siege drones (2026-11-13)
 
 - [ ] **Prep, in a real match:**

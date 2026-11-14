@@ -4,6 +4,19 @@ A skin restyles one gun's model: new colors and materials, a few resized parts, 
 
 The server owns every skin. The shop only asks; `SkinShopService` checks and writes the player's data.
 
+
+## The Armory and skin families (2026-11-13)
+
+- **The shop** (`Main.SkinShop`, title ARMORY):
+  - Tabs per skin family.
+  - Cards with a 3D preview (the family's gun model in `Assets.Models.Guns`, wearing the skin).
+  - A crate panel listing what is left in the crate and the chance of each.
+  - Opening a crate plays a reel that lands on the skin the server gave (`Client.Core.SkinShop`).
+- **Families:** a skin's `WeaponId` is a family. It shows on every gun in `FAMILIES` (`Content.Guns.Skins`):
+  - Rifle: Rifle, BurstRifle, SiegeCarbine, Tactical_Bullpup_1.
+  - Pistol: Pistol, SiegePistol, Revolver.
+  - A single-mesh gun takes the skin's `Swatch` color.
+
 ## Where things are
 
 | What | Where |
