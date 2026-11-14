@@ -69,6 +69,14 @@ Why it is laid out this way, from how other game stores sell:
 - **Skins:** a big preview, and EQUIP.
 - **Items:** what they include.
 
+### Gifting
+
+A gift button on Robux crate and item cards, and GIFT on their page, open `Main.GiftPicker`: the other players in the server. The server checks the item can be gifted and that the recipient doesn't own it (a once-only item, or every skin of a crate), then opens Scribe's gift prompt. Not for game passes, Coins or Tokens prices.
+
+### Borders
+
+An item's `Border` names a `Content.Store.BORDERS` preset (Gold, Rainbow, Obsidian). Its colors turn around the card. Add presets as ColorSequences.
+
 ### Lobby panel
 
 `Main.Wallet`, on the left: the Coins and Siege Tokens chips, and STORE and INVENTORY.

@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-11-13: Gifting, border styles, coin icon, class initials
+
+Compile-checked only.
+
+### Added
+
+- **Gifting Robux crates and items** to another player in the server: a gift button on the card and GIFT on the detail page open the picker (`Main.GiftPicker`, `Client.Core.GiftPicker`). It lists every other player with their avatar.
+  - `Packets.Store.Gift` → `StoreService.Gift` checks the recipient can get it, then opens Scribe's gift prompt (`Data.PromptGift`).
+  - Scribe records the gift before money moves and delivers it to the recipient's data, even if they leave.
+  - Game passes, and Coins or Tokens prices, can't be gifted.
+- **Border styles** (`Content.Store.BORDERS`, an item's `Border`): the glowing outline's colors turn around the card. Gold is the default; there are also Rainbow and Obsidian.
+  - The Obsidian skin has the Obsidian border (black and violet, turning) with the glow.
+- **The coin icon:** "Glossy Gold Coin Icon" from the Creator Store (`Content.Store.COIN_ICON`). It is on every coin price and both wallets.
+- **Class pictures:** a class's `Icon`, or its first initial when it has none, on its card and big page.
+- **A dimmed blocker** under the detail page (`Main.DetailsBlocker`): nothing behind it can be pressed while it is open.
+
+### Fixed
+
+- **Ribbons (NEW...) overlapped the title:** they sit above the card's top edge now.
+- **Hovered cards' borders overlapped their neighbors:** wider margins in the card holder.
+
 ## 2026-11-13: Store fixes, Blake for sale, lobby panel, PLAY shine
 
 Compile-checked only.
