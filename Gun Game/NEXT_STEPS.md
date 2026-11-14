@@ -1,5 +1,22 @@
 # Next steps
 
+## Siege rounds and result screens (2026-11-13, not run)
+
+- [ ] **A 1v1 match:** three rounds at most, sides swap, the banner shows between rounds, and the match stops at 2 wins.
+- [ ] **A 5v5:** five rounds at most, stopping at 3.
+- [ ] **Between rounds:** the map is whole again (broken boards and walls back) and the bombs are gone. Everyone picks a class, spawn or vote and loadout again.
+- [ ] **The match result screen:**
+  - the reveal plays in order;
+  - the MVP avatars load;
+  - the totals add up;
+  - WINNER is on the right column.
+- [ ] **Phone size:** the MatchResult columns and MVP cards fit at 844×390.
+- [ ] **Rewards:** paid once per match, to the side with more rounds.
+- [ ] **Prep drone:** the view stays when the lobby body spawns, and driving and scanning work.
+- [ ] **Locked classes** grey out and sort last in Selection, and unlock after buying.
+- [ ] **Lobby Tab** ranks players by wins.
+- [ ] **A map music folder** plays during that map's match.
+
 ## Store and Inventory redesign (2026-11-13, not run)
 
 - [ ] **Open the Store and the Inventory in a client that renders:**

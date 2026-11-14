@@ -78,7 +78,8 @@ All times are in `Content.Siege`.
 | **Reveal** | 10 s | Defenders see the site. Attackers see their spawn and their team's spawns and classes |
 | **Prep** | 40 s | Defenders spawn at one random spawn of the site and prepare (boards, class gadgets). Attackers have no body: each gets a drone at their spawn and is held in its view |
 | **Action** | 5:00 | Attackers spawn at their spawns. Drones stay where they were left |
-| **End** | 12 s | The winner, the reason, everyone's kills. Then everyone goes back to a lobby server, each party together |
+| **RoundEnd** | 8 s | Between rounds (2026-11-13): the round result banner. Then the map is rebuilt and the next round's Selection starts with the sides swapped |
+| **End** | 18 s | The match result screen. Then everyone goes back to a lobby server, each party together |
 
 **When the Selection clock runs out:**
 - An attacker without a spawn gets a random free one.
@@ -98,7 +99,35 @@ All times are in `Content.Siege`.
 
 Since another developer's change, attackers get a body during Prep, parked at the lobby spawn (`startPrep`), while they drive their drone; they are spawned again at their spawn when Action starts.
 
+## Rounds (2026-11-13)
+
+- **How many rounds:**
+  - `Content.Siege.ROUNDS` per matchmaking mode: `1v1` 3, `5v5` 5, `Private` 3.
+  - Any other mode uses `DEFAULT_ROUNDS` (3).
+- **Groups:** players are split into group A (attackers in round 1) and B. A attacks in odd rounds and B in even ones (`teamOfGroup`). Each player's `Team` and team are set again every round.
+- **Score:** each round's winning group scores 1. A draw scores nothing.
+- **When the match ends:** after the last round, as soon as one group has a majority, or at once for a match-ending reason (`MATCH_ENDING_REASONS`: a side left, too few players, no map).
+  - The winner is the group with more rounds, and `MatchService.Finish` is called once, with that group's current team.
+  - Equal rounds give no winner.
+- **Between rounds** (`nextRound`):
+  - Spectating, classes, cameras and drones (refunded) are cleared, along with the defusers, the bombs and the reveals.
+  - The map is destroyed and loaded again from `ReplicatedStorage.Maps`.
+  - Everyone's picks are reset, they are alive again, and their body is removed until Prep.
+- **Stats per match** (`stats`):
+  - Kills and Deaths come from deaths in the match.
+  - Damage is dealt to the other side in Prep or Action (`Combat.Hit`).
+  - Built counts pieces repaired (`Breakable.Repaired`).
+  - The snapshot's `Result.Players` holds every player's line, and `Result.Mvp` the best in each stat.
+- **The snapshot** also carries `Round`, `Rounds` and `Score = { Mine, Theirs }` for the viewer's group. `Result` holds:
+  - `RoundWon`, `RoundDraw`;
+  - `Final`, `MatchWon`, `MatchDraw`;
+  - `Players`;
+  - `Mvp`.
+
 ## Winning
+
+Each row below decides a **round**. The match goes to the side with the most rounds (see Rounds).
+
 
 | Winner | Reason | When |
 | --- | --- | --- |
@@ -158,6 +187,20 @@ See [DRONES.md](DRONES.md) for the drone itself.
 
 A destroyed camera shows nothing of the world: its NO SIGNAL screen is fully opaque (it was 4% see-through). It keeps the controls on its bottom line and has its own PREV, NEXT and EXIT touch buttons, so a defender can still move to the next camera or leave. Not run.
 
+## Result screens (2026-11-13)
+
+`Client.Hud.SiegeHud`, built in Studio:
+
+- **`Main.RoundResult`** shows in RoundEnd: a colored band (green won, red lost, grey draw) that snaps open, the reason, the score, round pips (`RoundPip`), and the next round.
+- **`Main.MatchResult`** shows in End, revealed in stages:
+  1. VICTORY / DEFEAT / DRAW.
+  2. The MVP cards (`MvpCard`: avatar, award, name, a count-up value; the ring is green for your side, red for theirs).
+  3. Two `TeamColumn`s (yours first) with count-up totals and `ResultRow`s.
+  4. The WINNER tag on the winning column.
+- The old `SiegeHUD.End` panel is no longer shown.
+
+Built from common ideas for satisfying result screens: a clear outcome word first, a staged reveal, numbers that count up, a spotlight on standout players, then the full comparison.
+
 ## Spectating
 
 1. The normal death screen and death camera (your killer).
@@ -177,6 +220,8 @@ A destroyed camera shows nothing of the world: its NO SIGNAL screen is fully opa
 ## Scoreboard
 
 Hold Tab (the Scoreboard key), or the touch SCORE button. Columns: Player, Status (ALIVE / DEAD), Kills, Class.
+
+In the lobby, the same board is the **server leaderboard** (2026-11-13): RANK / WINS / STREAK, sorted by total wins (`TotalWins` attribute).
 
 - A defender sees their own team's classes, and an attacker's class only after a camera scan revealed it. Otherwise `?`.
 - An attacker sees their own team's classes, and a defender's class only after a drone scan revealed it. Otherwise `?`.

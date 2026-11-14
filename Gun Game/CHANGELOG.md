@@ -1,5 +1,46 @@
 # Changelog
 
+## 2026-11-13: Siege rounds, match result screen, lobby leaderboard, map music
+
+Compile-checked only (not playtested, as asked).
+
+### Added
+
+- **Siege matches have several rounds**, and the sides swap every round:
+  - `1v1` and private matches: best of 3.
+  - `5v5`: best of 5.
+  - Set in `Content.Siege.ROUNDS` (`DEFAULT_ROUNDS` 3).
+- **Between rounds** (new phase `RoundEnd`, `ROUND_END_TIME` 8 s), the next round starts like this:
+  - The map is rebuilt from a fresh copy, so boards, walls and broken pieces are whole again.
+  - Bombs, defusers, drones and cameras are cleared.
+  - Every player is put on their new side and goes through Selection again: class, spawn or site vote, and loadout.
+- **The match winner** is the side that won the most rounds, not the side that won the last one:
+  - The match stops early once one side has a majority.
+  - It also stops early when a side has left (`MATCH_ENDING_REASONS`).
+  - Rewards and stats are recorded once, at the end of the match.
+- **Round result banner** (`Main.RoundResult`): ROUND WON / LOST / DRAW, the reason, the score (you vs them), a pip per round, and the next round.
+- **Match result screen** (`Main.MatchResult`), revealed in stages with count-ups:
+  - VICTORY / DEFEAT / DRAW over a green or red tint, with the round score.
+  - MVP cards with avatars: TOP FRAGGER (kills), MOST DAMAGE, MASTER BUILDER (pieces repaired).
+  - Both teams side by side, each with its totals and every player's K, D, damage and builds. Your row is outlined, and the winning column gets a gold edge and a WINNER tag.
+  - Templates: `RoundPip`, `MvpCard`, `TeamColumn`, `ResultRow`.
+- **Per-match stats** on the server: kills, deaths, damage dealt to the other side (Prep and Action) and pieces built (`Breakable.Repaired`).
+- **Lobby leaderboard:** in the lobby, Tab (the Scoreboard key) shows everyone on the server ranked by total wins, highest first, with rank (#1 gold, #2 silver, #3 bronze) and win streak. The wins come from the new `TotalWins` player attribute, set by `StatsService`.
+- **Per-map background music:** a folder in `Assets.Music` (or `Assets.Music.Primary`) named like the active Siege map is played instead of the normal background songs during that match.
+
+### Changed
+
+- **Siege class picking:** classes for sale that the player doesn't own are greyed out, marked LOCKED, and listed after the ones they can pick.
+- **Inventory:** a skin sold by a store item with a `Border` or `Glow` (the Obsidian Pack) shows that item's moving border and sheen on its card, as in the Store.
+- `Combat.Hit` now also passes the damage dealt (0 when blocked) and the item.
+
+### Fixed
+
+- **The prep drone view was lost when the body spawned.**
+  - In Prep the attacker's body loads in the lobby a moment after the drone view opens, and the client left the drone whenever a new body arrived.
+  - A player held in their drone now stays in it: the new body is anchored where it is, and drone control is asked for again (the server drops it when a body spawns).
+- `SiegeService` called `ownsClass` before it was defined (nil at runtime) at the end of Selection.
+
 ## 2026-11-13: Gifting, border styles, coin icon, class initials
 
 Compile-checked only.

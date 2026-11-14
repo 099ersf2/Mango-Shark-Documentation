@@ -85,6 +85,14 @@ An item's `Border` names a `Content.Store.BORDERS` preset (Gold, Rainbow, Obsidi
 
 Blake (`Hologram`): 6,000 Coins or 60 Tokens, featured.
 
+### Inventory borders (2026-11-13)
+
+A skin granted by a store item with a `Border` or `Glow` (like the Obsidian Pack) gets that item's border, turning, and its sheen in the Inventory too.
+
+### Locked classes in Siege (2026-11-13)
+
+On the Siege class page, a locked class the player doesn't own is greyed out, says LOCKED, and is sorted to the bottom. The server still refuses it.
+
 ### Crate inventory
 
 Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `StoreService.OpenCrate`). Then the reel plays (`Main.Opening`).
@@ -162,7 +170,7 @@ Saved fields (from `Content.Store`):
 - `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `LastMode`.
 - `Stats["Mode:<id>"]` and `Stats["Category:<id>"]`: `Wins`, `Losses`, `Streak`, `BestStreak`.
 
-Player attribute: `WinStreak`.
+Player attributes: `WinStreak`, and `TotalWins` (saved `Wins`, for the lobby leaderboard; 2026-11-13).
 
 ## How to add more
 

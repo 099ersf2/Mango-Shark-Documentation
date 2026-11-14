@@ -13,6 +13,8 @@ One song plays at a time, and every change is a crossfade: the old song's volume
 | Panic | `Panic` | Once, when the Action phase has 30 seconds left (`PANIC_TIME`) | 4 s |
 | End | `End` | Once, when the match ends (the End phase). It plays to its end, also back in the lobby; then the background songs carry on | 2 s |
 
+- **Map music (2026-11-13):** while a Siege match is on (`ActiveSiegeMap` on Workspace, phase not Idle), a folder named like that map in `Assets.Music`, or in `Assets.Music.Primary`, replaces the background songs, if it holds any Sounds.
+- **The panic song** can play again in each round of a multi-round match.
 - **A song is picked at random** from its folder, never the same one twice running.
 - **Volume:** a song fades up to the `Volume` set on its Sound in the folder (0.5 on the panic songs), so a loud song is turned down there.
 - **A round that ends early** (both defusers planted, a team gone) skips the panic song and goes straight to the end song.
@@ -22,7 +24,7 @@ One song plays at a time, and every change is a crossfade: the old song's volume
 
 ## Adding or changing songs
 
-Put a Sound in the folder for its moment and set its `Volume`. Nothing else. To change the 30 seconds, the fades or the folder names, edit `Content.Music`.
+Put a Sound in the folder for its moment and set its `Volume`. Nothing else. For a map's own background songs, make a folder named exactly like the map (as in `ReplicatedStorage.Maps`) in `Assets.Music` and put its Sounds there. To change the 30 seconds, the fades or the folder names, edit `Content.Music`.
 
 The folders `Alpha` and `Folder` in `Assets.Music` are not used by anything.
 

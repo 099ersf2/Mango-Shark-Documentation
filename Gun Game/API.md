@@ -169,7 +169,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | --- | --- | --- |
 | `Siege.PhaseChanged` | Fire | phase |
 | `Siege.PreventPlant` / `Siege.PlantTimeMultiplier` | Any / Product | player, bombName |
-| `Siege.Planted` / `Siege.SiteLocated` / `Siege.Ended` | Fire | player, bombName / player / winner?, reasonKey |
+| `Siege.Planted` / `Siege.SiteLocated` / `Siege.Ended` | Fire | player, bombName / player / winner?, reasonKey | `Siege.Ended` is the match end (the side with the most rounds) |
+| `Siege.RoundEnded` | Fire | winner?, reasonKey, round | A round of a multi-round match ended; the next one follows |
 | `Party.PreventInvite` | Any | player, targetUserId |
 | `Party.Changed` / `Party.Disbanded` | Fire | partyId |
 | `Queue.PreventJoin` | Any | player |
@@ -217,6 +218,9 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Tag `Camera` | A part or model in the map | A security camera |
 | Tag `FitScale` (and `DesignHeight`, `WidthShare`, `BelowTopbar`) | A UIScale in a full-screen menu frame | `Client.Core.UI` scales the menu to fit the screen, under the top bar ([UI.md](UI.md#full-screen-menus-that-fit-fitscale)). On `SiegeSelect.Screen.Content.Fit` |
 | `Main.MenuButtons.TouchScale` | UIScale | 0.8 on small touch screens |
+| `Main.RoundResult` / `Main.MatchResult` | Frame | The Siege round banner and the final match screen (`Client.Hud.SiegeHud`); templates `RoundPip`, `MvpCard`, `TeamColumn`, `ResultRow` |
+| `TotalWins` | Player | Saved total wins, set by `StatsService`; the lobby leaderboard sorts by it |
+| `Content.Siege.ROUNDS` / `DEFAULT_ROUNDS` / `ROUND_END_TIME` / `MATCH_ENDING_REASONS` | Content | Rounds per mode, the pause between rounds, reasons that end the whole match |
 | `DronesMax` | Player | How many drones they may have out at once (`Content.Drones.MAX_ATTRIBUTE`). `DroneService.AddCharge(player)` raises it by one until the next refund |
 | `StoreService.Buy` / `Give` / `Perk` / `OwnsClass` / `OwnsPass`, `StatsService.Record` | Server | See [STORE.md](STORE.md#api-and-extension-points) |
 | `Store.Buy` / `Store.Open` / `Store.Reward` | Packets | Buy a crate (into the inventory), item or class; open a crate from the inventory; a reward was earned |
@@ -469,7 +473,7 @@ Handlers are global: check that the player has the thing before acting. Errors a
 | `Gun.PreventMelee` | Any | who, gunId, tool | Stop a gun bash |
 | `Gun.MeleeHit` | Fire | who, kind, instance, humanoid?, gunId | A bash landed; kind is `Humanoid`, `Breakable`, `SoftWall` or `Surface` |
 | `Combat.BlockHit` | Any | humanoid, damage | Cancel a hit |
-| `Combat.Damage` / `Combat.Hit` | Product / Fire | attacker / attacker, humanoid | Generic combat damage scale / after a hit |
+| `Combat.Damage` / `Combat.Hit` | Product / Fire | attacker / attacker, humanoid, damage, item | Generic combat damage scale / after a hit (damage 0 when blocked) |
 | `Combat.PreventSwing` | Any | player | Stop a sword swing |
 | `Combat.SwordHit` | Fire | player, victimHumanoid | A sword hit landed |
 | `Combat.WeaponScale` | Product | tool | Grow the sword hitbox |
