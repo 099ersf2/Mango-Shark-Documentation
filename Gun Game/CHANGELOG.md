@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-13: Store coin buttons, OWNED cards, skin tabs per gun
+
+Compile-checked only.
+
+### Fixed
+
+- **The coin icon covered the amount** on Store price buttons, the item page's coin button and the lobby wallet chip. Each now has a `Content` row (`CoinIcon`, then an `Amount` label) laid out side by side, and the code writes the amount there (`setMoneyText` in `Client.Core.Store` and `ItemDetails`).
+- **OWNED covered the struck-through old price** on discounted cards the player owns. The old price is hidden once the item is owned.
+- **Inventory skin tabs** only offered Rifle and Pistol. There is now a chip for every gun with skins (`Skins.Weapons()`), so LMG shows up, and any gun given skins later gets its own tab.
+
 ## 2026-11-13: Siege rounds, match result screen, lobby leaderboard, map music
 
 Compile-checked only (not playtested, as asked).

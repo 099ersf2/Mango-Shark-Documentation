@@ -93,6 +93,10 @@ A skin granted by a store item with a `Border` or `Glow` (like the Obsidian Pack
 
 On the Siege class page, a locked class the player doesn't own is greyed out, says LOCKED, and is sorted to the bottom. The server still refuses it.
 
+### Coin buttons (2026-11-13)
+
+Coin prices are a centered row: the coin image, then the amount (`Content.CoinIcon`, `Content.Amount`) on `StoreCard.Card.Prices.Coins`, `Main.Details.Actions.Coins` and `Main.Wallet.Coins`. Write the amount to `Amount`, not to the button's own Text.
+
 ### Crate inventory
 
 Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `StoreService.OpenCrate`). Then the reel plays (`Main.Opening`).
