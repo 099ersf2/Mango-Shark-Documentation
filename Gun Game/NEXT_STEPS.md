@@ -1,5 +1,12 @@
 # Next steps
 
+## Store and stats (2026-11-13)
+
+- [ ] **Create the developer products and the VIP pass,** and put their ids in `Shared.ProductIds` (all 0 except `Crate_Field`).
+- [ ] **See the Store, the wallet bar, the reward toast and a coin-bought crate's reel** on screen.
+- [ ] **A real match:** the winners and losers get coins, a win or a loss, and the streak tag; back in the lobby, PLAY shows the last mode.
+- [ ] **Decide** whether any class should be locked and sold.
+
 ## Armory and skins (2026-11-13)
 
 - [ ] **See the 3D previews and the reel spin** in a client that is rendering (Studio wasn't).

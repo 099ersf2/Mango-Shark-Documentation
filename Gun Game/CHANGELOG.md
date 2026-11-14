@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-11-13: Store, Siege Tokens, your own crates, wins and streaks
+
+Server side checked in a Studio playtest. The screens weren't seen (no playtest asked). See [STORE.md](STORE.md#testing).
+
+### Added
+
+- **Crates as data** (`Content.Crates`): add a crate with its skins and weights, and its Coins, Tokens and Robux prices. The Armory has a crate picker and Coins / Tokens / Robux buttons.
+- **Siege Tokens:** a premium currency, 5 to start. Bought with Robux, or given by `StoreService.Give` (battle pass, quests).
+- **Coins for playing:** 100 for a win, 30 for a loss, 50 for a draw (at least 60 s), and 15 every 5 minutes of play. The VIP pass doubles them.
+- **The Store** (`Main.Store`, STORE on the lobby wallet bar):
+  - tabs for crates, currency packs, game passes, bundles, special skins and classes, all from `Content.Store`;
+  - Robux items show SOON until their id is set.
+  - New: the special skin Obsidian, the Starter Bundle and the VIP pass.
+- **Wins and losses:** totals, and per mode and category. A win streak per mode, with a 🔥 tag above the head from 2.
+- **The last mode played** is saved, and PLAY starts on it.
+- `Systems.Store.StoreService`, `Systems.Store.StatsService`, `Shared.StoreGrants`, `Client.Core.Store`; packets `Store.Buy` and `Store.Reward`.
+
+### Changed
+
+- Robux products are declared from the data in `Shared.Data`: `Crate_<Id>` and `Store_<Id>`, plus game passes. The old `SkinCrate` product is the same id as `Crate_Field`.
+- `Packets.Skins.BuyCrate` now buys the Field Crate through `StoreService`.
+- Siege refuses a locked class the player doesn't own (none is locked).
+
 ## 2026-11-13: Armory shop, crate reel, skins on every gun
 
 Compile-checked; the shop opened in a playtest and its cards, tabs and crate list filled in. Studio was not rendering frames, so the 3D previews and the reel were not seen moving. A real crate purchase was not made.

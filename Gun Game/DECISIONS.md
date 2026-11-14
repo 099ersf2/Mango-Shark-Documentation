@@ -4,6 +4,15 @@ The answers to open design questions, so the code and the docs follow the same r
 
 ## 2026-11-13
 
+### Store and currencies
+
+- **Two currencies:** Coins (earned by playing; buy crates) and Siege Tokens (premium: Robux, or rare gifts like the battle pass and special quests). Every player starts with 5 Tokens.
+- **Reward amounts:** chosen here and easy to change in `Content.Store.REWARDS`: win 100, loss 30, draw 50, 15 per 5 minutes of play, doubled by VIP.
+- **Crates** can be bought with Robux or Coins, and with Tokens when the crate lists a token price.
+- **Store items** whose product or pass id isn't set yet show SOON instead of being hidden, so the Store isn't empty before the products exist.
+- **Stats:** wins and losses count per matchmaking mode and its category. The streak shown is the mode's.
+
+
 ### Mobile UI
 
 - **Touch buttons are icons**, not words, like other Roblox shooters. The user asked for images (grenade, bullet or gun for fire, sprint, and so on) taken from the toolbox. Counts and cooldowns stay as a small label on the grenade, drone and ability buttons.

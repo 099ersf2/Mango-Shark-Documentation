@@ -218,6 +218,11 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Tag `FitScale` (and `DesignHeight`, `WidthShare`, `BelowTopbar`) | A UIScale in a full-screen menu frame | `Client.Core.UI` scales the menu to fit the screen, under the top bar ([UI.md](UI.md#full-screen-menus-that-fit-fitscale)). On `SiegeSelect.Screen.Content.Fit` |
 | `Main.MenuButtons.TouchScale` | UIScale | 0.8 on small touch screens |
 | `DronesMax` | Player | How many drones they may have out at once (`Content.Drones.MAX_ATTRIBUTE`). `DroneService.AddCharge(player)` raises it by one until the next refund |
+| `StoreService.Buy` / `Give` / `Perk` / `OwnsClass` / `OwnsPass`, `StatsService.Record` | Server | See [STORE.md](STORE.md#api-and-extension-points) |
+| `Store.Buy` / `Store.Reward` | Packets | Buy a crate or item; a reward was earned |
+| `Store.PreventBuy`, `Store.Bought`, `Store.Given`, `Stats.Recorded` | Extension points | See [STORE.md](STORE.md) |
+| `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | Saved data | From `Content.Store` (ScribeFragment) |
+| `WinStreak` | Player attribute | The win streak shown above the head |
 | `Skins.FamilyOf(gunId)` | Shared | The skin family a gun wears ("Rifle", "Pistol", else its own Id). `Skins.EquipField(gunId)` returns the family's field |
 | `Client.Core.SkinShop.Preview(skinId)` | Client | Plays the crate reel landing on a skin, granting nothing (testing) |
 | `Assets.UI.Templates.SkinCard` / `SkinTab` / `CrateItem` / `ReelCard` | Templates | The ARMORY shop's cards, tabs, crate rows and reel cards |

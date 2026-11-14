@@ -22,6 +22,7 @@ The home page for the FPS place's gun system docs. Start with **Adding guns** to
 | [Movement](Gun%20Game/MOVEMENT.md) | You are tuning sprint, crouch, slide or camera feel, adding a movement state, or working on the FOV setting |
 | [Breakables](Gun%20Game/BREAKABLES.md) | You are working on boards or another breakable object, or a weapon that should damage them |
 | [Soft walls](Gun%20Game/SOFTWALLS.md) | You are placing walls bullets punch holes through, tuning penetration, or making a weapon cut holes |
+| [Store](Gun%20Game/STORE.md) | You are adding a crate, a store item, a game pass, a currency reward, or reading wins, losses and streaks |
 | [Skins](Gun%20Game/SKINS.md) | You are adding a weapon skin, working on the skin shop, or setting up the skin crate product |
 | [Lobby](Gun%20Game/LOBBY.md) | You are working on the lobby, its portals, first spawn or the `InLobby` attribute |
 | [Consumables](Gun%20Game/CONSUMABLES.md) | You are tuning the grenade or smoke bomb, or adding a consumable |
