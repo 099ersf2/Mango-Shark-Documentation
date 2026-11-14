@@ -33,6 +33,46 @@ Every match result counts:
 - A **win streak** per mode. From 2 wins in a row, a 🔥 tag with the streak shows above the player's head for everyone: in a match, their streak in that mode; in the lobby, in their last mode.
 - The lobby's **PLAY** button starts on the last mode played.
 
+## The Store and Inventory screens (2026-11-13)
+
+### Store
+
+`Main.Store`, `Client.Core.Store`:
+
+- An icon rail of sections.
+- Cards with ribbons (`Tag`), % OFF (`Discount`), % EXTRA (`Bonus`), double width (`Big`) and a glowing sheen (`Glow`).
+- Featured first, then the Daily Deal (`DAILY_DEALS`, `DAILY_DISCOUNT`), then Crates.
+- Price buttons are on the card. Clicking the card opens the detail page.
+
+Why it is laid out this way, from how other game stores sell:
+
+- **Anchoring:** the old price, struck through.
+- **Bigger packs read as the better deal:** "% EXTRA", BEST VALUE.
+- **Scarcity:** the daily deal's countdown.
+- **Social proof:** POPULAR.
+- **Visual weight:** big, glowing cards for what you most want sold.
+
+### Inventory
+
+`Main.Inventory`, `Client.Core.Inventory`:
+
+- **Classes** (team filter): yours, then locked with their price.
+- **Skins** (gun filter): owned, then locked.
+- **Crates:** waiting to be opened.
+
+### Detail page
+
+`Main.Details`, `Client.Core.ItemDetails`, built by `Client.Core.StoreViews`:
+
+- **Classes:** starter items and the ability.
+- **Crates:** contents and odds, and OPEN.
+- **Skins:** a big preview, and EQUIP.
+- **Items:** what they include.
+
+### Crate inventory
+
+Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `StoreService.OpenCrate`). Then the reel plays (`Main.Opening`).
+
 ## Controls
 
 | Input | How |

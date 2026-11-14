@@ -219,7 +219,9 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Main.MenuButtons.TouchScale` | UIScale | 0.8 on small touch screens |
 | `DronesMax` | Player | How many drones they may have out at once (`Content.Drones.MAX_ATTRIBUTE`). `DroneService.AddCharge(player)` raises it by one until the next refund |
 | `StoreService.Buy` / `Give` / `Perk` / `OwnsClass` / `OwnsPass`, `StatsService.Record` | Server | See [STORE.md](STORE.md#api-and-extension-points) |
-| `Store.Buy` / `Store.Reward` | Packets | Buy a crate or item; a reward was earned |
+| `Store.Buy` / `Store.Open` / `Store.Reward` | Packets | Buy a crate (into the inventory), item or class; open a crate from the inventory; a reward was earned |
+| `Client.Core.Store.Open(section?)`, `Client.Core.Inventory.Open(tab?)`, `Client.Core.ItemDetails.Show(view)`, `Client.Core.StoreViews` | Client | Store, Inventory, detail page, shared views |
+| `CrateInventory` | Saved data | `[crateId].Count`: crates bought and not opened |
 | `Store.PreventBuy`, `Store.Bought`, `Store.Given`, `Stats.Recorded` | Extension points | See [STORE.md](STORE.md) |
 | `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | Saved data | From `Content.Store` (ScribeFragment) |
 | `WinStreak` | Player attribute | The win streak shown above the head |

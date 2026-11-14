@@ -1,5 +1,39 @@
 # Changelog
 
+## 2026-11-13: Store and Inventory redesign, crates go to the inventory
+
+Compile-checked only (no playtest, as asked).
+
+### Added
+
+- **The Store** (`Main.Store`, `Client.Core.Store`), redesigned:
+  - **Layout:** an icon rail (Featured, Crates, Currency, Passes, Bundles, Skins, Classes), balances with "+" buttons, and section headers.
+  - **Big cards:** double-width cards for featured and big items.
+  - **Labels and badges:** ribbons (POPULAR, BEST VALUE, 🔥 HOT DEAL, NEW), "% OFF" with the old price struck through, and "% EXTRA" on bigger packs.
+  - **Glow:** glowing outlines with a sweeping sheen.
+  - **Daily deal:** one item a day at 30% off its Coins and Tokens price, with a countdown. The server charges the same price (`Content.Store.PriceOf`).
+- **The Inventory** (`Main.Inventory`, `Client.Core.Inventory`; INVENTORY on the lobby bar, and the old Backpack button):
+  - **Classes:** yours, then "CLASSES TO BE UNLOCKED", filtered by team.
+  - **Skins:** owned, then locked; equip from the skin's page.
+  - **Crates:** the crates you own, with a count.
+- **A big detail page** (`Main.Details`, `Client.Core.ItemDetails`), like a character select screen:
+  - the name, team or rarity, description and a large 3D preview;
+  - starter items with gun previews;
+  - the ability in depth (cooldown, charges, description);
+  - a crate's contents with each chance and what you own;
+  - prices or OPEN / EQUIP, and BACK / EXIT.
+- **Shared view builders:** `Client.Core.StoreViews`, so a crate or class looks the same in both screens.
+- **Classes for sale:** `Content.Store.CLASS_PRICES` (Coins and/or Tokens). A class listed there is locked until bought (`Class:<id>`). None is listed yet.
+- **Crate rarity and ribbon:** each crate has a `Rarity` (card colors) and a `Tag`.
+- **Packet `Store.Open`:** opens a crate from the inventory.
+
+### Changed
+
+- **Crates no longer open when bought** (Coins, Tokens or Robux). They go into the new saved `CrateInventory` and are opened from the Inventory. OPEN plays the reel (`Main.Opening`), which offers OPEN ANOTHER while you have more.
+- **Bundles can include crates** (`Grants.Crates`). The Starter Bundle now has a Field Crate, and is shown as a 50% OFF hot deal.
+- **The Armory screen is gone:** the shop stand opens the Store on CRATES.
+- `StoreService.Buy` answers (ok, message). The new `StoreService.OpenCrate` gives the skin.
+
 ## 2026-11-13: Store products created
 
 - The 8 new developer products and the VIP game pass are created on Roblox (through Open Cloud), at the prices the Store shows, and their ids are in `Shared.ProductIds`. Every Robux price in the Store is now live instead of SOON. The icons are placeholders. See [STORE.md](STORE.md#limits).

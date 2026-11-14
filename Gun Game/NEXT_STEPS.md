@@ -1,5 +1,14 @@
 # Next steps
 
+## Store and Inventory redesign (2026-11-13, not run)
+
+- [ ] **Open the Store and the Inventory in a client that renders:**
+  - cards, ribbons, the glow sheen, the daily deal countdown;
+  - the detail page for a class, a crate and a skin;
+  - buy a crate with coins, see it in Inventory > Crates, OPEN, and watch the reel.
+- [ ] **Decide which classes to sell** (`Content.Store.CLASS_PRICES`; none locked now).
+- [ ] **Phone:** the Store cards are 4 per row; they may need 2 on a phone.
+
 ## Store and stats (2026-11-13)
 
 - [ ] **Replace the placeholder icons** of the 8 new products and the VIP pass on the Creator Dashboard (created 2026-11-13; ids in `Shared.ProductIds` and [STORE.md](STORE.md#limits)).
