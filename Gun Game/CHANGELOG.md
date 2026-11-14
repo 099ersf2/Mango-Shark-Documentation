@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-13: Cameras show your own body
+
+Compile-checked only (not playtested).
+
+### Changed
+
+- Looking through a security camera now shows your own body and held gun, like the drone view. First person hides them on your screen every frame, and `Client.Gadgets.CameraController` shows them again after that.
+
 ## 2026-11-13: Siege prep drone always shows
 
 Compile-checked only (not playtested, as asked).

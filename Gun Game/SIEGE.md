@@ -146,6 +146,7 @@ See [DRONES.md](DRONES.md) for the drone itself.
 - Every part or model in the map's `Cameras` folder, and anything tagged `Camera`, is a camera.
 - A living defender opens the cameras with the Drone key (5; a defender has no drone), DPad Left, or the touch CAMS button. Fire is the next camera, Aim the previous one, and Interact scans; DPad Up and the touch `SCAN` button do the same. The Drone key or DroneView key (5 or X) leaves. The view turns up to 55° each way.
 - The feed shows the camera's name and LIVE or OFFLINE.
+- You see your own body (and held gun) through the cameras, as you do from a drone (2026-11-13).
 - **Scan** (every 5 s): a live camera asks the server to find the enemy player nearest its crosshair, within 150 studs and 6°, with clear line of sight. A successful scan reveals that attacker's class to defenders for the rest of the match. The scanned player sees a red `SCANNED` notice for 2.5 s.
 - The live feed and the opaque NO SIGNAL screen both show the match timer. The drone feed does the same.
 - Attackers can destroy a camera (20 health). A destroyed camera stays in the list and shows NO SIGNAL.
