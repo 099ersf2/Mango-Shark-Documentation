@@ -95,7 +95,7 @@ On the Siege class page, a locked class the player doesn't own is greyed out, sa
 
 ### Owned cards (2026-11-13)
 
-Owned items show ✓ OWNED (or ✓ ALL SKINS OWNED) above greyed, inactive price buttons. The gift button stays usable. % EXTRA is a bright ribbon on the top-left edge.
+On a Store card, an owned item shows a ✓ OWNED button (or ✓ ALL SKINS OWNED) instead of its prices, with the gift button beside it when the item can be gifted. On the detail page, it shows ✓ OWNED with its price buttons greyed and inactive. % EXTRA is a bright ribbon on the top-left edge.
 
 ### Coin buttons (2026-11-13)
 

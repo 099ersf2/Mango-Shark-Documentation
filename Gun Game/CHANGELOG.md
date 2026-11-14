@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-13: Owned Store cards show an OWNED button
+
+Compile-checked only.
+
+### Changed
+
+- **Store cards:** anything the player owns (a game pass, a bundle or other product, a skin, a class, a crate whose skins are all owned) shows a green ✓ OWNED button where the prices were. The Coins, Tokens and Robux buttons are not shown to an owner. A giftable item keeps its gift button at the right of the row. This replaces the greyed prices on owned cards from earlier today.
+- **Detail page (unchanged from earlier today):** an owned item shows ✓ OWNED, and its Coins, Tokens and Robux buttons greyed and unclickable.
+
 ## 2026-11-13: Prep drone drives, no gun over the drone view
 
 Compile-checked only (not playtested).
