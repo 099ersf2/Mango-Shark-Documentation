@@ -175,7 +175,7 @@ Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `S
 
 Saved fields (from `Content.Store`):
 
-- `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `LastMode`.
+- `Tokens`, `OwnedClasses`, `OwnedItems` (once-only items bought, 2026-11-13), `Wins`, `Losses`, `LastMode`.
 - `Stats["Mode:<id>"]` and `Stats["Category:<id>"]`: `Wins`, `Losses`, `Streak`, `BestStreak`.
 
 Player attributes: `WinStreak`, and `TotalWins` (saved `Wins`, for the lobby leaderboard; 2026-11-13).
@@ -244,5 +244,5 @@ Checked on 2026-11-13 in a Studio playtest, on the server (no screens, as asked)
 | `Store_StarterBundle` | 3731060107 | 199 |
 | `Store_ObsidianRifle` | 3731060114 | 149 |
 | `GamePasses.VIP` | 2089466749 | 399 |
-- Bundles and passes show OWNED only after the server refuses a second purchase. The card doesn't know beforehand.
+- Owned passes and bundles show OWNED from the start (2026-11-13): passes from Scribe's pass mirror, bundles from `OwnedItems`.
 - Leaving a match before it ends records nothing.

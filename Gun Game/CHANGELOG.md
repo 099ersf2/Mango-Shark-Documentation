@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-13: OWNED for passes and bundles, greyed prices on the detail page
+
+Compile-checked only.
+
+### Added
+
+- **`OwnedItems`** (saved, in `Content.Store`): once-only store items bought, by item Id.
+  - `StoreGrants.ApplyItem(data, item)` gives an item's grants and records it. Robux receipts (`Shared.Data`) and Coins/Tokens purchases (`StoreService`) both use it.
+  - Bundles bought before this are found in the purchase log when the player joins (`backfillOwned` in `StoreService`), or on their next purchase try, and recorded.
+- `StoreViews.Owns(data, "Item", id)` tells whether a store item is owned:
+  - a game pass, from Scribe's client pass mirror (`Data.Owns`);
+  - a once-only item, from `OwnedItems`, or when everything it grants is owned.
+
+### Changed
+
+- **Store cards:** owned game passes and bundles now show ✓ OWNED with greyed prices, like skins and classes. Before, they showed OWNED only after the server refused a second purchase.
+- **Detail page:** an owned item or class shows a green ✓ OWNED button, with its price buttons still there but greyed and unclickable. Gifting stays available.
+- The open detail page redraws when the player's data changes, and about 1 s and 3 s after a game pass purchase, so it turns to OWNED right away.
+
 ## 2026-11-13: Developer skin pack
 
 Compile-checked only. In Edit mode `Skins.Apply` was run on the Rifle, Pistol and SMG models: 35, 6 and 3+ rainbow parts were tagged, and putting the normal look back cleared every one.
