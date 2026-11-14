@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-11-13: Store fixes, Blake for sale, lobby panel, PLAY shine
+
+Compile-checked only.
+
+### Fixed
+
+- **Inventory error** (`Inventory:104: attempt to index function with 'Get'`): the crate inventory's field was named `Count`, which Scribe containers already use for their `Count()` method. It is `Amount` now (`CrateInventory[crateId].Amount`). The server wrote the same field, so no crate was ever saved under the old name.
+- **Hovering a card made the grid re-wrap:** every card, rail button and filter chip now sits in an invisible holder frame at its layout size (`StoreCard.Card`, `NavButton.Button`, `FilterChip.Button`). The hover grow happens inside it.
+- **Outlines and ribbons were cut off at the page edges:** the holders leave a margin and the pages have padding.
+
+### Added
+
+- **Blake** (the `Hologram` class) is sold: 6,000 Coins or 60 Siege Tokens, featured with a NEW ribbon. Players who don't own it can't pick it in Siege.
+- **PLAY shine:** a shine sweeps across the PLAY button every 2.4 s (`Client.Core.Shine` animates any UIGradient tagged `ShineSweep`).
+
+### Changed
+
+- **The lobby panel:** Coins, Siege Tokens, STORE and INVENTORY are one panel on the left (`Main.Wallet`), in the lobby buttons' slate-and-white style.
+- **Removed:** the extra Inventory (old Backpack) button in the top-right menu.
+
 ## 2026-11-13: Store and Inventory redesign, crates go to the inventory
 
 Compile-checked only (no playtest, as asked).

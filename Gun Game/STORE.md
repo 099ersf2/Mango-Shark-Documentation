@@ -69,6 +69,14 @@ Why it is laid out this way, from how other game stores sell:
 - **Skins:** a big preview, and EQUIP.
 - **Items:** what they include.
 
+### Lobby panel
+
+`Main.Wallet`, on the left: the Coins and Siege Tokens chips, and STORE and INVENTORY.
+
+### Classes for sale
+
+Blake (`Hologram`): 6,000 Coins or 60 Tokens, featured.
+
 ### Crate inventory
 
 Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `StoreService.OpenCrate`). Then the reel plays (`Main.Opening`).
