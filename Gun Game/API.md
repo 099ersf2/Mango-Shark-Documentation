@@ -110,6 +110,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Content.Matchmaking.PartyLimit(mode)` | The largest party a mode allows: the smaller side, or the only side when the other is 0 |
 | `Content.Matchmaking.PrivateLimit(mode)` / `FitMode(modeId, size, private)` | The largest party for a private match of a mode; the mode a party of that size plays (the picked one, or the next of its category that fits) |
 | `Client.Core.ModeMenu.SetPartySize(size)` | Marks the modes the party is too big for (PARTY TOO BIG, PRIVATE ONLY) |
+| `Client.Core.Notice.Show(title, text, sound?)` / `Hide()` | The `Main.Notice` popup (sound defaults to `Error`) |
 | `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Siege.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([CLEAR_HOUSE.md](CLEAR_HOUSE.md)) |
 | `Content.ClearHouse` | Clear House numbers: Action time, guard counts (`ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`) and profiles, room finder settings |
 | `Packets.Siege.Pick("Map", name)` / snapshot `Maps` | Clear House's map vote during Selection: `{ Name, Votes }` per map of the mode |

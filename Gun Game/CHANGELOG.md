@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-11-15: Party-size popup
+
+Tested in a Studio playtest: with a party of 3, pressing 1v1 opened the popup, nothing was picked, and the description line kept the mode's own text.
+
+### Changed
+
+- **"Party too big" is a popup now**, not text in the Game Modes panel's description line. The description always shows the mode's own description.
+  - Pressing a greyed-out mode or category: PARTY TOO BIG popup, "Your party of N is too big for X. Pick a different mode." Nothing is picked.
+  - Picking a PRIVATE ONLY mode: a PRIVATE ONLY popup says what PLAY and PLAY WITH PARTY will play (a notify sound, not an error).
+  - PLAY or PLAY WITH PARTY with no mode that fits, the server's own size refusal, and a party growing too big for every mode of the category also open the popup.
+  - The note under the bar when the party's size switches PLAY stays as it was.
+
+### Added
+
+- `Main.Notice` (built in Studio, in the PartyInvite style): Title, Text and an OK button, centered above menus.
+- `Client.Core.Notice` (ClientOnly): `Notice.Show(title, text, sound?)` and `Notice.Hide()`.
+
 ## 2026-11-15: Private matches in the picked mode, modes by party size
 
 Tested in a Studio playtest with one player and a party faked from the server (2, 3 and 1 members). No result was saved (the playtest was stopped during Selection).
@@ -16,7 +33,7 @@ Tested in a Studio playtest with one player and a party faked from the server (2
 
   PLAY and PLAY WITH PARTY each use the picked mode when the party fits, else the mode of the same category with the smallest limit that fits (`Content.Matchmaking.FitMode`). With 1v1 picked: 2 players queue 5v5 while the private match stays 1v1; a third makes the private match 5v5 too; back to 1, it is 1v1 again. Arcade works the same way.
 - **The bar says so:** PLAY's line shows the mode it queues for, PLAY WITH PARTY shows "PRIVATE 1 V 1 · 2 PLAYERS", and a line under the bar says when the party's size switched either one ("Party of 2: PLAY now queues for 5 V 5.").
-- **Game Modes panel:** a mode the party is too big for, even privately, is greyed out, says PARTY TOO BIG and can't be picked (an error sound and "Pick a different mode"). A mode the party fits only privately says PRIVATE ONLY and explains what each button does. A category with no mode that fits is greyed out too.
+- **Game Modes panel:** a mode the party is too big for, even privately, is greyed out, says PARTY TOO BIG and can't be picked. A mode the party fits only privately says PRIVATE ONLY. (The explanations moved to a popup later the same day.) A category with no mode that fits is greyed out too.
 - **Too big:** if no mode of the category fits, PLAY and PLAY WITH PARTY say "Your party is too big for X. Pick a different mode." The server checks the same limits.
 
 ### Added

@@ -85,7 +85,7 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
   | 5v5 | 5 | 5 |
   | Clear House | 5 | 5 |
 
-  The lobby sends the fitted mode with each request, so with 1v1 picked a party of 2 queues 5v5 but plays a private 1v1; a party of 3 gets 5v5 for both. The Game Modes panel greys out modes the party is too big for (PARTY TOO BIG) and marks private-only ones (PRIVATE ONLY).
+  The lobby sends the fitted mode with each request, so with 1v1 picked a party of 2 queues 5v5 but plays a private 1v1; a party of 3 gets 5v5 for both. The Game Modes panel greys out modes the party is too big for (PARTY TOO BIG) and marks private-only ones (PRIVATE ONLY). Pressing one opens a popup (`Client.Core.Notice`) instead of changing the description line.
 - All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
 
 ## Play with party (2026-11-12)

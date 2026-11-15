@@ -123,6 +123,9 @@ Categories and modes have the same card fields in `Content.Matchmaking`:
 | `PartyPlay` | **PLAY WITH PARTY**, above PLAY (in the status's place while not searching). Starts a private match of the picked mode (or the next one the party fits) with the party's own members ([MATCHMAKING.md](MATCHMAKING.md#play-with-party-2026-11-12)). Its line reads "PRIVATE 1 V 1 · 2 PLAYERS". Shown from 2 members (always in Studio); refuses for a member who is not the leader |
 | `Message` | A line under the bar when the server refuses something |
 
+`Main.Notice` (2026-11-15): a popup in the middle of the screen, above menus: `Title`, `Text`, `Ok`. Filled by `Client.Core.Notice.Show(title, text, sound?)`. Used for PARTY TOO BIG and PRIVATE ONLY.
+
+
 The bar sits just above the health bar. On a touch screen while the fire button is showing it goes compact: PLAY is narrower and the two side buttons move above it, clear of the right thumb.
 
 **Party is its own menu** (`Main.Party`, key L), no longer inside a Play menu: five member rows with avatars (LEAD and KICK for the leader), LEAVE PARTY, and the invite list with its two tabs. The invite popup is `Main.PartyInvite`.
