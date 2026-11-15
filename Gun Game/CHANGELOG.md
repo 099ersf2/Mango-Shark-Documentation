@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-11-15: Class files moved up, face-on shields and phones, still items on the detail page
+
+Tested in a Studio playtest: on the Starter Bundle page the whole bundle turned, Crimson Tide turned when picked, 2,000 Coins showed the coin picture and its description (still), and picking it again went back to the bundle.
+
+### Changed
+
+- **Class files are in `Content.ClassDefinitions`** (a folder right under Content, like `Content.Guns.Definitions`), not inside the `Content.Classes` module.
+  - `Content.Classes` had its whole class list back in it (most likely an open script editor saved an older copy over the change). The files were made again from that list, which is the newest: 16 matched, and Leo's Id is now `Motion_Scanner` (renamed in that list).
+  - `Content.Classes` now only loads `Content.ClassDefinitions` and answers questions (`Get`, `ForTeam`, `Allows`...). Its header says to edit classes in the folder. Checked: 17 classes in the same order.
+  - **Anyone with `Content.Classes` open in a script editor should close it without saving**, or the old list comes back again.
+- **Shields and phones face the viewer** in every preview (cards, detail page, rows): a shield shows its plated front, a phone its screen (`FACE_ON` in `ItemDetails`). Spinning starts from the front.
+- **Things that aren't models work like guns on the detail page:** Coins (the coin picture), crates (📦) and pass perks (like x2) in a bundle or pass can be clicked: the big picture, their name and their own description show, under the bundle's title, without turning. Rows show their picture in a new `Icon` / `IconGlyph` slot of `Templates.ContentRow`. `Row.Image` and `Row.Glyph`.
+
+### Fixed
+
+- **The Inventory timed out the client when data loaded while it was open.** It watched every skin's count and redrew all 100+ cards (with 3D previews) once per change, over 100 times in a row. Changes now cause one redraw at the end of the frame (`refresh` is deferred).
+
 ## 2026-11-15: Spinning previews, bundle item previews, tooltips
 
 Tested in a Studio playtest: a hovered Inventory card turned and showed its tooltip; the Obsidian Pack page turned its gun, and clicking an item row showed that item (title kept). Going back to the whole bundle by clicking the row again was not checked (someone else was using the playtest).
