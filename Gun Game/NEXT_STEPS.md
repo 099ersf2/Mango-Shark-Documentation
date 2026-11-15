@@ -1,5 +1,11 @@
 # Next steps
 
+## 2026-11-15
+
+- [ ] **Creator Dashboard:** turn off the three Siege Tokens products (3731060058, 3731060067, 3731060078).
+- [ ] **Crate detail page on a phone:** the contents rows' names may be small (10 px); check at 844×390.
+- [ ] **Clear House indoor volumes:** only 7 Mansion rooms and 6 Bank rooms can hold guards, so they bunch up (up to 3 a room, then more). Add `NPCIndoorVolumes` parts to cover more rooms.
+
 ## Clear House (2026-11-14)
 
 - [ ] **A real fight:**

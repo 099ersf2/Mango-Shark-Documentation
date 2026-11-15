@@ -12,7 +12,7 @@ Added 2026-11-14. Up to five players against NPC guards in a house (Mansion or B
 | The match | `Systems.Siege.SiegeService`: the Siege flow with a `clearHouse` flag |
 | Doors, windows, rooms, guards | `Systems.Siege.ClearHouse` |
 | Guard behavior | `Systems.NPC.NPCService` Guard mode (existing): stays in its `NPCRoom` box, patrols it and rebuilds its boards |
-| Client | `Client.Core.SiegeSelect` (HOUSE GUARDS in the roster), `Client.Hud.SiegeHud` (objective with guards left, no bomb chips, HOUSE GUARDS result column) |
+| Client | `Client.Core.SiegeSelect` (HOUSE GUARDS in the roster), `Client.Hud.SiegeHud` (objective with guards left, no bomb chips, only the players' result column) |
 
 ## How a match goes
 
@@ -30,7 +30,7 @@ Added 2026-11-14. Up to five players against NPC guards in a house (Mansion or B
 4. **Reveal** (15 s): the spawn and the team. The guards are placed meanwhile.
 5. **No Prep.** Reveal goes straight to Action.
 6. **Action** (`ACTION_TIME`, 480 s): players spawn at their spawns, with their drones.
-7. **End.** The result screen shows VICTORY or DEFEAT, "x / y guards down", your team, and a HOUSE GUARDS column with one row per guard (kills, deaths, damage). Then everyone returns to the lobby.
+7. **End.** The result screen shows VICTORY or DEFEAT, "x / y guards down", and your team. The guards' stats are not shown (2026-11-15). Then everyone returns to the lobby.
 
 ## Winning and losing
 
@@ -68,10 +68,16 @@ Rays only hit the map's collidable parts (`RespectCanCollide`), so room volumes,
 
 ## Placing the guards
 
-- **How many:** at least half the rooms found, rounded up (`ROOM_SHARE` 0.5), plus `GUARDS_PER_PLAYER` (2) for each player after the first. No cap besides `MAX_PER_ROOM`.
+- **How many:** half of every room found, rounded up (`ROOM_SHARE` 0.5), plus `GUARDS_PER_PLAYER` (2) for each player after the first. Every room the finder found counts, indoor spots or not (2026-11-15).
   - Mansion (26 rooms): 13 / 15 / 17 / 19 / 21 for 1 to 5 players.
   - Bank (29 rooms): 15 / 17 / 19 / 21 / 23.
-- **Which rooms:** rooms are drawn at random, bigger ones more often, one guard per room first. The rest go to the biggest rooms, up to `MAX_PER_ROOM` (3) each.
+- **Indoors only:** a guard stands only on an indoor spot:
+  - inside a part of the map's `NPCIndoorVolumes` folder or a bomb room (`Sites`);
+  - nothing over its head, a ceiling above, and walls at waist and head height in at least 6 of 8 directions.
+
+  Rooms with no such spot get no guards. Mansion has 7 such rooms of 26, Bank 6 of 29. To spread guards wider, add parts to an `NPCIndoorVolumes` folder in the map covering more rooms.
+- **Which rooms:** storey by storey, starting with the floor the attackers enter on (`MainFloorY` on the map, or the attacker spawns' floor). Rooms are drawn at random, bigger ones more often, one guard per room first; then up to `MAX_PER_ROOM` (3) each, biggest first. Any guards still left go to free indoor spots anywhere. A warning is printed if the spots run out.
+- **Patrol:** the guard is kept inside its indoor volume, not the bigger found room.
 - **Profiles:** drawn from `PROFILES` by weight: Soldier 3, Breacher 1, Grenadier 1.
 - **Spawning:** `NPCService.Spawn(profile, cframe, nil, true)`. The fourth argument passes the `MAX_NPCS` cap, which is 0 today. The guard is then put in Guard mode for its room.
 - **No respawns:** guards never come back. The model carries the `ClearHouseGuard` attribute.
@@ -98,6 +104,10 @@ Rays only hit the map's collidable parts (`RespectCanCollide`), so room volumes,
 - 29 rooms were found on Bank in 2.3 s and 15 guards placed.
 - A guard shot the idle test player: DEFEAT, "0 / 15 guards down · Every attacker was eliminated", and the HOUSE GUARDS column showed that guard's kill and 102 damage.
 - The loss was removed from the saved data (coins, losses, both stats entries; `LastMode` back to `5v5`).
+
+### Tested again (2026-11-15, guard count)
+
+- `Prepare` and `Populate` on both maps in a playtest: Mansion 13 guards (1 player) and 21 (5 players); Bank 15 and 23. Every guard had an indoor room.
 
 ### Not tested
 

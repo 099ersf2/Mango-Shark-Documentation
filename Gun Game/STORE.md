@@ -12,16 +12,14 @@ There are two currencies:
   - **Draw:** 50, only if the match ran at least 60 s.
   - **Play time:** 15 every 5 minutes in any server.
   - The VIP pass doubles all of these.
-- **Siege Tokens** are the premium currency:
-  - Bought with Robux, or given rarely: the battle pass, special quests (`StoreService.Give`).
-  - Every player starts with **5**.
+- **Siege Tokens were removed (2026-11-15).** Coins are the only currency. Nothing is priced in Tokens or pays them out, `StoreService` refuses them, and the wallet doesn't show them. The saved `Tokens` field stays unused so old saves load.
 
 What can be bought:
 
-- **Crates** with Coins, Tokens (if the crate has a token price) or Robux. Opening one plays the reel (see [SKINS.md](SKINS.md)).
+- **Crates** with Coins or Robux. Opening one plays the reel (see [SKINS.md](SKINS.md)).
 - **Everything in the Store** (lobby: STORE button on the wallet bar at the top):
   - crates;
-  - currency packs (tokens for Robux; coins for Robux or Tokens);
+  - coin packs (for Robux);
   - game passes;
   - bundles;
   - special skins (Store only, never in a crate);
@@ -79,11 +77,11 @@ An item's `Border` names a `Content.Store.BORDERS` preset (Gold, Rainbow, Obsidi
 
 ### Lobby panel
 
-`Main.Wallet`, on the left: the Coins and Siege Tokens chips, and STORE and INVENTORY.
+`Main.Wallet`, on the left: the Coins chip, and STORE and INVENTORY. (The Tokens chip is hidden since 2026-11-15.)
 
 ### Classes for sale
 
-Blake (`Hologram`): 6,000 Coins or 60 Tokens, featured.
+Blake (`Hologram`): Coins only (see `CLASS_PRICES`), featured.
 
 ### Inventory borders (2026-11-13)
 
@@ -152,8 +150,8 @@ Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `S
 
 | Call | What |
 | --- | --- |
-| `StoreService.Buy(player, "Crate:<id>" or "Item:<id>", "Robux"/"Tokens"/"Coins")` | (ok, message, skinId) |
-| `StoreService.Give(player, "Coins"/"Tokens", amount, reason)` | Pays out currency and shows it to the player |
+| `StoreService.Buy(player, "Crate:<id>" or "Item:<id>", "Robux"/"Coins")` | (ok, message, skinId) |
+| `StoreService.Give(player, "Coins", amount, reason)` | Pays out Coins and shows it to the player |
 | `StoreService.Perk(player, "CoinMultiplier")` | Product of that perk over owned passes (1 if none) |
 | `StoreService.OwnsClass(player, classId)` / `OwnsPass(player, itemId)` | |
 | `StatsService.Record(player, modeId, categoryId, won)` | Records one result; returns the mode streak |
@@ -184,16 +182,16 @@ Player attributes: `WinStreak`, and `TotalWins` (saved `Wins`, for the lobby lea
 
 - **A crate:** add an entry to `Content.Crates.LIST`:
   - `Skins` maps skin Ids to weights;
-  - set `Coins` and/or `Tokens`, and `Robux` for the price shown;
+  - set `Coins`, and `Robux` for the price shown;
   - for Robux, create a developer product and put its id at `Crate_<Id>` in `Shared.ProductIds`.
-- **A store item:** add it to `Content.Store.ITEMS`, with a `Section` and prices. `Grants` takes Coins, Tokens, Skins and Classes. For Robux, put the product id at `Store_<Id>`.
+- **A store item:** add it to `Content.Store.ITEMS`, with a `Section` and prices. `Grants` takes Coins, Skins and Classes. For Robux, put the product id at `Store_<Id>`.
 - **A game pass:** an item with `Pass = true` and `Perks`. Put the pass id at `GamePasses.<Id>`.
 - **A special skin:** add the skin to `Content.Guns.Skins` (in no crate), and an item in the `Skins` section that grants it.
 - **A class for sale:**
   - add `[classId] = true` to `LOCKED_CLASSES`;
   - add an item in the `Classes` section with `Grants = { Classes = { classId } }`.
   - Locking a class takes it away from everyone who doesn't own it.
-- **Battle pass or quests:** call `StoreService.Give(player, "Tokens", n, "Battle pass")`.
+- **Battle pass or quests:** call `StoreService.Give(player, "Coins", n, "Battle pass")`.
 
 ## Testing
 
@@ -236,9 +234,9 @@ Checked on 2026-11-13 in a Studio playtest, on the server (no screens, as asked)
 | --- | --- | --- |
 | `Crate_Field` (also `SkinCrate`) | 3730208338 | 499 |
 | `Crate_Gilded` | 3731059935 | 299 |
-| `Store_Tokens50` | 3731060058 | 99 |
-| `Store_Tokens150` | 3731060067 | 249 |
-| `Store_Tokens400` | 3731060078 | 499 |
+| `Store_Tokens50` (removed 2026-11-15, not in `ProductIds`) | 3731060058 | 99 |
+| `Store_Tokens150` (removed 2026-11-15) | 3731060067 | 249 |
+| `Store_Tokens400` (removed 2026-11-15) | 3731060078 | 499 |
 | `Store_Coins5000` | 3731060085 | 99 |
 | `Store_Coins15000` | 3731060095 | 249 |
 | `Store_StarterBundle` | 3731060107 | 199 |

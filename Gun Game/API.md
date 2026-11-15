@@ -236,7 +236,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Client.Core.Store.Open(section?)`, `Client.Core.Inventory.Open(tab?)`, `Client.Core.ItemDetails.Show(view)`, `Client.Core.StoreViews` | Client | Store, Inventory, detail page, shared views |
 | `CrateInventory` | Saved data | `[crateId].Count`: crates bought and not opened |
 | `Store.PreventBuy`, `Store.Bought`, `Store.Given`, `Stats.Recorded` | Extension points | See [STORE.md](STORE.md) |
-| `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | Saved data | From `Content.Store` (ScribeFragment) |
+| `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | Saved data | From `Content.Store` (ScribeFragment). `Tokens` is unused since 2026-11-15 |
 | `WinStreak` | Player attribute | The win streak shown above the head |
 | `Skins.FamilyOf(gunId)` | Shared | The skin family a gun wears ("Rifle", "Pistol", else its own Id). `Skins.EquipField(gunId)` returns the family's field |
 | `Client.Core.SkinShop.Preview(skinId)` | Client | Plays the crate reel landing on a skin, granting nothing (testing) |

@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-11-15: Siege Tokens removed, crate contents rows, Clear House end screen and guard count
+
+Tested in a Studio playtest (server and client). No player data was written.
+
+### Removed
+
+- **Siege Tokens** are gone as a currency. Coins are the only one.
+  - No crate or store item has a Tokens price; the three token packs (`Tokens50`, `Tokens150`, `Tokens400`) are no longer sold. Their product ids were taken out of `Shared.ProductIds`; turn the products off on the Creator Dashboard.
+  - The Starter Bundle no longer grants 25 Tokens (its text was updated).
+  - Bundles that had a Tokens price now cost Coins at the old pack rate (100 Coins a Token): Obsidian Pack 3,000 Coins (still 149 Robux too), Neon Circuit Bundle 3,500 Coins.
+  - `StoreService` refuses Tokens: `CURRENCIES = { Coins = true }`, for buying and for `Give`.
+  - The Tokens chips are hidden in `Main.Wallet`, the Store and Inventory headers, and the detail page's Tokens button.
+  - The saved `Tokens` field stays (unused) so old saves still load.
+
+### Fixed
+
+- **Crate contents rows overlapped** (`Templates.ContentRow`): long names ran under the odds, and the detail ran under OWNED.
+  - The name and detail now end 130 px before the right edge.
+  - The odds and OWNED are 50 px wide.
+  - The detail is 12 px and cut off with "…"; the name shrinks to fit (10 px at least) and is cut off below that.
+
+### Changed
+
+- **Clear House end screen:** the guards' stats are no longer shown. The server sends only the players' rows, and the client shows only YOUR TEAM (no HOUSE GUARDS column).
+- **Clear House guard count:** every room the finder found counts, not only the rooms with indoor guard spots. Guards = half the rooms (rounded up) + 2 for each player after the first.
+  - Guards still stand only on indoor spots (`NPCIndoorVolumes` or `Sites` volumes, with a ceiling and walls around). Mansion has 7 such rooms of 26, Bank 6 of 29.
+  - Rooms fill up to `MAX_PER_ROOM` first; if guards are left over, any free indoor spot is used. A warning is printed if the spots run out.
+  - Tested: Mansion 13 guards for 1 player and 21 for 5; Bank 15 and 23. All of them indoors.
+
 ## 2026-11-14: Clear House map vote, no prep, guards by room count
 
 Tested in Studio with one player: map vote, Reveal straight to Action, 15 guards on Bank. The test loss was removed from the saved data afterwards.

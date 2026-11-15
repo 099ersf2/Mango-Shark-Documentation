@@ -6,9 +6,9 @@ The answers to open design questions, so the code and the docs follow the same r
 
 ### Store and currencies
 
-- **Two currencies:** Coins (earned by playing; buy crates) and Siege Tokens (premium: Robux, or rare gifts like the battle pass and special quests). Every player starts with 5 Tokens.
+- **One currency:** Coins (earned by playing, or bought with Robux). Siege Tokens were removed on 2026-11-15 because they weren't working as a currency.
 - **Reward amounts:** chosen here and easy to change in `Content.Store.REWARDS`: win 100, loss 30, draw 50, 15 per 5 minutes of play, doubled by VIP.
-- **Crates** can be bought with Robux or Coins, and with Tokens when the crate lists a token price.
+- **Crates** can be bought with Robux or Coins.
 - **Store items** whose product or pass id isn't set yet show SOON instead of being hidden, so the Store isn't empty before the products exist.
 - **Stats:** wins and losses count per matchmaking mode and its category. The streak shown is the mode's.
 
