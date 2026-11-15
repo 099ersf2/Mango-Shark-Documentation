@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-15: Guns held further right
+
+Compile-checked only (not playtested).
+
+### Changed
+
+- **The first-person gun sits further right on screen.** Every gun's hip position is moved 0.4 studs to the right of its own `Viewmodel.Offset` by one setting, `Content.Movement.Config.ViewmodelHipShiftRight` (0.4), used by `Client.Guns.Viewmodel`. The rifle (0.42 before) now sits at 0.82, the others at 0.95 to 1.1. Melee tools move with it.
+- Aiming down sights is not moved: the sights still line up in the middle. Raise or lower `ViewmodelHipShiftRight` to taste; 0 is the old look.
+
 ## 2026-11-15: Inventory search
 
 Compile-checked only (not playtested, as asked).

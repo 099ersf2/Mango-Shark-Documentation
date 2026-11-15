@@ -339,7 +339,7 @@ NPC code or an ability can bash with `GunMelee.SwingAs(playerOrNpcModel, directi
 | `Spread.Slide` | number | `2` | Degrees added while sliding (replaces the `Move` term). Hip fire works during a slide |
 | `Spread.Prone` | number | `0.5` | Multiplies `Hip` and `ADS` while prone |
 | `Recoil.*` | | | Recoil feel; see [Recoil fields](#recoil-fields) |
-| `Viewmodel.Offset` | CFrame | `CFrame.new(0.7, -1.45, -2.6)` | Hip position from the camera (full scale) |
+| `Viewmodel.Offset` | CFrame | `CFrame.new(0.7, -1.45, -2.6)` | Hip position from the camera (full scale) | (Since 2026-11-15 every gun is drawn `ViewmodelHipShiftRight` (0.4) studs further right than this at the hip, from `Content.Movement.Config`.)
 | `Viewmodel.ADSOffset` | CFrame? | from `Aim` | Aimed position. Leave it out to use the `Aim` attachment |
 | `Viewmodel.Sway` | number | `1` | Sway multiplier |
 | `Viewmodel.Bob` | number | `1` | Walk bob multiplier |
