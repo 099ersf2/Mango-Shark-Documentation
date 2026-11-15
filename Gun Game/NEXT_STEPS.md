@@ -2,6 +2,9 @@
 
 ## 2026-11-15
 
+- [ ] **Prep drone:** in a real Siege match, the attacker can drive the drone through Prep on Mansion and Bank (not confirmed: the test player's data kept failing to load).
+- [ ] **A side leaves:** in a 1v1, the defender leaves during RoundEnd and the attacker wins the match; a side kicked mid-round loses at once.
+- [ ] **Clear House waves vs 2/3 of the rooms:** with waves only one floor holds guards at a time. Decide whether all floors should be filled at once.
 - [ ] **Party size and modes with real players:** with 1v1 picked, a second member switches PLAY to 5v5 (private stays 1v1), a third switches both; a private 1v1 of 2 and a private Clear House of 2 to 5 play through on live servers.
 - [ ] **Neon Circuit Bundle:** a real Robux purchase grants all seven skins (product 3731060058).
 - [ ] **New bundle contents on a real account:** add a skin to a bundle you own, rejoin, and check it arrives.

@@ -97,7 +97,7 @@ All times are in `Content.Siege`.
 - **The ready list** (`SiegeSelect.Screen.Content.Roster`) stands down the right side all through Selection, in two sections: **YOUR TEAM**, then **ENEMY TEAM · ATTACKERS** (or DEFENDERS) under a red heading, with red names on dark red rows so it can't be read as teammates. Each row is a player's picture, name, and READY (green, outlined) or PICKING; each heading counts its ready players. Templates: `SiegeReadyHeader`, `SiegeReadyRow`. Your team's rows come from the snapshot's `Cards` (which carry `Ready`); the enemy's from `Others` and `OtherTeam`, sent only during Selection and holding only UserId, Name and Ready. **Their picks are never sent.** A Ready pick is sent to both teams.
 - **Consumable.** The Class page's loadout panel has a Consumable row (grenade or smoke bomb). It sends the existing `Packets.Consumable.Pick`, which saves the choice; nothing in Siege's own rules changed for it.
 
-Since another developer's change, attackers get a body during Prep, parked at the lobby spawn (`startPrep`), while they drive their drone; they are spawned again at their spawn when Action starts.
+Since another developer's change, attackers get a body during Prep while they drive their drone; they are spawned again at their spawn when Action starts. Since 2026-11-15 that body waits `PREP_HOLD_HEIGHT` (120) studs above their spawn, hidden, anchored and unhurtable (`holdAt`), not at the lobby: only what is within 1024 studs of the body streams in, and the lobby is about 1300 studs from the maps, so the drone couldn't be driven. The drone is given after the area around the spawn has streamed in (`RequestStreamAroundAsync`, up to `PREP_STREAM_WAIT`).
 
 ## Rounds (2026-11-13)
 
@@ -116,7 +116,7 @@ Since another developer's change, attackers get a body during Prep, parked at th
 - **Stats per match** (`stats`):
   - Kills and Deaths come from deaths in the match.
   - Damage is dealt to the other side in Prep or Action (`Combat.Hit`).
-  - Built counts pieces repaired (`Breakable.Repaired`).
+  - Built counts doors and windows rebuilt to whole (the `Breakable.Repaired` that completes a board, 2026-11-15; planks alone don't count), and reinforced walls.
   - The snapshot's `Result.Players` holds every player's line, and `Result.Mvp` the best in each stat.
 - **The snapshot** also carries `Round`, `Rounds` and `Score = { Mine, Theirs }` for the viewer's group. `Result` holds:
   - `RoundWon`, `RoundDraw`;
@@ -135,6 +135,9 @@ SiegeService also plays the Arcade mode [Clear House](CLEAR_HOUSE.md), players a
 - it has its own win rules.
 
 ## Winning
+
+**A side that leaves (2026-11-15).** Each side group's size at the start of the match is kept (`groupStart`). When every player of a group has left (left, kicked, disconnected), that group loses the match at once (`AttackersLeft` / `DefendersLeft`, whatever the score), from Selection to Action and right at the start of the next round. The round's winning group is the group playing the winning team this round, never read from players who left.
+
 
 Each row below decides a **round**. The match goes to the side with the most rounds (see Rounds).
 

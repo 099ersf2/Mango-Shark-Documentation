@@ -68,17 +68,12 @@ Rays only hit the map's collidable parts (`RespectCanCollide`), so room volumes,
 
 ## Placing the guards
 
-- **How many:** half of every room found, rounded up (`ROOM_SHARE` 0.5), plus `GUARDS_PER_PLAYER` (2) for each player after the first. Every room the finder found counts, indoor spots or not (2026-11-15).
-  - Mansion (26 rooms): 13 / 15 / 17 / 19 / 21 for 1 to 5 players.
-  - Bank (29 rooms): 15 / 17 / 19 / 21 / 23.
-- **Indoors only:** a guard stands only on an indoor spot:
-  - inside a part of the map's `NPCIndoorVolumes` folder or a bomb room (`Sites`);
-  - nothing over its head, a ceiling above, and walls at waist and head height in at least 6 of 8 directions.
-
-  Rooms with no such spot get no guards. Mansion has 7 such rooms of 26, Bank 6 of 29. To spread guards wider, add parts to an `NPCIndoorVolumes` folder in the map covering more rooms.
+- **Maps with `ClearHouseSpawnRooms` (Mansion and Bank, since 2026-11-15, by another developer):** guards come in floor waves: Main 6, Upstairs 4, Basement 6 (16 in all). The next floor's wave is placed when every guard of the last one is down; guards still to come count as left. Each room of the floor gets one (the basement's biggest rooms take the extra).
+- **Other maps, how many:** 2/3 of every room found, rounded up (`ROOM_SHARE`, 2026-11-15), plus `GUARDS_PER_PLAYER` (2) for each player after the first; one per room first, so at least 2/3 of the rooms hold a guard.
+- **Indoors only:** a guard stands only on an indoor spot: nothing over its head, a ceiling above, and walls at waist and head height in at least 6 of 8 directions. A map with an `NPCIndoorVolumes` folder also keeps its guards inside those parts. (Bomb rooms no longer count as the only indoor rooms.)
 - **Which rooms:** storey by storey, starting with the floor the attackers enter on (`MainFloorY` on the map, or the attacker spawns' floor). Rooms are drawn at random, bigger ones more often, one guard per room first; then up to `MAX_PER_ROOM` (3) each, biggest first. Any guards still left go to free indoor spots anywhere. A warning is printed if the spots run out.
-- **Patrol:** the guard is kept inside its indoor volume, not the bigger found room.
-- **Profiles:** drawn from `PROFILES` by weight: Soldier 3, Breacher 1, Grenadier 1.
+- **Patrol:** the guard is kept inside its indoor volume (or its found room on a map without volumes). It walks to a spot at least 45% of the room's size away when it can (`GUARD_SPREAD` in `Tasks.Patrol`), stands 0.6 to 1.8 s watching a door or window, and walks again. Guards farther than 350 studs from every player sleep (`NPCService` `WAKE_RANGE`).
+- **Profiles:** drawn from `PROFILES` by weight: Soldier 3, Breacher 1. (No Grenadier since 2026-11-15.)
 - **Spawning:** `NPCService.Spawn(profile, cframe, nil, true)`. The fourth argument passes the `MAX_NPCS` cap, which is 0 today. The guard is then put in Guard mode for its room.
 - **No respawns:** guards never come back. The model carries the `ClearHouseGuard` attribute.
 

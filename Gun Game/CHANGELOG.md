@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-11-15: Prep drone, leavers, boards, guards, messages, health bars
+
+### Fixed
+
+- **The prep drone couldn't be driven.** Only what is within `StreamingTargetRadius` (1024 studs) of a player's body streams in to their client, and during Prep the attacker's body waited at the lobby, about 1300 studs from Mansion and Bank. The drone is driven by the client, so it wasn't there to drive, or fell through a floor that hadn't loaded yet.
+  - In Prep the attacker's body now waits `PREP_HOLD_HEIGHT` (120) studs above their spawn: invisible, anchored, can't be touched, hit by rays or hurt (a hidden ForceField), no name, no weapons (`holdAt` in SiegeService). Action gives a new body at the spawn as before.
+  - The drone is handed over only after `Player:RequestStreamAroundAsync` around the spawn (up to `PREP_STREAM_WAIT`, 6 s), so the floor is there first.
+  - Tested: the hidden body sat 120 studs above the Bank spawn, invisible and anchored. Before the stream wait, the client's drone had fallen to Y -500. With the wait in place, a full Prep wasn't run again (the test player's data kept failing to load), so driving is **not yet confirmed**.
+- **A match went on after a side left, and could say the remaining side lost.**
+  - The round's winning group was read from the roster, which still held players who had left, with the team of the round they left in. After a side swap that is the other side's team, so the side that left could be credited.
+  - Each round's "a side left" check used that round's starting count, so a side that left during RoundEnd started the next round with 0 players and the check never fired.
+  - Now: the winning group is the group playing the winning team this round (`teamOfGroup`). Each side group's size at the start of the match (`groupStart`) is kept; a group with nobody left loses the match at once, in any phase from Selection to Action, and `nextRound` checks right away. A side that left forfeits the match whatever the score.
+  - Not tested with real players (needs two).
+- **Bullets stopped in some broken doorways and windows (Bank).** Bank's bomb-room volumes (`Sites`, up to 68 studs across) and both maps' spawn markers were invisible and walk-through but could still be hit by rays. Bullets stopped on them once the boards were down.
+  - Those parts are now `CanQuery`/`CanTouch` off in both maps (30 parts), and `SiegeMap.Load` makes sure of it for every map.
+  - Tested: Mansion 32 and Bank 47 boards broken, then shot through: Bank blocked 9 before, 0 after.
+
+### Changed
+
+- **Lobby messages are colored by kind:** red for refusals, green when it went through (a private match starting), yellow for news (PLAY switched mode, "your party leader picks the mode"). The Party menu's line too. The Store's and item page's line under the buttons: green when a purchase went through, red when refused. `ItemDetails.SetStatus(text, color?)`.
+- **No health bars over other players.** Names stay; NPCs keep their bars (`Client.Hud.HealthBillboards`).
+- **Siege "Built" counts whole doors and windows,** not planks: only the piece that completes a board counts (and reinforced walls, as before). The MASTER BUILDER card and BUILT column use it.
+- **Clear House guards:**
+  - **Roam their room:** a new patrol spot is at least 45% of the room's size away when possible (`GUARD_SPREAD`), and they stand 0.6 to 1.8 s between walks (was 1.5 to 4). Tested with a player nearby (guards sleep beyond 350 studs): 61 to 228 studs walked in 24 s, covering most of each room.
+  - **No Grenadier:** `PROFILES = { Soldier = 3, Breacher = 1 }`.
+  - **Count:** `ROOM_SHARE` 2/3, one guard per room first, so at least 2/3 of the rooms hold one (maps with no hand-made spawn rooms).
+  - The indoor check no longer needs a bomb room (`Sites`); a map's `NPCIndoorVolumes`, when it has them, still bound the guards.
+  - Mansion and Bank now have hand-made `ClearHouseSpawnRooms` and `NPCIndoorVolumes` (14 each) and floor **waves** (Main 6, Upstairs 4, Basement 6; 16 guards, the next floor after the last is cleared). Those were added by another developer and are not changed here; with waves only one floor holds guards at a time.
+
 ## 2026-11-15: Party-size popup
 
 Tested in a Studio playtest: with a party of 3, pressing 1v1 opened the popup, nothing was picked, and the description line kept the mode's own text.
