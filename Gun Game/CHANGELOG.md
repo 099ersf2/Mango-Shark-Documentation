@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-11-15: Private matches in the picked mode, modes by party size
+
+Tested in a Studio playtest with one player and a party faked from the server (2, 3 and 1 members). No result was saved (the playtest was stopped during Selection).
+
+### Changed
+
+- **PLAY WITH PARTY plays the picked mode.** A private 1v1, 5v5 or Clear House instead of a fixed "Private" Siege match.
+  - The record's `Mode` is the mode's Id, with `Private = true`. So a private Clear House is Clear House (map vote, guards), and rounds come from `Content.Siege.ROUNDS` for the mode.
+  - Teams: dealt evenly as before; in a mode with no defenders (Clear House) everyone attacks.
+  - Results still count under `Mode:Private` / `Category:Private` (`StatsService`), never the public mode's stats.
+- **Party size picks the mode.** Each mode has two limits:
+  - queue (PLAY): `PartyLimit` (1v1: 1, 5v5: 5, Clear House: 5);
+  - private (PLAY WITH PARTY): `PrivateLimit`, both sides together, at most 5 (1v1: 2, 5v5: 5, Clear House: 5).
+
+  PLAY and PLAY WITH PARTY each use the picked mode when the party fits, else the mode of the same category with the smallest limit that fits (`Content.Matchmaking.FitMode`). With 1v1 picked: 2 players queue 5v5 while the private match stays 1v1; a third makes the private match 5v5 too; back to 1, it is 1v1 again. Arcade works the same way.
+- **The bar says so:** PLAY's line shows the mode it queues for, PLAY WITH PARTY shows "PRIVATE 1 V 1 · 2 PLAYERS", and a line under the bar says when the party's size switched either one ("Party of 2: PLAY now queues for 5 V 5.").
+- **Game Modes panel:** a mode the party is too big for, even privately, is greyed out, says PARTY TOO BIG and can't be picked (an error sound and "Pick a different mode"). A mode the party fits only privately says PRIVATE ONLY and explains what each button does. A category with no mode that fits is greyed out too.
+- **Too big:** if no mode of the category fits, PLAY and PLAY WITH PARTY say "Your party is too big for X. Pick a different mode." The server checks the same limits.
+
+### Added
+
+- `Content.Matchmaking.PrivateLimit(mode)`, `FitMode(modeId, size, private)`, `MatchRecord.Private`.
+- `QueueService.JoinPrivate(player, modeId)`; the `Private` request carries the mode's Id.
+- `ModeMenu.SetPartySize(size)`.
+
 ## 2026-11-15: Bundles Robux only, new bundle and pass contents reach owners
 
 Tested in a Studio playtest: Coins purchases of bundles and the VIP pass were refused with no Coins taken, and the new grant helpers were checked on fake data. No player data was changed.

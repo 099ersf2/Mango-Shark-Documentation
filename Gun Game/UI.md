@@ -120,7 +120,7 @@ Categories and modes have the same card fields in `Content.Matchmaking`:
 | `Status` | Above PLAY while searching: the status, the mode and the queue timer. "MATCH FOUND" pops in |
 | `PartyButton` | Opens the Party menu; shows the party's size |
 | ~~`LoadoutButton`~~ | Removed on 2026-11-12 (archived as `ServerStorage.Archive.OldUI.LobbyLoadoutButton`): loadouts are not picked in the lobby |
-| `PartyPlay` | **PLAY WITH PARTY**, above PLAY (in the status's place while not searching). Starts a match of the party's own members, dealt into two even teams ([MATCHMAKING.md](MATCHMAKING.md#play-with-party-2026-11-12)). Shown from 2 members (always in Studio); refuses for a member who is not the leader |
+| `PartyPlay` | **PLAY WITH PARTY**, above PLAY (in the status's place while not searching). Starts a private match of the picked mode (or the next one the party fits) with the party's own members ([MATCHMAKING.md](MATCHMAKING.md#play-with-party-2026-11-12)). Its line reads "PRIVATE 1 V 1 · 2 PLAYERS". Shown from 2 members (always in Studio); refuses for a member who is not the leader |
 | `Message` | A line under the bar when the server refuses something |
 
 The bar sits just above the health bar. On a touch screen while the fire button is showing it goes compact: PLAY is narrower and the two side buttons move above it, clear of the right thumb.

@@ -77,6 +77,15 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 - **To add a mode**, add a row to `MODES` (Id, Name, Category, Tag, Color, TagColor, Image, Icon, Description, TeamSize, MinTeamSize, MaxWait). Nothing else changes: the panel and the matchmaker read the table. Never reuse an old Id. To add a category, add a row to `CATEGORIES`.
 - **Kind and Maps (2026-11-14).** A mode's `Kind` says how the match server plays it: nil for Siege, `"ClearHouse"` for [Clear House](CLEAR_HOUSE.md). `Maps` limits the maps it is played on; with no `Maps`, it uses `Content.Siege.MAP_POOL`.
 - **Party size.** `Matchmaking.PartyLimit(mode)` is the largest party allowed: the smaller side, or the only side when the other is 0. The queue and the matchmaker's ticket check both use it.
+- **Party size picks the mode (2026-11-15).** `PrivateLimit(mode)` is the largest party for a private match: both sides together, at most `MAX_PARTY_SIZE`. `FitMode(modeId, size, private)` gives the picked mode when the party fits it, else the mode of the same category with the smallest limit that fits, or nil.
+
+  | Mode | PLAY (PartyLimit) | PLAY WITH PARTY (PrivateLimit) |
+  | --- | --- | --- |
+  | 1v1 | 1 | 2 |
+  | 5v5 | 5 | 5 |
+  | Clear House | 5 | 5 |
+
+  The lobby sends the fitted mode with each request, so with 1v1 picked a party of 2 queues 5v5 but plays a private 1v1; a party of 3 gets 5v5 for both. The Game Modes panel greys out modes the party is too big for (PARTY TOO BIG) and marks private-only ones (PRIVATE ONLY).
 - All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
 
 ## Play with party (2026-11-12)
@@ -85,11 +94,11 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 
 The lobby bar's **PLAY WITH PARTY** button (`Main.Lobby.PartyPlay`, above PLAY) starts a match with only the party's own members in it.
 
-- Request: `Queue.Request` with the action `Private`. Server: `QueueService.JoinPrivate(player)`.
+- Request: `Queue.Request` with the action `Private` and the mode's Id (since 2026-11-15). Server: `QueueService.JoinPrivate(player, modeId)`. The party must fit the mode's `PrivateLimit`, or it is told to pick a different mode.
 - Only the leader may, on the server that owns the party, and not while the party is searching.
 - It needs `PRIVATE_MIN_PLAYERS` (2) members; in Studio one is enough. The button shows from that size up.
-- **Teams:** the members are shuffled and dealt into two teams as even as their number allows (2 → 1 v 1, 3 → 2 v 1, 4 → 2 v 2, 5 → 3 v 2). Which half attacks is random.
-- There is no ticket and no wait: the match is formed at once through the same steps as a queued one (reserve a server, save the record, publish, teleport). The record's `Mode` is `Private`. Nobody outside the party is ever added.
+- **Teams:** the members are shuffled and dealt into two teams as even as their number allows (2 → 1 v 1, 3 → 2 v 1, 4 → 2 v 2, 5 → 3 v 2). Which half attacks is random. In a mode with no defenders (Clear House) everyone attacks.
+- There is no ticket and no wait: the match is formed at once through the same steps as a queued one (reserve a server, save the record, publish, teleport). The record's `Mode` is the picked mode's Id and `Private` is true (before 2026-11-15 `Mode` was `Private`). The match plays that mode (a private Clear House is Clear House), and its results count under `Mode:Private`. Nobody outside the party is ever added.
 
 ## Party sync (2026-11-12, not run)
 
@@ -184,7 +193,7 @@ Characters don't load by themselves on a match server (`Players.CharacterAutoLoa
 local Matchmaking = ServerScriptService.Modules.Systems.Matchmaking
 local QueueService = require(Matchmaking.QueueService)
 QueueService.Join(player, modeId) -- ok, message (leader only). No mode: DEFAULT_MODE
-QueueService.JoinPrivate(player)  -- ok, message: a match of the leader's party only, formed at once
+QueueService.JoinPrivate(player, modeId)  -- ok, message: a private match of that mode, the leader's party only, formed at once
 QueueService.Leave(player)
 QueueService.IsQueued(player)
 

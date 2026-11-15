@@ -105,9 +105,11 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `TeamPacker.Pack(tickets, now, limits)` | The next match's two sides, or nil |
 | `PartyService.Of(player)` / `Get(partyId)` / `Ensure(player)` / `IsLeader(player)` / `Owns(party)` / `UserIds(party)` | Parties |
 | `PartyService.Park(party)` / `Restore(player, partyId)` / `SetTravelling(userId, on)` | Keeping a party through a match |
-| `QueueService.Join(player, modeId?)` / `JoinPrivate(player)` / `Leave(player)` / `IsQueued(player)` | The queue. `modeId` is a `Content.Matchmaking.MODES` Id. `JoinPrivate` forms a match of the leader's party only, at once |
+| `QueueService.Join(player, modeId?)` / `JoinPrivate(player, modeId?)` / `Leave(player)` / `IsQueued(player)` | The queue. `modeId` is a `Content.Matchmaking.MODES` Id. `JoinPrivate` forms a private match of that mode with the leader's party only, at once |
 | `Content.Matchmaking.GetMode(id)` / `ModesIn(categoryId)` | A queue mode by Id (or nil) / the modes of one category |
 | `Content.Matchmaking.PartyLimit(mode)` | The largest party a mode allows: the smaller side, or the only side when the other is 0 |
+| `Content.Matchmaking.PrivateLimit(mode)` / `FitMode(modeId, size, private)` | The largest party for a private match of a mode; the mode a party of that size plays (the picked one, or the next of its category that fits) |
+| `Client.Core.ModeMenu.SetPartySize(size)` | Marks the modes the party is too big for (PARTY TOO BIG, PRIVATE ONLY) |
 | `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Siege.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([CLEAR_HOUSE.md](CLEAR_HOUSE.md)) |
 | `Content.ClearHouse` | Clear House numbers: Action time, guard counts (`ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`) and profiles, room finder settings |
 | `Packets.Siege.Pick("Map", name)` / snapshot `Maps` | Clear House's map vote during Selection: `{ Name, Votes }` per map of the mode |
@@ -150,7 +152,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Party.Request` | Client → server, answered (ok, message) | action (`Invite`, `Accept`, `Decline`, `Leave`, `Kick`, `Promote`, or `Sync` to be sent `Party.State` again), argument |
 | `Party.State` | Server → one client | `{ Id, Leader, Max, Members = { { UserId, Name, Here } } }` or nil |
 | `Party.Invite` / `Party.InviteClosed` | Server → one client | PartyId, leader name, leader UserId, seconds / PartyId |
-| `Queue.Request` | Client → server, answered (ok, message) | `Join`, `Private` (a match of the party only) or `Leave`, and the queue mode's Id (`""` for the default) |
+| `Queue.Request` | Client → server, answered (ok, message) | `Join`, `Private` (a private match of the party only) or `Leave`, and the mode's Id for `Join` and `Private` (`""` for the default) |
 | `Queue.State` | Server → one client | `{ Queued, Since, Status, Size, Mode }` |
 | `Siege.State` | Server → one client | The match as their team may see it. During Selection also `Others` and `OtherTeam`: the other team's players as UserId, Name and Ready, nothing else |
 | `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`, `Ready`), value (`Ready`: `"1"` done picking, `"0"` changing picks) |

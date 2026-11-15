@@ -2,6 +2,7 @@
 
 ## 2026-11-15
 
+- [ ] **Party size and modes with real players:** with 1v1 picked, a second member switches PLAY to 5v5 (private stays 1v1), a third switches both; a private 1v1 of 2 and a private Clear House of 2 to 5 play through on live servers.
 - [ ] **Neon Circuit Bundle:** a real Robux purchase grants all seven skins (product 3731060058).
 - [ ] **New bundle contents on a real account:** add a skin to a bundle you own, rejoin, and check it arrives.
 - [ ] **Creator Dashboard:** turn off the two remaining Siege Tokens products (3731060067, 3731060078). 3731060058 is now the Neon Circuit Bundle.
