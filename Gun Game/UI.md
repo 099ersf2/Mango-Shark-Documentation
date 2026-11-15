@@ -123,6 +123,8 @@ Categories and modes have the same card fields in `Content.Matchmaking`:
 | `PartyPlay` | **PLAY WITH PARTY**, above PLAY (in the status's place while not searching). Starts a private match of the picked mode (or the next one the party fits) with the party's own members ([MATCHMAKING.md](MATCHMAKING.md#play-with-party-2026-11-12)). Its line reads "PRIVATE 1 V 1 · 2 PLAYERS". Shown from 2 members (always in Studio); refuses for a member who is not the leader |
 | `Message` | A line under the bar when the server refuses something |
 
+`Main.Tooltip` (2026-11-15): the hover tooltip (`Client.Core.Tooltip`). Give any element a `Tooltip` string attribute (in Studio, or `Tooltip.Set(object, text)` in code) and resting the mouse on it for 0.35 s shows the text by the pointer. Mouse only.
+
 `Main.Notice` (2026-11-15): a popup in the middle of the screen, above menus: `Title`, `Text`, `Ok`. Filled by `Client.Core.Notice.Show(title, text, sound?)`. Used for PARTY TOO BIG and PRIVATE ONLY.
 
 

@@ -68,7 +68,7 @@ Why it is laid out this way, from how other game stores sell:
 
 ### Detail page
 
-`Main.Details`, `Client.Core.ItemDetails`, built by `Client.Core.StoreViews`:
+`Main.Details`, `Client.Core.ItemDetails`, built by `Client.Core.StoreViews`. Since 2026-11-15 the big preview turns while the page is open, and a row with a preview (a bundle's items, a crate's skins) can be clicked to show that item there, with its name and description, under the bundle's title; clicking it again goes back. Cards turn their gun while hovered.
 
 - **Classes:** starter items and the ability.
 - **Crates:** contents and odds, and OPEN.

@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-15: Spinning previews, bundle item previews, tooltips
+
+Tested in a Studio playtest: a hovered Inventory card turned and showed its tooltip; the Obsidian Pack page turned its gun, and clicking an item row showed that item (title kept). Going back to the whole bundle by clicking the row again was not checked (someone else was using the playtest).
+
+### Added
+
+- **Previews turn.**
+  - Inventory and Store cards: the gun turns while the pointer is on the card, one card at a time (`ItemDetails.Hover`).
+  - The detail page: the gun turns the whole time the page is open (`ItemDetails.Spin`).
+- **Bundle items on the detail page.** A row with a preview (a bundle's or pass's items, a crate's skins, a class's guns) can be clicked:
+  - the big preview shows that item, turning;
+  - the subtitle shows its name and kind, and the description its own description (`Row.Description`, filled from skins and classes);
+  - the title stays the bundle's, crate's or pass's;
+  - the row is outlined; clicking it again shows the whole bundle again.
+  - Template `ContentRow` got a transparent `Select` button and a `Selected` outline.
+- **Tooltips.** `Main.Tooltip` (built in Studio) and `Client.Core.Tooltip` (ClientOnly): resting the mouse 0.35 s on an element with a `Tooltip` attribute (on it or an ancestor) shows a small box by the pointer. Mouse only.
+  - Set in Studio: the lobby bar (PLAY, PARTY, MODE, PLAY WITH PARTY), STORE and INVENTORY, Settings, the Coins chip, the detail page's BACK, EXIT, GIFT, Coins and Robux, and the Store, Inventory, Modes and Party close buttons.
+  - Set in code (`Tooltip.Set`): Inventory and Store cards (name, kind, where it comes from, "Click for details"), Game Modes cards, and detail page rows.
+
 ## 2026-11-15: One file per class
 
 Checked in Studio without a playtest (as asked): every file compiles, and the new class list was compared field by field with the old one.

@@ -2,6 +2,8 @@
 
 ## 2026-11-15
 
+- [ ] **Bundle rows:** clicking a selected row again goes back to the whole bundle (not checked); check on a phone that rows can be tapped.
+- [ ] **More tooltips:** add a `Tooltip` attribute to any other button that needs one (Settings tabs, Party slots, HUD buttons).
 - [ ] **Prep drone:** in a real Siege match, the attacker can drive the drone through Prep on Mansion and Bank (not confirmed: the test player's data kept failing to load).
 - [ ] **A side leaves:** in a 1v1, the defender leaves during RoundEnd and the attacker wins the match; a side kicked mid-round loses at once.
 - [ ] **Clear House waves vs 2/3 of the rooms:** with waves only one floor holds guards at a time. Decide whether all floors should be filled at once.
