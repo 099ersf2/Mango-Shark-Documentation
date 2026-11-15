@@ -242,7 +242,7 @@ Checked on 2026-11-13 in a Studio playtest, on the server (no screens, as asked)
 | --- | --- | --- |
 | `Crate_Field` (also `SkinCrate`) | 3730208338 | 499 |
 | `Crate_Gilded` | 3731059935 | 299 |
-| `Store_Tokens50` (removed 2026-11-15, not in `ProductIds`) | 3731060058 | 99 |
+| `Store_NeonCircuitBundle` (was `Store_Tokens50`; reused 2026-11-15) | 3731060058 | 149 |
 | `Store_Tokens150` (removed 2026-11-15) | 3731060067 | 249 |
 | `Store_Tokens400` (removed 2026-11-15) | 3731060078 | 499 |
 | `Store_Coins5000` | 3731060085 | 99 |

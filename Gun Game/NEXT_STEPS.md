@@ -2,9 +2,9 @@
 
 ## 2026-11-15
 
-- [ ] **Neon Circuit Bundle:** create its developer product (149 Robux, or your price) and put the id at `Store_NeonCircuitBundle` in `Shared.ProductIds`. Until then it shows SOON.
+- [ ] **Neon Circuit Bundle:** a real Robux purchase grants all seven skins (product 3731060058).
 - [ ] **New bundle contents on a real account:** add a skin to a bundle you own, rejoin, and check it arrives.
-- [ ] **Creator Dashboard:** turn off the three Siege Tokens products (3731060058, 3731060067, 3731060078).
+- [ ] **Creator Dashboard:** turn off the two remaining Siege Tokens products (3731060067, 3731060078). 3731060058 is now the Neon Circuit Bundle.
 - [ ] **Crate detail page on a phone:** the contents rows' names may be small (10 px); check at 844×390.
 - [ ] **Clear House indoor volumes:** only 7 Mansion rooms and 6 Bank rooms can hold guards, so they bunch up (up to 3 a room, then more). Add `NPCIndoorVolumes` parts to cover more rooms.
 

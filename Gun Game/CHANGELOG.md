@@ -9,7 +9,7 @@ Tested in a Studio playtest: Coins purchases of bundles and the VIP pass were re
 - **Bundles and game passes are Robux only.**
   - `StoreService` refuses Coins for any item in the `Bundles` section or marked `Pass`, whatever its data says.
   - The Obsidian Pack lost its 3,000 Coins price (149 Robux, as before).
-  - The Neon Circuit Bundle is 149 Robux, and shows SOON until a `Store_NeonCircuitBundle` product is in `Shared.ProductIds` (no product exists yet).
+  - The Neon Circuit Bundle is 149 Robux. It reuses the old "50 Siege Tokens" product (3731060058), renamed through Open Cloud to "Neon Circuit Bundle" at 149 Robux with a new icon, as `Store_NeonCircuitBundle` in `Shared.ProductIds`. Checked in a playtest: purchasable, and Roblox reports the new name and price.
   - `DAILY_DEALS`: the Obsidian Pack was replaced by `Crate:Eclipse`, since a deal only lowers Coins prices.
 
 ### Added
@@ -27,7 +27,7 @@ Tested in a Studio playtest (server and client). No player data was written.
 ### Removed
 
 - **Siege Tokens** are gone as a currency. Coins are the only one.
-  - No crate or store item has a Tokens price; the three token packs (`Tokens50`, `Tokens150`, `Tokens400`) are no longer sold. Their product ids were taken out of `Shared.ProductIds`; turn the products off on the Creator Dashboard.
+  - No crate or store item has a Tokens price; the three token packs (`Tokens50`, `Tokens150`, `Tokens400`) are no longer sold. Their product ids were taken out of `Shared.ProductIds`; turn the products off on the Creator Dashboard. (Later that day the Tokens50 product became the Neon Circuit Bundle.)
   - The Starter Bundle no longer grants 25 Tokens (its text was updated).
   - Bundles that had a Tokens price were first given Coins prices; later the same day bundles became Robux only (see above).
   - `StoreService` refuses Tokens: `CURRENCIES = { Coins = true }`, for buying and for `Give`.
