@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-11-15: Bundles Robux only, new bundle and pass contents reach owners
+
+Tested in a Studio playtest: Coins purchases of bundles and the VIP pass were refused with no Coins taken, and the new grant helpers were checked on fake data. No player data was changed.
+
+### Changed
+
+- **Bundles and game passes are Robux only.**
+  - `StoreService` refuses Coins for any item in the `Bundles` section or marked `Pass`, whatever its data says.
+  - The Obsidian Pack lost its 3,000 Coins price (149 Robux, as before).
+  - The Neon Circuit Bundle is 149 Robux, and shows SOON until a `Store_NeonCircuitBundle` product is in `Shared.ProductIds` (no product exists yet).
+  - `DAILY_DEALS`: the Obsidian Pack was replaced by `Crate:Eclipse`, since a deal only lowers Coins prices.
+
+### Added
+
+- **New contents reach owners.** When skins or classes are added to a bundle's or game pass's `Grants`, players who own it get them the next time they join.
+  - Bundles (`backfillOwned` in `StoreService`): owned means recorded in `OwnedItems` or found in the purchase log (`Item:<Id>`, `<Id>` or `Store_<Id>`), not "has every skin", so a bundle with a new skin still counts as bought.
+  - Game passes (`PassCosmetics`): every `Pass` item now, not only VIP. Also right after a pass is bought.
+  - Only skins and classes are given again. Coins and crates in `Grants` are given once, at purchase.
+  - New `StoreGrants.Missing(data, grants)` and `StoreGrants.ApplyLasting(data, grants)`.
+
 ## 2026-11-15: Siege Tokens removed, crate contents rows, Clear House end screen and guard count
 
 Tested in a Studio playtest (server and client). No player data was written.
@@ -9,7 +29,7 @@ Tested in a Studio playtest (server and client). No player data was written.
 - **Siege Tokens** are gone as a currency. Coins are the only one.
   - No crate or store item has a Tokens price; the three token packs (`Tokens50`, `Tokens150`, `Tokens400`) are no longer sold. Their product ids were taken out of `Shared.ProductIds`; turn the products off on the Creator Dashboard.
   - The Starter Bundle no longer grants 25 Tokens (its text was updated).
-  - Bundles that had a Tokens price now cost Coins at the old pack rate (100 Coins a Token): Obsidian Pack 3,000 Coins (still 149 Robux too), Neon Circuit Bundle 3,500 Coins.
+  - Bundles that had a Tokens price were first given Coins prices; later the same day bundles became Robux only (see above).
   - `StoreService` refuses Tokens: `CURRENCIES = { Coins = true }`, for buying and for `Give`.
   - The Tokens chips are hidden in `Main.Wallet`, the Store and Inventory headers, and the detail page's Tokens button.
   - The saved `Tokens` field stays (unused) so old saves still load.

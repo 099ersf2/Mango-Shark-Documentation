@@ -39,7 +39,15 @@ Every match result counts:
 
 - An icon rail of sections.
 - Cards with ribbons (`Tag`), % OFF (`Discount`), % EXTRA (`Bonus`), double width (`Big`) and a glowing sheen (`Glow`).
-- Featured first, then the Daily Deal (`DAILY_DEALS`, `DAILY_DISCOUNT`), then Crates.
+- Featured first, then the Daily Deal (`DAILY_DEALS`, `DAILY_DISCOUNT`), then Crates. A deal only lowers a Coins price, so it lists crates and coin-priced items, never bundles or passes.
+
+### Bundles and passes (2026-11-15)
+
+- **Robux only.** `StoreService` refuses Coins for an item in the `Bundles` section or marked `Pass`.
+- **New contents reach owners.** Add a skin or class to a bundle's or pass's `Grants` and every owner gets it on their next join:
+  - bundles: owned = in `OwnedItems`, or in the purchase log (then recorded);
+  - passes: `PassCosmetics` checks every `Pass` item with Roblox (retries once after 5 s), and right after a purchase.
+- Coins and crates in `Grants` are given once, at purchase, never again.
 - Price buttons are on the card. Clicking the card opens the detail page.
 
 Why it is laid out this way, from how other game stores sell:
