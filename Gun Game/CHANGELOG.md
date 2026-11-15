@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-11-15: One file per class
+
+Checked in Studio without a playtest (as asked): every file compiles, and the new class list was compared field by field with the old one.
+
+### Changed
+
+- **Classes are separate files, like guns.** Each class is a ModuleScript in `Content.Classes.Definitions` (17 files, named by class Id: `Breacher`, `Hacker`, `Motion Scanner`, ...), returning that class's table with its comments.
+  - New field `Order`: the class's place in the menu. `Content.Classes` loads every file once and sorts by `Order`, then `Name`, so the menu order is the same as before.
+  - A file that fails to load, has no `Id`, or repeats an `Id` is warned about and skipped.
+  - `Content.Classes` keeps its API (`List`, `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN`), so nothing that uses it changed.
+  - The old list's shared `SIDEARM`, `ACTION` and `PREP_AND_ACTION` tables are now declared at the top of each file that uses them.
+  - Checked: same 17 classes in the same order with the same fields. The one difference is Leo's (`Motion Scanner`) ability description, which someone edited in Studio during the move; its latest text is in `Definitions.Motion Scanner`.
+- Space-indented classes (Caleb, Wren, Tiffany, Blake) were reindented with tabs.
+
 ## 2026-11-15: Prep drone, leavers, boards, guards, messages, health bars
 
 ### Fixed

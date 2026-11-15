@@ -204,7 +204,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | --- | --- |
 | `Content.Matchmaking` | Party size, team sizes and minimums, waits, lifetimes, retry numbers, MemoryStore and topic names, the Studio settings |
 | `Content.Siege` | Phase times, plant time, map folder names, bomb labels and colors, texts, win reasons |
-| `Content.Classes` | Every class and ability; `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |
+| `Content.Classes` | Every class and ability, loaded from one file per class in `Content.Classes.Definitions` (sorted by `Order`); `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |
 | `Content.Cameras` | Camera health, hit box, view limits, scan range/angle/cooldown/ray steps, attribute names |
 | `Content.Match.Modes.Siege` | The mode entry (`External = true`) |
 | `Content.Match.Teams` | Also `Attackers` and `Defenders` |

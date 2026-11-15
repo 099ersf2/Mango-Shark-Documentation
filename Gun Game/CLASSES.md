@@ -6,7 +6,8 @@ In Siege every player picks a class: a default loadout, the guns they may swap t
 
 | What | Where |
 | --- | --- |
-| Every class and every number | `ReplicatedStorage.Content.Classes` |
+| Every class and every number | One ModuleScript per class in `ReplicatedStorage.Content.Classes.Definitions` (since 2026-11-15, like `Content.Guns.Definitions`) |
+| The class list and its functions (`Get`, `ForTeam`, `Allows`...) | `ReplicatedStorage.Content.Classes`: loads every file in `Definitions` and sorts them by `Order`, then `Name` |
 | Assignment, loadouts, charges, cooldowns, every ability check | `ServerScriptService.Modules.Systems.Classes.ClassService` |
 | One module per ability | `Systems.Classes.Abilities.<AbilityId>` |
 | Shared gadget code (aim, place, blast, enemies) | `Systems.Classes.Gadgets` |
@@ -101,7 +102,7 @@ How the abilities reach other systems, without editing them:
 
 ## Adding a class
 
-1. Add an entry to `Content.Classes` (Id, Name, Team, Icon, Description, Loadout, Categories, Ability).
+1. Add a ModuleScript to `Content.Classes.Definitions` (copy one and rename it to the new Id) that returns the class: `Order` (its place in the menu), Id, Name, Team, Icon, Description, Loadout, Categories, Ability. Nothing else to register: `Content.Classes` loads every file in the folder, and warns about a file that fails to load, has no Id, or repeats one.
 2. For a new ability, add a ModuleScript named after `Ability.Id` to `Systems.Classes.Abilities`:
 
 ```lua
