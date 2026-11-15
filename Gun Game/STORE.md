@@ -107,6 +107,10 @@ On a Store card, an owned item shows a ✓ OWNED button (or ✓ ALL SKINS OWNED)
 
 Coin prices are a centered row: the coin image, then the amount (`Content.CoinIcon`, `Content.Amount`) on `StoreCard.Card.Prices.Coins`, `Main.Details.Actions.Coins` and `Main.Wallet.Coins`. Write the amount to `Amount`, not to the button's own Text.
 
+### Inventory search (2026-11-15)
+
+The box at the right of the Inventory's filter chips narrows the open tab to cards whose name, subtitle or lock hint holds every word typed (any case), on top of the chip. Headings become one RESULTS heading while searching; X clears it.
+
 ### Crate inventory
 
 Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `StoreService.OpenCrate`). Then the reel plays (`Main.Opening`).

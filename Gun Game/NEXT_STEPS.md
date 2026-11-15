@@ -2,6 +2,7 @@
 
 ## 2026-11-15
 
+- [ ] **Inventory search:** try it in a playtest (not run): typing narrows the cards, X clears, tabs keep the search; on a phone, the box and the chips fit side by side.
 - [ ] **Bundle rows:** clicking a selected row again goes back to the whole bundle (not checked); check on a phone that rows can be tapped.
 - [ ] **More tooltips:** add a `Tooltip` attribute to any other button that needs one (Settings tabs, Party slots, HUD buttons).
 - [ ] **Prep drone:** in a real Siege match, the attacker can drive the drone through Prep on Mansion and Bank (not confirmed: the test player's data kept failing to load).

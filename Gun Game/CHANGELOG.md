@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-15: Inventory search
+
+Compile-checked only (not playtested, as asked).
+
+### Added
+
+- **A search box in the Inventory** (`Main.Inventory.Search`, built in Studio: a magnifier, the text box `Input`, and an X `Clear` button that shows while there is text), at the right end of the filter chips (the chip row is 236 px narrower for it).
+  - Typing narrows the open tab (Classes, Skins or Crates) to the cards whose name, subtitle or lock hint holds every word typed, in any case: "gilded rifle", "mythic", "shield crate", "defenders".
+  - It works on top of the chip filter, and stays when the tab changes.
+  - While searching, the section headings give way to one `RESULTS FOR "..."` heading; with no card left the status line says "No matches. Try another word, or clear the search."
+  - The outline lights up while the box is focused. Tooltips on the box and on X.
+
 ## 2026-11-15: Class files moved up, face-on shields and phones, still items on the detail page
 
 Tested in a Studio playtest: on the Starter Bundle page the whole bundle turned, Crimson Tide turned when picked, 2,000 Coins showed the coin picture and its description (still), and picking it again went back to the bundle.
