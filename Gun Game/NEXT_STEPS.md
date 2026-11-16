@@ -2,7 +2,9 @@
 
 ## Siege bots (2026-11-16)
 
-- [ ] **Bank's upstairs:** bots find no path from the ground floor (pathfinding sees no stairs). Add `PathfindingLink`s on the stairs (or fix their collision) so attacker bots can reach the upstairs bombs. Until then they hunt defenders instead.
+- [x] ~~**Bank's upstairs:** bots find no path from the ground floor.~~ Fixed 2026-11-16: the stairs were fine, the boarded doors blocked every path; attacker bots now path through boards and break them.
+- [ ] **Pathfinding in a real match:** bots with defenders in the way (only empty maps were tested), and a player climbing the pool truss (it is invisible; the ladder no longer collides).
+- [ ] **Bank's manhole ladder** (`Builds.Ladder`, into the basement corridor): pathfinding didn't use a truss there in a quick test, so bots only drop down it, never climb up. Worth another try if bots get stuck below.
 - [ ] **On live servers:** bots in PLAY WITH PARTY and in the public queue: teleport, the match record's `Bots`, the party coming back with its bots.
 - [ ] **A full basement plant** in a real match (the hatch drop was tested with one bot alone).
 - [ ] **Decide:** whether enemy bots should have health bars (`HealthBillboards` shows them for every NPC), and when bots open up beyond admins.

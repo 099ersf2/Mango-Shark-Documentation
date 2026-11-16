@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-11-16: NPC pathfinding: stairs, climbing, the pool, breaking in through doors
+
+Tested in Studio playtests with attacker bots sent from the attacker spawns to the bomb rooms of both maps, boards up (results in [SIEGE_BOTS.md](SIEGE_BOTS.md#getting-to-the-bomb-rooms-2026-11-16-studio-boards-up-no-defenders)). No player data was written.
+
+### Fixed
+
+- **Stairs and floors:** a waypoint counted as reached by flat distance only, so on stairs, at a jump or below a floor the NPC skipped waypoints above or under it and walked at a wall. A waypoint now also has to be at the NPC's height (`WAYPOINT_HEIGHT`, 3.5 studs from its feet).
+- **Paths that started on the roof:** a path started from the NPC's root, so under a porch roof (Mansion's back door) pathfinding started it up on the roof. Paths now start from the floor under the NPC.
+- **Stuck in the Mansion pool:** the only way out was a 7-stud jump past the ladder's rails, which failed every time, so the NPC jumped at the wall forever. The pool ladder now has an invisible truss (`Maps.Mansion.PoolLadderTruss`, at x 28; the ladder's metal parts moved 1.8 studs to line up and no longer collide), and NPCs climb it.
+- **Breaching loops:** a goal a floor up always has a long path (the stairs), which `Tactics.Breach` took for a detour worth breaking a wall for: the NPC walked to a ground-floor soft wall, found nothing to break, and picked it again. Long paths count as detours only for a goal on its own floor (`DETOUR_FLOOR`, 6 studs from its feet), and an entrance found already open isn't picked again for 20 s.
+
+### Added
+
+- **Climbing:** NPC paths climb trusses (`AgentCanClimb`), visible or not, so an invisible `TrussPart` on a ladder or wall gives NPCs a way up. While climbing, the NPC keeps walking into the truss and never hops off it.
+- **Water:** the Mansion pool's `Water` parts have a `PathfindingModifier` labelled `Water`, which costs 8 per stud, so paths go round the pool.
+- **Paths through boards** (Siege attacker bots): every intact piece of a door or window board carries a `PathfindingModifier` labelled `Breakable` (PassThrough), taken off when it breaks (`BreakableService`). A path made with `Brain.NewPath(true)` goes through a boarded door at a small cost, and `Tactics.Breach` breaks the board when the NPC gets there (`Brain.BlockedAhead`). Other NPCs price the label `math.huge`, so boards still block them. `NPCService.Spawn` has a `BreakThrough` option; Siege attacker bots use it, defenders don't.
+- **Bot detours** (`SiegeBots`): the unstick detour spot is now on the bot's own floor and never in water or a pit.
+
+### Changed
+
+- **Bank's upstairs is reachable:** with paths through boards, attacker bots get up the stairs (13 to 58 s from a spawn). The stairs were never the problem: every path into the bank went through a boarded door.
+
 ## 2026-11-16: Siege bots (admins only for now)
 
 Tested in Studio playtests with one admin player and three bots (see [SIEGE_BOTS.md](SIEGE_BOTS.md#tested-2026-11-16-studio-playtests-one-admin-player)). No player data was written.

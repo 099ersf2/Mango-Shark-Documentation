@@ -72,8 +72,10 @@ Fighting always comes first: the NPC tree only follows the plan when there is no
 - **Planting:** inside the bomb room (`ROOM_HOLD` studs in from its edges) the bot switches to Guard mode on that room. It stays in and keeps fighting while the defuser plants (8 s); leaving would reset it.
 - **Hatches:** for a room on a floor below with no way down (the Mansion basement), the bot walks onto the hatch over that room, shoots it open (`HATCH_SHOOT`, 5 studs) and drops through. Only hatches on the floor right above count (`HATCH_ABOVE`).
 - **Shut out:** with no path to its room (or the hatch) for `DOOR_AFTER` (6 s), the bot picks the boarded door or window on its floor that best leads toward the room, stands in front of it and shoots the boards off. Doors come first: a window counts `WINDOW_COST` studs farther because it has to be climbed. A door or window it has tried is not picked again.
-- **Unstick:** a bot that hasn't moved for `STUCK_TIME` (5 s) on its way somewhere walks 14 to 24 studs off for 4 s, then tries again. Pathfinding sometimes "finds" a way straight up to the floor above.
-- **Unreachable rooms:** a room with no path for `NO_WAY_TIME` (20 s), and no breach under way, is skipped for 40 s. The bot takes the other bomb, or hunts defenders if neither is reachable (Bank's upstairs: see Limits).
+- **Unstick:** a bot that hasn't moved for `STUCK_TIME` (5 s) on its way somewhere walks 14 to 24 studs off for 4 s, then tries again. The spot is on its own floor (within 3 studs), never in water or a pit. Pathfinding sometimes "finds" a way straight up to the floor above.
+- **Paths through doors** (2026-11-16): an attacker's paths may go through intact boards (`BreakThrough`), so it heads for a boarded door like an open one and breaks it when it gets there. Defenders' paths don't, so they never break their own boards.
+- **Climbing and water:** bots climb trusses (the Mansion pool has an invisible one on its ladder) and walk round water.
+- **Unreachable rooms:** a room with no path for `NO_WAY_TIME` (20 s), and no breach under way, is skipped for 40 s. The bot takes the other bomb, or hunts defenders if neither is reachable.
 - **Focus:** a bot heading somewhere ignores gunshots and hunt spots on another floor, so it doesn't stand under an enemy it heard instead of going on.
 
 ### What the match does with bots
@@ -110,7 +112,25 @@ Fighting always comes first: the NPC tree only follows the plan when there is no
 
 ## Limits
 
-- **Bank's upstairs can't be reached by pathfinding** from the ground floor (no path either way). Attacker bots skip those bomb rooms and hunt defenders instead. Adding `PathfindingLink`s on the stairs, or fixing the stair collision, would let them in.
+- **Breaking in takes time:** several attackers going for the same boarded front door stand there while it breaks (Mansion: 10 to 15 s). Rooms behind soft walls only (the small side room of Bedrooms A) take up to 15 s of shooting before the bot gives up and goes round.
+
+### Getting to the bomb rooms (2026-11-16, Studio, boards up, no defenders)
+
+| Map, room | From | In the room after |
+| --- | --- | --- |
+| Mansion Main Floor B | Back Porch | 8 s |
+| Mansion Main Floor A | Pool Side | 17 to 38 s |
+| Mansion Upstairs A | Back Porch | 13 s |
+| Mansion Upstairs B | Street Left | 11 to 52 s |
+| Mansion Upstairs Bedrooms A | Street Right; in the pool | 45 to 46 s |
+| Mansion Upstairs Bedrooms B | Roof Side | 44 to 53 s |
+| Bank Upstairs A | Right Side | 13 to 15 s |
+| Bank Upstairs B | Field; Backdoor | 38 s; 58 s |
+| Bank Vault B | Front Street | 14 s |
+| Bank Basement A | Front Street | 19 s |
+| Bank Basement B | Backside | 25 to 31 s |
+
+A bot dropped in the Mansion pool climbed out by the ladder and was in the house within 5 s.
 - **Health bars:** bots stand in `workspace.Enemies`, so `HealthBillboards` gives every bot a health bar, teammates and enemies alike.
 - **Fair-play shortcut:** attacker bots learn the site after 25 s without drones.
 - **Bot ids are random:** two bots in the queue could share one in theory (1 in about 2 billion). The matchmaker would then drop the newer ticket.
