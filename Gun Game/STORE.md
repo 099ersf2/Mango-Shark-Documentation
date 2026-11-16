@@ -81,6 +81,8 @@ A gift button on Robux crate and item cards, and GIFT on their page, open `Main.
 
 ### Borders
 
+An item with `Hidden = true` is left out of `ITEMS`: not shown, not sold (the Battle Pass uses it while it's off).
+
 An item's `Border` names a `Content.Store.Store.BORDERS` preset (Gold, Rainbow, Obsidian). Its colors turn around the card. Add presets as ColorSequences.
 
 ### Lobby panel

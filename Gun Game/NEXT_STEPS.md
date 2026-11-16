@@ -1,5 +1,9 @@
 # Next steps
 
+## Battle Pass update (later)
+
+- [ ] **Launch the pass:** `ENABLED = true` in `Content.BattlePass`, a new `SEASON.Ends` if needed, and the 399 Robux product at `Store_BattlePassS1` in `Shared.ProductIds`. Then play a match and check XP, quests and claims.
+
 ## Shield and camera (2026-11-16)
 
 - [ ] **Bruno against a wall with two players:** check the other player no longer sees his shots come out of the wall (only the math and one player were tested).

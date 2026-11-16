@@ -2,6 +2,8 @@
 
 Added 2026-11-16, changed the same day to a level track (no Battle Stars). A seasonal battle pass: XP fills levels, and every level has **Free** rewards (everyone) and **Premium** rewards (pass owners), claimed once the level is reached. A side can hold one reward, several, or none. Quests (daily, weekly, milestones) are the main source of XP.
 
+**Off for now (2026-11-16):** `Content.BattlePass.ENABLED = false` keeps the pass for its own update. No XP, quests or claims, and nothing of it is shown (button, screen, store item, unowned season skins, the Season 1 tag). To launch: set `ENABLED = true`, check `SEASON.Ends`, and put the Robux product's id at `Store_BattlePassS1` in `Shared.ProductIds`.
+
 ## Where things are
 
 | What | Where |
@@ -66,6 +68,7 @@ It uses the Store's and Inventory's own parts: the same panel, title and red X, 
 
 ## A new season
 
+0. `ENABLED` must be `true` for the pass to run at all.
 1. `Content.BattlePass`: a new `SEASON` (new Id, name, end time), new `ROWS`, and `PREMIUM_ITEM` set to a new store item.
 2. `Content.Store.Store`: a new item like `BattlePassS1` with `Grants = { BattlePass = "<new Id>" }`, and its Robux product at `Store_<Id>` in `Shared.ProductIds`.
 3. `Content.Guns.Skins.SeasonSkins`: a new set (Prefix, Source collection, palette) and a matching profile in `SkinFinish`.

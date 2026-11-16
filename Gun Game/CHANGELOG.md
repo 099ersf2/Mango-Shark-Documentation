@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-11-16: Battle Pass off until its own update
+
+Tested in a Studio playtest (server and client). No data was written (Coins 1,058, XP 0, quests unchanged).
+
+### Changed
+
+- **The Battle Pass is off** (`Content.BattlePass.ENABLED = false`), so it can launch later as its own update. While it's off:
+  - **No XP:** `BattlePassService.AddXP` pays nothing (matches and quests).
+  - **No quests:** `QuestService` doesn't start, count or draw anything.
+  - **No claims:** `Claim` answers "The Battle Pass isn't out yet."
+  - **Nothing shown:** the BATTLE PASS button in the lobby is hidden (the wallet closes up), the screen won't open, the pass isn't in the Store (`Hidden`), season skins show only to owners in the Inventory, a season skin's page says COMING SOON, and no "Season 1" tag is shown (`SeasonOf` gives nil).
+  - To launch it: set `ENABLED = true`, check `SEASON.Ends` (now 2027-02-01), and link the Robux product (`Store_BattlePassS1` in `Shared.ProductIds`).
+- **Store items can be hidden:** an item with `Hidden = true` is left out of `Content.Store.Store.ITEMS`, so it isn't shown or sold. `BattlePassS1` sets `Hidden = not BattlePass.ENABLED`. Its description now names Caleb (Hacker) instead of "classes".
+
+### Fixed
+
+- `Content.BattlePass` and `Content.Crates.Crates` had been put back to old versions in Studio (a collaborator's save). The reworked track and the `Content.Guns.Skins.Skins` require were reapplied. With the old Crates require, nearly every module failed to load.
+
 ## 2026-11-16: Guns through walls can't shoot past them, Studio match clean-up, next steps
 
 Tested in Studio playtests. Two Clear House test wins were undone afterwards (Coins back to 1,058, Wins 5, the Clear House and Arcade stats, LastMode `5v5`, two weekly quests, two milestones, Battle Pass XP 0).
