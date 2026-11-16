@@ -11,7 +11,7 @@ Built 2026-11-11. Before this, every gun's `Animations` slots were empty, so oth
 The gun models are built big (a full-size rifle is 4.4 studs, the pump shotgun 5.8, while an R15 arm reaches about 1.7). So the **third-person Tool is scaled down** when it's made (`Systems.Guns.GunService`, `thirdPersonScale`):
 - long guns come out about **2.2 studs** long (`LONG_GUN_LENGTH`), and pistols and revolvers about **1.15** (`SIDEARM_LENGTH`);
 - a gun is never made bigger;
-- the scale is stored as the Tool's `ModelScale` attribute, and `Content.Guns.Skins` scales skin sizes and offsets by it.
+- the scale is stored as the Tool's `ModelScale` attribute, and `Content.Guns.Skins.Skins` scales skin sizes and offsets by it.
 
 The first-person viewmodel, loadout previews and gameplay don't change: bullets come from the head, and the viewmodel has its own copy.
 

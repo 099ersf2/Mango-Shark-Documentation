@@ -697,7 +697,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `Content.Drones` | Every drone setting and attribute name ([DRONES.md](DRONES.md)) |
 | `Content.Guns.Registry` | Every gun by Id, with defaults filled in: `Registry[gunId]` |
 | `Content.Guns.Loadouts` | The loadouts; `Loadouts.Get(id)` |
-| `Content.Guns.Skins` | `List`, `CRATE_PRICE` (499), `CRATE_REFUND_COINS` (500); `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)` |
+| `Content.Guns.Skins.Skins` | `List`, `CRATE_PRICE` (499), `CRATE_REFUND_COINS` (500); `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)` |
 | `Content.Guns.Melee` | Bash numbers; `Melee.For(gunId)` |
 | `Content.Consumables.Consumables` | Loaded from one file per consumable in `Content.Consumables.Definitions`; `List`, `Get(id)`, `PER_LIFE` (2), `DEFAULT`, `THROW_COOLDOWN` |
 | `Content.Guns.Abilities.*` | Ability hooks: `ModifyStats`, `OnFire`, `OnHit`, `CanPierce`, `OnAltFire`, `OnEquip`, `OnUnequip`, `OnReload`. Shipped: Scope, Ricochet, Burst, ExplosiveRounds, PumpShotgunSpread, SiegeShotgunSpread |
@@ -744,7 +744,7 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | `Team` | Player, NPC model, SpawnLocation (you set) | A `Content.Match.Teams` Id: the player's team (our team system), an NPC's side, or which team a spawn belongs to |
 | `GunAiming` | Player character, NPC model | Aiming down sights (players) or aiming at a target (NPCs); the third-person aim pose ([THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md)) |
 | `Reloading` | Gun Tool | True while the gun reloads (the third-person reload) |
-| `ModelScale` | Gun Tool | The third-person gun's scale (`GunService`); `Content.Guns.Skins` scales skins by it |
+| `ModelScale` | Gun Tool | The third-person gun's scale (`GunService`); `Content.Guns.Skins.Skins` scales skins by it |
 | `AimPitch` | NPC model | Where the NPC aims, radians up (the third-person aim pitch) |
 | `DronesReady`, `DroneNextReady`, `DroneControlling` | Player | Drones ready to throw / server time the next comes back (0 for none) / looking through a drone (MovementController holds the body) |
 | `DroneOwner`, `DroneSlot` (and `Team`) | Drone model | The owner's UserId / which of their drones |

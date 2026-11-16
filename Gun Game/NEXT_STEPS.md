@@ -1,5 +1,11 @@
 # Next steps
 
+## Battle Pass rework (2026-11-16)
+
+- [ ] **Battle Pass on a phone:** the wider two-reward columns at 844×390.
+- [ ] **Season tag** in the Inventory and Store with a season skin owned (only the Battle Pass preview was looked at).
+- [ ] **Reset in the lobby:** the Reset button is turned off on the client only; a server check could be added if players get around it.
+
 ## Restructure (2026-11-16)
 
 - [ ] **A real match after the Games move:** a full Siege and a Clear House match (spectating after death goes through `call("Games.Siege", "SpectateService", ...)`). Only loading was tested.
@@ -57,7 +63,7 @@
 
 - [ ] `givedevskins me`, then the Inventory shows three black cards with the rainbow border under ALL, and under the RIFLE, PISTOL and SMG tabs.
 - [ ] Equipped, each gun is black, and its rainbow lines flow along it in first person, in third person and in the preview.
-- [ ] The side lines sit flush on the Rifle body, Pistol slide and SMG (their offsets were placed from the models' sizes, not seen). Adjust `Details` in `Content.Guns.Skins` if they float or sink.
+- [ ] The side lines sit flush on the Rifle body, Pistol slide and SMG (their offsets were placed from the models' sizes, not seen). Adjust `Details` in `Content.Guns.Skins.Skins` if they float or sink.
 - [ ] A player without the pack doesn't see the skins anywhere.
 - [ ] `takedevskins me` removes and unequips them.
 

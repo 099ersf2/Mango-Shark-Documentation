@@ -202,7 +202,7 @@ Player attributes: `WinStreak`, and `TotalWins` (saved `Wins`, for the lobby lea
   - for Robux, create a developer product and put its id at `Crate_<Id>` in `Shared.ProductIds`.
 - **A store item:** add a ModuleScript to `Content.Store.Definitions` (copy one, change its `Id` and `Order`), with a `Section` and prices. Ribbon and coin colors come from `Content.Store.Style`. `Grants` takes Coins, Skins and Classes. For Robux, put the product id at `Store_<Id>`.
 - **A game pass:** an item with `Pass = true` and `Perks`. Put the pass id at `GamePasses.<Id>`.
-- **A special skin:** add the skin to `Content.Guns.Skins` (in no crate), and an item in the `Skins` section that grants it.
+- **A special skin:** add the skin to `Content.Guns.Skins.Skins` (in no crate), and an item in the `Skins` section that grants it.
 - **A class for sale:**
   - add `[classId] = true` to `LOCKED_CLASSES`;
   - add an item in the `Classes` section with `Grants = { Classes = { classId } }`.

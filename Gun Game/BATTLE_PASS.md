@@ -1,6 +1,6 @@
 # Battle Pass and Quests
 
-Added 2026-11-16, changed the same day to a level track (no Battle Stars). A seasonal battle pass: XP fills levels, and every level has a **Free** reward (everyone) and a **Premium** reward (pass owners), claimed once the level is reached. Quests (daily, weekly, milestones) are the main source of XP.
+Added 2026-11-16, changed the same day to a level track (no Battle Stars). A seasonal battle pass: XP fills levels, and every level has **Free** rewards (everyone) and **Premium** rewards (pass owners), claimed once the level is reached. A side can hold one reward, several, or none. Quests (daily, weekly, milestones) are the main source of XP.
 
 ## Where things are
 
@@ -8,7 +8,7 @@ Added 2026-11-16, changed the same day to a level track (no Battle Stars). A sea
 | --- | --- |
 | The season, the level track, XP numbers, saved pass fields | `ReplicatedStorage.Content.BattlePass` (ScribeFragment) |
 | Quest lists and saved quest fields | `ReplicatedStorage.Content.Quests` (ScribeFragment) |
-| The season's exclusive skins (Breach Point) | `ReplicatedStorage.Content.Guns.SeasonSkins`, added by `Content.Guns.Skins`; finish profile `BreachPoint` in `SkinFinish`; charm model `Assets.Models.Charms.BreachPointCharm` (a copy of RocketCharm) |
+| The season's exclusive skins (Breach Point) | `ReplicatedStorage.Content.Guns.Skins.SeasonSkins`, added by `Content.Guns.Skins.Skins`; finish profile `BreachPoint` in `SkinFinish`; charm model `Assets.Models.Charms.BreachPointCharm` (a copy of RocketCharm) |
 | XP, levels, claims, match XP | `ServerScriptService.Modules.Systems.BattlePass.BattlePassService` |
 | Quest sets, counting, quest XP | `ServerScriptService.Modules.Systems.BattlePass.QuestService` |
 | The screen | `Main.BattlePass` (built in Studio from a copy of the Inventory panel), `Client.Core.BattlePass`; templates `BPLevel` (a level column), `BPQuestRow`, `NavButton`, `SectionHeader`; the XP line `Main.PassToast`; the lobby button `Main.Wallet.PassButton` |
@@ -22,18 +22,27 @@ Added 2026-11-16, changed the same day to a level track (no Battle Stars). A sea
 ### Levels
 
 - 50 levels of 1,500 XP (75,000 XP). XP stops at the season's end (`SEASON.Ends`, 2027-02-01 00:00 UTC) and at level 50.
-- Each level has one Free and one Premium reward (`TRACK`, made from `ROWS`). A reward's Id is `S1_L<level>_F` or `S1_L<level>_P`.
+- Each level has a list of Free and a list of Premium rewards (`TRACK[level] = { Free = { ... }, Premium = { ... } }`, made from `ROWS`; `LIST` holds every reward). A reward's Id is `S1_L<level>_F` or `S1_L<level>_P`, and `_F2` / `_P2` for a level's second reward on that side.
+- Season 1 (2026-11-16):
+  - **Coins** are always 250 (`COINS`), and every 5th level pays **1,000** (`COINS_BIG`) on the Free side.
+  - **Empty Free levels:** 2, 7, 12, 16, 19, 23, 27, 31, 34, 38, 42, 44, 47.
+  - **Two rewards:** levels 1, 8, 15, 25, 32, 40, 45 and 50.
+  - **Classes:** only at level 50: Matteo (Medic) free, Caleb (Hacker) premium, beside the Breach Point Knife.
+  - A Breach Point skin on every 5th Premium level; the Breach Point Charm free at 8 and the Season 1 Dog Tag charm free at 45.
 - A reward can be claimed once its level is reached; a Premium one also needs the pass. Buying the pass later unlocks every Premium reward already reached. **CLAIM ALL** claims everything claimable at once.
 - A skin or class already owned pays 500 Coins instead.
-- The whole track: 32,850 Coins, 10 Breach Point skins (only from the pass; the knife at level 50), 6 classes (Cyrus 8, Elliot 12, Carter 18, Matteo 24, phily 32, Caleb 40), 36 crates.
+- The whole track: 21,750 Coins, 11 season skins (only from the pass; the knife at level 50), 2 classes, 31 crates, in 97 rewards.
+- **Season tag:** skins and classes the pass gives show the season (`SEASON.Tag`, "Season 1") before their rarity or team wherever they're listed (`BattlePass.SeasonOf(kind, ref)`).
 
 ### Quests
 
 | Kind | How many | Reset | XP |
 | --- | --- | --- | --- |
-| Daily | 3, drawn from 9 | 00:00 UTC | 350 to 450 each; all 3 done: +500 |
-| Weekly | 5, drawn from 10 | Tuesday 00:00 UTC | 1,000 to 1,800 each |
+| Daily | 3, drawn from 9 (the same for everyone) | 00:00 UTC | 350 to 450 each; all 3 done: +500 |
+| Weekly | 5, drawn from 10 (the same for everyone) | Tuesday 00:00 UTC | 1,000 to 1,800 each |
 | Milestones | 5, always on | the season | 500 or 600 per stage, 5 stages each |
+
+Everyone has the same quests (2026-11-16): the draw is seeded with the UTC day number (dailies) or the week number (weeklies), so every server picks the same ones.
 
 Counted (public matches only; private matches count for nothing, so they can't be farmed): enemies taken down, Clear House guards taken down, matches played and won (Siege and Clear House apart too), damage, doors and windows rebuilt to whole, defusers planted, drone scans, abilities used, crates opened (anywhere).
 
@@ -43,9 +52,9 @@ Every public match finished: 120 XP, +120 for a win, +15 per kill (10 at most).
 
 ### The screen
 
-It uses the Store's and Inventory's own parts: the same panel, title and red X, the left rail of nav buttons (**PASS**, **QUESTS**), dark section panels with the slate outline, gold highlights. Opened from **BATTLE PASS** under STORE and INVENTORY in the lobby (it shows the level and how many rewards wait to be claimed).
+It uses the Store's and Inventory's own parts: the same panel, title and red X, the left rail of nav buttons (**PASS**, **QUESTS**), dark section panels with the slate outline, gold highlights. Opened from **BATTLE PASS** under STORE and INVENTORY in the lobby (it shows the level and how many rewards wait to be claimed); pressing it again closes the screen.
 
-- **PASS:** top left, the season card (name, time left, Lv. now -> Lv. next, the XP bar). Next to it, what the pass holds (colored), **GET BATTLE PASS** (Robux prompt; PASS OWNED once bought), **GIFT** (gift picker) and **CLAIM ALL (n)**. Below, the level track: one column per level (the number, gold once reached, blue for the next), a FREE cell and a PREMIUM cell (✓ when claimed, a gold outline when it can be claimed now, a lock when its level isn't reached or it needs the pass). It scrolls to your level when opened. Right: the picked reward big (a model turns), its kind, name, level, description and CLAIM. Clicking a claimable cell twice claims it.
+- **PASS:** top left, the season card (name, time left, Lv. now -> Lv. next, the XP bar). Next to it, what the pass holds (colored), **GET BATTLE PASS** (Robux prompt; PASS OWNED once bought), **GIFT** (gift picker) and **CLAIM ALL (n)**. Below, the level track: one column per level (the number, gold once reached, blue for the next), the FREE and PREMIUM rewards (two side by side in a wider column, a dim empty slot when a side has none; ✓ when claimed, a gold outline when it can be claimed now, a lock when its level isn't reached or it needs the pass). It scrolls to your level when opened. Right: the picked reward big (a model turns), its kind, name, level, description and CLAIM. Clicking a claimable cell twice claims it.
 - **QUESTS:** DAILY QUESTS (time to new ones, and the all-done bonus as a row), WEEKLY QUESTS, MILESTONES, each a row with a progress bar, count and XP.
 - Earning XP anywhere shows "+400 XP · Daily: Play 3 matches" at the top, and LEVEL n! when a level is reached.
 
@@ -59,7 +68,7 @@ It uses the Store's and Inventory's own parts: the same panel, title and red X, 
 
 1. `Content.BattlePass`: a new `SEASON` (new Id, name, end time), new `ROWS`, and `PREMIUM_ITEM` set to a new store item.
 2. `Content.Store.Store`: a new item like `BattlePassS1` with `Grants = { BattlePass = "<new Id>" }`, and its Robux product at `Store_<Id>` in `Shared.ProductIds`.
-3. `Content.Guns.SeasonSkins`: a new set (Prefix, Source collection, palette) and a matching profile in `SkinFinish`.
+3. `Content.Guns.Skins.SeasonSkins`: a new set (Prefix, Source collection, palette) and a matching profile in `SkinFinish`.
 
 ## Tested (2026-11-16, Studio playtest, one player)
 

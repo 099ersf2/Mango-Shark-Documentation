@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-11-16: Battle Pass track rework, shared quests, season tags, skins in files, menu buttons toggle, no reset in the lobby
+
+Tested in a Studio playtest (server and client). The test claim was undone (Coins back to 308, XP 0, no claims, the crate taken back). See [BATTLE_PASS.md](BATTLE_PASS.md).
+
+### Changed
+
+- **Everyone has the same quests.** Today's dailies are drawn with the UTC day number as the seed and this week's weeklies with the week number, so every player on every server gets the same ones. A saved set that isn't today's (including sets drawn per player before this change) is replaced, and its progress for that day or week is cleared.
+- **Battle Pass track** (`Content.BattlePass`):
+  - A level can hold **several rewards on a side, or none**. Season 1 has 8 levels with two rewards (1, 8, 15, 25, 32, 40, 45, 50) and 13 empty Free levels.
+  - **Coins:** always 250 (`COINS`), and **1,000 on every 5th level** (`COINS_BIG`) on the Free side.
+  - **Classes:** only two, both at level 50: Matteo (Medic) free and Caleb (Hacker) premium, with the Breach Point Knife.
+  - The whole track: 21,750 Coins, 11 season skins, 2 classes, 31 crates in 97 rewards.
+  - `TRACK[level]` is now `{ Free = { Reward }, Premium = { Reward } }`; new `LIST` (every reward). A level's second reward on a side has the Id `S1_L<n>_F2` / `_P2`.
+  - The screen widens a level's column for two rewards side by side, and shows a dim empty slot for a side with none.
+- **Season tag:** skins and classes the pass gives show "Season 1" before their rarity or team, like "Season 1 · Epic · Rifle" or "Season 1 · Defenders" (`Content.BattlePass.SeasonOf`, `SEASON.Tag`; `StoreViews.SkinRarity` and `ClassTeam` in the Inventory, Store and detail pages).
+- **Skins in files, like guns and classes:** `Content.Guns.Skins` is now a folder: the `Skins` module, `Definitions` (one ModuleScript per skin, in a folder per WeaponId, 115 skins), `Styles` (shared part styles), and `SkinFinish` and `SeasonSkins` moved in. Requires are `Content.Guns.Skins.Skins`.
+- **Menu buttons toggle:** pressing STORE, INVENTORY or BATTLE PASS while that menu is open closes it (the other lobby buttons already did).
+
+### Added
+
+- `Client.Core.LobbyReset`: the Roblox menu's Reset Character button is off while the player is in the lobby (`InLobby`), and on again in a match.
+
 ## 2026-11-16: Data in Definitions folders, Games folder, no RemoteEvents
 
 Tested in a Studio playtest (server and client): every module loads with no errors, and the lists come out in the same order as before. No player data was written.

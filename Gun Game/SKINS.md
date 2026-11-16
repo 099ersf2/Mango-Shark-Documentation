@@ -12,7 +12,7 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
   - Cards with a 3D preview (the family's gun model in `Assets.Models.Guns`, wearing the skin).
   - A crate panel listing what is left in the crate and the chance of each.
   - Opening a crate plays a reel that lands on the skin the server gave (`Client.Core.SkinShop`).
-- **Families:** a skin's `WeaponId` is a family. It shows on every gun in `FAMILIES` (`Content.Guns.Skins`):
+- **Families:** a skin's `WeaponId` is a family. It shows on every gun in `FAMILIES` (`Content.Guns.Skins.Skins`):
   - Rifle: Rifle, BurstRifle, SiegeCarbine, Tactical_Bullpup_1.
   - Pistol: Pistol, SiegePistol, Revolver.
   - A single-mesh gun takes the skin's `Swatch` color.
@@ -31,13 +31,13 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 
 ## Battle pass collections (2026-11-16)
 
-`Content.Guns.SeasonSkins` makes a season's exclusive set by recoloring a crate collection (every color moved to the palette's dark, paint, metal or accent by brightness and saturation). Season 1: **Breach Point**, 10 skins from the Afterburn set and the Rocket charm, olive and gunmetal with a neon-lime accent; `SkinFinish` has a `BreachPoint` profile. They are in no crate or store item: only the battle pass gives them ([BATTLE_PASS.md](BATTLE_PASS.md)). Each has `BattlePass = true`.
+`Content.Guns.Skins.SeasonSkins` makes a season's exclusive set by recoloring a crate collection (every color moved to the palette's dark, paint, metal or accent by brightness and saturation). Season 1: **Breach Point**, 10 skins from the Afterburn set and the Rocket charm, olive and gunmetal with a neon-lime accent; `SkinFinish` has a `BreachPoint` profile. They are in no crate or store item: only the battle pass gives them ([BATTLE_PASS.md](BATTLE_PASS.md)). Each has `BattlePass = true`.
 
 ## Where things are
 
 | What | Where |
 | --- | --- |
-| Skins (data, shared) | `ReplicatedStorage.Content.Guns.Skins` |
+| Skins (data, shared) | `ReplicatedStorage.Content.Guns.Skins.Skins` |
 | Server | `ServerScriptService.Modules.Systems.SkinShopService` |
 | Shop (client) | `ReplicatedStorage.Modules.Client.Core.SkinShop` (`ClientOnly`) |
 | Packets | `Shared.Packets.Skins.Equip`, `Shared.Packets.Skins.BuyCrate` |
@@ -49,7 +49,7 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 ## How it works
 
 1. **Owning.** `WeaponSkins` (a saved set of skin Ids) is what the player owns. Only the `SkinCrate` product's `Grant` adds to it.
-2. **Equipping.** Each gun with a skin has a saved field `<Gun>Skin` (`RifleSkin`, `PistolSkin`): `"None"` or a skin Id. `Shared.Data` builds these fields from `Content.Guns.Skins`, so the allowed values always match the list.
+2. **Equipping.** Each gun with a skin has a saved field `<Gun>Skin` (`RifleSkin`, `PistolSkin`): `"None"` or a skin Id. `Shared.Data` builds these fields from `Content.Guns.Skins.Skins`, so the allowed values always match the list.
 3. **Showing it.** `SkinShopService` copies each `<Gun>Skin` field to the Player attribute of the same name, and restyles the player's gun Tools whenever a field changes. Other players see the styled Tool. The player's own first-person viewmodel is styled by `Viewmodel` from the attribute.
 4. **The shop.** Walk up to the shop stand in the lobby (`Workspace.Lobby.SkinShopStand`) and use its prompt (Interact, E). Any `ProximityPrompt` tagged `SkinShopPrompt` opens the shop, only while in the lobby; leaving the lobby closes it. There is no key. Each row shows **Equip** / **Equipped** for an owned skin, or **In crate**. Clicking **Equip** on the equipped skin takes it off.
 5. **The crate.** One random skin the player doesn't own yet, equipped at once. The odds line shows the chance for each skin left (equal odds; owned skins are never rolled). Once every skin is owned, the Buy button is off and the server refuses the prompt. If every skin is already owned when a purchase is granted anyway, the player gets `Skins.CRATE_REFUND_COINS` (500) coins instead.
@@ -75,7 +75,7 @@ The crate's developer product is **"Skin Crate", 499 Robux, id `3730208338`** (c
 
 ## Adding a skin
 
-Add an entry to `Skins.List` in `Content.Guns.Skins`:
+Add a ModuleScript to `Content.Guns.Skins.Definitions`, in the folder named after its `WeaponId` (copy one, change its `Id` and `Order`; `Order` sets the list order). It returns the skin:
 
 ```lua
 {
@@ -101,7 +101,7 @@ Add an entry to `Skins.List` in `Content.Guns.Skins`:
 ## API
 
 ```lua
-local Skins = require(ReplicatedStorage.Content.Guns.Skins)
+local Skins = require(ReplicatedStorage.Content.Guns.Skins.Skins)
 Skins.Get(id)              -- the skin, or nil
 Skins.ForWeapon("Rifle")   -- skins for one gun
 Skins.Weapons()            -- gun Ids that have skins
