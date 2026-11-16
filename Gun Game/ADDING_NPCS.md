@@ -109,6 +109,24 @@ Workspace
 
 Fire mode comes from the gun. Semi guns tap every 0.25–0.55 s, Auto guns fire bursts of 3–6, and Burst guns fire their full burst, each with a short pause after.
 
+## A game mode's own NPCs (2026-11-16)
+
+Siege bots ([SIEGE_BOTS.md](SIEGE_BOTS.md)) use these; any mode can.
+
+- `NPCService.Spawn(profileId, cframe, nil, true, { Team, Name, Gun, AlwaysAwake })`:
+  - **Team:** the NPC's side, read everywhere as `agent.Profile.Team`. It gets its own copy of the profile.
+  - **Name:** the model's name.
+  - **Gun:** a gun Id, instead of a random one of the profile's.
+  - **AlwaysAwake:** never sleeps far from players.
+- `NPCService.AgentOf(model)` returns the live agent, or nil.
+- **Objectives**, read by `Tasks.Patrol` when there is nothing to fight:
+  - `agent.Objective`: a point to go to; it waits there once it arrives on that floor (within 6 studs up or down).
+  - `ObjectivePart`: a room part, so `Tactics.Breach` breaks a way in toward it.
+  - `ObjectiveShoot`: once there, it shoots this point (a hatch under its feet).
+  - `ObjectiveDirect`: walks straight at the objective with no path (into an opened hatch).
+  - An NPC with an objective ignores gunshots on another floor (`Tactics` hearing).
+- **Profiles** may set `AimErrorScale` (default `AIM_ERROR_SCALE`, 3) and `AimErrorFloor` (default `MIN_AIM_ERROR`, 4). The `SiegeBot` profile uses 1.6 and 2.
+
 ## Tactics: hearing, testing walls, breaching, grenades
 
 Around the tree, every decision tick runs the reflexes in `Systems.NPC.Tactics` (`NPCService.think`). They apply to **every** NPC type.

@@ -216,6 +216,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Content.Games.Siege` | Phase times, plant time, map folder names, bomb labels and colors, texts, win reasons |
 | `Content.Crates.Crates` / `Content.Store.Store` | Loaded from one file per crate / store item in `Content.Crates.Definitions` / `Content.Store.Definitions` (sorted by `Order`); the shared colors are in `Content.Store.Style` |
 | `Systems.Store.BotCoinService` | Pays `REWARDS.BotKill` Coins for an NPC kill |
+| `Systems.Games.Siege.SiegeBots` | Siege bots: `Pick(entry, team, info, teamEntries)`, `Spawn(entry, cframe)`, `Despawn(entry)`, `Update(context)`, `Reset()`, `IsBot(userId)`, `IsBotModel(model)`. See [SIEGE_BOTS.md](SIEGE_BOTS.md) |
+| `Content.Games.SiegeBots` | Bot names, prefix, id range, pick delay, plan timings |
 | `Systems.Lobby.Teleporters` | Parts tagged `Teleporter` send players to the part named by their `TeleportTo` attribute |
 | `Content.Classes.Classes` | Every class and ability, loaded from one file per class in `Content.Classes.Definitions` (sorted by `Order`); `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |
 | `Content.Cameras` | Camera health, hit box, view limits, scan range/angle/cooldown/ray steps, attribute names |

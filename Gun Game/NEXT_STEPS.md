@@ -1,5 +1,12 @@
 # Next steps
 
+## Siege bots (2026-11-16)
+
+- [ ] **Bank's upstairs:** bots find no path from the ground floor (pathfinding sees no stairs). Add `PathfindingLink`s on the stairs (or fix their collision) so attacker bots can reach the upstairs bombs. Until then they hunt defenders instead.
+- [ ] **On live servers:** bots in PLAY WITH PARTY and in the public queue: teleport, the match record's `Bots`, the party coming back with its bots.
+- [ ] **A full basement plant** in a real match (the hatch drop was tested with one bot alone).
+- [ ] **Decide:** whether enemy bots should have health bars (`HealthBillboards` shows them for every NPC), and when bots open up beyond admins.
+
 ## Battle Pass update (later)
 
 - [ ] **Launch the pass:** `ENABLED = true` in `Content.BattlePass`, a new `SEASON.Ends` if needed, and the 399 Robux product at `Store_BattlePassS1` in `Shared.ProductIds`. Then play a match and check XP, quests and claims.

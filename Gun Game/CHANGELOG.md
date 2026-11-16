@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-11-16: Siege bots (admins only for now)
+
+Tested in Studio playtests with one admin player and three bots (see [SIEGE_BOTS.md](SIEGE_BOTS.md#tested-2026-11-16-studio-playtests-one-admin-player)). No player data was written.
+
+### Added
+
+- **Siege bots** (`Systems.Games.Siege.SiegeBots`, `Content.Games.SiegeBots`, `Content.NPC.Profiles.SiegeBot`):
+  - **Selection:** a bot picks a class no teammate has. An attacker bot picks a free spawn next to its team's; a defender bot votes for the site its player teammates voted for. A player who takes a bot's class or spawn gets it, and the bot picks again.
+  - **Defending:** defender bots guard the two bomb rooms (Guard mode: stay in, rebuild boards, fight first). They all go to a bomb being planted, and hold the other bomb once one has its defuser.
+  - **Attacking:** attacker bots find the site (a drone, a bot walking into it, or after 25 s of Action) and split between the bombs. To get in they break boarded doors and windows, or shoot open a hatch over a room below (the Mansion basement) and drop through. They hold the room while the defuser plants.
+  - Bots count for the win rules and appear on the scoreboard, kill feed and result screen. They get no rewards, quests or analytics.
+- **BOTS tab** in the Party menu, for admins (`Modules.Classes.Admins`): ADD puts a bot in the party (`Party.Request` "AddBot"). Bots queue and play like members, can be kicked, never lead, and come back with the party after a match.
+- `NPCService.Spawn(id, cframe, part, ignoreCap, options)`:
+  - `options` gives an NPC its own `Team`, `Name`, `Gun` and `AlwaysAwake` (never sleeps far from players).
+  - `NPCService.AgentOf(model)` returns the live agent of an NPC model.
+  - Profiles may set `AimErrorScale` and `AimErrorFloor`.
+- NPC objectives (`agent.Objective`, `ObjectivePart`, `ObjectiveShoot`, `ObjectiveDirect`): with nothing to fight, `Tasks.Patrol` walks there (breaking in if it must), shoots a point open, or walks straight in.
+
+### Changed
+
+- Match records have `Bots` (`{ U, N }`), and tickets have `B`. Bots are in `Teams` but never in `Expected`.
+- `Tactics` hearing: an NPC with an objective ignores noise on another floor.
+- `SiegeService` planting progress is kept per UserId, so bots plant too.
+
 ## 2026-11-16: Battle Pass off until its own update
 
 Tested in a Studio playtest (server and client). No data was written (Coins 1,058, XP 0, quests unchanged).

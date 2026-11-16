@@ -4,6 +4,8 @@ Siege is the game's only mode since 2026-11-11. Two teams of up to five. The **d
 
 Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): every match is played on its own reserved server. Classes and their abilities are in [CLASSES.md](CLASSES.md). Team Deathmatch, Free-for-All and Elimination are archived (`ServerStorage.Archive.OldMatchModes`).
 
+**Bots (2026-11-16):** admins can add bots to their party; they pick, defend and attack like players. See [SIEGE_BOTS.md](SIEGE_BOTS.md).
+
 ## The rules that are easy to get wrong
 
 | Rule | What it means |

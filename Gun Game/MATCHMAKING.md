@@ -59,6 +59,15 @@ The UI was rebuilt on 2026-11-12 ([UI.md](UI.md#the-lobby)): the queue and the p
 - **The owner server dies:** copies with no heartbeat for 100 s are dropped.
 - **Party state through a match:** when a party's match is found, its owner saves it in MemoryStore (`PARTY_MAP`, 30 minutes). Returning players carry only `{ PartyId }` in their teleport data. The lobby server reads the saved party, checks the player is in it, and rebuilds it: the first server to see a returning member claims ownership, later ones rejoin through it.
 
+## Bots in parties (2026-11-16)
+
+An admin who leads a party can add bots from the Party menu's BOTS tab ([SIEGE_BOTS.md](SIEGE_BOTS.md)).
+
+- A bot is a member with a negative UserId.
+- It is in the ticket (`M`, and `B` with its name) and in the match record's `Teams` and `Bots`, never in `Expected`.
+- The parked party keeps its bots (`B`) and gets them back after the match.
+- A bot never leads: when the last player leaves, the party ends.
+
 ## Queue modes
 
 A party queues for one **mode**, and only tickets of the same mode are matched together. Modes are rows in `Content.Matchmaking.MODES`:
