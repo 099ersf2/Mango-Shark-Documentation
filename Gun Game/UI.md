@@ -77,7 +77,8 @@ The sizes below were replaced on 2026-11-13 (see above); the way they are placed
 | Danger | red `#e5484d`; quiet danger (Leave, Kick, Decline) `#5a2a2d` |
 | Accent text | gold `#ffd678`; muted `#9aa3b2` |
 | Font | **Fredoka One** (`rbxasset://fonts/families/FredokaOne.json`) on every piece of text in the game. It has one weight, so size and color carry the hierarchy. New UI must use it. Cmdr's admin console keeps its own fonts |
-| Menus | Scale-sized with a maximum size; `Main` uses Global ZIndex (menus 11, things on a menu 12 and up) |
+| Menus | Scale-sized with a maximum size; `Main` uses Global ZIndex (menus 11, things on a menu 12 and up). On a touch screen the move stick and jump button hide while a menu is open |
+| Coin icon | Name a coin picture `CoinIcon`: `Client.Core.CoinIcon` gives it `Content.Store.Style.COIN_ICON` |
 
 ## The Game Modes panel
 

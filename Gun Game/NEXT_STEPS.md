@@ -1,5 +1,10 @@
 # Next steps
 
+## Shield and camera (2026-11-16)
+
+- [ ] **Bruno against a wall with two players:** check the other player no longer sees his shots come out of the wall (only the math and one player were tested).
+- [ ] **Motion Scanner** ability doesn't load (missing `end` at line 131); its author should finish it.
+
 ## Battle Pass rework (2026-11-16)
 
 - [x] **Battle Pass on a phone** and the **season tag** in the Inventory and Store: checked in the device emulator (2026-11-16).

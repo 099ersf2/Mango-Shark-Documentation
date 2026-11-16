@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-11-16: Shield shots through walls, coin icon, less camera bob, touch controls hidden behind menus
+
+Tested in a Studio playtest on the phone screen (device emulator). No player data was written.
+
+### Fixed
+
+- **The Shield class (Bruno) appeared to shoot through walls.** Lying prone or holding the shield against a wall puts his third-person pistol's muzzle on the far side (measured 1.3 studs past a 1-stud wall). Other players draw his shots from that muzzle, so tracers, flashes and impacts came out of the wall. The real bullet was already stopped (tested: a dummy behind the wall took no damage).
+  - `Client.Guns.GunEffects`: a shot drawn from a muzzle now starts in front of any wall between the shooter's eye and the muzzle (`clearStart`), for other players' and NPCs' shots and the local player's own in third person. The first-person tracer start no longer falls back to a muzzle that is inside a wall.
+  - `Systems.Guns.GunService` (server): the shot's origin is checked for line of sight from the HumanoidRootPart (the collision box) instead of the head, which poses can push through a wall. A blocked origin moves to just in front of the wall instead of to the head. Only solid (CanCollide) parts block it.
+- **Battle Pass track restored:** a later save had put back the old `Content.BattlePass`. The new track (several or no rewards per level, `LIST`, `SeasonOf`) was applied again; the totals match (97 rewards, 21,750 Coins).
+- Old require paths fixed in `Content.Crates.Crates` (skins) and in the new `DroneShield` and `BulletproofCamera` abilities (classes).
+
+### Changed
+
+- **One coin icon everywhere:** every coin picture is `Content.Store.Style.COIN_ICON`. The new `Client.Core.CoinIcon` sets every ImageLabel or ImageButton named `CoinIcon` in the UI to it (the wallet, the Store and Inventory headers, the detail page, the StoreCard prices), including ones cloned later; Coins cards and rewards already used it. The Studio pictures were set to it too, and the coin emoji was taken out of the wallet texts and the reward line ("+500 Coins").
+- **Camera bob** (`Client.Movement.MovementCamera`, `Content.Movement.Config`):
+  - none while crouched, prone or sliding;
+  - about half while walking (`BobUp` 0.035, `BobSide` 0.022, `BobRoll` 0.15);
+  - none in third person, and no strafe tilt there either.
+  - Measured walking 2.5 s: first person standing 0.028 studs of sway; crouched, prone and third person 0.
+- **Touch controls behind menus:** the move stick and jump button are hidden while a menu is open (`Client.Core.Menus`, `GuiService.TouchControlsEnabled`) and come back when it closes.
+- **No UI sounds** on Roblox's own touch move stick and jump button (`Client.Core.UIFeel` skips the `TouchGui`).
+
+### Known
+
+- `Systems.Classes.Abilities["Motion Scanner"]` (another developer's, in progress) does not load: a missing `end` at line 131.
+
 ## 2026-11-16: Battle Pass track rework, shared quests, season tags, skins in files, menu buttons toggle, no reset in the lobby
 
 Tested in a Studio playtest (server and client). The test claim was undone (Coins back to 308, XP 0, no claims, the crate taken back). See [BATTLE_PASS.md](BATTLE_PASS.md).
