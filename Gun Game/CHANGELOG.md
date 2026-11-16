@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-11-16: Battle Pass as a level track, and a screen that matches the game
+
+Tested in a Studio playtest; the test data was removed afterwards. See [BATTLE_PASS.md](BATTLE_PASS.md).
+
+### Changed
+
+- **No more Battle Stars or pages.** Every one of the 50 levels has a Free and a Premium reward, claimed once the level is reached (Premium needs the pass). **CLAIM ALL** takes everything claimable. Same rewards overall: 32,850 Coins, the 10 Breach Point skins, 6 classes, 36 crates; the Breach Point Knife is level 50's Premium reward.
+- **The Battle Pass screen was rebuilt** to match the Store and Inventory (the same panel, title, X, left nav rail with PASS and QUESTS, section panels and gold highlights), laid out like a tiered Roblox battle pass: a season card with the level bar, the pass summary with GET BATTLE PASS, GIFT and CLAIM ALL, the level track (one column per level, FREE and PREMIUM rows), and the picked reward big on the right with CLAIM.
+- The lobby button shows how many rewards wait to be claimed; the XP line at the top uses the game's dark panel and gold.
+- `Content.BattlePass`: `TRACK` (from `ROWS`), `Unlocked`, `Totals`; `PAGES`, `StarsAt`, `PageOpen`, `MAX_LEVEL` and `STARS_PER_LEVEL` are gone. `BattlePassService.Claim(player, "ALL")`.
+
+### Added
+
+- `Assets.Models.Charms.BreachPointCharm` (a copy of RocketCharm), so the Breach Point Charm has a model.
+
 ## 2026-11-16: Battle Pass and quests
 
 Tested in a Studio playtest with one player; the test data was removed afterwards. See [BATTLE_PASS.md](BATTLE_PASS.md).

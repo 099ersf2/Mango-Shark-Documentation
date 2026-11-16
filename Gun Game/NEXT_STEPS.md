@@ -6,7 +6,7 @@
 - [ ] **A real match:** XP and quest progress after a public Siege and a Clear House match; the +XP and LEVEL UP lines.
 - [ ] **Buy and gift the pass** once the product exists; the premium rewards unlock.
 - [ ] **Balance:** level speed with real players (`XP_PER_LEVEL`, quest XP, `MATCH_XP`).
-- [ ] **Featured reward render** on the pass screen, like Fortnite's (`SEASON.Featured`).
+- [ ] **Look at the 3D models** in the pass's cells and preview in a playtest (not seen yet), and the screen on a phone.
 
 ## 2026-11-15
 

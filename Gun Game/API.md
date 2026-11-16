@@ -117,13 +117,13 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Siege.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([CLEAR_HOUSE.md](CLEAR_HOUSE.md)) |
 | `Content.ClearHouse` | Clear House numbers: Action time, guard counts (`ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`) and profiles, room finder settings |
 | `Packets.Siege.Pick("Map", name)` / snapshot `Maps` | Clear House's map vote during Selection: `{ Name, Votes }` per map of the mode |
-| `Content.BattlePass` | The season, pages, rewards, `LevelOf`, `Progress`, `StarsAt`, `PageOpen`, `Reward`, `SecondsLeft`, `MATCH_XP`, `PREMIUM_ITEM` ([BATTLE_PASS.md](BATTLE_PASS.md)) |
+| `Content.BattlePass` | The season, `TRACK` (a Free and a Premium reward per level), `LevelOf`, `Progress`, `Unlocked`, `Reward`, `Totals`, `SecondsLeft`, `MATCH_XP`, `PREMIUM_ITEM` ([BATTLE_PASS.md](BATTLE_PASS.md)) |
 | `Content.Quests` | `DAILY`, `WEEKLY`, `MILESTONES`, `Get`, `Day`, `Week` |
-| `BattlePassService.AddXP(player, amount, reason)` / `Claim(player, rewardId)` / `Level(player)` | Server: battle pass XP, claims, level |
+| `BattlePassService.AddXP(player, amount, reason)` / `Claim(player, rewardId or "ALL")` / `Level(player)` | Server: battle pass XP, claims, level |
 | `QuestService.Add(player, stat, amount?)` | Server: counts toward quests ("Kills", "MatchesWon"...) |
 | `Packets.BattlePass.Claim(rewardId)` / `Progress(amount, reason, level)` | Claim a reward (answered); XP earned (server -> client) |
 | Extension points `BattlePass.LevelUp(player, level)`, `BattlePass.Claimed(player, rewardId)`, `BattlePass.XPMultiplier(player, reason)` (Product), `Quests.Completed(player, questId, xp)` | Battle pass and quest hooks |
-| `Client.Core.BattlePass.Open(tab?)` | Opens the Battle Pass ("Rewards" or "Quests") |
+| `Client.Core.BattlePass.Open(tab?)` | Opens the Battle Pass ("Pass" or "Quests") |
 | `MatchHost.Record()` / `TeamOf(userId)` / `ReturnAll()` / `Clear()` | The match server's record and the return to the lobby |
 | `SiegeMap.Find()` / `Check(map)` / `Load()` | The Workspace map and its problems |
 | `SiegeService.Phase()` / `IsPlaying(player)` / `TeamOf(player)` / `IsAlive(player)` / `Players(team?, aliveOnly?)` / `Site()` | The running match |
