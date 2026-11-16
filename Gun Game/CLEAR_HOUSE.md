@@ -7,10 +7,10 @@ Added 2026-11-14. Up to five players against NPC guards in a house (Mansion or B
 | What | Where |
 | --- | --- |
 | Category and mode | `Content.Matchmaking`: category `Arcade`, mode `ClearHouse` (`Kind = "ClearHouse"`, `Maps = { "Mansion", "Bank" }`, `TeamSize = { Attackers = 5, Defenders = 0 }`) |
-| Numbers | `Content.ClearHouse` (phase times, guard counts, profiles, room finder settings, texts) |
-| End reasons | `Content.Siege.REASONS`: `HouseCleared`, `HouseHeld` |
-| The match | `Systems.Siege.SiegeService`: the Siege flow with a `clearHouse` flag |
-| Doors, windows, rooms, guards | `Systems.Siege.ClearHouse` |
+| Numbers | `Content.Games.ClearHouse` (phase times, guard counts, profiles, room finder settings, texts) |
+| End reasons | `Content.Games.Siege.REASONS`: `HouseCleared`, `HouseHeld` |
+| The match | `Systems.Games.Siege.SiegeService`: the Siege flow with a `clearHouse` flag |
+| Doors, windows, rooms, guards | `Systems.Games.ClearHouse.ClearHouse` |
 | Guard behavior | `Systems.NPC.NPCService` Guard mode (existing): stays in its `NPCRoom` box, patrols it and rebuilds its boards |
 | Client | `Client.Core.SiegeSelect` (HOUSE GUARDS in the roster), `Client.Hud.SiegeHud` (objective with guards left, no bomb chips, only the players' result column) |
 

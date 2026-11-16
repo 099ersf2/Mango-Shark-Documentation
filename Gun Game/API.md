@@ -114,8 +114,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Client.Core.Tooltip.Set(object, text?)` / attribute `Tooltip` | A hover tooltip on a UI element (nil or "" removes it) |
 | `Client.Core.ItemDetails.Spin(viewport, on)` / `Hover(viewport, on)` | Turns a `GunPreview` around (the page); a card's while hovered, one at a time |
 | `ItemDetails` `Row.Description` | A row's own description, shown when the row is clicked |
-| `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Siege.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([CLEAR_HOUSE.md](CLEAR_HOUSE.md)) |
-| `Content.ClearHouse` | Clear House numbers: Action time, guard counts (`ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`) and profiles, room finder settings |
+| `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Games.ClearHouse.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([CLEAR_HOUSE.md](CLEAR_HOUSE.md)) |
+| `Content.Games.ClearHouse` | Clear House numbers: Action time, guard counts (`ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`) and profiles, room finder settings |
 | `Packets.Siege.Pick("Map", name)` / snapshot `Maps` | Clear House's map vote during Selection: `{ Name, Votes }` per map of the mode |
 | `Content.BattlePass` | The season, `TRACK` (a Free and a Premium reward per level), `LevelOf`, `Progress`, `Unlocked`, `Reward`, `Totals`, `SecondsLeft`, `MATCH_XP`, `PREMIUM_ITEM` ([BATTLE_PASS.md](BATTLE_PASS.md)) |
 | `Content.Quests` | `DAILY`, `WEEKLY`, `MILESTONES`, `Get`, `Day`, `Week` |
@@ -213,8 +213,11 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | Module | What it holds |
 | --- | --- |
 | `Content.Matchmaking` | Party size, team sizes and minimums, waits, lifetimes, retry numbers, MemoryStore and topic names, the Studio settings |
-| `Content.Siege` | Phase times, plant time, map folder names, bomb labels and colors, texts, win reasons |
-| `Content.Classes` | Every class and ability, loaded from one file per class in `Content.ClassDefinitions` (sorted by `Order`); `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |
+| `Content.Games.Siege` | Phase times, plant time, map folder names, bomb labels and colors, texts, win reasons |
+| `Content.Crates.Crates` / `Content.Store.Store` | Loaded from one file per crate / store item in `Content.Crates.Definitions` / `Content.Store.Definitions` (sorted by `Order`); the shared colors are in `Content.Store.Style` |
+| `Systems.Store.BotCoinService` | Pays `REWARDS.BotKill` Coins for an NPC kill |
+| `Systems.Lobby.Teleporters` | Parts tagged `Teleporter` send players to the part named by their `TeleportTo` attribute |
+| `Content.Classes.Classes` | Every class and ability, loaded from one file per class in `Content.Classes.Definitions` (sorted by `Order`); `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |
 | `Content.Cameras` | Camera health, hit box, view limits, scan range/angle/cooldown/ray steps, attribute names |
 | `Content.Match.Modes.Siege` | The mode entry (`External = true`) |
 | `Content.Match.Teams` | Also `Attackers` and `Defenders` |
@@ -242,14 +245,14 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Packets.Analytics.MenuOpened` | Client → server | A menu name from `Content.Analytics.MENUS`, for analytics |
 | `Siege.SelectionEnded` (extension, Fire) | summary | Each round's final picks (`Picks`: Player, Team, Class, Spawn, Random), Mode, Map, Site |
 | `TotalWins` | Player | Saved total wins, set by `StatsService`; the lobby leaderboard sorts by it |
-| `Content.Siege.ROUNDS` / `DEFAULT_ROUNDS` / `ROUND_END_TIME` / `MATCH_ENDING_REASONS` | Content | Rounds per mode, the pause between rounds, reasons that end the whole match |
+| `Content.Games.Siege.ROUNDS` / `DEFAULT_ROUNDS` / `ROUND_END_TIME` / `MATCH_ENDING_REASONS` | Content | Rounds per mode, the pause between rounds, reasons that end the whole match |
 | `DronesMax` | Player | How many drones they may have out at once (`Content.Drones.MAX_ATTRIBUTE`). `DroneService.AddCharge(player)` raises it by one until the next refund |
 | `StoreService.Buy` / `Give` / `Perk` / `OwnsClass` / `OwnsPass`, `StatsService.Record` | Server | See [STORE.md](STORE.md#api-and-extension-points) |
 | `Store.Buy` / `Store.Open` / `Store.Reward` | Packets | Buy a crate (into the inventory), item or class; open a crate from the inventory; a reward was earned |
 | `Client.Core.Store.Open(section?)`, `Client.Core.Inventory.Open(tab?)`, `Client.Core.ItemDetails.Show(view)`, `Client.Core.StoreViews` | Client | Store, Inventory, detail page, shared views |
 | `CrateInventory` | Saved data | `[crateId].Count`: crates bought and not opened |
 | `Store.PreventBuy`, `Store.Bought`, `Store.Given`, `Stats.Recorded` | Extension points | See [STORE.md](STORE.md) |
-| `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | Saved data | From `Content.Store` (ScribeFragment). `Tokens` is unused since 2026-11-15 |
+| `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | Saved data | From `Content.Store.Store` (ScribeFragment). `Tokens` is unused since 2026-11-15 |
 | `WinStreak` | Player attribute | The win streak shown above the head |
 | `Skins.FamilyOf(gunId)` | Shared | The skin family a gun wears ("Rifle", "Pistol", else its own Id). `Skins.EquipField(gunId)` returns the family's field |
 | `Client.Core.SkinShop.Preview(skinId)` | Client | Plays the crate reel landing on a skin, granting nothing (testing) |
@@ -257,7 +260,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Client.Gadgets.DroneController.Cycle(direction)` | Client | Switch to the next (1) or previous (-1) living drone while in one |
 | `Assets.UI.Templates.PromptStack` / `PromptCard` | BillboardGui / TextButton | The custom proximity prompt: one stack per object, cards 2 per row (`Client.Interact.CustomPrompts`). Every prompt is Custom style on the client |
 | `FixedKey` | ProximityPrompt attribute | Its key is kept: `PromptKeys` doesn't move it to Interact, and `CustomPrompts` moves the other prompt on a clash |
-| `Main.Mobile.<Button>.Icon.Glyph` | ImageLabel | The touch button's icon. `Content.Consumables` entries have an `Icon` for the grenade button |
+| `Main.Mobile.<Button>.Icon.Glyph` | ImageLabel | The touch button's icon. `Content.Consumables.Consumables` entries have an `Icon` for the grenade button |
 | `workspace.SiegeCameras`, `workspace.SiegeGadgets` | | Made at runtime |
 | Keys | | `Play` (K), `Party` (L), `ClassAbility` (T) in `Shared.PlayerSettings.Actions`; the `Match`, `Loadout` and `GameMode` actions are gone. A player's class is **never** an attribute |
 
@@ -534,7 +537,7 @@ data.WeaponSkins.Has("Rifle_Gold")
 | `Settings.Volumes.<Group>` | Number 0–1 | Sound volumes |
 | `Settings.Options.<Option>` | Number | Options (toggles are 0 / 1) |
 | Saved loadout | String | The picked loadout Id |
-| `Consumable` | String | The picked consumable Id (`Grenade` or `Smoke`), from `Content.Consumables` |
+| `Consumable` | String | The picked consumable Id (`Grenade` or `Smoke`), from `Content.Consumables.Consumables` |
 
 Add fields from a new module without editing `Shared.Data`: tag a ModuleScript `ScribeFragment` that returns `{ Template = { ... }, ServerStore = { ... } }`. Each root name may only be used once.
 
@@ -696,7 +699,7 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `Content.Guns.Loadouts` | The loadouts; `Loadouts.Get(id)` |
 | `Content.Guns.Skins` | `List`, `CRATE_PRICE` (499), `CRATE_REFUND_COINS` (500); `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)` |
 | `Content.Guns.Melee` | Bash numbers; `Melee.For(gunId)` |
-| `Content.Consumables` | Grenade and smoke numbers; `List`, `Get(id)`, `PER_LIFE` (2), `DEFAULT`, `THROW_COOLDOWN` |
+| `Content.Consumables.Consumables` | Loaded from one file per consumable in `Content.Consumables.Definitions`; `List`, `Get(id)`, `PER_LIFE` (2), `DEFAULT`, `THROW_COOLDOWN` |
 | `Content.Guns.Abilities.*` | Ability hooks: `ModifyStats`, `OnFire`, `OnHit`, `CanPierce`, `OnAltFire`, `OnEquip`, `OnUnequip`, `OnReload`. Shipped: Scope, Ricochet, Burst, ExplosiveRounds, PumpShotgunSpread, SiegeShotgunSpread |
 | `Content.Effects.Registry` | Every effect by name |
 | `Content.Breakables.Registry` / `Definitions` | Board types (`Board`, `DoorBoard`) |

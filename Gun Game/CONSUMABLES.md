@@ -29,7 +29,7 @@ A throw works with any weapon held, or none. It's refused in the lobby, while a 
 
 | What | Where |
 | --- | --- |
-| The definitions and every number | `ReplicatedStorage.Content.Consumables` (tagged `ScribeFragment`: saves the `Consumable` field) |
+| The definitions and every number | `ReplicatedStorage.Content.Consumables.Consumables` (tagged `ScribeFragment`: saves the `Consumable` field) |
 | Server: count, throw, blast, smoke | `ServerScriptService.Modules.Systems.Consumables.ConsumableService` |
 | Client: input, HUD, button, picker | `ReplicatedStorage.Modules.Client.Guns.Consumables` (`ClientOnly`) |
 | Smoke sight check | `ReplicatedStorage.Modules.Shared.Smoke` (`Smoke.Blocks(from, to)`) |
@@ -95,7 +95,7 @@ Client (`Client.Guns.Consumables`): `Throw()` and `Pick(id)`.
 
 ## Adding a consumable
 
-1. Add an entry to `LIST` in `Content.Consumables` with a new `Id`, a `Kind` (`"Grenade"` or `"Smoke"`) and its numbers. `Bounce`, `LandingKeep` and `RollDrag` set how it lands and rolls.
+1. Add a ModuleScript to `Content.Consumables.Definitions` (copy Grenade or Smoke) with a new `Id`, an `Order` (its place in the menu), a `Kind` (`"Grenade"` or `"Smoke"`) and its numbers. `Bounce`, `LandingKeep` and `RollDrag` set how it lands and rolls.
 2. Add its model (one part) to `Assets.Models.Consumables`, named as `Model`.
 3. Add a TextButton named after the Id to `Main.Loadout.Body.Consumables.Options` (copy one of the two).
 

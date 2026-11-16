@@ -6,8 +6,8 @@ In Siege every player picks a class: a default loadout, the guns they may swap t
 
 | What | Where |
 | --- | --- |
-| Every class and every number | One ModuleScript per class in `ReplicatedStorage.Content.ClassDefinitions` (since 2026-11-15, like `Content.Guns.Definitions`). Edit classes there; `Content.Classes` holds no class data |
-| The class list and its functions (`Get`, `ForTeam`, `Allows`...) | `ReplicatedStorage.Content.Classes`: loads every file in `Content.ClassDefinitions` and sorts them by `Order`, then `Name` |
+| Every class and every number | One ModuleScript per class in `ReplicatedStorage.Content.Classes.Definitions` (since 2026-11-15, like `Content.Guns.Definitions`). Edit classes there; `Content.Classes.Classes` holds no class data |
+| The class list and its functions (`Get`, `ForTeam`, `Allows`...) | `ReplicatedStorage.Content.Classes.Classes`: loads every file in `Content.Classes.Definitions` and sorts them by `Order`, then `Name` |
 | Assignment, loadouts, charges, cooldowns, every ability check | `ServerScriptService.Modules.Systems.Classes.ClassService` |
 | One module per ability | `Systems.Classes.Abilities.<AbilityId>` |
 | Shared gadget code (aim, place, blast, enemies) | `Systems.Classes.Gadgets` |
@@ -46,7 +46,7 @@ The spec asked for four classes a side. Each side has five, because a team has u
 ## Rules
 
 - **One player per class per team**, first come, first served. `ClassService.Assign` refuses a class a teammate holds.
-- **Loadout:** each slot starts as the class's default and may be swapped to any gun in that slot's categories (`Classes.Allows`). Categories are in `Content.Classes.GunCategories`. `ClassService.Arm` gives the guns and the knife; the normal loadout is not given during a match (`Loadout.PreventApply`).
+- **Loadout:** each slot starts as the class's default and may be swapped to any gun in that slot's categories (`Classes.Allows`). Categories are in `Content.Classes.Classes.GunCategories`. `ClassService.Arm` gives the guns and the knife; the normal loadout is not given during a match (`Loadout.PreventApply`).
 - **A class is never a replicated attribute.** Only its owner is sent `Packets.Class.State`. Other players learn classes through the Siege snapshots their team is allowed ([SIEGE.md](SIEGE.md#scoreboard)).
 - **Charges** are per match. **Cooldown** starts after each use.
 
@@ -102,7 +102,7 @@ How the abilities reach other systems, without editing them:
 
 ## Adding a class
 
-1. Add a ModuleScript to `Content.ClassDefinitions` (copy one and rename it to the new Id) that returns the class: `Order` (its place in the menu), Id, Name, Team, Icon, Description, Loadout, Categories, Ability. Nothing else to register: `Content.Classes` loads every file in the folder, and warns about a file that fails to load, has no Id, or repeats one.
+1. Add a ModuleScript to `Content.Classes.Definitions` (copy one and rename it to the new Id) that returns the class: `Order` (its place in the menu), Id, Name, Team, Icon, Description, Loadout, Categories, Ability. Nothing else to register: `Content.Classes.Classes` loads every file in the folder, and warns about a file that fails to load, has no Id, or repeats one.
 2. For a new ability, add a ModuleScript named after `Ability.Id` to `Systems.Classes.Abilities`:
 
 ```lua

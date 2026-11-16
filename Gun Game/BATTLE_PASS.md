@@ -12,7 +12,7 @@ Added 2026-11-16, changed the same day to a level track (no Battle Stars). A sea
 | XP, levels, claims, match XP | `ServerScriptService.Modules.Systems.BattlePass.BattlePassService` |
 | Quest sets, counting, quest XP | `ServerScriptService.Modules.Systems.BattlePass.QuestService` |
 | The screen | `Main.BattlePass` (built in Studio from a copy of the Inventory panel), `Client.Core.BattlePass`; templates `BPLevel` (a level column), `BPQuestRow`, `NavButton`, `SectionHeader`; the XP line `Main.PassToast`; the lobby button `Main.Wallet.PassButton` |
-| The premium pass | Store item `BattlePassS1` (`Content.Store`, Section Passes, 399 Robux, giftable), grant `BattlePass = "S1"` (`StoreGrants.GivePremium`) |
+| The premium pass | Store item `BattlePassS1` (`Content.Store.Store`, Section Passes, 399 Robux, giftable), grant `BattlePass = "S1"` (`StoreGrants.GivePremium`) |
 | Packets | `Packets.BattlePass.Claim(rewardId or "ALL")` -> (ok, message); `Packets.BattlePass.Progress(amount, reason, level)` server -> client |
 
 ## How it works
@@ -58,7 +58,7 @@ It uses the Store's and Inventory's own parts: the same panel, title and red X, 
 ## A new season
 
 1. `Content.BattlePass`: a new `SEASON` (new Id, name, end time), new `ROWS`, and `PREMIUM_ITEM` set to a new store item.
-2. `Content.Store`: a new item like `BattlePassS1` with `Grants = { BattlePass = "<new Id>" }`, and its Robux product at `Store_<Id>` in `Shared.ProductIds`.
+2. `Content.Store.Store`: a new item like `BattlePassS1` with `Grants = { BattlePass = "<new Id>" }`, and its Robux product at `Store_<Id>` in `Shared.ProductIds`.
 3. `Content.Guns.SeasonSkins`: a new set (Prefix, Source collection, palette) and a matching profile in `SkinFinish`.
 
 ## Tested (2026-11-16, Studio playtest, one player)

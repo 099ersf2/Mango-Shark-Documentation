@@ -81,7 +81,7 @@ A gift button on Robux crate and item cards, and GIFT on their page, open `Main.
 
 ### Borders
 
-An item's `Border` names a `Content.Store.BORDERS` preset (Gold, Rainbow, Obsidian). Its colors turn around the card. Add presets as ColorSequences.
+An item's `Border` names a `Content.Store.Store.BORDERS` preset (Gold, Rainbow, Obsidian). Its colors turn around the card. Add presets as ColorSequences.
 
 ### Lobby panel
 
@@ -130,8 +130,8 @@ Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `S
 
 | What | Where |
 | --- | --- |
-| Crates (data) | `ReplicatedStorage.Content.Crates` |
-| Store items, currencies, rewards, saved fields | `ReplicatedStorage.Content.Store` (tagged `ScribeFragment`) |
+| Crates (data) | `ReplicatedStorage.Content.Crates.Crates` |
+| Store items, currencies, rewards, saved fields | `ReplicatedStorage.Content.Store.Store` (tagged `ScribeFragment`) |
 | Product and pass ids | `Shared.ProductIds`: `Crate_<crateId>`, `Store_<itemId>`, `GamePasses.<itemId>` |
 | Robux products and passes declared | `Shared.Data` (built from the two Content modules) |
 | What a purchase gives | `Shared.StoreGrants` |
@@ -160,7 +160,7 @@ Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `S
   - their mode's streak goes up or back to 0;
   - `LastMode` is saved, and coins are paid.
   A match with no winner pays the draw coins and records nothing.
-- **Classes:** a class Id in `Content.Store.LOCKED_CLASSES` must be owned (`OwnedClasses`) to be picked in Siege. `SiegeService` asks `StoreService.OwnsClass`, both for a pick and for the random class given at the end of Selection. None is locked now.
+- **Classes:** a class Id in `Content.Store.Store.LOCKED_CLASSES` must be owned (`OwnedClasses`) to be picked in Siege. `SiegeService` asks `StoreService.OwnsClass`, both for a pick and for the random class given at the end of Selection. None is locked now.
 
 ## API and extension points
 
@@ -187,7 +187,7 @@ Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `S
 | `Store.Given` | Fire | player, currency, amount, reason |
 | `Stats.Recorded` | Fire | player, modeId, categoryId, won, streak |
 
-Saved fields (from `Content.Store`):
+Saved fields (from `Content.Store.Store`):
 
 - `Tokens`, `OwnedClasses`, `OwnedItems` (once-only items bought, 2026-11-13), `Wins`, `Losses`, `LastMode`.
 - `Stats["Mode:<id>"]` and `Stats["Category:<id>"]`: `Wins`, `Losses`, `Streak`, `BestStreak`.
@@ -196,11 +196,11 @@ Player attributes: `WinStreak`, and `TotalWins` (saved `Wins`, for the lobby lea
 
 ## How to add more
 
-- **A crate:** add an entry to `Content.Crates.LIST`:
+- **A crate:** add a ModuleScript to `Content.Crates.Definitions` (copy one, change its `Id` and `Order`):
   - `Skins` maps skin Ids to weights;
   - set `Coins`, and `Robux` for the price shown;
   - for Robux, create a developer product and put its id at `Crate_<Id>` in `Shared.ProductIds`.
-- **A store item:** add it to `Content.Store.ITEMS`, with a `Section` and prices. `Grants` takes Coins, Skins and Classes. For Robux, put the product id at `Store_<Id>`.
+- **A store item:** add a ModuleScript to `Content.Store.Definitions` (copy one, change its `Id` and `Order`), with a `Section` and prices. Ribbon and coin colors come from `Content.Store.Style`. `Grants` takes Coins, Skins and Classes. For Robux, put the product id at `Store_<Id>`.
 - **A game pass:** an item with `Pass = true` and `Perks`. Put the pass id at `GamePasses.<Id>`.
 - **A special skin:** add the skin to `Content.Guns.Skins` (in no crate), and an item in the `Skins` section that grants it.
 - **A class for sale:**

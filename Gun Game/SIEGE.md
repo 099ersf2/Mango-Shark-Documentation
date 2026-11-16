@@ -20,11 +20,11 @@ Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): ev
 
 | What | Where |
 | --- | --- |
-| Numbers and names | `ReplicatedStorage.Content.Siege` |
+| Numbers and names | `ReplicatedStorage.Content.Games.Siege` |
 | The mode entry (an `External` mode) | `Content.Match.Modes.Siege` |
-| The match (phases, picks, spawning, the bombs, defusers, discovery, win rules) | `ServerScriptService.Modules.Systems.Siege.SiegeService` |
-| Finding and checking the map | `Systems.Siege.SiegeMap` |
-| Spectating after death | `Systems.Siege.SpectateService`, `Client.Core.Spectate` |
+| The match (phases, picks, spawning, the bombs, defusers, discovery, win rules) | `ServerScriptService.Modules.Systems.Games.Siege.SiegeService` |
+| Finding and checking the map | `Systems.Games.Siege.SiegeMap` |
+| Spectating after death | `Systems.Games.Siege.SpectateService`, `Client.Core.Spectate` |
 | Defender cameras | `Systems.Cameras.CameraService`, `Client.Gadgets.CameraController`, `Content.Cameras` |
 | Drones (reworked) | `Systems.Drones.DroneService`, `Client.Gadgets.DroneController` ([DRONES.md](DRONES.md)) |
 | Selection screens | `Client.Core.SiegeSelect` → `StarterGui.SiegeSelect` |
@@ -69,7 +69,7 @@ When a match starts the map is checked, and every problem is warned in plain wor
 
 ## Phases
 
-All times are in `Content.Siege`.
+All times are in `Content.Games.Siege`.
 
 | Phase | Time | What happens |
 | --- | --- | --- |
@@ -102,7 +102,7 @@ Since another developer's change, attackers get a body during Prep while they dr
 ## Rounds (2026-11-13)
 
 - **How many rounds:**
-  - `Content.Siege.ROUNDS` per matchmaking mode: `1v1` 3, `5v5` 5, `Private` 3.
+  - `Content.Games.Siege.ROUNDS` per matchmaking mode: `1v1` 3, `5v5` 5, `Private` 3.
   - Any other mode uses `DEFAULT_ROUNDS` (3).
 - **Groups:** players are split into group A (attackers in round 1) and B. A attacks in odd rounds and B in even ones (`teamOfGroup`). Each player's `Team` and team are set again every round.
 - **Score:** each round's winning group scores 1. A draw scores nothing.
@@ -155,7 +155,7 @@ Each row below decides a **round**. The match goes to the side with the most rou
 **Nobody plants a bomb.** The two bombs are the defenders' and are already in place when the round begins.
 
 - When Prep starts, the server stands a copy of the bomb model on `Bombs/<site>/BombA` and `BombB` of the chosen site, in `workspace.SiegeBombs`. Each copy is anchored, turned like the map's bomb part, and sits with its base on that part's base.
-- The model is `Content.Siege.BOMB_MODEL` (`"Bomb"`): looked for in `Assets.Models.Siege` first, then as a model of that name in Workspace. Today it is `Workspace.Bomb`.
+- The model is `Content.Games.Siege.BOMB_MODEL` (`"Bomb"`): looked for in `Assets.Models.Siege` first, then as a model of that name in Workspace. Today it is `Workspace.Bomb`.
 - The bombs are removed when the match ends. Only the chosen site gets bombs.
 - **Defenders have nothing to plant or defuse.** Their job is to keep the attackers out of the two bomb rooms until the clock runs out.
 
@@ -243,7 +243,7 @@ In the lobby, the same board is the **server leaderboard** (2026-11-13): RANK / 
 ## API
 
 ```lua
-local SiegeService = require(ServerScriptService.Modules.Systems.Siege.SiegeService)
+local SiegeService = require(ServerScriptService.Modules.Systems.Games.Siege.SiegeService)
 SiegeService.Phase()                     -- "Idle", "WaitingForPlayers", "Selection", "Reveal", "Prep", "Action", "End"
 SiegeService.IsPlaying(player)
 SiegeService.TeamOf(player)              -- "Attackers", "Defenders" or nil

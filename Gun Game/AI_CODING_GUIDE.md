@@ -236,7 +236,7 @@ This is how features change each other without editing each other's code.
 
 - **Reading and writing:** on the server, `local data = Data.Server.WaitForData(player)`, then `data.Coins.Increment(100)`, `data.Field.Get()` and `.Set(v)`. The client reads with `Data.Client.WaitForData()` and `.Observe(...)`.
 - **Only the server writes.** Clients ask through a packet.
-- **New saved fields:** don't edit `Shared.Data`. Make (or reuse) a module tagged **`ScribeFragment`** that returns `Template` (and optionally `ServerStore`), with Scribe types such as `Scribe.String("Grenade")`. Each root field name may be used only once in the whole game. See `Content.Consumables` and `Shared.PlayerSettings`.
+- **New saved fields:** don't edit `Shared.Data`. Make (or reuse) a module tagged **`ScribeFragment`** that returns `Template` (and optionally `ServerStore`), with Scribe types such as `Scribe.String("Grenade")`. Each root field name may be used only once in the whole game. See `Content.Consumables.Consumables` and `Shared.PlayerSettings`.
 - **Live per-life state** (counts, flags) goes in player attributes set by the server, not in saved data.
 
 ### Effects and sound: `Content.Effects.Registry`
@@ -325,7 +325,7 @@ This is how features change each other without editing each other's code.
 
 Grenades and smoke bombs (`docs/CONSUMABLES.md`) are the reference example. Copy this shape:
 
-1. **`Content.Consumables`:** the definitions and every number, an exported type, `Get(id)`, `List`, and constants such as `PER_LIFE`. Tagged `ScribeFragment` to save the player's pick.
+1. **`Content.Consumables.Consumables`:** the definitions and every number, an exported type, `Get(id)`, `List`, and constants such as `PER_LIFE`. Tagged `ScribeFragment` to save the player's pick.
 2. **`Shared.Packets`:** a `Consumable` group with `Throw` (client → server: server time, look direction) and `Pick` (client → server: id).
 3. **`Systems.Consumables.ConsumableService` (server):**
    - Holds the count in player attributes and refills it on `CharacterAdded`.

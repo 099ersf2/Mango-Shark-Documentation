@@ -2,7 +2,7 @@
 
 > **Since 2026-11-12 the only mode is Siege**, and it does not run the way this page describes. Read [SIEGE.md](SIEGE.md) and [MATCHMAKING.md](MATCHMAKING.md) first.
 >
-> - Siege is an **External** mode (`External = true` in `Content.Match.Modes.Siege`): `Systems.Siege.SiegeService` runs its phases, teams, spawning and win rules. For an External mode `MatchService` never starts a match, shuffles teams, respawns anyone or ends a round by itself. It keeps kills and deaths, friendly fire, the `Eliminated` attribute and the snapshot the HUD's top bar shows.
+> - Siege is an **External** mode (`External = true` in `Content.Match.Modes.Siege`): `Systems.Games.Siege.SiegeService` runs its phases, teams, spawning and win rules. For an External mode `MatchService` never starts a match, shuffles teams, respawns anyone or ends a round by itself. It keeps kills and deaths, friendly fire, the `Eliminated` attribute and the snapshot the HUD's top bar shows.
 > - New calls for the owner of an External mode: `MatchService.BeginExternal(id, endsAt)`, `SetClock(endsAt)`, `Finish(winner?)`, `Reset()`, `Kills(player)`, `Refresh()`.
 > - **Archived** in `ServerStorage.Archive.OldMatchModes` (nothing deleted): Team Deathmatch, Free-for-All, Elimination; the admin Match menu and `Packets.Match.Admin`; the `match`, `matchmode`, `matchset` commands; the Match key (M); the old scoreboard (now `Client.Hud.Scoreboard`).
 > - Teams gained `Attackers` and `Defenders` (`Content.Match.Teams`).

@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-11-16: Data in Definitions folders, Games folder, no RemoteEvents
+
+Tested in a Studio playtest (server and client): every module loads with no errors, and the lists come out in the same order as before. No player data was written.
+
+### Changed
+
+- **One file per entry, like guns.** Each of these is now a Folder holding its module and a `Definitions` folder, one ModuleScript per entry with an `Order` field (lowest first). The module only loads and sorts them; it no longer holds a copy of the data. A file that fails to load, has no Id or repeats an Id is warned about and left out.
+
+  | Before | Module | Definitions |
+  | --- | --- | --- |
+  | `Content.Classes` + `Content.ClassDefinitions` | `Content.Classes.Classes` | `Content.Classes.Definitions` (17 classes) |
+  | `Content.Crates` | `Content.Crates.Crates` | `Content.Crates.Definitions` (8 crates) |
+  | `Content.Store` | `Content.Store.Store` | `Content.Store.Definitions` (7 items) |
+  | `Content.Consumables` | `Content.Consumables.Consumables` | `Content.Consumables.Definitions` (Grenade, Smoke) |
+
+  - `Content.Store.Style` (new) holds the shared look: `TAG_COLORS`, `COIN_COLOR`, `COIN_ICON`, `BORDERS`. Store items use it; `Store.TAG_COLORS`, `BORDERS` and `COIN_ICON` still work.
+  - `Content.Store.Store` and `Content.Consumables.Consumables` keep the `ScribeFragment` tag, so saved data is unchanged.
+  - Every `require` was updated.
+- **Games folder:** `Content.Siege` and `Content.ClearHouse` are now `Content.Games.Siege` and `Content.Games.ClearHouse`. On the server, `Systems.Siege` became `Systems.Games.Siege` (`SiegeService`, `SiegeMap`, `SpectateService`) and `Systems.Games.ClearHouse.ClearHouse`. `SiegeService`'s optional calls take a dotted folder (`call("Games.Siege", "SpectateService", ...)`).
+- The Battle Pass store item's text no longer mentions Battle Stars.
+
+### Removed
+
+- **Every RemoteEvent and RemoteFunction in ReplicatedStorage** (`HologramPose`, `HologramGlitch`, `DeadCallState`, `DeadCallControl`, `DeadCallPhoneRequest`, and the Store's open-many and buy remotes). The scripts use Packets instead:
+  - `Packets.Store.OpenMany(crateId, count)`, answered with ok, a message and the results; the Store's Buy now uses `Packets.Store.Buy`.
+  - `Packets.Camera.Look`;
+  - `Packets.Class.HologramPose`, `Packets.Class.HologramGlitch`;
+  - `Packets.DeadCall.State`, `Control`, `Phone` (answered).
+- The loose `ServerScriptService.BotCoins` and `ServerScriptService.SecretTeleport` scripts, replaced by modules:
+  - `Systems.Store.BotCoinService`: pays `Content.Store.Store.REWARDS.BotKill` (10 Coins) for an NPC kill.
+  - `Systems.Lobby.Teleporters`: any part tagged `Teleporter` with a `TeleportTo` attribute (the name of a part in Workspace) sends a player touching it there (1 s cooldown, 3 studs up). TeleportA → TeleportBox and TeleportB → TeleportReturn are set up.
+
 ## 2026-11-16: Battle Pass as a level track, and a screen that matches the game
 
 Tested in a Studio playtest; the test data was removed afterwards. See [BATTLE_PASS.md](BATTLE_PASS.md).

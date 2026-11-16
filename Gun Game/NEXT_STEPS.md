@@ -1,5 +1,10 @@
 # Next steps
 
+## Restructure (2026-11-16)
+
+- [ ] **A real match after the Games move:** a full Siege and a Clear House match (spectating after death goes through `call("Games.Siege", "SpectateService", ...)`). Only loading was tested.
+- [ ] **Secret teleports and bot coins** in a live server: walk into TeleportA and TeleportB, and kill an NPC for the 10 Coins.
+
 ## Battle Pass (2026-11-16)
 
 - [ ] **Robux product for the pass:** create one (399 Robux) and put its id at `Store_BattlePassS1` in `Shared.ProductIds`.
@@ -28,7 +33,7 @@
 - [ ] **A real fight:**
   - kills on guards count for the player (end screen, Tab);
   - guards re-board doors and windows in their room.
-- [ ] **Difficulty:** with 1 and with 5 players, tune `ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`, `PROFILES` and `ACTION_TIME` in `Content.ClearHouse`.
+- [ ] **Difficulty:** with 1 and with 5 players, tune `ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`, `PROFILES` and `ACTION_TIME` in `Content.Games.ClearHouse`.
 - [ ] **Map vote with several players:** the tie draw, and Bank played through to a win.
 - [ ] **A full squad of 5** on live servers: the match forms at once and everyone lands on the attacker side.
 - [ ] **Game Modes panel:** the ARCADE card and the CLEAR HOUSE card look right (`Icon = "PvE"`, orange). Add an `Image` if you like.
@@ -79,7 +84,7 @@
   - cards, ribbons, the glow sheen, the daily deal countdown;
   - the detail page for a class, a crate and a skin;
   - buy a crate with coins, see it in Inventory > Crates, OPEN, and watch the reel.
-- [ ] **Decide which classes to sell** (`Content.Store.CLASS_PRICES`; none locked now).
+- [ ] **Decide which classes to sell** (`Content.Store.Store.CLASS_PRICES`; none locked now).
 - [ ] **Phone:** the Store cards are 4 per row; they may need 2 on a phone.
 
 ## Store and stats (2026-11-13)
@@ -208,7 +213,7 @@ This list tracks verification not available in the solo Studio session.
 - [ ] Gamepad and touch for every new control.
 
 **Assets**
-- [ ] Class icons (`Content.Classes`, `Icon` is empty) and real sounds for `GadgetPlace`, `GadgetDestroyed`, `Flashbang`, `AbilityPulse`.
+- [ ] Class icons (`Content.Classes.Classes`, `Icon` is empty) and real sounds for `GadgetPlace`, `GadgetDestroyed`, `Flashbang`, `AbilityPulse`.
 
 - [ ] Run a two-player test and verify balanced team assignment and team spawn sides.
 - [ ] Credit an enemy-player kill and verify the player's kill count, team total, and winner.
