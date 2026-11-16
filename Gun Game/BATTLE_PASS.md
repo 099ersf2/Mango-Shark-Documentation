@@ -32,7 +32,7 @@ Added 2026-11-16, changed the same day to a level track (no Battle Stars). A sea
 - A reward can be claimed once its level is reached; a Premium one also needs the pass. Buying the pass later unlocks every Premium reward already reached. **CLAIM ALL** claims everything claimable at once.
 - A skin or class already owned pays 500 Coins instead.
 - The whole track: 21,750 Coins, 11 season skins (only from the pass; the knife at level 50), 2 classes, 31 crates, in 97 rewards.
-- **Season tag:** skins and classes the pass gives show the season (`SEASON.Tag`, "Season 1") before their rarity or team wherever they're listed (`BattlePass.SeasonOf(kind, ref)`).
+- **Season tag:** skins and classes the pass gives show the season (`SEASON.Tag`, "Season 1") before their rarity or team wherever they're listed (`BattlePass.SeasonOf(kind, ref)`). On an Inventory card a season skin's line is "Season 1 · Epic" (no gun, so it fits a phone).
 
 ### Quests
 

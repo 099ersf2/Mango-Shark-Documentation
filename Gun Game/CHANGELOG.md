@@ -22,6 +22,11 @@ Tested in a Studio playtest (server and client). The test claim was undone (Coin
 
 - `Client.Core.LobbyReset`: the Roblox menu's Reset Character button is off while the player is in the lobby (`InLobby`), and on again in a match.
 
+### Tested on a phone screen (Studio device emulator, 749×323)
+
+- The Battle Pass fits: two-reward columns and empty slots read clearly.
+- Inventory and Store show the season tag. A season skin's card line is now just "Season 1 · Epic" (`StoreViews.SkinLine`): with the gun added ("Season 1 · Epic · PumpShotgun") it wrapped and was cut off. The skin's name already says the gun; other skins keep "Epic · Rifle".
+
 ## 2026-11-16: Data in Definitions folders, Games folder, no RemoteEvents
 
 Tested in a Studio playtest (server and client): every module loads with no errors, and the lists come out in the same order as before. No player data was written.

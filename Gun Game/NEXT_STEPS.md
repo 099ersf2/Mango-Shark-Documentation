@@ -2,8 +2,8 @@
 
 ## Battle Pass rework (2026-11-16)
 
-- [ ] **Battle Pass on a phone:** the wider two-reward columns at 844×390.
-- [ ] **Season tag** in the Inventory and Store with a season skin owned (only the Battle Pass preview was looked at).
+- [x] **Battle Pass on a phone** and the **season tag** in the Inventory and Store: checked in the device emulator (2026-11-16).
+- [ ] **Touch controls over menus:** on a phone the joystick and jump button draw on top of an open Inventory or Store.
 - [ ] **Reset in the lobby:** the Reset button is turned off on the client only; a server check could be added if players get around it.
 
 ## Restructure (2026-11-16)
