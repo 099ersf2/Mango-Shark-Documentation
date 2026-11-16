@@ -111,6 +111,10 @@ Coin prices are a centered row: the coin image, then the amount (`Content.CoinIc
 
 The box at the right of the Inventory's filter chips narrows the open tab to cards whose name, subtitle or lock hint holds every word typed (any case), on top of the chip. Headings become one RESULTS heading while searching; X clears it.
 
+### Battle Pass (2026-11-16)
+
+The store item `BattlePassS1` (Passes, 399 Robux, once, giftable) is Season 1's premium battle pass: `Grants = { BattlePass = "S1" }` (`StoreGrants.GivePremium`). Its Robux product (`Store_BattlePassS1`) isn't set up yet. See [BATTLE_PASS.md](BATTLE_PASS.md).
+
 ### Crate inventory
 
 Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `StoreService.OpenCrate`). Then the reel plays (`Main.Opening`).

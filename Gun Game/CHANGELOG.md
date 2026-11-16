@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-16: Battle Pass and quests
+
+Tested in a Studio playtest with one player; the test data was removed afterwards. See [BATTLE_PASS.md](BATTLE_PASS.md).
+
+### Added
+
+- **Battle Pass, Season 1: Breach Point** (Fortnite-style): XP fills 50 levels (1,500 XP each, bonus levels to 100); each level gives 5 Battle Stars; stars buy rewards on 6 pages (and a bonus page), in any order. Pages open at levels 1, 8, 16, 24, 32 and 40, or when the page before is fully claimed.
+  - Rewards: Coins, the new **Breach Point** skins, classes, crates. Free rewards for everyone; the rest need the pass (store item `BattlePassS1`, 399 Robux, giftable: GIFT THE PASS).
+  - `Content.BattlePass`, `Systems.BattlePass.BattlePassService`, `Packets.BattlePass`.
+- **Quests:** 3 dailies (reset 00:00 UTC, +500 XP for all three), 5 weeklies (reset Tuesday 00:00 UTC), 5 milestones of 5 stages. Counted from matches (kills, guards, wins, damage, builds, plants, scans, abilities) and crates opened; private matches count for nothing. `Content.Quests`, `Systems.BattlePass.QuestService`.
+- **Match XP:** 120 per public match, +120 for a win, +15 per kill (10 at most).
+- **The screen** `Main.BattlePass` (`Client.Core.BattlePass`): REWARDS and QUESTS tabs, level, XP bar, stars, countdown, GET BATTLE PASS and GIFT THE PASS; the lobby's **BATTLE PASS** button under STORE and INVENTORY; "+XP" and LEVEL UP lines at the top (`Main.PassToast`).
+- **Breach Point collection:** 10 skins only from the pass (rifle, pistol, LMG, both shotguns, revolver, knife, phone, shield, charm), recolored from the Afterburn set in an olive, gunmetal and neon-lime palette (`Content.Guns.SeasonSkins`, `SkinFinish` profile `BreachPoint`). The Inventory lists them under "Battle Pass: Season 1"; their page says "Only from the Battle Pass" and links to the pass.
+- `StoreGrants.GivePremium(data, season)`; a store item's `Grants.BattlePass`.
+
+### Not done
+
+- The pass's Robux product isn't set up (`Store_BattlePassS1`), so it can't be bought yet.
+
 ## 2026-11-15: Guns held further right
 
 Compile-checked only (not playtested).

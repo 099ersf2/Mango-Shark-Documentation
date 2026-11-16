@@ -29,6 +29,10 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 - **`Card`:** `{ Background = { top, bottom }, Border = "Rainbow" }` sets how the skin's Inventory card looks.
 - **SMG family:** `SMG` and `SiegeSMG`.
 
+## Battle pass collections (2026-11-16)
+
+`Content.Guns.SeasonSkins` makes a season's exclusive set by recoloring a crate collection (every color moved to the palette's dark, paint, metal or accent by brightness and saturation). Season 1: **Breach Point**, 10 skins from the Afterburn set and the Rocket charm, olive and gunmetal with a neon-lime accent; `SkinFinish` has a `BreachPoint` profile. They are in no crate or store item: only the battle pass gives them ([BATTLE_PASS.md](BATTLE_PASS.md)). Each has `BattlePass = true`.
+
 ## Where things are
 
 | What | Where |

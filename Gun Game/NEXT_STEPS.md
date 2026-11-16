@@ -1,5 +1,13 @@
 # Next steps
 
+## Battle Pass (2026-11-16)
+
+- [ ] **Robux product for the pass:** create one (399 Robux) and put its id at `Store_BattlePassS1` in `Shared.ProductIds`.
+- [ ] **A real match:** XP and quest progress after a public Siege and a Clear House match; the +XP and LEVEL UP lines.
+- [ ] **Buy and gift the pass** once the product exists; the premium rewards unlock.
+- [ ] **Balance:** level speed with real players (`XP_PER_LEVEL`, quest XP, `MATCH_XP`).
+- [ ] **Featured reward render** on the pass screen, like Fortnite's (`SEASON.Featured`).
+
 ## 2026-11-15
 
 - [ ] **Inventory search:** try it in a playtest (not run): typing narrows the cards, X clears, tabs keep the search; on a phone, the box and the chips fit side by side.
