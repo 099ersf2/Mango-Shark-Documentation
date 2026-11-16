@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-16: Guns through walls can't shoot past them, Studio match clean-up, next steps
+
+Tested in Studio playtests. Two Clear House test wins were undone afterwards (Coins back to 1,058, Wins 5, the Clear House and Arcade stats, LastMode `5v5`, two weekly quests, two milestones, Battle Pass XP 0).
+
+### Fixed
+
+- **A gun (or head) poking through a wall can't shoot past it**, for players and NPCs (`Systems.Guns.GunService`). A shot's start is moved back in front of any solid wall between the shooter's HumanoidRootPart and it (`clearOfWalls`). NPC shots (`FireAs`) skipped every origin check before; they now get this one too. Tested on the server: a player's and an NPC's shot started 1.5 studs past a wall did no damage to a target behind it; the same NPC shot with the wall moved away hit it (20 damage).
+- **Studio: back to the lobby after a match.** The new body counted as an arena spawn, so `InLobby` went back to false and the match loadout was given in the lobby. `LobbyService.Readmit(player)` (new) makes the next character a lobby spawn; Siege's end calls it before `LoadCharacter`. Tested: after a Clear House win the player was in the lobby, `InLobby` true, no guns.
+- **Studio: the match's map copy stays in Workspace** after a match, so a second match played over two maps. Siege's end now destroys the copy it made from `ReplicatedStorage.Maps` and clears `ActiveSiegeMap`. Tested: the Mansion copy was gone after the match.
+- **Game Modes panel opened empty** (no cards, the template's DUELS text) the first time in a session. The cards are now also drawn whenever the panel becomes visible (`Client.Core.ModeMenu`).
+- **Mode card ribbon:** RECOMMENDED was cut off by SELECTED at the card's top. The ribbon is wider (72%) and SELECTED sits above the name (`Templates.ModeCard`).
+- **Motion Scanner ability loads again:** its `tick` function was declared twice on one line (`local function tick()local function tick()`).
+
+### Checked
+
+- A full Clear House match (Mansion, solo) after the Games folder move: Selection, map vote, guards in waves (6, 4, 6), HouseCleared, the win paid, back to the lobby.
+- Inventory search: "glacier" narrowed 127 cards to 11.
+- `Definitions.ReinforcedDoor`'s model name is right: the asset is now named `ReinforcedDoor`.
+
 ## 2026-11-16: Shield shots through walls, coin icon, less camera bob, touch controls hidden behind menus
 
 Tested in a Studio playtest on the phone screen (device emulator). No player data was written.

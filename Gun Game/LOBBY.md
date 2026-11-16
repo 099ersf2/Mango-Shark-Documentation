@@ -34,6 +34,7 @@ local LobbyService = require(ServerScriptService.Modules.Systems.Lobby.LobbyServ
 LobbyService.IsInLobby(player)
 LobbyService.SendToArena(player)  -- what the arena portal does; returns whether they moved
 LobbyService.SendToLobby(player)  -- what the return portal does
+LobbyService.Readmit(player)      -- the next character spawns in the lobby, like the first (Siege's end in Studio)
 ```
 
 Constants at the top of the module: `TELEPORT_COOLDOWN`, `ARENA_SPAWN_HEIGHT`, `PORTAL_REACH`, and the part names.

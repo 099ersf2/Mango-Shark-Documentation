@@ -3,17 +3,18 @@
 ## Shield and camera (2026-11-16)
 
 - [ ] **Bruno against a wall with two players:** check the other player no longer sees his shots come out of the wall (only the math and one player were tested).
-- [ ] **Motion Scanner** ability doesn't load (missing `end` at line 131); its author should finish it.
+- [x] **Motion Scanner** loads again (a doubled `local function tick()` line was the error). Its author should still play it through.
+- [x] **Guns poking through walls** can't shoot past them, players and NPCs (2026-11-16).
 
 ## Battle Pass rework (2026-11-16)
 
 - [x] **Battle Pass on a phone** and the **season tag** in the Inventory and Store: checked in the device emulator (2026-11-16).
-- [ ] **Touch controls over menus:** on a phone the joystick and jump button draw on top of an open Inventory or Store.
+- [x] **Touch controls over menus:** hidden while a menu is open (2026-11-16).
 - [ ] **Reset in the lobby:** the Reset button is turned off on the client only; a server check could be added if players get around it.
 
 ## Restructure (2026-11-16)
 
-- [ ] **A real match after the Games move:** a full Siege and a Clear House match (spectating after death goes through `call("Games.Siege", "SpectateService", ...)`). Only loading was tested.
+- [ ] **A real Siege match after the Games move** (needs two players): spectating after death goes through `call("Games.Siege", "SpectateService", ...)`. A full Clear House match was played on 2026-11-16.
 - [ ] **Secret teleports and bot coins** in a live server: walk into TeleportA and TeleportB, and kill an NPC for the 10 Coins.
 
 ## Battle Pass (2026-11-16)
@@ -26,7 +27,7 @@
 
 ## 2026-11-15
 
-- [ ] **Inventory search:** try it in a playtest (not run): typing narrows the cards, X clears, tabs keep the search; on a phone, the box and the chips fit side by side.
+- [x] **Inventory search:** "glacier" narrows 127 cards to 11 (2026-11-16). Not checked: X clears, tabs keep the search.
 - [ ] **Bundle rows:** clicking a selected row again goes back to the whole bundle (not checked); check on a phone that rows can be tapped.
 - [ ] **More tooltips:** add a `Tooltip` attribute to any other button that needs one (Settings tabs, Party slots, HUD buttons).
 - [ ] **Prep drone:** in a real Siege match, the attacker can drive the drone through Prep on Mansion and Bank (not confirmed: the test player's data kept failing to load).
@@ -48,7 +49,7 @@
 - [ ] **Map vote with several players:** the tie draw, and Bank played through to a win.
 - [ ] **A full squad of 5** on live servers: the match forms at once and everyone lands on the attacker side.
 - [ ] **Game Modes panel:** the ARCADE card and the CLEAR HOUSE card look right (`Icon = "PvE"`, orange). Add an `Image` if you like.
-- [ ] **Studio only:** after a match, the old map copy stays in Workspace (Siege does the same), so a second match in one Studio session plays over two overlapping Mansions.
+- [x] **Studio only:** the map copy is removed after a match, and players come back to the lobby with `InLobby` set (2026-11-16).
 
 ## Analytics (2026-11-14)
 
@@ -161,7 +162,7 @@ No playtest was asked for. Everything below compiles and its UI parts exist; not
 - [ ] **Leave a queued party:** the party leaves the queue and the member who left sees no search. With the member on another lobby server too.
 - [ ] **Sliding:** crouch while sprinting right after firing, right after a slide, and in the air before landing. Tune `Config.SlideBuffer` (0.3 s) if it feels late or too eager.
 - [ ] **Touch layout** on a real phone and a tablet: reach, and whether FIRE and AIM sit right for the thumb. Positions are one table, `TOUCH_BUTTONS` in `Client.Core.UI`.
-- [ ] Fix `Definitions.ReinforcedDoor`'s model name (`ReinforcedDoor`, the asset is `ReinforcedDoorBoard`) if maps will tag parts with it.
+- [x] `Definitions.ReinforcedDoor`'s model name matches the asset (now named `ReinforcedDoor`).
 
 ## Music (2026-11-12)
 
@@ -178,7 +179,8 @@ This list tracks verification not available in the solo Studio session.
 - [ ] Two real players queue 1 V 1 and get matched against each other; a party of two is refused for 1 V 1 with a clear message.
 - [ ] Two players in different modes at once are never matched together (checked with made-up tickets only).
 - [ ] **Look at the font.** Every label is now Fredoka One, which is wider than Builder Sans: check for clipped or shrunken text, mostly in the Settings rows, the scoreboard and the kill feed.
-- [ ] **The Game Modes panel has not been run at all** (no playtest was asked for; it compiles and its parts exist). Open it from MODE, pick each category, check the outline, the description box and SELECTED, then EXIT. On a phone and with a gamepad too.
+- [ ] **The Game Modes panel** opens with its SIEGE and ARCADE cards (fixed 2026-11-16: it opened empty the first time). Still to check: pick each category, the outline, SELECTED, EXIT, on a phone and with a gamepad.
+- [ ] (old note) **The Game Modes panel has not been run at all** (no playtest was asked for; it compiles and its parts exist). Open it from MODE, pick each category, check the outline, the description box and SELECTED, then EXIT. On a phone and with a gamepad too.
 - [ ] A category with two or more modes (none exists yet): its second page and BACK have never been shown.
 - [ ] Upload pictures for the cards and set `Image` on the rows in `Content.Matchmaking`. A card with an image has never been shown: check the crop, the dark fade, and that the name is readable.
 - [ ] Decide what happens to the Loadout menu and the grenade / smoke picker inside it: nothing opens them now.

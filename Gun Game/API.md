@@ -422,6 +422,7 @@ See [DRONES.md](DRONES.md).
 | `LobbyService.IsInLobby(player): boolean` | Same as the `InLobby` attribute |
 | `LobbyService.SendToArena(player)` | Moves to a random arena spawn, `InLobby` false, gives the loadout |
 | `LobbyService.SendToLobby(player)` | Moves to `LobbySpawnPoint`, `InLobby` true, takes the guns |
+| `LobbyService.Readmit(player)` | The next character spawns in the lobby like the first one; call before `LoadCharacter` |
 | `LobbyService.SelectMap(player, mapId: string)` | The lobby hub's map choice (`SelectedMap` attribute) |
 
 ### `Systems.NPC.NPCService` and `Systems.NPC.Brain`
