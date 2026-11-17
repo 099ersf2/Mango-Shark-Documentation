@@ -150,6 +150,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Client.Core.ModeMenu.Selected()` / `Pick(modeId)` / `Open()` / `.Changed` | The picked queue mode's Id / picks one / opens the Game Modes panel (`Menus` name `Modes`) / fires with the new Id |
 | `Client.Core.Matchmaking.Play()` / `OpenModes()` / `OpenParty()` | The lobby's PLAY button (queue or cancel, for the picked mode) / opens the Game Modes panel (leader only, not while searching) / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
 | `Client.Core.SiegeSelect` | No API: the selection and reveal screens |
+| `Client.Core.ClassPanel` | `Fill(panel, class, { Color?, UserId? })`, `FillGun(panel, { Kind, Title, Description?, GunId?, Color?, Preview? })`, `Letter(class)`, `GunName(class, slot, gunId)`, `KitNames(class, slot)`, `Speed(class)`, `GunLine(gunId)`: the class and gun panels |
+| `ItemDetails` View `Class` / `GunId`, Row `GunId` | 2026-11-17: show the class panel or the gun panel on the detail page |
 | `Client.Hud.SiegeTopBar` | No API: the Siege top bar (HUD and feeds) and the "3 VS 4" flash |
 | `Client.Combat.DamageFeedback` | No API: red edges, hit arrows and the low-health look |
 | `Client.Gadgets.FeedInfo` | No API: the drone and camera feeds' objective, location and compass |

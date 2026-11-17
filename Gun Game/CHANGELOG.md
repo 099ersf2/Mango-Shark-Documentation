@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-11-17: A lighter look, one class panel everywhere, a weapon HUD with gun models
+
+Tested in Studio playtests (lobby menus and a Siege match on Mansion). No player data was written.
+
+### Changed
+
+- **Lighter UI across the game:** every near-black panel (221 of them in `ReplicatedFirst.UILoader` and `Assets.UI.Templates`) is now a slate blue, keeping its own hue when it had one; touch-button icons, NO SIGNAL screens and dimmers stay dark. Colors set in code got the same change (`LobbyHubUI`, `Matchmaking`, `SiegeSelect`, `Store`, `Inventory`, `BattlePass`, `SiegeHud`, `LoadoutMenu`, `DroneController`, `DeadCallController`, `DeadCallTargets`, the announcement `Banner`). Menus whose dark gradient multiplied their background (Store, Inventory, Battle Pass, crate opening, the selection screen) got light gradients. The UI before this is kept in `ServerStorage.Archive.UIBeforeLight_2026_11_17`.
+- **Inventory, CLASSES tab:** like the Siege selection screen: a grid of class tiles (locked ones covered with their price) and the class panel beside it. UNLOCK opens the class's page to buy it.
+- **Store and Inventory detail pages:** a class shows the selection screen's class panel (role, difficulty, speed, ability, weapons and gadgets, your avatar). A skin shows the gun panel: the gun's damage, fire rate, magazine and mobility bars beside its turning model, and a DETAILS list (rarity, weapon, copies owned, where it comes from). Clicking a class's starter gun shows that gun's stats.
+- **Weapon HUD:** each weapon slot is a row with its key, the gun's model (in your skin) and its name; the held one turns light with dark text. The ammo box shows the held gun's model beside the big count.
+- **Selection screen's loadout panel** shows the gun's model in your skin instead of your avatar.
+
+### Added
+
+- `Client.Core.ClassPanel`: fills the class panel and the gun panel (templates `ClassPanel`, `GunPanel`) for the selection screen, the Inventory and the detail page.
+
 ## 2026-11-17: Siege UI pass: pre-match screens, top bar, hit effects, HUD
 
 Our own take on what Rainbow Six Siege's screens do well, in SiegeBlox's look: dark navy panels, gold for "you" and "next", the team's color for your side and red for the enemy, rounded blocky shapes with a little "stud" on class emblems, and Fredoka One everywhere. Tested in Studio playtests with bots on Mansion and Bank, at 1920 wide and at a narrow 919 wide (see [UI.md](UI.md#siege-ui-pass-2026-11-17)). The only player data written was the gadget pick (Frag grenade to Smoke bomb and back again).

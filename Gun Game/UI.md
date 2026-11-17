@@ -68,11 +68,13 @@ The sizes below were replaced on 2026-11-13 (see above); the way they are placed
 
 ## The look
 
+**Lighter since 2026-11-17 (slate blue, not black).** The old dark values below became slate: `#14171c` is now about `#374159`, `#20242c` about `#4a5677`, `#2b303a` about `#4e5a7e`. Use slate for new panels (`#2e3a56` base, `#3c4a6a` cards, `#54627f` off chips and tracks); keep near-black only for dimmers and NO SIGNAL screens. A UIGradient on a panel multiplies its color: give panels light gradients (white to light grey) or the panel turns black. The UI before the change is in `ServerStorage.Archive.UIBeforeLight_2026_11_17`.
+
 | Thing | Value |
 | --- | --- |
-| Panel | `#14171c`, 3% transparent, corners 14, a 1 px white outline at 80% transparency |
-| Card / row | `#20242c`, corners 10 to 12 |
-| Button | `#2b303a`, bold text, corners 10 |
+| Panel | `#14171c` (now slate, see above), 3% transparent, corners 14, a 1 px white outline at 80% transparency |
+| Card / row | `#20242c` (now slate), corners 10 to 12 |
+| Button | `#2b303a` (now slate), bold text, corners 10 |
 | Primary | green `#3ecf5e` with a `#1f8f3b` edge |
 | Danger | red `#e5484d`; quiet danger (Leave, Kick, Decline) `#5a2a2d` |
 | Accent text | gold `#ffd678`; muted `#9aa3b2` |
@@ -168,6 +170,25 @@ Inspired by what Rainbow Six Siege's screens do well (steps that say what's next
 | `Main.Health` | Bottom-left panel: gold "+", "100/100", a thin bar (red at low health). On touch it goes bottom middle (`Client.Core.UI` TOUCH_LAYOUT) |
 | `Main.Gun`, `Main.Weapons`, `Main.Consumable`, `Main.DroneSlot`, `SiegeHUD.Ability` | One stack in the bottom-right corner, each on a dark `Panel`; the held weapon slot shows its gold `Accent` and pops |
 | `Templates.BombMarker` | `Diamond`, `Letter`, `Distance` ("21 m") |
+
+### One class panel everywhere (2026-11-17)
+
+`Client.Core.ClassPanel` fills two panels so a class or a gun reads the same wherever it shows:
+
+| Panel | Where | Shows |
+| --- | --- | --- |
+| `ClassPanel` (template; originals in `SiegeSelect...Pages.Class.Info`) | Selection Class page, `Main.Inventory.ClassView.Panel`, `Main.Details.Left.ClassPanel` | Emblem, name, role and team, difficulty and speed pips, ability, weapons, gadgets, the avatar on the team's color |
+| `GunPanel` (template; original `SiegeSelect...Pages.Loadout.Info`) | Selection Loadout page, `Main.Details.Left.GunPanel` | Kind, name, fire mode line, description, damage / fire rate / magazine / mobility bars against the best gun, and the gun's model (`Preview`) |
+
+`Main` uses Global ZIndex: a panel copied into it needs its parts lifted above the menu (the Details and Inventory copies are at 22+ and 13+; `ClassPanel` gives its pips the pips row's ZIndex).
+
+**Inventory CLASSES tab** (`Main.Inventory.ClassView`): `Cards` (ClassTile grid: owned first, locked covered with LOCKED and the coin price) and `Panel`. Pointing shows a class; clicking keeps it. The button is OWNED / FREE CLASS (green), or UNLOCK, which opens the class's detail page with its prices. The team chips and the search filter the tiles; the status line counts classes owned.
+
+**Detail page** (`Client.Core.ItemDetails`): a View with `Class` shows the class panel on the left (the ABILITY section is left out: the panel has it); a View with `GunId` (skins) shows the gun panel; a Row with `GunId` (a class's starter guns) shows the gun panel when clicked, and again goes back.
+
+### Weapon HUD (2026-11-17)
+
+`Main.Weapons.SlotN`: key, `Preview` (the gun's model in the skin the player wears, rebuilt only when the gun or skin changes; camera field of view 21 so it fills the short row), name on the right. The held slot is light (`#ecf0f8`) with dark text and its gold accent. `Main.Gun`: `Preview` of the held gun on the left, ammo big on the right with the fire mode above and reserve beside it, the gun's name top left, the reload bar along the bottom. The grenade, drone and ability chips sit above the slots.
 
 ### Feeds
 

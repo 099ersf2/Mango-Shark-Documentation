@@ -1,5 +1,11 @@
 # Next steps
 
+## Lighter look and shared panels (2026-11-17)
+
+- [ ] **Look over the other menus** after the color change (Settings, Party, Battle Pass, the scoreboard, the death screen): they were recolored by rule, not one by one.
+- [ ] **Buy a class from the Inventory's UNLOCK** with a test account (the purchase page opens; buying wasn't run).
+- [ ] **The weapon rows on a phone** (Core.UI moves the slots to the top left on touch; the gun models were only checked on a desktop).
+
 ## Siege UI pass (2026-11-17)
 
 - [ ] **On a phone:** the selection screen (map panel, class grid, cards) and the new HUD corners with the touch buttons. Only the layout math was checked.
