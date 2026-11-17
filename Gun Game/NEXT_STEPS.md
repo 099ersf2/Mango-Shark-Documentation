@@ -1,5 +1,11 @@
 # Next steps
 
+## Tactical UI (2026-11-17)
+
+- [ ] **Not looked at yet:** Loadout, scoreboard, death screen, round and match results, crate opening, drone and camera feeds in the new style (they were restyled by rule).
+- [ ] **Battle Pass:** its menu opens empty from a test script (the pass seems switched off); check it once the pass is on.
+- [ ] **On a phone:** menus and the HUD at small sizes.
+
 ## Theme pass (2026-11-17)
 
 - [ ] **Look over every screen** after the recolor by rule: seen were the lobby, Store, Inventory, Notice, the drone feed and the training screens. Not seen: Settings, Party, Battle Pass, Loadout, scoreboard, death screen, round and match results, crate opening.

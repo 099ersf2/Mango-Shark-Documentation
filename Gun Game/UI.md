@@ -66,6 +66,28 @@ The sizes below were replaced on 2026-11-13 (see above); the way they are placed
 
 `Client.Hud.Nameplates` sets, on each client, how other players' characters show their name and health: a teammate (same `Team` attribute) always shows both; an enemy shows neither; with no teams (the lobby) it is Roblox's default. Display only.
 
+## Tactical theme (2026-11-17, second version)
+
+The first theme's colors (Midnight / Aqua / Pink, below) were replaced the same day with a tactical, Siege-like style. `Content.Theme` holds it:
+
+| Token | Color | Use |
+| --- | --- | --- |
+| Void | `#07090C` | Dimmers and backdrops |
+| Base | `#0E1116` | Menu frames (glass: 6% see-through over the blurred world) |
+| Panel / Raised / Card | `#141821` / `#1B2029` / `#252B36` | Panels, rows and cards, chips and inputs |
+| Line | `#343C4A` | 1 px hairlines and outlines |
+| Accent (Amber) | `#F0B43C` | The one main action (filled, Ink text) and what is selected; the bar on top of every menu |
+| Text / Muted / Faint | `#EDF0F4` / `#8C95A5` / `#5C6575` | Text |
+| Danger / Success | `#E5484D` / `#4CC38A` | Only where they mean it |
+
+Type: Gotham (`Theme.FONT`, `FONT_BOLD`). Corners 4 (6 on big panels). Team colors (orange attackers, blue defenders), bomb colors (red A, blue B) and rarity colors keep their meaning.
+
+**One frame for every menu:** amber 2 px bar on top (`HeaderBar`), title left in capitals, close right, the same nav buttons, rows and cards. While a menu is open the world is blurred (`Client.Core.MenuAmbience`, `Theme.BLUR`). Fixed-size text always has a `UITextSizeConstraint` (its design size as the most) and `TextScaled`, so it shrinks instead of spilling out.
+
+**Settings** are tabs (`Main.Settings.Tabs.Row`): CONTROLS, GAMEPLAY, DISPLAY, AUDIO.
+
+The UI before this is in `ServerStorage.Archive.UIBeforeTactical_2026_11_17`.
+
 ## Theme and conventions (2026-11-17)
 
 **Palette** (`Content.Theme`, the owner's three colors): Midnight Abyss `#171F44` for every surface (steps: Deep `#0C1026` dimmers, Surface `#171F44` panels, Raised `#212B5C` cards, Card `#2C3874` chips and inputs, Line `#3E4C94` outlines), Aqua Jade `#74FFED` for the accent (selected, values, progress, "you"), Baby Pink `#FE81D1` for the one main action on a screen (PLAY, START, BUY). Ink `#171F44` text on aqua and pink; Text `#F4F6FF` and Muted `#9AA3CD` elsewhere. Red `#FF5C7A` for danger and the enemy. Team, bomb and rarity colors keep their own meaning. New UI takes its colors from `Content.Theme`, never new hex values.

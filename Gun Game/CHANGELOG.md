@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-11-17: Tactical UI (Siege-style) for the whole game, Settings tabs, volume sliders fixed
+
+Checked in Studio playtests with saving off: lobby, Settings (every tab), Store, Inventory, Party, the training reveal and the in-match HUD; a text-overflow scan of every menu found nothing cut off. The UI before this is in `ServerStorage.Archive.UIBeforeTactical_2026_11_17`.
+
+### Changed
+
+- **New look, same system:** the Midnight / Aqua / Pink colors were too bright for an FPS. `Content.Theme` keeps the system and conventions with tactical colors: near-black glass panels (Void, Base, Panel, Raised, Card, Line), one **Amber** accent (`#F0B43C`) for the main action and what is selected, white text, and red, green, team and rarity colors only where they mean something. Every screen and template was restyled by `Theme.Map` (1,817 objects, 279 outlines, 253 corners) and 285 colors set in code.
+- **Font:** FredokaOne (round, cartoon) replaced by **Gotham** everywhere (756 labels and the fonts set in code): bold for titles and buttons, medium for the rest.
+- **Shapes:** small corners (4 to 6) and 1 px hairlines instead of big rounded bubbles and thick outlines.
+- **Every menu has the same frame:** an amber bar along the top, title left, close right, slightly see-through glass (Store, Inventory, Settings, Battle Pass, Party, invites, Loadout, Modes, detail page, gift picker).
+- **Menus sit in the world:** while a menu is open the world behind it is blurred and a little darker and greyer (`Client.Core.MenuAmbience`).
+- **Text never overflows:** every fixed-size label shrinks to fit (474 labels got a `UITextSizeConstraint` with their old size as the most, and `TextScaled`).
+- **Settings in tabs:** CONTROLS, GAMEPLAY, DISPLAY, AUDIO along the top (white with an amber underline when chosen), one section at a time.
+- Bomb letters stay red A and blue B; a lost match tints red.
+- Training: the stepper's BREAK IN is now BREACH (it fits), the briefing no longer repeats the round (the banner says it), and the goal card sits lower so announcements don't run into it.
+
+### Fixed
+
+- **Volume sliders showed 100% after rejoining** although the saved volumes were applied to the sound: they load after the Settings rows are built, and nothing told the rows. `Client.Audio.AudioSettings` now fires `Changed` for each loaded volume, so the sliders show the saved values (checked: 58%, 69%, 30% shown and heard).
+
+### Added
+
+- `Client.Core.MenuAmbience` (menu blur and grade), `Main.Settings.Tabs`.
+
 ## 2026-11-17: One theme (Midnight, Aqua, Pink) and UI conventions everywhere; a quieter tutorial
 
 Checked in a Studio playtest with saving off (lobby, Store, Inventory, the Notice popup, the training briefing, goal card and toast). The UI before this is kept in `ServerStorage.Archive.UIBeforeTheme_2026_11_17`.

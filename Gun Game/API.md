@@ -225,7 +225,8 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Systems.Store.BotCoinService` | Pays `REWARDS.BotKill` Coins for an NPC kill |
 | `Systems.Games.Siege.SiegeBots` | Siege bots: `Pick(entry, team, info, teamEntries)`, `Spawn(entry, cframe)`, `Despawn(entry)`, `Update(context)`, `Reset()`, `NewMatch()`, `Scout(entry, cframe)`, `SiteFound()`, `IsBot(userId)`, `IsBotModel(model)`. See [SIEGE_BOTS.md](SIEGE_BOTS.md) |
 | `Systems.Games.Siege.BotDrones` | Bot scout drones: `Deploy(userId, team, cframe)`, `Of(userId)`, `Drive(model, goal?)`, `State(model)`, `Clear()`, `Prepare(map)` (links through wall vents) |
-| `Content.Theme` | The UI palette and steps (Midnight, Aqua, Pink, Deep..Line, Text, Muted, Ink, Danger), `Map(color)`, `IsBright(color)` (2026-11-17) |
+| `Content.Theme` | The UI style (tactical since 2026-11-17): Void, Base, Panel, Raised, Card, Line, Accent (+Dim, Well), Highlight, Text, Muted, Faint, Ink, Danger, Success, `FONT`, `FONT_BOLD`, `BLUR`, `Map(color)`, `IsBright(color)`; the old names (Aqua, Pink, Midnight...) now give the new colors |
+| `Client.Core.MenuAmbience` | No API: blurs and greys the world while a menu is open |
 | `Client.Core.Peek` | `Cut(scroller, share?)`: a horizontal list shows part of its next card |
 | `Client.Core.Notice` | `Show(title, text, sound?)`: since 2026-11-17 with a 70% backdrop and a red "!" (error) or aqua "i" icon |
 | `Content.Games.Tutorial` | Recruit Training: map, site, spawn, classes, bot, times, health, crate, texts, goals (`STEPS`), saved `Tutorial` flags |
