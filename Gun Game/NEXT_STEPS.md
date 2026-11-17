@@ -1,5 +1,12 @@
 # Next steps
 
+## Siege UI pass (2026-11-17)
+
+- [ ] **On a phone:** the selection screen (map panel, class grid, cards) and the new HUD corners with the touch buttons. Only the layout math was checked.
+- [ ] **The real drone feed** while driving: top bar, objective, location and compass (only the camera feed's frame was shown by hand).
+- [ ] **Class art:** icons or portraits for each class would replace the letters on the tiles, the top bar and the cards.
+- [ ] **Bank's basement cutaway** after the union rule, and Clear House's map vote preview.
+
 ## Siege bots (2026-11-16)
 
 - [ ] **Remembered entrances over rounds:** play a full match with bots (several rounds) and check defenders watch the door attackers used.

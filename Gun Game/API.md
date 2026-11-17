@@ -150,6 +150,9 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Client.Core.ModeMenu.Selected()` / `Pick(modeId)` / `Open()` / `.Changed` | The picked queue mode's Id / picks one / opens the Game Modes panel (`Menus` name `Modes`) / fires with the new Id |
 | `Client.Core.Matchmaking.Play()` / `OpenModes()` / `OpenParty()` | The lobby's PLAY button (queue or cancel, for the picked mode) / opens the Game Modes panel (leader only, not while searching) / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
 | `Client.Core.SiegeSelect` | No API: the selection and reveal screens |
+| `Client.Hud.SiegeTopBar` | No API: the Siege top bar (HUD and feeds) and the "3 VS 4" flash |
+| `Client.Combat.DamageFeedback` | No API: red edges, hit arrows and the low-health look |
+| `Client.Gadgets.FeedInfo` | No API: the drone and camera feeds' objective, location and compass |
 | `Client.Hud.SiegeHud.UseAbility()` | Uses the class ability |
 | `Client.Hud.Scoreboard` | No API: the scoreboard (hold Tab) |
 | `Client.Gadgets.CameraController.Use()` / `View(model)` / `Cycle(direction)` / `Scan()` / `Exit(tellServer?)` | Security cameras |
@@ -165,7 +168,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Party.Invite` / `Party.InviteClosed` | Server → one client | PartyId, leader name, leader UserId, seconds / PartyId |
 | `Queue.Request` | Client → server, answered (ok, message) | `Join`, `Private` (a private match of the party only) or `Leave`, and the mode's Id for `Join` and `Private` (`""` for the default) |
 | `Queue.State` | Server → one client | `{ Queued, Since, Status, Size, Mode }` |
-| `Siege.State` | Server → one client | The match as their team may see it. During Selection also `Others` and `OtherTeam`: the other team's players as UserId, Name and Ready, nothing else |
+| `Siege.State` | Server → one client | The match as their team may see it. During Selection also `Others` and `OtherTeam`: the other team's players as UserId, Name and Ready, nothing else. `Map` (2026-11-17): the map's name in `ReplicatedStorage.Maps` |
 | `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`, `Ready`), value (`Ready`: `"1"` done picking, `"0"` changing picks) |
 | `Siege.Plant` | Server → one attacker | bomb (`""` for none), server time it started, seconds |
 | `Siege.Board` | Server → one client | Scoreboard rows, filtered for their team |
@@ -573,6 +576,7 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | --- | --- | --- |
 | `Effects.Play` / `Effects.Stop` | Server → clients | effect name, options |
 | `Combat.Hit` | Server → all | character, damage |
+| `Combat.Hurt` | Server → the player hit | damage, where it came from (the attacker's position, or the victim's own) |
 | `Combat.KillFeed` | Server → all | killer, victim, item |
 | `Combat.Swing` | Client → server | sword aim origin, direction |
 | `Gun.Fire` | Client → server | server time, origin, direction, seed, spread |

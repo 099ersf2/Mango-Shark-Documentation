@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-11-17: Siege UI pass: pre-match screens, top bar, hit effects, HUD
+
+Our own take on what Rainbow Six Siege's screens do well, in SiegeBlox's look: dark navy panels, gold for "you" and "next", the team's color for your side and red for the enemy, rounded blocky shapes with a little "stud" on class emblems, and Fredoka One everywhere. Tested in Studio playtests with bots on Mansion and Bank, at 1920 wide and at a narrow 919 wide (see [UI.md](UI.md#siege-ui-pass-2026-11-17)). The only player data written was the gadget pick (Frag grenade to Smoke bomb and back again).
+
+### Added
+
+- **Pre-match in four steps** (`Client.Core.SiegeSelect`, rewritten; the old one is in `ServerStorage.Archive.SiegeSelectOld`): LOCATION, CLASS, LOADOUT, READY across the top, the current one gold, done ones ticked (click one to go back), and a NEXT line saying what to do.
+  - **Location** shows the map in a viewport. Attackers see it from above with a pin per spawn (click a pin to take it, a teammate's shows their name). Defenders see a pin per site; pointing at a site (or voting it) shows it **cut away**: everything above that floor hidden, the A and B rooms drawn in red and blue, the bombs pinned. Clear House previews the map you point at.
+  - **Class** is a grid of class tiles and a big panel: role, difficulty, speed (from the primary gun), ability, weapons and gadgets, with your avatar on the team's color. Picking a free class takes you to the loadout once the server confirms it.
+  - **Loadout**: primary, secondary, ability and gadget rows with arrows, and a panel with the focused gun's damage, fire rate, magazine and mobility as bars against the best gun in the game. CONFIRM LOADOUT readies you.
+  - **Ready / Reveal**: a tall player card per teammate (avatar, class badge and name, spawn or vote, a tick when ready), dealt one by one at the reveal.
+  - The footer counts who is ready on each team (a dot per player).
+- **Top bar** (`Client.Hud.SiegeTopBar`, `Main.SiegeHUD.TopBar`): a tile per player on both teams (class letter, team stripe, you outlined in gold, dead players crossed out; an enemy shows "?" until seen), both scores, the clock and the round. The drone and camera feeds have the same bar.
+- **"3 VS 4"** in the middle of the screen whenever someone dies in Action, your side first, with ENEMY ELIMINATED or TEAMMATE DOWN.
+- **Hit effects** (`Client.Combat.DamageFeedback`, `Main.DamageFX`): red at the screen's edges on every loss of health (stronger for bigger hits), an arrow round the crosshair pointing at the attacker (new packet `Combat.Hurt`, sent to the victim by `Combat.ApplyHit`), and at 35% health or less a heartbeat pulse, a greyer world and a red health bar.
+- **Drone and camera feeds** (`Client.Gadgets.FeedInfo`): the team bar, the objective (FIND THE SITE / SITE LOCATED / DEFEND ...), where the feed is (a bomb room by name, INSIDE or OUTSIDE), a compass and faint scanlines.
+- **Classes** have a `Role` and a `Difficulty` (1 to 3), shown in the class panel.
+- The Siege snapshot has the map's name (`Map`), so the selection screen can draw it from `ReplicatedStorage.Maps` (the live map streams in).
+
+### Changed
+
+- **HUD near the edges**: health is a panel in the bottom-left corner (bottom middle on touch); the ammo box, the weapon slots and the grenade, drone and ability chips are one stack in the bottom-right corner on dark panels. The held weapon shows a gold bar and pops when you switch.
+- **Bomb marks** are a diamond with the letter and the distance in meters under it.
+- The announcement banner sits at the bottom while the selection screen is up, so it doesn't cover the map.
+- Old selection templates (`SiegeOption`, `SiegeClassCard`, `SiegeTeamCard`, `SiegeReadyRow`, `SiegeReadyHeader`) moved to `ServerStorage.Archive.SiegeSelectOld`.
+
 ## 2026-11-16: Bot drones go through wall vents
 
 Tested in a Studio playtest (no player data written).

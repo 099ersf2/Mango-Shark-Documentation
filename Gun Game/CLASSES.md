@@ -122,6 +122,8 @@ return MyAbility
 
 `Icon` is empty for every class for now (the card shows the first letter).
 
+`Role` (a word or two, like "Intel" or "Breach") and `Difficulty` (1 to 3) are shown in the class panel of the selection screen (2026-11-17). Both are optional. The panel's speed is worked out from the primary gun's `MoveSpeedMultiplier`; health isn't shown because every class has the same.
+
 ## Tested (2026-11-11 and 2026-11-12, Studio, one player)
 
 | Check | Result |

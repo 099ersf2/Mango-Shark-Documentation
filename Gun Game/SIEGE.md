@@ -33,7 +33,8 @@ Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): ev
 | HUD | `Client.Hud.SiegeHud` → `StarterGui.Main.SiegeHUD` |
 | Scoreboard | `Client.Hud.Scoreboard` → `StarterGui.Main.SiegeScoreboard` |
 | Camera feed, drone feed, scan alert | `ReplicatedFirst.UILoader.CameraFeed`, `DroneFeed`, `ScanAlert` |
-| Templates | `SiegeOption`, `SiegeClassCard`, `SiegeTeamCard`, `SiegeBoardRow`, `SiegeBoardTeam`, `SiegeKillRow`, `BombMarker` in `Assets.UI.Templates` |
+| Templates | Selection (2026-11-17): `SelOption`, `MapPin`, `ClassTile`, `Pip`, `PlayerCard`, `ReadyDot`. HUD: `TopBarSlot`, `BombMarker`. Board: `SiegeBoardRow`, `SiegeBoardTeam`, `SiegeKillRow`. All in `Assets.UI.Templates` ([UI.md](UI.md#siege-ui-pass-2026-11-17)) |
+| Top bar, 3 VS 4 | `Client.Hud.SiegeTopBar` → `Main.SiegeHUD.TopBar`, `Main.SiegeHUD.Versus` |
 | Packets | `Packets.Siege` (`State`, `Pick`, `Plant`, `Board`, `RequestState`), `Packets.Camera.View`, `Packets.Camera.Scan`, `Packets.Scan.Alert`, `Packets.Spectate` (`Next`, `Mode`) |
 | Teams | `Attackers` and `Defenders` in `Content.Match.Teams` |
 
@@ -91,6 +92,8 @@ All times are in `Content.Games.Siege`.
 **Who is told what:** every snapshot is built for the team of the player it goes to. Votes, spawn picks and class picks are only sent to the team that made them. Attackers are not sent the site until one of their drones finds it.
 
 ## Selection: ready, the team list, the consumable (2026-11-12)
+
+> **Screens replaced on 2026-11-17** (see [UI.md](UI.md#siege-ui-pass-2026-11-17)): READY is now CONFIRM LOADOUT, Change picks is CHANGE PICKS on the Ready page, the ready list is the footer's dot counts, and the consumable is the Loadout page's GADGET row. The rules below are unchanged.
 
 > **Not run.** Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
 

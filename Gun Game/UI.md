@@ -135,9 +135,64 @@ The bar sits just above the health bar. On a touch screen while the fire button 
 
 Keys: **Play (K)** queues or cancels; **Party (L)** opens the Party menu.
 
+## Siege UI pass (2026-11-17)
+
+Inspired by what Rainbow Six Siege's screens do well (steps that say what's next, a real map to pick from, a class panel with stats, player cards, a top bar with every player, "3 VS 4", hit effects), drawn in our own look, not copied.
+
+**Our look:** dark navy panels (`#0e121c`, raised `#1a202e`, `#262e40`), gold `#ffd678` for you, the current step and the main button, your team's color for your side (orange attackers, blue defenders), red `#ff6060` for the enemy, Fredoka One, rounded corners, and a small white "stud" on class emblems (the blocky touch). Siege is white and orange with a condensed font; keep ours different.
+
+### Pre-match (`Client.Core.SiegeSelect` → `SiegeSelect`)
+
+| Part | What it is |
+| --- | --- |
+| `Header.Steps` | LOCATION, CLASS, LOADOUT, READY: gold block = where you are, team-colored tick = done, grey = not yet. A step already reached can be clicked |
+| `Header.Next` | One line: what to do next |
+| `Header.Clock` | Team (in its color), "ROUND 1 OF 5", the clock (red in the last 5 seconds) |
+| `Pages.Location` | `Left.Options` (template `SelOption`: radio, name, detail, vote badge), CONTINUE, and `MapPanel`: a ViewportFrame with the map, pins (`MapPin`: diamond, letter, label, ring), a caption and a legend |
+| `Pages.Class` | `Left.Cards` (template `ClassTile`: emblem with letter and stud, name, a cover when taken or locked) and `Info` (emblem, name, role, `Stats` pips (`Pip`), ability, kit, status, SELECT CLASS, and the player's avatar on the team's color) |
+| `Pages.Loadout` | CONFIRM LOADOUT, rows `Slot1`, `Slot2`, `Ability`, `Consumable` (arrows, "1 / 3"), and `Info` with `Bars` (damage, fire rate, magazine, mobility) |
+| `Pages.Ready` / `Pages.Reveal` | A row of `PlayerCard`s (avatar, class badge and name, ready tick, player, spawn or vote) |
+| `Footer` | `OwnReady` / `EnemyReady`: a dot per player (`ReadyDot`), "2/5 READY". Shown in Selection only |
+
+**The map** is copied from `ReplicatedStorage.Maps.<snapshot Map>` into the viewport once (scripts, sounds, lights and effects left out), because the live map streams in. The top view frames the spawns and sites, straight down. The **cutaway** leans back 28 degrees over one site and hides: anything reaching more than 2.5 studs over the site's top, thin slabs at its top (its ceiling), and big pieces crossing its top over most of its floor (Mansion's ground and basement are unions). The bomb rooms are drawn as see-through red and blue boxes. Pins are placed by projecting their world point through the viewport's camera.
+
+**The viewport's Camera is made in code**: a Camera inside a ScreenGui is not copied into PlayerGui.
+
+### In the round
+
+| Part | What it is |
+| --- | --- |
+| `Main.SiegeHUD.TopBar` | `Own` / `Enemy` tiles (`TopBarSlot`: letter, stripe, `Dead` cover with an X, gold `Me` outline), `OwnScore`, `Center` (clock, round), `EnemyScore`. Copies in `DroneFeed.Feed.TopBar` and `CameraFeed.Feed.TopBar`. `Client.Hud.SiegeTopBar` fills all three. The old `SiegeHUD.Timer` is hidden but still updated: the feeds' NO SIGNAL timers copy it |
+| `Main.SiegeHUD.Versus` | "3 VS 4" and a line under it, for 2.6 s when a player dies in Action |
+| `Main.DamageFX` | `Edges` (four red gradient frames) and `Indicators.Arrow` (cloned per hit). `Client.Combat.DamageFeedback`. It sizes itself over Roblox's top bar too |
+| `Main.Health` | Bottom-left panel: gold "+", "100/100", a thin bar (red at low health). On touch it goes bottom middle (`Client.Core.UI` TOUCH_LAYOUT) |
+| `Main.Gun`, `Main.Weapons`, `Main.Consumable`, `Main.DroneSlot`, `SiegeHUD.Ability` | One stack in the bottom-right corner, each on a dark `Panel`; the held weapon slot shows its gold `Accent` and pops |
+| `Templates.BombMarker` | `Diamond`, `Letter`, `Distance` ("21 m") |
+
+### Feeds
+
+`Client.Gadgets.FeedInfo` fills `Intel` (OBJECTIVE, and where the feed is: a bomb room by name from the map's `Sites`, else INSIDE if something is overhead within 60 studs, else OUTSIDE), `Compass` (`Strip` of headings every 15 degrees, 3 px per degree, under a gold mark) and leaves `Scanlines` (static) alone. The feeds' own `Timer` labels are hidden: the top bar has the clock.
+
+### Tested (2026-11-17, Studio, one player and bots)
+
+| Check | Result |
+| --- | --- |
+| Location, attackers (Mansion) | Top view with five spawn pins; taking Pool Side turned its pin gold with "(YOU)" and the list row gold; bots' spawns grey with their names |
+| Location, defenders | Bank and Mansion top views with site pins. Cutaways of Mansion's Basement and Upstairs Bedrooms show the rooms, stairs and walls with A red and B blue. (Bank's basement was checked before the union rule; not re-checked) |
+| Class | Tiles taken by a bot show its name; locked ones say LOCKED; pointing previews; picking moved on to Loadout by itself |
+| Loadout | Bars for the LMG and rifle; gadget arrows switch the gadget (saved data: switched back) |
+| Reveal | Cards for the player and two bots, ticks, spawns |
+| Top bar | Both teams' tiles, enemy "?", a killed enemy bot crossed out |
+| 3 VS 1 | Shown when an enemy bot was killed, ENEMY ELIMINATED |
+| Hit effects | Two hits from a dummy on the right: edges flashed, the arrow pointed right (89 degrees), and at 30 health the world went grey and the bar red |
+| Camera feed | Top bar, objective DEFEND UPSTAIRS BEDROOMS, INSIDE, compass (feed shown by hand over the HUD) |
+| Output | No errors from these modules |
+
+**Not checked:** a phone or tablet (only the layout math: the selection screen fits by `FitScale` at DesignHeight 600), the real drone feed while driving (only the camera feed's frame by hand), the Ready page while a teammate is still picking (everyone was ready at once), Clear House's map vote preview, TEAMMATE DOWN, and a gamepad.
+
 ## Siege screens
 
-- **Team cards** (`Assets.UI.Templates.SiegeTeamCard`): tall cards in a row, like the operator line-up in Rainbow Six Siege. The class's picture (its first letter until icons exist) on the team's color, then the class, the player, and their vote or spawn.
+- **Team cards** (`Assets.UI.Templates.PlayerCard` since 2026-11-17; `SiegeTeamCard` before): tall cards in a row with the player's avatar on the team's color, the class's badge and name, the player, and their vote or spawn.
 - **Reveal:** "OBJECTIVE LOCATION" (defenders) or "INSERTION POINT" (attackers) with the place in large type, and the cards dealt in one after another.
 - **HUD chips:** NO DEFUSER / DEFUSER PLANTED.
 - **SCORE** on touch is a pill at the top of the Siege HUD, out of the combat buttons.
@@ -148,9 +203,10 @@ The feed and alert ScreenGuis are built in `ReplicatedFirst.UILoader` and moved 
 
 | UI | Behavior |
 | --- | --- |
-| `CameraFeed.Feed.Timer`, `CameraFeed.NoSignal.Timer` | Mirror `Main.SiegeHUD.Timer`, including its text color; the match timer remains visible over NO SIGNAL |
+| `CameraFeed.Feed.Timer`, `CameraFeed.NoSignal.Timer` | Mirror `Main.SiegeHUD.Timer`, including its text color; the match timer remains visible over NO SIGNAL. Since 2026-11-17 `Feed.Timer` is hidden: `Feed.TopBar` shows the clock |
 | `CameraFeed.Feed.Touch.Scan` | Touch scan button while viewing a live camera |
-| `DroneFeed.Feed.Timer`, `DroneFeed.NoSignal.Timer` | Mirror the same match timer on live and NO SIGNAL feeds |
+| `DroneFeed.Feed.Timer`, `DroneFeed.NoSignal.Timer` | Mirror the same match timer on live and NO SIGNAL feeds (`Feed.Timer` hidden since 2026-11-17, as above) |
+| `Feed.TopBar`, `Feed.Intel`, `Feed.Compass`, `Feed.Scanlines` (both feeds) | 2026-11-17: the team bar, objective and location, compass, scanlines. See [Siege UI pass](#siege-ui-pass-2026-11-17) |
 | `ScanAlert.Label` | Independent red `SCANNED` notice shown for `SCANNED_ALERT_TIME` after a camera or drone scan finds a player |
 
 Camera scan controls are Interact on keyboard, DPad Up on gamepad, and `SCAN` on touch. See [SIEGE.md](SIEGE.md#defender-cameras) for server validation and class reveal behavior.
@@ -205,7 +261,9 @@ Measured by laying the UI out in a frame of that size (no rendering needed).
 | --- | --- |
 | Feel | `ReplicatedStorage.Modules.Client.Core.UIFeel` |
 | Lobby bar, Party menu, invite popup | `Client.Core.Matchmaking` → `Main.Lobby`, `Main.Party`, `Main.PartyInvite`; templates `PartySlot`, `InviteRow` |
-| Siege screens | `Client.Core.SiegeSelect` → `StarterGui.SiegeSelect`; `Client.Hud.SiegeHud` → `Main.SiegeHUD` |
+| Siege screens | `Client.Core.SiegeSelect` → `StarterGui.SiegeSelect`; `Client.Hud.SiegeHud` → `Main.SiegeHUD`; `Client.Hud.SiegeTopBar` → `SiegeHUD.TopBar`, `SiegeHUD.Versus` and the feeds' `TopBar` |
+| Hit effects | `Client.Combat.DamageFeedback` → `Main.DamageFX` |
+| Feed extras | `Client.Gadgets.FeedInfo` → `DroneFeed.Feed` / `CameraFeed.Feed` `Intel`, `Compass` |
 | Scoreboard | `Client.Hud.Scoreboard` → `Main.SiegeScoreboard`, `Main.SiegeHUD.ScoreButton` |
 | HUD layout for touch | `Client.Core.UI` (unchanged) |
 | Replaced UI | `ServerStorage.Archive.OldUI`: the Play menu that held the queue and the party together, and its button |
@@ -237,6 +295,6 @@ Two things found and fixed in that run: the bar still said MATCH FOUND after the
 
 - **`Client.Core.LobbyHubUI`** (another developer's Career, Backpack and Map panels) builds its UI in code with its own colors. Its Career and Maps buttons are hidden since 2026-11-12 (the panels and their code remain); Backpack still shows in the lobby. Its buttons get the click and hover sounds, and its menu buttons inherit the new button style, but the panels are untouched.
 - **The combat touch buttons** (`Main.Mobile`) keep their layout. Only the SCORE button moved out; ABILITY and CAMS were added on free cells.
-- **The gun HUD** (ammo, crosshair, hitmarker), the kill feed, the death screen, the drone and camera feeds: fonts and corners only. The feeds now also have match-timer labels, the camera feed has a touch scan button, and `ScanAlert` is a separate red player notice.
-- **Icons.** There are none: classes show a letter, buttons are text.
+- **The crosshair and hitmarker**, the kill feed and the death screen: fonts and corners only. (The ammo box, weapon slots, health and the feeds were redone on 2026-11-17.)
+- **Icons.** There are none: classes show a letter (on an emblem since 2026-11-17), buttons are text. Class art would make the class grid and the player cards much better.
 - Hover and press scaling nudges neighbors by a pixel or two inside list layouts.
