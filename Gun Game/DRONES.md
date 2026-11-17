@@ -6,7 +6,7 @@ Built 2026-11-11. It replaced an older drone system (a loose `DroneService` Scri
 
 ## Bot drones (2026-11-16)
 
-Siege attacker bots drive their own scout drones (`Systems.Games.Siege.BotDrones`, see [SIEGE_BOTS.md](SIEGE_BOTS.md#drones-2026-11-16)). They are copies of the same model in `workspace.Drones` with `DroneOwner` (the bot's negative id), `Team` and `SiegeBot`, but the server moves them (anchored, no collision). `DroneService.AddExternal(model)` lists one in `DroneService.All`, so NPCs see and shoot it; `DroneService.preventFriendlyFire` keeps its teammates off it (it reads `Team`). They are not in `DroneService.Of` and have no charges.
+Siege attacker bots drive their own scout drones (`Systems.Games.Siege.BotDrones`, see [SIEGE_BOTS.md](SIEGE_BOTS.md#drones-2026-11-16)). They are copies of the same model in `workspace.Drones` with `DroneOwner` (the bot's negative id), `Team` and `SiegeBot`, but the server moves them (anchored, no collision). `DroneService.AddExternal(model)` lists one in `DroneService.All`, so NPCs see and shoot it; `DroneService.preventFriendlyFire` keeps its teammates off it (it reads `Team`). They are not in `DroneService.Of` and have no charges. They slip under door boards and go through wall vents (a `PathfindingLink` labelled `Vent` through each model named `Vent`, made by `BotDrones.Prepare`).
 
 ## Changed on 2026-11-12 (Siege)
 

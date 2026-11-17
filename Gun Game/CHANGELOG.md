@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-16: Bot drones go through wall vents
+
+Tested in a Studio playtest (no player data written).
+
+### Added
+
+- **Vents for bot drones:** a wall vent's hole (about 2.8 by 0.85 studs) is too small for pathfinding, so `BotDrones.Prepare(map)` puts a `PathfindingLink` labelled `Vent` through every model named `Vent` when the bot drones deploy (once per map copy, so new maps get them too). Bot drones' paths take them; every NPC's path prices `Vent` at `math.huge` (`Brain.NewPath`), so bots on foot never try to crawl through.
+- Checked: paths through all 5 vents of the bank building and 2 of Mansion's 4. A bot drone drove through the Mansion vent at x 17.5 in about a second. In a real match on Mansion the 4 links were made when the drones came out. Mansion's other two: one is in a garden wall (grass on both sides, nothing gained) and one opens onto a bunk bed, which a drone can't get down from.
+
 ## 2026-11-16: Siege bots: drones, shooting boards from range, team memory, defenders breaking in
 
 Tested in Studio playtests: private matches of one admin player and four bots on Bank and Mansion (see [SIEGE_BOTS.md](SIEGE_BOTS.md#drones-memory-and-breaking-in-2026-11-16)). No player data was written. One run was cut short when Studio lost its connection to Roblox (DataStore and asset requests timed out and the server kicked the player: "We couldn't load your data").

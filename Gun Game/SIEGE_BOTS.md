@@ -86,7 +86,8 @@ Every attacker bot gets a scout drone at its spawn in Prep (`Systems.Games.Siege
 - **Spotting:** every 0.5 s it looks for enemies within `DRONE_SPOT_RANGE` (45 studs) in clear view. Each goes into the team's memory and is marked on its player teammates' screens for `DRONE_SPOT_TIME` (15 s, `DroneService.Mark`). A defender standing in the real site gives the site away.
 - **Found:** "Site located" for the players too (`SiegeService.checkDiscovery` reads `SiegeBots.SiteFound`). The drone then drives into its bot's bomb room and parks there, still spotting, until the round ends.
 - **Like a player's drone:** `DRONE_SPEED` 14 studs/s (players' do 20), one hit kills it, defenders hear its motor (`Drone.Noise`) and see and shoot it (`DroneService.AddExternal`), teammates can't hurt it.
-- **Under door boards:** it slips under a boarded door like a Siege drone through a barricade gap (a path through a `Breakable` label, cost 5). A boarded window needs a climb, which it can't do. Players' drones can't slip under boards yet (their physics is real).
+- **Under door boards:** it slips under a boarded door like a Siege drone through a barricade gap (a path through a `Breakable` label, cost 5). A boarded window needs a climb, which it can't do.
+- **Through wall vents:** every model named `Vent` gets a `PathfindingLink` through its hole when the drones deploy (`BotDrones.Prepare`), and drones drive through. People's paths never take them. Mansion's vent behind the upstairs bunk bed isn't used (a drone can't get down from the bed).
 
 ### Memory (2026-11-16)
 
@@ -156,7 +157,6 @@ With the profile's `BreachRange` (30 studs), a bot shoots a board open from wher
 A bot dropped in the Mansion pool climbed out by the ladder and was in the house within 5 s.
 - **Health bars:** bots stand in `workspace.Enemies`, so `HealthBillboards` gives every bot a health bar, teammates and enemies alike.
 - **Fair-play shortcut:** attacker bots learn the site after 45 s of Action if nothing found it.
-- **Bot drones slip under door boards; players' drones can't.** Either give players' drones the same gap, or take it from the bots (they then mostly can't get into boarded buildings in Prep).
 
 ### Drones, memory and breaking in (2026-11-16)
 

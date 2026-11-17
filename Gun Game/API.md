@@ -217,7 +217,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Content.Crates.Crates` / `Content.Store.Store` | Loaded from one file per crate / store item in `Content.Crates.Definitions` / `Content.Store.Definitions` (sorted by `Order`); the shared colors are in `Content.Store.Style` |
 | `Systems.Store.BotCoinService` | Pays `REWARDS.BotKill` Coins for an NPC kill |
 | `Systems.Games.Siege.SiegeBots` | Siege bots: `Pick(entry, team, info, teamEntries)`, `Spawn(entry, cframe)`, `Despawn(entry)`, `Update(context)`, `Reset()`, `NewMatch()`, `Scout(entry, cframe)`, `SiteFound()`, `IsBot(userId)`, `IsBotModel(model)`. See [SIEGE_BOTS.md](SIEGE_BOTS.md) |
-| `Systems.Games.Siege.BotDrones` | Bot scout drones: `Deploy(userId, team, cframe)`, `Of(userId)`, `Drive(model, goal?)`, `State(model)`, `Clear()` |
+| `Systems.Games.Siege.BotDrones` | Bot scout drones: `Deploy(userId, team, cframe)`, `Of(userId)`, `Drive(model, goal?)`, `State(model)`, `Clear()`, `Prepare(map)` (links through wall vents) |
 | `Content.Games.SiegeBots` | Bot names, prefix, id range, pick delay, plan timings, drone speed and spotting, memory times |
 | `Systems.Lobby.Teleporters` | Parts tagged `Teleporter` send players to the part named by their `TeleportTo` attribute |
 | `Content.Classes.Classes` | Every class and ability, loaded from one file per class in `Content.Classes.Definitions` (sorted by `Order`); `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |

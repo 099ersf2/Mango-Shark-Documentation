@@ -2,7 +2,6 @@
 
 ## Siege bots (2026-11-16)
 
-- [ ] **Decide: drones under door boards.** Bot drones slip under them, players' can't. Give players' drones the gap too, or take it from the bots.
 - [ ] **Remembered entrances over rounds:** play a full match with bots (several rounds) and check defenders watch the door attackers used.
 - [ ] **A player with bot drones:** check the spotted-enemy marks show on a player teammate's screen.
 
