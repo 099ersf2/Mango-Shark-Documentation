@@ -10,7 +10,7 @@ Tested in Studio playtests with bots on Bank. No player data was written.
 
 ### Changed
 
-- **No view bob crouched or prone:** the gun's walk bob (`Client.Guns.Viewmodel`) fades out with the stance change, the shield's (`ShieldView`) stops, and the camera's strafe tilt is off then too (the camera bob already was).
+- **No view bob crouched or prone:** the gun's walk bob (`Client.Guns.Viewmodel`) fades out with the stance change, the shield's (`ShieldView`) stops, and the camera's strafe tilt is off then too (the camera bob already was). The camera's head correction is smoothed in those stances too, so the crouch-walk and crawl animations' head bounce can't reach the camera. Measured crouch-walking and crawling: camera, gun and shield move 0.000 studs. A slide (crouch while sprinting) still tilts and dips the camera on purpose.
 - **Bot icon** (`Content.Games.SiegeBots.ICON`, image 117259180607823) wherever a player's picture shows: party slots and the bot list, the selection screen's player cards, the death screen when a bot killed you (`DeathCamService` now sends the bot's own negative id), and the MVP cards.
 
 ## 2026-11-17: A lighter look, one class panel everywhere, a weapon HUD with gun models
