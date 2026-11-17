@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-17: Siege UI (third look)
+
+Rebuilt in the style of Rainbow Six Siege's menus, from the owner's reference (Game UI Database, game id 264). Checked in a Studio playtest with saving off (`ScribeNoSave`): lobby, Settings (Controls, Audio), Shop, Inventory, the selection screen and the in-round HUD at desktop size, with no errors in the Output. Not checked: a real phone, the death screen, the match result, Party and the Game Modes panel (these got the new colors and fonts but no new layout). The UI before this is in `ServerStorage.Archive.UIBeforeSiege_2026_11_17`. Not published.
+
+### Changed
+
+- **Colors and type (`Content.Theme`):** slate navy panels, Siege blue for the main action, gold only for currency and NEW, Oswald Bold titles and Roboto Condensed text, square corners. Applied to every screen and template (1,120 backgrounds, 762 fonts, 316 corners, 104 outlines) and to the colors set in code in 24 client modules, `Content.Store.Style` (tags and coin gold) and `Content.Matchmaking` (mode colors).
+- **Lobby:** a Siege PLAY page: "◀ HOME" chip, a huge PLAY title and picture-style tiles (blue PLAY, GAME MODE, PLAY WITH PARTY, then TRAINING and SQUAD as light slate tiles), with dark shades behind it and the nav bar. The DEPLOY card is gone.
+- **Nav bar:** the wallet strip is now Siege's top nav: HOME, SHOP, INVENTORY, BATTLE PASS as big words; the open menu's word is white and underlined. Coins in gold on the right.
+- **Store, Inventory, Battle Pass:** tabs across the top under the title (the left icon column is gone); featured Store cards fill the row two by two.
+- **Settings:** option rows with a black value box on the right; sliders are a thin white line.
+- **HUD:** health and ammo float without panels; the phase banner is big centered capitals with a gold objective line; the round result is a fading dark band with a colored title.
+
 ## 2026-11-17: Lobby, wallet and store cards rebuilt; touch buttons fixed
 
 Checked in a Studio playtest with saving off, at a narrow (phone-like) and a desktop width. Touch itself could not be run in Studio from the tools.

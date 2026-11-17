@@ -97,6 +97,27 @@ Type: Gotham (`Theme.FONT`, `FONT_BOLD`). Corners 4 (6 on big panels). Team colo
 
 The UI before this is in `ServerStorage.Archive.UIBeforeTactical_2026_11_17`.
 
+## Siege style (2026-11-17, third look)
+
+Modeled on Rainbow Six Siege's menus (the owner's reference: Game UI Database, game id 264). The look before it is in `ServerStorage.Archive.UIBeforeSiege_2026_11_17`.
+
+**Palette** (`Content.Theme`): slate navy. Void `#090C12` (dimmers, shades), Base `#161B25`, Panel `#212733` (menus), Raised `#2E3543` (rows, cards), Card `#3E4757`, Line `#5C687C`, **Tile** `#7A899A` (light slate tiles), **Well** `#0A0C10` (the black value box of an option row). **Accent** Siege blue `#248EE2` for the main action and what is selected, AccentDim `#1A64A2`, AccentWell `#14324E`, **Highlight** `#C4E2F6` (pale blue outline on the selected tile). **Gold** `#F6C61E` only for currency, NEW tags and the objective line. Text `#EEF1F5`, Muted `#9CA7B7`, Ink is white (text on blue). Attack `#E8701E`, Defend `#1E88E6`.
+
+**Type:** Oswald Bold (`FONT_BOLD`) for titles, nav words, buttons and numbers; Roboto Condensed Medium (`FONT`) for body text. **Shapes:** square (`CORNER` 0); circles stay circles.
+
+| Piece | How it looks |
+| --- | --- |
+| Nav bar (`Main.Wallet`) | Big condensed words across the top: HOME, SHOP, INVENTORY, BATTLE PASS. The open one is white and underlined (HOME when no menu is open; `Store.lua` `lightNav` on `Menus.Changed`). Coins in gold at the right; SETTINGS [P] is a dark outlined box at the top right. A dark band (`Main.NavShade`) sits behind it in the lobby |
+| PLAY page (`Main.Lobby`) | A notched "◀ HOME" chip, a huge PLAY title, then tiles: the blue PLAY tile (outlined pale blue), GAME MODE (dark slate, "CHANGE ›"), PLAY WITH PARTY (dark blue, only when a party can play privately), and a column of two light slate tiles, TRAINING and SQUAD. Searching shows a blue strip beside the title. Bottom left on desktop over a dark corner shade (`Main.PlayShade`); bottom right on touch, lifted over the jump button. Grows with the screen (`CardScale` 1 at 720 px tall, up to 1.35; 0.7 on short screens). Layout: `Client.Core.Matchmaking.layoutBar` |
+| Menus (Store, Inventory, Battle Pass) | Slate panel, big title top left, an X box top right, a row of tab words under the title with a hairline under the row (`Theme.Tab` lights one). The old left icon column is gone |
+| Settings | Siege OPTIONS rows: name on the left, a black value box on the right half; toggles show ‹ ›, sliders are a thin white line with a small white knob and the value at the right |
+| Phase banner (`Content.Effects.Parts.Banner`) | No box: ACTION PHASE in big capitals with a shadow, centered, and a gold "◇ LINE" under it |
+| HUD | No panels behind health and ammo: white numbers with a soft shadow. The score bar keeps the team-colored score boxes around a dark timer box |
+| Round result | A dark band fading out at both ends; ROUND WON / LOST carries the color |
+| Store featured cards | Two to a row, so the row is always full |
+
+Helpers: `Theme.Tab(button, on)` for nav tabs, `Theme.Crumb(parent, text, position)` for the notched chip.
+
 ## Theme and conventions (2026-11-17)
 
 **Palette** (`Content.Theme`, the owner's three colors): Midnight Abyss `#171F44` for every surface (steps: Deep `#0C1026` dimmers, Surface `#171F44` panels, Raised `#212B5C` cards, Card `#2C3874` chips and inputs, Line `#3E4C94` outlines), Aqua Jade `#74FFED` for the accent (selected, values, progress, "you"), Baby Pink `#FE81D1` for the one main action on a screen (PLAY, START, BUY). Ink `#171F44` text on aqua and pink; Text `#F4F6FF` and Muted `#9AA3CD` elsewhere. Red `#FF5C7A` for danger and the enemy. Team, bomb and rarity colors keep their own meaning. New UI takes its colors from `Content.Theme`, never new hex values.
