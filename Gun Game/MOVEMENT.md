@@ -126,7 +126,7 @@ A crouch press used to slide only if, on that exact frame, the state was Sprint 
 | FOV | Base = the player's **Field of view** setting. Additive kicks ease in: `FovSprint`, `FovTacticalSprint`, `FovSlide`. Aiming blends to `base × gun.ADSFov / ReferenceFov`. A scope's FOV is scaled the same way |
 | Tilt | `StrafeTilt` degrees of roll into the strafe (first person only), `SlideTilt` while sliding |
 | Landing dip | Pitch impulse of `LandDipPerSpeed` per stud/s of fall speed (capped at `LandMaxDip`) that springs back |
-| Bob | Up, side and roll from the footstep phase, scaled by speed and cut to `BobAds` while aiming. First person and standing only: none while crouched, prone or sliding, none in third person (2026-11-16; also halved then) |
+| Bob | Up, side and roll from the footstep phase, scaled by speed and cut to `BobAds` while aiming. First person and standing only: none while crouched, prone or sliding, none in third person (2026-11-16; also halved then). Since 2026-11-17 the strafe tilt is off crouched and prone too, and so are the gun's walk bob (`Client.Guns.Viewmodel`, fading with the stance) and the shield's (`ShieldView`) |
 | Recoil | The gun's camera recoil (`MovementCamera.AddRecoil` from `Viewmodel.Kick`, a `Client.Guns.Recoil` Camera) and a small per-shot roll go into the same stack, so the layers never fight. The player's own turn against the recoil is absorbed, so recovery never pulls the view below where they aimed. See [GUN_SYSTEM.md](GUN_SYSTEM.md#recoil) |
 | Shake | `MovementCamera.Shake(...)` uses CameraShaker, for impacts and explosions only |
 

@@ -61,8 +61,8 @@ Fighting always comes first: the NPC tree only follows the plan when there is no
 
 **Defenders**
 - They guard a bomb room in NPC Guard mode: stay inside, patrol, rebuild its doors and windows, fight first.
-- They split between the two rooms.
-- When an attacker is planting a defuser on a bomb, every defender bot goes to that room.
+- Each has a **home bomb** (2026-11-17): the team split evenly between the bombs still without a defuser. A bomb whose guards died takes one from a bomb with two or more.
+- A threat (an attacker planting, or an enemy seen or heard in a bomb room) pulls in the defenders of other bombs, **but never a bomb's last guard**, not even for a plant on the other bomb. When it is over each goes home. Until 2026-11-17 every defender went to the threatened room and stayed there, leaving the other bomb open.
 - Once a bomb has its defuser, they all hold the other one.
 - A defender outside its room (it spawned elsewhere, or fell through a floor) walks back first, then guards it.
 
@@ -93,7 +93,7 @@ Every attacker bot gets a scout drone at its spawn in Prep (`Systems.Games.Siege
 
 - **Sightings:** what each bot sees (and in Action hears; in Prep the only noises are drones) and what drones spot is kept for its team for `MEMORY_TIME` (30 s).
 - **Sharing:** a bot with nothing to fight or hunt goes after a teammate's sighting from the last `SHARE_TIME` (6 s) within `SHARE_RANGE` (50 studs) on its floor.
-- **Threat:** an enemy seen in a bomb room (or heard there in Action) in the last `THREAT_TIME` (10 s) counts like a planting attacker: every defender bot goes to that room.
+- **Threat:** an enemy seen in a bomb room (or heard there in Action) in the last `THREAT_TIME` (10 s) counts like a planting attacker: the defenders that can leave their own bomb go to that room (see above).
 - **Breaking their own boards:** only then may a defender outside the room break its own team's boards to get in (`Brain.SetBreakThrough`, `Tactics.Breach`). Otherwise defender bots never break boards (`agent.NoBreach`), and each keeps the room it holds when a teammate dies.
 - **Checked sites** are shared by the team.
 - **Entrances, for the whole match:** the boards attackers broke through on each map (`Breakable.Broken`). A defender guarding a room watches the one used most 60% of the time (`agent.WatchHint`). `SiegeBots.NewMatch` forgets them.

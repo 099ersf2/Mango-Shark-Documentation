@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-17: No view bob crouched or prone, defender bots hold both bombs, the bot icon
+
+Tested in Studio playtests with bots on Bank. No player data was written.
+
+### Fixed
+
+- **Defender bots left a bomb unguarded.** A threat (an attacker seen, heard or planting in a bomb room) sent every defender bot to that room, and afterwards each kept the room it stood in, so all of them stayed there and the other bomb was free to plant. Now each defender has a home bomb (the team split evenly; a bomb whose guards died takes one from a bomb with two or more), a threat pulls in the others but never a bomb's last guard (not even for a plant on the other bomb), and when the threat is over each goes home. A defender walking home doesn't chase what it sees on the way. Checked: with A held by two and B by one, a threat in B brought one from A while the other stayed and B's guard held; back home 5 s after the threat. With one guard each, an attacker planting in B left A's guard where it was.
+
+### Changed
+
+- **No view bob crouched or prone:** the gun's walk bob (`Client.Guns.Viewmodel`) fades out with the stance change, the shield's (`ShieldView`) stops, and the camera's strafe tilt is off then too (the camera bob already was).
+- **Bot icon** (`Content.Games.SiegeBots.ICON`, image 117259180607823) wherever a player's picture shows: party slots and the bot list, the selection screen's player cards, the death screen when a bot killed you (`DeathCamService` now sends the bot's own negative id), and the MVP cards.
+
 ## 2026-11-17: A lighter look, one class panel everywhere, a weapon HUD with gun models
 
 Tested in Studio playtests (lobby menus and a Siege match on Mansion). No player data was written.
