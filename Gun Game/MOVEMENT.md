@@ -182,10 +182,12 @@ Other players see crouch and slide through `Client.Movement.MovementPoses`, driv
 | Animation | When | What moves |
 | --- | --- | --- |
 | Lie | Prone, still | The back rises with slow breathing (`BREATHS_PER_SECOND`); with no gun the forearms prop the chest up (`PRONE_ARMS`) |
-| Crawl | Prone, moving | A cycle per `CRAWL_STRIDE` (2.6) studs crawled: each leg in turn sweeps out to the side along the floor with a light knee bend, the body rolls and the waist twists with the stroke; with no gun the arms reach and pull in turn. Blends with Lie by speed |
-| Slide | Sliding | Leans further back over `SLIDE_SETTLE` (0.35 s) with a small speed wobble; with no gun the trailing hand reaches back toward the floor |
+| Crawl | Prone, moving | A low crawl, like the reference clip (2026-11-17): one knee drawn up and out to the side like a frog while the other leg stretches back, swapping every half of a `CRAWL_STRIDE` (2.6 studs). The drawn leg swings out (hip Z), turns on its length (hip Y, 90 degrees) so the knee folds flat along the floor. The body rolls and the waist twists with the stroke; with no gun the arms reach and pull in turn. Blends with Lie by speed |
+| Slide | Sliding | A seated slide, like the reference clip: hips on the floor (the body pushed down `SLIDE_DROP`, the floor lift sets it on the floor), legs straight out along the floor, leaning back `SLIDE_LEAN` and a little more over `SLIDE_SETTLE` (0.35 s), with a small wobble; with no gun one hand reaches forward and the other back to the floor |
 
-A gun in hand keeps its arms to `Client.Guns.ThirdPersonGuns`. Checked in Studio from a fixed camera: lying (flat, head up, forearm propped) and crawling (legs alternate on the floor; a first version bent the hips up through the floor and was changed). The slide was only seen standing still against a wall (the sprint couldn't be started from a script), not in a real slide.
+Lying and sliding **replace** Roblox's own animation on those joints instead of adding to it: the walk cycle's leg swings, on a body lying flat, lifted the legs up to 3 studs off the floor. Signs, for the next person: the Root's +X tips the body back (-X onto its front), a hip's +X swings the leg forward, a knee's -X folds the shin back.
+
+A gun in hand keeps its arms to `Client.Guns.ThirdPersonGuns`. Checked in Studio by measuring the parts and from a fixed camera: crawling keeps every leg part at the body's height and alternates (drawn foot near the hip, the other about 2 studs back); the slide sits with the hips 0.8 and the feet 0.7 studs off the floor, 2 studs ahead. The slide pose was checked with the Sliding attribute set while standing (a real sprint-slide couldn't be started from a script).
 
 - **With animation ids:** if `Config.Animations.Crouch`, `CrouchWalk` or `Slide` hold ids, they play through `AnimationHandler`.
 - **Without them** (the default), a pose is laid over the Animator's output: bent hips and knees for a crouch, one leg forward and a lean back for a slide, and the whole body tipped flat onto its front for prone (lowered by `ProneBodyDrop`, head raised).

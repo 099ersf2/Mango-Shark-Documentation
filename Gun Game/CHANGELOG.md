@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-17: Crawl and slide like the reference clips
+
+- **Crawl:** a low crawl: one knee drawn up and out to the side like a frog while the other leg stretches back, swapping as it moves, flat on the floor.
+- **Slide:** a seated slide: hips on the floor, legs straight out in front, leaning back, one hand forward.
+- Both now replace Roblox's walk animation instead of adding to it, which had lifted the crawling legs off the floor. See [MOVEMENT.md](MOVEMENT.md).
+
 ## 2026-11-17: Prone and slide animations
 
 - **Prone:** a lying animation (breathing; forearms propped up when no gun is out) and a crawl animation that runs with the crawl speed (legs sweep out in turn, the body rolls, the arms pull when no gun is out). **Slide:** leans back further as it settles, with a wobble, and the trailing hand reaches for the floor when no gun is out. All made in code in `Client.Movement.MovementPoses`, seen by everyone. See [MOVEMENT.md](MOVEMENT.md).
