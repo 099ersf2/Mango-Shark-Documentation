@@ -66,6 +66,23 @@ The sizes below were replaced on 2026-11-13 (see above); the way they are placed
 
 `Client.Hud.Nameplates` sets, on each client, how other players' characters show their name and health: a teammate (same `Team` attribute) always shows both; an enemy shows neither; with no teams (the lobby) it is Roblox's default. Display only.
 
+## Theme and conventions (2026-11-17)
+
+**Palette** (`Content.Theme`, the owner's three colors): Midnight Abyss `#171F44` for every surface (steps: Deep `#0C1026` dimmers, Surface `#171F44` panels, Raised `#212B5C` cards, Card `#2C3874` chips and inputs, Line `#3E4C94` outlines), Aqua Jade `#74FFED` for the accent (selected, values, progress, "you"), Baby Pink `#FE81D1` for the one main action on a screen (PLAY, START, BUY). Ink `#171F44` text on aqua and pink; Text `#F4F6FF` and Muted `#9AA3CD` elsewhere. Red `#FF5C7A` for danger and the enemy. Team, bomb and rarity colors keep their own meaning. New UI takes its colors from `Content.Theme`, never new hex values.
+
+**Conventions** (from six UI laws, applied to every screen):
+
+| Rule | What it means here |
+| --- | --- |
+| Dim the background (figure-ground) | Every popup sits on a backdrop at 70% (Theme.Deep, transparency 0.3); a tap on it closes the popup |
+| Don't make important things look like ads (banner blindness) | Notices are cards: icon, title, one short line, one action. Color only as an icon or a bar, never a full-color banner |
+| Connect the steps of a flow (connectedness) | Steps are circles joined by a line: the selection screen's LOCATION–CLASS–LOADOUT–READY, the training goal card |
+| Half a card says swipe (closure) | A horizontal list shows part of its next card (`Client.Core.Peek.Cut`) |
+| Few words | A title and one short line. Extras go in a small chip |
+| One bright action | Only the main action is pink; secondary buttons are outlined (aqua outline on a dark aqua fill) |
+
+The UI before the theme is in `ServerStorage.Archive.UIBeforeTheme_2026_11_17`. The values in "The look" below are from before it (they map to the steps above).
+
 ## The look
 
 **Lighter since 2026-11-17 (slate blue, not black).** The old dark values below became slate: `#14171c` is now about `#374159`, `#20242c` about `#4a5677`, `#2b303a` about `#4e5a7e`. Use slate for new panels (`#2e3a56` base, `#3c4a6a` cards, `#54627f` off chips and tracks); keep near-black only for dimmers and NO SIGNAL screens. A UIGradient on a panel multiplies its color: give panels light gradients (white to light grey) or the panel turns black. The UI before the change is in `ServerStorage.Archive.UIBeforeLight_2026_11_17`.

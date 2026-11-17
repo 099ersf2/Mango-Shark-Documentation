@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-17: One theme (Midnight, Aqua, Pink) and UI conventions everywhere; a quieter tutorial
+
+Checked in a Studio playtest with saving off (lobby, Store, Inventory, the Notice popup, the training briefing, goal card and toast). The UI before this is kept in `ServerStorage.Archive.UIBeforeTheme_2026_11_17`.
+
+### Changed
+
+- **Colors:** the owner's palette everywhere: **Midnight Abyss** `#171F44` (every surface, in five steps), **Aqua Jade** `#74FFED` (accent: selected, values, progress) and **Baby Pink** `#FE81D1` (the main action: PLAY, START, BUY). Dark text goes on aqua and pink. Red stays for danger and the enemy; team, bomb and rarity colors are unchanged. Recolored by one rule (`Content.Theme.Map`): 1,813 UI objects in `UILoader` and `Assets.UI.Templates`, and 284 colors set in code in 27 UI modules (not skins, effects, teams or bombs).
+- **Popups dim what's behind** (70%): the Notice popup (new `Main.NoticeBackdrop`), the detail page and gift picker blocker, and the training popups. A tap on the dimmed area closes them.
+- **Notices look like content, not ads:** the Notice popup is a card with an icon (red "!" for an error, aqua "i" for a heads-up), a title, one short line and one GOT IT button. The announcement banner is a quiet card with a colored bar at the left instead of a colored outline and colored title. Reward and pass toasts are outlined cards; SCANNED is a small red-outlined chip.
+- **Store and Inventory cards** show only a hint of the item's color over midnight (they were full-color gradients with dark titles that were hard to read).
+- **Secondary buttons are outlined** (TRAINING, PLAY WITH PARTY), so PLAY is the only bright action in the lobby.
+- **The Battle Pass track** starts with the next level cut at the right edge (`Client.Core.Peek`), so it reads as a row that goes on.
+- **Recruit Training, far fewer words:** the goal card is the round's steps as circles joined by a line (FIND, BREAK IN, PLANT, PLANT / FORTIFY, HOLD), a title and one short line; the bonus is a small pink chip; the hint is one line of keys, only once stuck. The briefing is ROUND n OF 2, ATTACK or DEFEND, one line and the class chip. The invite is RECRUIT TRAINING, one line, a FREE CRATE · RARE+ chip, START and Not now. The toast is a check (or a star for a bonus) and the goal's name.
+
+### Added
+
+- `Content.Theme`: the palette, its steps, the conventions, and `Map` / `IsBright`.
+- `Client.Core.Peek`: `Peek.Cut(scroller)` for horizontal lists.
+
 ## 2026-11-17: Recruit Training (the tutorial) and the Recruit Crate
 
 Tested in a Studio playtest with saving off (the new `ScribeNoSave` switch). See [TUTORIAL.md](TUTORIAL.md).

@@ -1,5 +1,11 @@
 # Next steps
 
+## Theme pass (2026-11-17)
+
+- [ ] **Look over every screen** after the recolor by rule: seen were the lobby, Store, Inventory, Notice, the drone feed and the training screens. Not seen: Settings, Party, Battle Pass, Loadout, scoreboard, death screen, round and match results, crate opening.
+- [ ] **Colors that mean something:** check anything that turned aqua or pink but meant "your team" or "owned" in green before.
+- [ ] **On a phone:** the goal card and the Notice card at small sizes.
+
 ## Recruit Training (2026-11-17)
 
 - [ ] **Play it by hand once** (drone into the site, the scan, a real fight): the goals were reached from a test script, and how easy the bot feels wasn't judged.

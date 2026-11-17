@@ -36,6 +36,14 @@ Added 2026-11-17. A two-round 1v1 against a very easy bot that teaches both side
 
 **Easier on purpose:** the player has 300 health (`PLAYER_HEALTH`), prep is 45 s (drone) and 60 s (building), and the bot (`Content.NPC.Profiles.TutorialBot`) sees 90 studs with a 90° view, reacts in 1.4 s, misses a lot (aim error 26° settling to 14°, ×2.5), walks at 12, throws no grenades, never retreats, and walks up to boards to break them instead of shooting them from range.
 
+## The screens (2026-11-17, second pass: fewer words)
+
+- **Goal card:** the round's main goals as circles joined by a line (round 1: FIND, BREAK IN, PLANT, PLANT; round 2: FORTIFY, HOLD); reached ones fill aqua with a check, the current one is outlined aqua. Under it the goal's title and one short line (FORTIFY adds 0/2 and a bar). The bonus is a small pink chip (★ Scan the defender). The hint is one line of keys (WASD drive · Space hop), shown only after HintAfter seconds.
+- **Toast:** a check and the goal's name (a pink star for a bonus).
+- **Briefing (Reveal):** ROUND n OF 2, ATTACK (aqua) or DEFEND (pink), one line, the class chip. Low on the screen, under the spawn card.
+- **Invite:** RECRUIT TRAINING, "Attack once. Defend once. About 5 minutes.", the FREE CRATE · RARE+ chip, START (pink) and Not now. 70% backdrop.
+- **End:** TRAINING COMPLETE, the RECRUIT CRATE · RARE+ chip, one line, AWESOME!.
+
 ## Where things are
 
 | What | Where |
