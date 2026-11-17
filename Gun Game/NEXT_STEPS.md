@@ -1,5 +1,11 @@
 # Next steps
 
+## Bot squads and callouts (2026-11-17)
+
+- [ ] **Read the callouts in the real chat** with a player on a bot team (only the packet and debug log were checked).
+- [ ] **A full 5v5 match with bots** on each map since the squad changes: does the rally point ever sit somewhere odd (outside the map, in water)?
+- [ ] **More outfits:** add asset ids to `LOOKS` for variety.
+
 ## Lighter look and shared panels (2026-11-17)
 
 - [ ] **Look over the other menus** after the color change (Settings, Party, Battle Pass, the scoreboard, the death screen): they were recolored by rule, not one by one.

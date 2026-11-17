@@ -24,6 +24,8 @@ After a match the party comes back with its bots.
 | Bots in the party | `Systems.Matchmaking.PartyService` (the `AddBot` request) |
 | Bots in tickets and match records | `Systems.Matchmaking.QueueService` |
 | The BOTS tab | `Client.Core.Matchmaking`, `Main.Party.Invite.Tabs.BotsTab` (built in Studio) |
+| Callouts in chat | Packet `Siege.BotCall`, `Client.Hud.BotCallouts` (2026-11-17) |
+| Outfits | `Content.Games.SiegeBots.LOOKS` (2026-11-17) |
 
 ## How a bot is carried
 
@@ -68,9 +70,11 @@ Fighting always comes first: the NPC tree only follows the plan when there is no
 
 **Attackers**
 - **Finding the site:** their drones (below), a player's drone, or a bot walking into the real site finds it for every bot. Failing that, they learn it after `SITE_INTEL_TIME` (45 s) of Action. Until then they check the sites nearest them that no teammate has checked.
-- **Choosing a bomb:** each takes one of the bombs still without a defuser, split between them.
+- **Choosing a bomb (squad, 2026-11-17):** once the site is known the attackers share one target bomb: the room a teammate is already in, else the bomb with the fewest defender sightings in the last `THREAT_WINDOW` (20 s), plus a random 0 to 0.4 and a 0.5 penalty for last round's bomb. A new plan is made when that bomb gets its defuser or the map changes. Until 2026-11-17 each bot took its own bomb, so they arrived one at a time.
+- **Rally and push:** the squad picks a random entrance of the target room (a door or window board within `RALLY_REACH`, 32 studs, not the one used last round) and a rally point `RALLY_BACK` (9 studs) outside it on the floor. Each bot walks there and waits facing the room. A bot within `RALLY_ARRIVED` (9 studs) has arrived; one already closer to the room than to the rally point counts as arrived and goes in. The push starts when all have arrived, `GATHER_WAIT` (6 s) after the first arrival, or `GATHER_MAX` (20 s) after the plan; then each goes in `PUSH_STAGGER` (0.7 s) after the one before. Debug: `workspace.BotSquad` (attribute) names the target, entrance and state.
+- **Scouts spread out:** before the site is known, each checks a different site from the others.
 - **Planting:** inside the bomb room (`ROOM_HOLD` studs in from its edges) the bot switches to Guard mode on that room. It stays in and keeps fighting while the defuser plants (8 s); leaving would reset it.
-- **Hatches:** for a room on a floor below with no way down (the Mansion basement), the bot walks onto the hatch over that room, shoots it open (`HATCH_SHOOT`, 5 studs) and drops through. Only hatches on the floor right above count (`HATCH_ABOVE`).
+- **Hatches:** for a room on a floor below with no way down (the Mansion basement), the bot walks onto the hatch over that room, shoots it open (`HATCH_SHOOT`, 5 studs) and drops through. Only hatches on the floor right above count (`HATCH_ABOVE`), and since 2026-11-17 only one that really drops into the room: a raycast from 1 stud under the hatch must hit the room's space (`dropsInto`, cached). Bank's upstairs hatch is over basement A but opens into the vault, which kept bots circling the vault.
 - **Shut out:** with no path to its room (or the hatch) for `DOOR_AFTER` (6 s), the bot picks the boarded door or window on its floor that best leads toward the room, stands in front of it and shoots the boards off. Doors come first: a window counts `WINDOW_COST` studs farther because it has to be climbed. A door or window it has tried is not picked again.
 - **Unstick:** a bot that hasn't moved for `STUCK_TIME` (5 s) on its way somewhere walks 14 to 24 studs off for 4 s, then tries again. The spot is on its own floor (within 3 studs), never in water or a pit. Pathfinding sometimes "finds" a way straight up to the floor above.
 - **Paths through doors** (2026-11-16): an attacker's paths may go through intact boards (`BreakThrough`), so it heads for a boarded door like an open one and breaks it when it gets there. Defenders' paths don't, so they never break their own boards.
@@ -102,6 +106,25 @@ Every attacker bot gets a scout drone at its spawn in Prep (`Systems.Games.Siege
 
 With the profile's `BreachRange` (30 studs), a bot shoots a board open from where it stands when it has a clear shot at an intact piece: a board on its path within range (`Brain.BoardOnPath`, the path's `Breakable` waypoints), or the entrance it chose. It never bashes (a door is 10 bullets, about a second). Without a clear shot it walks up as before.
 
+### Callouts (2026-11-17)
+
+Bots talk to the **players on their own team** in chat (packet `Siege.BotCall`, shown by `Client.Hud.BotCallouts` as `[TEAM] BOT Name: text` in the team color, through `TextChannel:DisplaySystemMessage`, so it isn't filtered or sent by a player).
+
+| When | Line |
+| --- | --- |
+| A squad plan | "Pushing Bomb A from the west door. Group up!" |
+| The site is found | "The site is Bank Basement." (once a round) |
+| An enemy seen (every 8 s per bot at most) | "Enemy in Vault!" or "Enemy spotted, on me!" |
+| Planting | "In Bomb A, planting. Cover me!" |
+| A defender sees a threat | "They're planting in Bomb B!" or "Attackers in Bomb B. Rotating." |
+| Death | "I'm down! Watch out." |
+
+Limits: `CALL_BOT_GAP` (4 s) per bot, `CALL_TEAM_GAP` (1.5 s) per team, the same line not again within `CALL_REPEAT` (10 s). The last lines are in `workspace.BotCallouts` (attribute) for debugging.
+
+### Looks (2026-11-17)
+
+`dress(model, userId)` runs after spawn: from the bot's id (so the same bot looks the same every round) it picks a shirt, pants, hair, face and skin tone from `LOOKS` and applies them with `Humanoid:ApplyDescription` (body parts unchanged). The NPC's mesh head shows no face after that, so a `face` decal is added from the face asset's texture (`InsertService:LoadAsset`, cached). Hair parts don't collide, can't be hit and are massless, so they change nothing in a fight. The items are free official Roblox ones (found with `AvatarEditorService:SearchCatalog`). To add one, put its asset id in the list.
+
 ### What the match does with bots
 
 - **Win rules:** bots count like players. A team whose players and bots are all dead loses. A side group with bots left has not "left".
@@ -132,7 +155,14 @@ With the profile's `BreachRange` (30 studs), a bot shoots a board open from wher
 - A remote member's view of a party's bots.
 - Clear House with bots (they join the attackers and fight the guards with the normal NPC behavior).
 - A full 5 v 5 of bots.
-- A full basement plant in a real match: the hatch was tested with the bot alone.
+- A full basement plant in a real match: the hatch was tested with the bot alone. (Done 2026-11-17 on Bank, see below.)
+
+### Squad and basement (2026-11-17, Studio, Bank and Mansion)
+
+- Bank, basement site forced, 3 attacker bots: the plan and callouts came first. Echo and Rook were in the basement in 12 to 16 s; the attackers planted both bombs and won in 43 s. Vex stayed upstairs by the vault.
+- Mansion basement: the squad gathered, pushed and planted B in about 25 s, then went for A. A bot that passed the rally point on the way used to walk back to it; now it goes in.
+- Outfits and faces were seen in a playtest.
+- **Not tested:** the callouts in the real chat window (only the packet and the debug log), a full multi-round match since the last squad fixes, phones.
 
 ## Limits
 

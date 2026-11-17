@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-11-17: Attacker bots push together, call out in chat and dress like players
+
+Tested in Studio playtests on Bank (basement forced) and Mansion. No player data was written.
+
+### Fixed
+
+- **Attacker bots circled the vault and never reached Bank's basement.** The hatch upstairs sits right above basement bomb A (9.75 studs), so bots took it as the way down, but it opens into the vault. They dropped into the vault, found no path, and climbed back to the hatch. A hatch now only counts for a room when a raycast from under it lands in that room (`dropsInto`, cached per hatch and room). Checked: from every Bank attacker spawn the paths reach both basement rooms; with the basement forced, two bots were in the basement in 12 to 16 s and the attackers won by planting both bombs in 43 s.
+
+### Changed
+
+- **Attacker bots work as a squad.** Once they know the site they all go for one bomb: the room a teammate is already in, else the one with the fewest recent sightings of defenders (a little random, and less likely last round's bomb). They gather at a rally point outside a random entrance of that room (not last round's), then push in together, each `PUSH_STAGGER` (0.7 s) after the one before. The push starts when all have arrived, `GATHER_WAIT` (6 s) after the first arrived, or `GATHER_MAX` (20 s) after the plan was made. A bot already closer to the room than the rally point goes straight in. Before the site is known the scouts spread over different sites.
+- **Bots call out in chat** to the players on their team: the plan ("Pushing Bomb A from the west door. Group up!"), the site, enemies spotted and where, a plant ("In Bomb A, planting. Cover me!"), a defender rotating to a threat, and "I'm down!" when they die. Each bot waits `CALL_BOT_GAP` (4 s) between callouts, the team `CALL_TEAM_GAP` (1.5 s), and the same line isn't repeated within `CALL_REPEAT` (10 s). Shown as `[TEAM] BOT Name: text` in the team's color.
+- **Bots look like players:** each gets a shirt, pants, hair, face and skin tone from `Content.Games.SiegeBots.LOOKS` (free official Roblox items), picked from its id, so a bot looks the same every round.
+
+### Added
+
+- Packet `Siege.BotCall` (server → the bot's teammates): name, text. Client module `Client.Hud.BotCallouts` shows it in chat.
+
 ## 2026-11-17: Five crates removed, new grenade and smoke bomb models
 
 - **Removed** the Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins (archived in `ServerStorage.Archive.RemovedCrates_2026_11_17`). As decided: players lose those skins and unopened crates (data migration 2 in `Shared.Data`, run once per profile when it loads; an equipped one goes back to None), and the rewards that gave them are dropped, not replaced: the Starter Bundle gives 2,000 Coins only, 19 Battle Pass crate rewards are gone (some pass sides are empty now), the daily deal is only the 15,000 Coins pack, the old Field Crate request refuses, and the `Crate_Field` and `Crate_Gilded` Robux products are no longer offered in game. Breach Point's shield (pass level 30) is still made, from a source-only copy of the Afterburn shield (`SeasonSkins.Sources`).
