@@ -97,6 +97,36 @@ Type: Gotham (`Theme.FONT`, `FONT_BOLD`). Corners 4 (6 on big panels). Team colo
 
 The UI before this is in `ServerStorage.Archive.UIBeforeTactical_2026_11_17`.
 
+## Icons, not emoji (2026-11-17)
+
+No label shows an emoji or symbol glyph any more: emoji draw differently on every device and don't fit the Siege look. Every icon is a white line icon from the Lucide set (ISC licence), from two sprite sheets in the Creator Store (`rbxassetid://134788982523503` and `rbxassetid://122251837315841`, 24 px cells). `ReplicatedStorage.Content.Icons` lists them by name and draws them; it tints each icon with the label's text color.
+
+| Name | Shows | Used for |
+|---|---|---|
+| crate | package | crates (cards, Battle Pass rewards, Recruit Training reward) |
+| gift | gift box | GIFT buttons, Bundles section |
+| lock | padlock | locked cards and pass rewards |
+| timer, zap | stopwatch, lightning | daily deal countdown, ability cooldown and charges |
+| star | star | Featured, Battle Pass, perks, tutorial bonus |
+| flame | flame | HOT DEAL tags, the 1 V 1 "Fast" tag, win streaks (scoreboard, the StreakTag over heads) |
+| crown | crown | game passes, the VIP dog tag charm |
+| token | gem | Siege Tokens amounts and the Currency section |
+| classes, skins, helmet | swords, palette, hard hat | Inventory and Store sections |
+| check | tick | OWNED, CLAIMED, done steps and quests |
+| cart, backpack, quests | cart, backpack, scroll | nav icons |
+| play, left, right, back, arrowUp/Down/Right | arrows | PLAY tile, HOME chip, BACK and CONTINUE buttons, option arrows, D-pad key prompts |
+| objective | crosshair | the line under the phase banner |
+
+How to use it:
+
+- **Studio-built labels:** give the TextLabel or TextButton an `Icon` attribute (a name above) and, unless the icon goes before the text, `IconMode` = `Trail` (after the text) or `Glyph` (icon only). `Client.Core.IconBinder` applies it to everything in PlayerGui, clones included.
+- **Code:** `Icons.Glyph(label, name)`, `Icons.Lead(label, name, text)`, `Icons.Trail(label, text, name)`, or `Icons.Text(label, value)` for data strings: `":flame: HOT DEAL"` (icon first), `"CONTINUE :right:"` (icon last), `":crate:"` (icon only). A value that is not an icon name shows as text (a class's initial, "x2").
+- **Data:** `Content.Store.Store` SECTIONS `Icon`, store entries' `Glyph` and `Tag` hold icon names or `:name:` strings.
+- The icon sits over spaces in the text, so it follows any alignment, padding and UIScale. If other code writes a different Text to the label, the icon hides itself.
+- Not in PlayerGui: the StreakTag BillboardGui has a fixed `Flame` image beside its number, and the VIP charm's SurfaceGuis have a `CrownIcon` image.
+
+Kept as text: the separators `·` and `—` and the degree sign on drone and camera compasses. Coins keep their coin picture (`Content.Store.Style.COIN_ICON`).
+
 ## Siege style (2026-11-17, third look)
 
 Modeled on Rainbow Six Siege's menus (the owner's reference: Game UI Database, game id 264). The look before it is in `ServerStorage.Archive.UIBeforeSiege_2026_11_17`.

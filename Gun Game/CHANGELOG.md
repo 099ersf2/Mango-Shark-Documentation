@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-17: Icons instead of emoji
+
+Every emoji and symbol glyph in the UI is now an icon from one set of white line icons (Lucide, from the Creator Store), drawn by the new `Content.Icons` and `Client.Core.IconBinder` (see UI.md "Icons, not emoji"). Checked in a Studio playtest with saving off: lobby, Shop (Featured, Currency), Inventory, Settings and the selection screen, with no errors in the Output. Not checked: a phone, the Battle Pass screen (the pass is switched off), Recruit Training, the death and match-end screens. Not published.
+
+### Changed
+
+- **Studio UI:** 51 labels in UILoader and Assets.UI.Templates now carry `Icon` attributes instead of emoji text (wallet and nav icons, store cards, gift, lock and check marks, Battle Pass cells, option arrows, BACK and CONTINUE buttons, the HOME chip, the PLAY arrow, training crates and marks).
+- **Code:** Store, StoreViews, ItemDetails, Inventory, BattlePass, SiegeSelect, ModeMenu, Tutorial, Scoreboard, CustomPrompts, the phase Banner and `Content.Theme.Crumb` draw icons through `Content.Icons`. Store section icons, glyphs and HOT DEAL tags in `Content.Store`, `Content.Crates` and `Content.Matchmaking` are icon names.
+- **Server:** StatsService writes only the streak number; the StreakTag template has a flame image.
+- **VIP charm:** the crown glyph on the dog tag is a crown image.
+
 ## 2026-11-17: Siege UI (third look)
 
 Rebuilt in the style of Rainbow Six Siege's menus, from the owner's reference (Game UI Database, game id 264). Checked in a Studio playtest with saving off (`ScribeNoSave`): lobby, Settings (Controls, Audio), Shop, Inventory, the selection screen and the in-round HUD at desktop size, with no errors in the Output. Not checked: a real phone, the death screen, the match result, Party and the Game Modes panel (these got the new colors and fonts but no new layout). The UI before this is in `ServerStorage.Archive.UIBeforeSiege_2026_11_17`. Not published.
