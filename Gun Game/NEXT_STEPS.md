@@ -1,5 +1,9 @@
 # Next steps
 
+## Rebuilt lobby and touch fix (2026-11-17)
+
+- [ ] **On a real phone:** the DEPLOY card above the jump button, the wallet strip and settings button on a narrow screen, the touch buttons' size in a match.
+
 ## Tactical UI (2026-11-17)
 
 - [ ] **Not looked at yet:** Loadout, scoreboard, death screen, round and match results, crate opening, drone and camera feeds in the new style (they were restyled by rule).

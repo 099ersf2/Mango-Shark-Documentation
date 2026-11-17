@@ -66,7 +66,16 @@ The sizes below were replaced on 2026-11-13 (see above); the way they are placed
 
 `Client.Hud.Nameplates` sets, on each client, how other players' characters show their name and health: a teammate (same `Team` attribute) always shows both; an enemy shows neither; with no teams (the lobby) it is Roblox's default. Display only.
 
-## Tactical theme (2026-11-17, second version)
+## Rebuilt layouts (2026-11-17, third pass)
+
+| Screen | Layout |
+| --- | --- |
+| Lobby (`Main.Lobby`) | DEPLOY card, bottom right: Head, ModeButton row, Play (big, arrow), PartyPlay + PartyButton (halves), Training row; Status above the card. Sized and placed by `Matchmaking.layoutBar` (340 x 238; touch: 112 px up, 0.78 scale on screens 600 or less tall) |
+| Wallet (`Main.Wallet`) | Horizontal strip top left: Coins, Buttons (Inventory, Store), PassButton |
+| Store / Inventory cards (`StoreCard`) | `Stripe` (item color) on top, art centered, ItemName and Subtitle bottom left, Detail/OldPrice bottom right, Prices row, Tag top left, Bonus/Count top right |
+| Pages | Store, Inventory, Details, Battle Pass: `WidthShare` 0.97, `BelowTopbar`, max 1600 x 900 |
+| Touch | Combat buttons hidden in the lobby. Touch buttons and the crosshair use `ScaledSize` strokes: thickness is a share of their size (0.03 to 0.5), never pixels |
+
 
 The first theme's colors (Midnight / Aqua / Pink, below) were replaced the same day with a tactical, Siege-like style. `Content.Theme` holds it:
 

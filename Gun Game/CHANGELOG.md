@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-11-17: Lobby, wallet and store cards rebuilt; touch buttons fixed
+
+Checked in a Studio playtest with saving off, at a narrow (phone-like) and a desktop width. Touch itself could not be run in Studio from the tools.
+
+### Fixed
+
+- **Huge dark disks around every touch button (and a broken crosshair):** the last restyle set every UIStroke to Thickness 1, but the touch buttons' and crosshair's strokes use `StrokeSizingMode.ScaledSize`, where 1 means the element's whole size. The 35 scaled strokes got their old thickness back from the archive (0.03 / 0.04 buttons, 0.5 crosshair). Rule for later passes: never set a ScaledSize stroke's thickness in pixels.
+- **Combat touch buttons in the lobby:** they covered the lobby and did nothing there; `Client.Core.UI` now hides `Main.Mobile` while `InLobby` (Roblox's thumbstick and jump stay).
+- **Menus under Roblox's buttons on phones:** Store, Inventory, the detail page and Battle Pass now start below Roblox's top bar (`BelowTopbar`).
+
+### Changed
+
+- **Lobby: a DEPLOY card** in the bottom right (was a bar along the bottom): MODE row, a big PLAY (left-aligned, with an arrow), PLAY WITH PARTY and PARTY side by side (PARTY takes the row when PLAY WITH PARTY is hidden), and a slim TRAINING row. On touch it is lifted above the jump button and 78% size on short screens. Layout in `Client.Core.Matchmaking.layoutBar` (`CARD_*`).
+- **Wallet:** a strip across the top left (coins, INVENTORY, STORE, BATTLE PASS as tabs with an icon), instead of tiles. The settings button is one compact button at the top right.
+- **Store and Inventory cards:** operator-card style: a thin bar in the item's color on top, the art in the middle, name and type bottom left, the old price bottom right, tags inside the card, a slimmer glow.
+- **Menus are pages:** Store, Inventory, detail page and Battle Pass take 97% of the width (up to 1600 x 900); Settings and Party are larger and sit below the top bar.
+
 ## 2026-11-17: Tactical UI (Siege-style) for the whole game, Settings tabs, volume sliders fixed
 
 Checked in Studio playtests with saving off: lobby, Settings (every tab), Store, Inventory, Party, the training reveal and the in-match HUD; a text-overflow scan of every menu found nothing cut off. The UI before this is in `ServerStorage.Archive.UIBeforeTactical_2026_11_17`.
