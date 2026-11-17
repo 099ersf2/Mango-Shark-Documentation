@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-16: Siege bots: drones, shooting boards from range, team memory, defenders breaking in
+
+Tested in Studio playtests: private matches of one admin player and four bots on Bank and Mansion (see [SIEGE_BOTS.md](SIEGE_BOTS.md#drones-memory-and-breaking-in-2026-11-16)). No player data was written. One run was cut short when Studio lost its connection to Roblox (DataStore and asset requests timed out and the server kicked the player: "We couldn't load your data").
+
+### Added
+
+- **Bot drones** (`Systems.Games.Siege.BotDrones`, new): every attacker bot drives a scout drone in Prep. It checks the nearest sites no teammate has checked, finds the real one (inside it, or spotting a defender standing in it), then parks in its bot's bomb room. It spots enemies within 45 studs: into the team's memory, and marked on its player teammates' screens. It can be shot (one hit), defenders hear its motor, and teammates can't hurt it. It slips under door boards like a Siege drone through a barricade gap (player drones can't yet). When a bot's drone finds the site, the players get "Site located" too.
+- **Shooting boards from range:** a profile's new `BreachRange` (SiegeBot: 30 studs) lets an NPC shoot a board on its path open from where it stands, with a clear shot, instead of walking up to it; it never bashes. In the tests bots shot boards open from 13 to 29 studs.
+- **Team memory** (`SiegeBots`): bots share what they see and hear (30 s), and which sites they checked. A bot with nothing to fight goes after a teammate's sighting from the last 6 s within 50 studs on its floor.
+- **Defenders break their own boards for a threat:** an enemy seen in a bomb room (or heard there in Action) in the last 10 s sends every defender bot there, and one outside may break its own team's boards to get in (`Brain.SetBreakThrough`). Without a threat a defender bot never breaks boards (`agent.NoBreach`).
+- **Remembered entrances:** for the whole match, the boards attackers broke through on each map. A defender guarding a room watches the one attackers used most 60% of the time (`agent.WatchHint`, `Tasks.Patrol`).
+- `DroneService.AddExternal(model)`: a server-driven drone NPCs see and shoot (listed in `DroneService.All`).
+- `SiegeBots.Scout`, `SiegeBots.SiteFound`, `SiegeBots.NewMatch`; `Brain.BoardOnPath`, `Brain.SetBreakThrough`.
+
+### Changed
+
+- `SITE_INTEL_TIME` 25 → 45 s: attacker bots now find the site with their drones; the timer is only a fallback.
+- **Defenders keep their room:** a defender bot that holds a bomb room keeps it when a teammate dies (until then the split dealt the rooms again, sending one across the map, where it broke its way into a room its teammates had boarded up).
+
 ## 2026-11-16: NPC pathfinding: stairs, climbing, the pool, breaking in through doors
 
 Tested in Studio playtests with attacker bots sent from the attacker spawns to the bomb rooms of both maps, boards up (results in [SIEGE_BOTS.md](SIEGE_BOTS.md#getting-to-the-bomb-rooms-2026-11-16-studio-boards-up-no-defenders)). No player data was written.

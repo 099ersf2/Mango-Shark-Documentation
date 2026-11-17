@@ -126,6 +126,8 @@ Siege bots ([SIEGE_BOTS.md](SIEGE_BOTS.md)) use these; any mode can.
   - `ObjectiveDirect`: walks straight at the objective with no path (into an opened hatch).
   - An NPC with an objective ignores gunshots on another floor (`Tactics` hearing).
 - **Profiles** may set `AimErrorScale` (default `AIM_ERROR_SCALE`, 3) and `AimErrorFloor` (default `MIN_AIM_ERROR`, 4). The `SiegeBot` profile uses 1.6 and 2.
+- **`BreachRange`** (2026-11-16, optional): studs within which it shoots a board open from where it stands, with a clear shot at an intact piece, instead of walking up and bashing it; with it set it never bashes. It also looks ahead along its path for a board within range (`Brain.BoardOnPath`). The `SiegeBot` profile uses 30.
+- **A game mode's switches on an agent:** `Brain.SetBreakThrough(agent, on)` (its paths go through intact boards or not; both Paths are kept), `agent.NoBreach` (`Tactics.Breach` does nothing), `agent.WatchHint` (Guard mode watches this entrance 60% of the time).
 
 ## Tactics: hearing, testing walls, breaching, grenades
 

@@ -53,7 +53,7 @@ After a match the party comes back with its bots.
 - **One life**, like players.
 - **No friendly fire:** a bot and its teammates can't hurt each other (`Combat.PreventFriendlyFire` in SiegeBots).
 - **Never sleeps:** NPCs normally sleep more than 350 studs from every player, but bots fight each other far from players.
-- **No gadgets:** bots don't use class gadgets, drones or cameras.
+- **Drones, no other gadgets:** attacker bots drive a scout drone in Prep (see Drones below). Bots don't use class gadgets or cameras.
 
 ### The plan (every `THINK` = 0.5 s in Prep and Action)
 
@@ -67,7 +67,7 @@ Fighting always comes first: the NPC tree only follows the plan when there is no
 - A defender outside its room (it spawned elsewhere, or fell through a floor) walks back first, then guards it.
 
 **Attackers**
-- **Finding the site:** they have no drones, so they learn the site when a player's drone finds it, or after `SITE_INTEL_TIME` (25 s) of Action. Until then they check the sites nearest them. A bot that walks into the real site tells the other bots.
+- **Finding the site:** their drones (below), a player's drone, or a bot walking into the real site finds it for every bot. Failing that, they learn it after `SITE_INTEL_TIME` (45 s) of Action. Until then they check the sites nearest them that no teammate has checked.
 - **Choosing a bomb:** each takes one of the bombs still without a defuser, split between them.
 - **Planting:** inside the bomb room (`ROOM_HOLD` studs in from its edges) the bot switches to Guard mode on that room. It stays in and keeps fighting while the defuser plants (8 s); leaving would reset it.
 - **Hatches:** for a room on a floor below with no way down (the Mansion basement), the bot walks onto the hatch over that room, shoots it open (`HATCH_SHOOT`, 5 studs) and drops through. Only hatches on the floor right above count (`HATCH_ABOVE`).
@@ -78,13 +78,36 @@ Fighting always comes first: the NPC tree only follows the plan when there is no
 - **Unreachable rooms:** a room with no path for `NO_WAY_TIME` (20 s), and no breach under way, is skipped for 40 s. The bot takes the other bomb, or hunts defenders if neither is reachable.
 - **Focus:** a bot heading somewhere ignores gunshots and hunt spots on another floor, so it doesn't stand under an enemy it heard instead of going on.
 
+### Drones (2026-11-16)
+
+Every attacker bot gets a scout drone at its spawn in Prep (`Systems.Games.Siege.BotDrones`; the server drives it).
+
+- **Scouting:** it drives to the nearest site no teammate has checked (bomb room A of that site). Inside a site (a stud inside its box, height too) the site is checked; inside the real one, the site is found. A site it can't get into is left for the next one.
+- **Spotting:** every 0.5 s it looks for enemies within `DRONE_SPOT_RANGE` (45 studs) in clear view. Each goes into the team's memory and is marked on its player teammates' screens for `DRONE_SPOT_TIME` (15 s, `DroneService.Mark`). A defender standing in the real site gives the site away.
+- **Found:** "Site located" for the players too (`SiegeService.checkDiscovery` reads `SiegeBots.SiteFound`). The drone then drives into its bot's bomb room and parks there, still spotting, until the round ends.
+- **Like a player's drone:** `DRONE_SPEED` 14 studs/s (players' do 20), one hit kills it, defenders hear its motor (`Drone.Noise`) and see and shoot it (`DroneService.AddExternal`), teammates can't hurt it.
+- **Under door boards:** it slips under a boarded door like a Siege drone through a barricade gap (a path through a `Breakable` label, cost 5). A boarded window needs a climb, which it can't do. Players' drones can't slip under boards yet (their physics is real).
+
+### Memory (2026-11-16)
+
+- **Sightings:** what each bot sees (and in Action hears; in Prep the only noises are drones) and what drones spot is kept for its team for `MEMORY_TIME` (30 s).
+- **Sharing:** a bot with nothing to fight or hunt goes after a teammate's sighting from the last `SHARE_TIME` (6 s) within `SHARE_RANGE` (50 studs) on its floor.
+- **Threat:** an enemy seen in a bomb room (or heard there in Action) in the last `THREAT_TIME` (10 s) counts like a planting attacker: every defender bot goes to that room.
+- **Breaking their own boards:** only then may a defender outside the room break its own team's boards to get in (`Brain.SetBreakThrough`, `Tactics.Breach`). Otherwise defender bots never break boards (`agent.NoBreach`), and each keeps the room it holds when a teammate dies.
+- **Checked sites** are shared by the team.
+- **Entrances, for the whole match:** the boards attackers broke through on each map (`Breakable.Broken`). A defender guarding a room watches the one used most 60% of the time (`agent.WatchHint`). `SiegeBots.NewMatch` forgets them.
+
+### Breaking boards from range (2026-11-16)
+
+With the profile's `BreachRange` (30 studs), a bot shoots a board open from where it stands when it has a clear shot at an intact piece: a board on its path within range (`Brain.BoardOnPath`, the path's `Breakable` waypoints), or the entrance it chose. It never bashes (a door is 10 bullets, about a second). Without a clear shot it walks up as before.
+
 ### What the match does with bots
 
 - **Win rules:** bots count like players. A team whose players and bots are all dead loses. A side group with bots left has not "left".
 - **Scoreboard and result screen:** bots are listed by name. Their kills and deaths are counted by SiegeService.
 - **Kill feed:** shows "BOT Nova".
 - **Class hiding:** drone and camera scans reveal a bot's class like a player's.
-- **Not given to bots:** no coins, wins, quests, Battle Pass XP or analytics (they are left out of `Siege.Ended`'s players), no drone, no camera, no snapshot.
+- **Not given to bots:** no coins, wins, quests, Battle Pass XP or analytics (they are left out of `Siege.Ended`'s players), no player drone (they drive their own, above), no camera, no snapshot.
 
 ## Tested (2026-11-16, Studio playtests, one admin player)
 
@@ -132,5 +155,19 @@ Fighting always comes first: the NPC tree only follows the plan when there is no
 
 A bot dropped in the Mansion pool climbed out by the ladder and was in the house within 5 s.
 - **Health bars:** bots stand in `workspace.Enemies`, so `HealthBillboards` gives every bot a health bar, teammates and enemies alike.
-- **Fair-play shortcut:** attacker bots learn the site after 25 s without drones.
+- **Fair-play shortcut:** attacker bots learn the site after 45 s of Action if nothing found it.
+- **Bot drones slip under door boards; players' drones can't.** Either give players' drones the same gap, or take it from the bots (they then mostly can't get into boarded buildings in Prep).
+
+### Drones, memory and breaking in (2026-11-16)
+
+| Check | Result |
+| --- | --- |
+| Drones, Bank | Before the board gap: no path into the bank at all, the drone never moved. After: both drones drove in; one went down to the basement and found the site 18 s after the drones came out |
+| Drones, Mansion | Three drones drove into the house; the site (Basement) was found 40 s into Prep. One drone parked in Basement bomb room B. In another run the defenders shot both drones on their way to the vault |
+| Shooting from range | DoorBoard1 from 21 and 13 studs, Board11 (a window) from 29, DoorBoardBuild from 14 and 28 |
+| Defender threat | An attacker bot put in Mansion's Main Floor bomb room B next to its guard: the guard saw it, the defender upstairs was allowed to break boards within a second, came down, broke its own board into the room 5 s later and guarded it. When the threat was 10 s old it stopped breaking boards again |
+| Output | No errors or warnings from the bot, NPC or drone modules |
+
+Not tested: the remembered entrances over several rounds (rounds ended early: the test player was kicked when Studio lost its connection), a player seeing a bot drone's marks, and bots in a live server.
+
 - **Bot ids are random:** two bots in the queue could share one in theory (1 in about 2 billion). The matchmaker would then drop the newer ticket.
