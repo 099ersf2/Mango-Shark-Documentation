@@ -174,7 +174,6 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`, `Ready`), value (`Ready`: `"1"` done picking, `"0"` changing picks) |
 | `Siege.Plant` | Server → one attacker | bomb (`""` for none), server time it started, seconds |
 | `Siege.Board` | Server → one client | Scoreboard rows, filtered for their team |
-| `Siege.BotCall` | Server → the bot's teammates | bot name, text (2026-11-17): a bot callout, shown in chat by `Client.Hud.BotCallouts` |
 | `Siege.RequestState` | Client → server | — |
 | `Class.Use` | Client → server, answered (ok, message) | server time, camera position, unit look |
 | `Class.State` | Server → the owner only | `{ ClassId, Charges, ReadyAt, Guns }` or nil |
@@ -224,7 +223,7 @@ Everything added with Siege, in one place. The details are in [SIEGE.md](SIEGE.m
 | `Systems.Store.BotCoinService` | Pays `REWARDS.BotKill` Coins for an NPC kill |
 | `Systems.Games.Siege.SiegeBots` | Siege bots: `Pick(entry, team, info, teamEntries)`, `Spawn(entry, cframe)`, `Despawn(entry)`, `Update(context)`, `Reset()`, `NewMatch()`, `Scout(entry, cframe)`, `SiteFound()`, `IsBot(userId)`, `IsBotModel(model)`. See [SIEGE_BOTS.md](SIEGE_BOTS.md) |
 | `Systems.Games.Siege.BotDrones` | Bot scout drones: `Deploy(userId, team, cframe)`, `Of(userId)`, `Drive(model, goal?)`, `State(model)`, `Clear()`, `Prepare(map)` (links through wall vents) |
-| `Content.Games.SiegeBots` | Bot names, prefix, id range, pick delay, plan timings, drone speed and spotting, memory times; since 2026-11-17 the squad (`GATHER_WAIT`, `GATHER_MAX`, `PUSH_STAGGER`, `RALLY_*`, `THREAT_WINDOW`), callouts (`CALL_*`) and outfits (`LOOKS`) |
+| `Content.Games.SiegeBots` | Bot names, prefix, id range, pick delay, plan timings, drone speed and spotting, memory times; since 2026-11-17 the squad (`GATHER_WAIT`, `GATHER_MAX`, `PUSH_STAGGER`, `RALLY_*`, `THREAT_WINDOW`), the bot radio (`TRADE_RANGE`, `HELP_RANGE`, `HELP_HEALTH`, `HELP_GAP`) and outfits (`LOOKS`) |
 | `Systems.Lobby.Teleporters` | Parts tagged `Teleporter` send players to the part named by their `TeleportTo` attribute |
 | `Content.Classes.Classes` | Every class and ability, loaded from one file per class in `Content.Classes.Definitions` (sorted by `Order`); `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN` |
 | `Content.Cameras` | Camera health, hit box, view limits, scan range/angle/cooldown/ray steps, attribute names |

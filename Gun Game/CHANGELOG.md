@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-11-17: Attacker bots push together, call out in chat and dress like players
+## 2026-11-17: Attacker bots push together, talk to each other and dress like players
 
 Tested in Studio playtests on Bank (basement forced) and Mansion. No player data was written.
 
@@ -11,12 +11,12 @@ Tested in Studio playtests on Bank (basement forced) and Mansion. No player data
 ### Changed
 
 - **Attacker bots work as a squad.** Once they know the site they all go for one bomb: the room a teammate is already in, else the one with the fewest recent sightings of defenders (a little random, and less likely last round's bomb). They gather at a rally point outside a random entrance of that room (not last round's), then push in together, each `PUSH_STAGGER` (0.7 s) after the one before. The push starts when all have arrived, `GATHER_WAIT` (6 s) after the first arrived, or `GATHER_MAX` (20 s) after the plan was made. A bot already closer to the room than the rally point goes straight in. Before the site is known the scouts spread over different sites.
-- **Bots call out in chat** to the players on their team: the plan ("Pushing Bomb A from the west door. Group up!"), the site, enemies spotted and where, a plant ("In Bomb A, planting. Cover me!"), a defender rotating to a threat, and "I'm down!" when they die. Each bot waits `CALL_BOT_GAP` (4 s) between callouts, the team `CALL_TEAM_GAP` (1.5 s), and the same line isn't repeated within `CALL_REPEAT` (10 s). Shown as `[TEAM] BOT Name: text` in the team's color.
+- **Bots talk to each other over a team radio** (players don't see it; their chat is unchanged). Teammates act on what they hear: an enemy seen goes into the team's memory and idle bots go after it; a bot killed tells where it was shot from and the nearest free attacker goes there to trade (`TRADE_RANGE`, 70 studs); a hurt attacker in a fight (under `HELP_HEALTH`, 60%) asks for help and the nearest free attacker comes (`HELP_RANGE`, 60 studs; at most every `HELP_GAP`, 6 s); an attacker planting makes the squad stop gathering and push in; the plan, the push, the site and a defender rotating are shared too. The last messages are in `workspace.BotRadio` (attribute) for tests. Checked on Bank over two rounds: plan, push, plant, contact, down and rotate messages, and help calls answered ("Rook coming", "Vex coming").
 - **Bots look like players:** each gets a shirt, pants, hair, face and skin tone from `Content.Games.SiegeBots.LOOKS` (free official Roblox items), picked from its id, so a bot looks the same every round.
 
 ### Added
 
-- Packet `Siege.BotCall` (server → the bot's teammates): name, text. Client module `Client.Hud.BotCallouts` shows it in chat.
+- Nothing for players: the first version of this change showed the bots' callouts in the players' chat (packet `Siege.BotCall`, `Client.Hud.BotCallouts`); both were removed the same day, the module is in `ServerStorage.Archive.BotCallouts_2026_11_17`.
 
 ## 2026-11-17: Five crates removed, new grenade and smoke bomb models
 

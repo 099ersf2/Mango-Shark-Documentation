@@ -1,8 +1,8 @@
 # Next steps
 
-## Bot squads and callouts (2026-11-17)
+## Bot squads and radio (2026-11-17)
 
-- [ ] **Read the callouts in the real chat** with a player on a bot team (only the packet and debug log were checked).
+- [ ] **Trade answers:** see an attacker bot die near a free teammate and the teammate go to the killer (help answers were seen; trades weren't).
 - [ ] **A full 5v5 match with bots** on each map since the squad changes: does the rally point ever sit somewhere odd (outside the map, in water)?
 - [ ] **More outfits:** add asset ids to `LOOKS` for variety.
 

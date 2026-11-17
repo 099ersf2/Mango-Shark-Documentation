@@ -24,7 +24,7 @@ After a match the party comes back with its bots.
 | Bots in the party | `Systems.Matchmaking.PartyService` (the `AddBot` request) |
 | Bots in tickets and match records | `Systems.Matchmaking.QueueService` |
 | The BOTS tab | `Client.Core.Matchmaking`, `Main.Party.Invite.Tabs.BotsTab` (built in Studio) |
-| Callouts in chat | Packet `Siege.BotCall`, `Client.Hud.BotCallouts` (2026-11-17) |
+| Bot radio (bots talking to each other) | `radio` in `SiegeBots`, numbers in `Content.Games.SiegeBots` (2026-11-17) |
 | Outfits | `Content.Games.SiegeBots.LOOKS` (2026-11-17) |
 
 ## How a bot is carried
@@ -106,20 +106,22 @@ Every attacker bot gets a scout drone at its spawn in Prep (`Systems.Games.Siege
 
 With the profile's `BreachRange` (30 studs), a bot shoots a board open from where it stands when it has a clear shot at an intact piece: a board on its path within range (`Brain.BoardOnPath`, the path's `Breakable` waypoints), or the entrance it chose. It never bashes (a door is 10 bullets, about a second). Without a clear shot it walks up as before.
 
-### Callouts (2026-11-17)
+### Radio: bots talk to each other (2026-11-17)
 
-Bots talk to the **players on their own team** in chat (packet `Siege.BotCall`, shown by `Client.Hud.BotCallouts` as `[TEAM] BOT Name: text` in the team color, through `TextChannel:DisplaySystemMessage`, so it isn't filtered or sent by a player).
+A team's bots tell each other what they know (`radio` in `SiegeBots`); players don't see it. Each message goes into the team's log (`radioLog`) and the teammates act on it at once:
 
-| When | Line |
-| --- | --- |
-| A squad plan | "Pushing Bomb A from the west door. Group up!" |
-| The site is found | "The site is Bank Basement." (once a round) |
-| An enemy seen (every 8 s per bot at most) | "Enemy in Vault!" or "Enemy spotted, on me!" |
-| Planting | "In Bomb A, planting. Cover me!" |
-| A defender sees a threat | "They're planting in Bomb B!" or "Attackers in Bomb B. Rotating." |
-| Death | "I'm down! Watch out." |
+| Message | Sent when | What teammates do |
+| --- | --- | --- |
+| Contact | It sees an enemy (every 8 s per bot at most) | The spot goes into the team's memory; idle bots nearby go after it (Sharing) |
+| Down | It dies | Where it was shooting (within 6 s), else where it fell, goes into memory; the nearest free attacker within `TRADE_RANGE` (70 studs) on that floor goes there to trade |
+| Help | An attacker in a fight drops under `HELP_HEALTH` (60%), every `HELP_GAP` (6 s) at most | The nearest free attacker within `HELP_RANGE` (60 studs) on that floor comes to the enemy |
+| Plant | An attacker gets into the bomb room | The squad stops gathering at the rally and pushes in now |
+| Plan / Push / Site | The squad picks a bomb, pushes, or learns the site | Shared plan (the squad already holds it) |
+| Rotate | Defenders see a new threat | Shared (the defender split already acts on it) |
 
-Limits: `CALL_BOT_GAP` (4 s) per bot, `CALL_TEAM_GAP` (1.5 s) per team, the same line not again within `CALL_REPEAT` (10 s). The last lines are in `workspace.BotCallouts` (attribute) for debugging.
+"Free" means alive, not fighting, not fleeing and not holding a bomb room. Defenders answer threats through their home-bomb split instead, so a bomb's last guard never leaves. For tests the last messages are in `workspace.BotRadio` (attribute): `[Team] Name Kind: text`, with "(BOT X coming)" when a teammate answered.
+
+Until later on 2026-11-17 these were callouts shown in the players' chat (packet `Siege.BotCall`, `Client.Hud.BotCallouts`, archived in `ServerStorage.Archive.BotCallouts_2026_11_17`).
 
 ### Looks (2026-11-17)
 
@@ -159,10 +161,11 @@ Limits: `CALL_BOT_GAP` (4 s) per bot, `CALL_TEAM_GAP` (1.5 s) per team, the same
 
 ### Squad and basement (2026-11-17, Studio, Bank and Mansion)
 
-- Bank, basement site forced, 3 attacker bots: the plan and callouts came first. Echo and Rook were in the basement in 12 to 16 s; the attackers planted both bombs and won in 43 s. Vex stayed upstairs by the vault.
+- Bank, basement site forced, 3 attacker bots: the plan came first. Echo and Rook were in the basement in 12 to 16 s; the attackers planted both bombs and won in 43 s. Vex stayed upstairs by the vault.
 - Mansion basement: the squad gathered, pushed and planted B in about 25 s, then went for A. A bot that passed the rally point on the way used to walk back to it; now it goes in.
 - Outfits and faces were seen in a playtest.
-- **Not tested:** the callouts in the real chat window (only the packet and the debug log), a full multi-round match since the last squad fixes, phones.
+- Radio, Bank Upstairs, two rounds (2 bots a side and the player): the plan, push, plants, contacts, rotations and downs were sent; help calls were answered by the nearest free attacker. Trade answers weren't seen (no attacker bot died near a free teammate).
+- **Not tested:** a full multi-round match on every map, phones.
 
 ## Limits
 
