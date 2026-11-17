@@ -158,6 +158,8 @@ Inspired by what Rainbow Six Siege's screens do well (steps that say what's next
 
 **The map** is copied from `ReplicatedStorage.Maps.<snapshot Map>` into the viewport once (scripts, sounds, lights and effects left out), because the live map streams in. The top view frames the spawns and sites, straight down. The **cutaway** leans back 28 degrees over one site and hides: anything reaching more than 2.5 studs over the site's top, thin slabs at its top (its ceiling), and big pieces crossing its top over most of its floor (Mansion's ground and basement are unions). The bomb rooms are drawn as see-through red and blue boxes. Pins are placed by projecting their world point through the viewport's camera.
 
+**Picking on the map (2026-11-17):** the map shows the site, spawn or map last tapped or clicked, in the list or on its pin (a pin's `Hit` button), and keeps showing it until another is picked; pointing with a mouse previews another while the pointer is on it. On a touch screen pointing does nothing (a tap fired the hover's enter and leave too, so the view jumped back to the vote). Clicking a site's or a free spawn's pin votes or takes it. Checked on PC: a spawn pin's click took the spawn; a site picked in the list stayed cut away with the mouse off it. Not tried on a phone.
+
 **The viewport's Camera is made in code**: a Camera inside a ScreenGui is not copied into PlayerGui.
 
 ### In the round

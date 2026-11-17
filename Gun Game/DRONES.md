@@ -107,7 +107,7 @@ Gamepad: DPad Left is the 5 key (in and out); in a drone DPad Down or B also lea
 | `ReplicatedStorage.Assets.Models.Gadgets.Drone` | The model (see below) |
 | `StarterGui.DroneFeed` | The camera feed UI |
 | `StarterGui.Main.DroneSlot`, `Main.Mobile.DroneButton` | On-foot HUD and mobile button |
-| `Assets.UI.Templates.SpotMarker`, `SpotHighlight` | What a spotted enemy shows |
+| `Assets.UI.Templates.SpotMarker`, `SpotHighlight` | What a spotted enemy shows. Since 2026-11-17 the marker is a map pin (a round `Diamond` head with "!" and a `Tip` point, red for a drone scan, the camera color for a camera scan) whose point sits on the spot, with its `Distance` in meters over it (`DroneController.refreshMarks`, 1 stud = 0.28 m) |
 | `Lighting.DroneFeed` | A ColorCorrectionEffect for the feed's colder, flatter look (on only in a drone) |
 | `Shared.Packets` `Drone` group, `Shared.PlayerSettings` `Drone` / `DroneView` actions | Network and keys |
 | `Content.Effects.Registry` `DroneDestroyed` | The pop and metal bits |

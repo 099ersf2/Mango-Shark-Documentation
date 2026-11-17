@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-17: Scan marks as pins with meters, picks on the selection map stay put
+
+### Changed
+
+- **Scan marks** (a drone or camera scan of an enemy, `Templates.SpotMarker`): a map pin (round head with "!" and a point on the spot) with the distance in meters over it, kept up to date. Red for drones, the camera color for cameras.
+- **Selection map, Siege and Clear House:** the site, spawn or map you tap or click stays on the map until you pick another. Hover (mouse only) previews while the pointer is on a row; on a touch screen it is ignored, so a tap no longer jumps the view back. Clicking a pin on the map votes the site or takes the spawn on PC and on touch. Checked on PC in Studio; not tried on a phone. Studio screenshots don't show BillboardGuis, so the pin was checked by its parts and a copy drawn on screen.
+
 ## 2026-11-17: No view bob crouched or prone, defender bots hold both bombs, the bot icon
 
 Tested in Studio playtests with bots on Bank. No player data was written.
