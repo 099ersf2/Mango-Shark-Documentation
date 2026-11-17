@@ -152,7 +152,7 @@ Inspired by what Rainbow Six Siege's screens do well (steps that say what's next
 | `Header.Clock` | Team (in its color), "ROUND 1 OF 5", the clock (red in the last 5 seconds) |
 | `Pages.Location` | `Left.Options` (template `SelOption`: radio, name, detail, vote badge), CONTINUE, and `MapPanel`: a ViewportFrame with the map, pins (`MapPin`: diamond, letter, label, ring), a caption and a legend |
 | `Pages.Class` | `Left.Cards` (template `ClassTile`: emblem with letter and stud, name, a cover when taken or locked) and `Info` (emblem, name, role, `Stats` pips (`Pip`), ability, kit, status, SELECT CLASS, and the player's avatar on the team's color) |
-| `Pages.Loadout` | CONFIRM LOADOUT, rows `Slot1`, `Slot2`, `Ability`, `Consumable` (arrows, "1 / 3"), and `Info` with `Bars` (damage, fire rate, magazine, mobility) |
+| `Pages.Loadout` | CONFIRM LOADOUT, rows `Slot1`, `Slot2`, `Ability`, `Consumable` (arrows, "1 / 3"), and `Info` with `Bars` (damage, fire rate, magazine, mobility). The panel shows the focused gun's model turning, and since 2026-11-17 the gadget's model too (`ClassPanel.ConsumablePreview`, from `Assets.Models.Consumables`, still) |
 | `Pages.Ready` / `Pages.Reveal` | A row of `PlayerCard`s (avatar, class badge and name, ready tick, player, spawn or vote) |
 | `Footer` | `OwnReady` / `EnemyReady`: a dot per player (`ReadyDot`), "2/5 READY". Shown in Selection only |
 

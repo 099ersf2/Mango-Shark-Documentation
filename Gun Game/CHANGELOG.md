@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-17: Gadget model on the Loadout page
+
+- Picking a gadget (grenade or smoke bomb) on the selection screen's Loadout page shows its model in the panel, like the guns (`ClassPanel.ConsumablePreview`). Fixed on the way: the gun preview's turning kept aiming the camera at the last gun, which threw a gadget's model off-screen; it now only turns for guns.
+
 ## 2026-11-17: Crawl and slide like the reference clips
 
 - **Crawl:** a low crawl: one knee drawn up and out to the side like a frog while the other leg stretches back, swapping as it moves, flat on the floor.
