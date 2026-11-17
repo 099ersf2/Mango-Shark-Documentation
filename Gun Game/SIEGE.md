@@ -129,6 +129,10 @@ Since another developer's change, attackers get a body during Prep while they dr
   - `Players`;
   - `Mvp`.
 
+## Recruit Training (2026-11-17)
+
+SiegeService also plays the tutorial, a match whose mode has `Kind = "Tutorial"`: one player against an easy bot, two rounds (attack, then defend), with every pick given. See [TUTORIAL.md](TUTORIAL.md).
+
 ## Clear House (2026-11-14)
 
 SiegeService also plays the Arcade mode [Clear House](CLEAR_HOUSE.md), players against NPC guards, when the match record's mode has `Kind = "ClearHouse"`. It's the same flow, except:

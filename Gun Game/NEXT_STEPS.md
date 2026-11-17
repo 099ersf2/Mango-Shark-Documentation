@@ -1,5 +1,12 @@
 # Next steps
 
+## Recruit Training (2026-11-17)
+
+- [ ] **Play it by hand once** (drone into the site, the scan, a real fight): the goals were reached from a test script, and how easy the bot feels wasn't judged.
+- [ ] **On a live server:** the teleport to the training server and back, and the OPEN CRATE button after coming back.
+- [ ] **On a phone:** the goal card sits left of the screen; check it doesn't cover the touch buttons.
+- [ ] Maybe: a picture for the Recruit Crate, and a voice line or music sting on SKILL LEARNED.
+
 ## Bot squads and radio (2026-11-17)
 
 - [ ] **Trade answers:** see an attacker bot die near a free teammate and the teammate go to the killer (help answers were seen; trades weren't).

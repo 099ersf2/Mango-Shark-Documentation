@@ -1,0 +1,69 @@
+# Recruit Training (the tutorial)
+
+Added 2026-11-17. A two-round 1v1 against a very easy bot that teaches both sides of Siege: **round 1 the player attacks** (drone, breaking in, planting defusers), **round 2 they defend** (building boards, cameras, holding). Nothing is picked: the class, the site and the spawn are given. The first time a player finishes, they get the **Recruit Crate** (always Rare or better). A player can skip it on first join and start it any time later from the lobby's TRAINING button; the crate waits until they finish once.
+
+## What we learned from other games first
+
+| Game | What its tutorial does | What we took |
+| --- | --- | --- |
+| **Rainbow Six Siege**: Situations | Optional, short missions that switch roles: one as attacker, one as defender, explaining reinforcements and gadgets as you play | Two rounds, attack then defend, with boards as the defense lesson |
+| **Valorant**: Basic Training | A separate track after the tutorial, with an attacker section (plant the Spike) and a defender section, and a reward per section (a free agent, a card, a title) | A real reward for finishing (the crate), and plant/defend as the core goals |
+| **CS2**: Training Day | Movement, weapons, objectives and utility on a practice map; skippable | Skippable, with the core loop (find, breach, plant) taught by doing |
+| **Roblox BedWars** | Barely any built-in teaching: new players learn from guides, and guides say they struggle | Don't drop new players into real matches unguided: invite them on first join |
+| **Portal / Half-Life 2** (Valve) | Teaches through level design with almost no text; shows why something matters before teaching it; "if a player doesn't know what to do, it's our fault" | Each goal says *what* to do, not *how*. The how (keys) only appears as a hint after the player has been stuck for a while, so they discover things themselves |
+
+## How it plays
+
+1. **Lobby.** On first join (no Done, Rewarded or Skipped flag), a popup invites them after 4 s: WELCOME, RECRUIT, the free crate, START TRAINING or NOT NOW. NOT NOW saves `Skipped`; the TRAINING button (left of the lobby bar, above PARTY) stays and reads FREE CRATE with a red dot until the crate is earned, OPEN CRATE while it is unopened (opens the Inventory's crates), then PRACTICE.
+2. **Start.** Alone only (no party members or bots). `Packets.Tutorial.Request("Start")` → `QueueService.JoinTutorial`: a private match of mode `Tutorial` on Mansion, the player attacking, the training bot (`BOT Rookie`) defending.
+3. **Each round:** Selection is skipped (everyone is given their side's class, the attackers the spawn Back Porch, the defenders the site Main Floor, and marked ready). Reveal (8 s) shows the round's briefing: ROUND 1 · ATTACK / ROUND 2 · DEFEND, the story line and YOUR CLASS.
+4. **Goals** (the card on the left, above the drone and camera feeds):
+
+| Round | Phase | Goal | Reached when | Hint after |
+| --- | --- | --- | --- | --- |
+| 1 | Prep | FIND THE BOMBS | Their drone finds the site | 15 s |
+| 1 | Prep | ★ MARK THE ENEMY (bonus) | Their drone scans the bot | 25 s |
+| 1 | Action | BREAK IN | They break a board | 20 s |
+| 1 | Action | PLANT A DEFUSER | The first defuser | 30 s |
+| 1 | Action | FINISH THE JOB | The second defuser (round won) | 30 s |
+| 1 | Action | ★ TAKE THEM DOWN (bonus) | They kill the bot | 40 s |
+| 2 | Prep | FORTIFY (0/2) | Two doors or windows built whole | 12 s |
+| 2 | Prep | ★ EYES EVERYWHERE (bonus) | They open a camera | 20 s |
+| 2 | Action | HOLD THE LINE | The defenders win the round | 45 s |
+
+   Each goal reached pops a SKILL LEARNED toast with a sound and the SKILLS n/9 counter goes up. A Prep goal not reached by Action is missed (it stops showing). If the drone didn't find the site, the site is shown at the start of Action anyway, so nobody is left wandering.
+5. **End.** TRAINING COMPLETE, with the skills learned. The first finish saves `Done` and `Rewarded` and puts one Recruit Crate in the crate inventory, in one transaction; finishing again only says "Ready for a real match?". Winning or losing a round doesn't matter: finishing both rounds does.
+
+**Easier on purpose:** the player has 300 health (`PLAYER_HEALTH`), prep is 45 s (drone) and 60 s (building), and the bot (`Content.NPC.Profiles.TutorialBot`) sees 90 studs with a 90° view, reacts in 1.4 s, misses a lot (aim error 26° settling to 14°, ×2.5), walks at 12, throws no grenades, never retreats, and walks up to boards to break them instead of shooting them from range.
+
+## Where things are
+
+| What | Where |
+| --- | --- |
+| Numbers, texts, goals, saved flags | `ReplicatedStorage.Content.Games.Tutorial` (a ScribeFragment: `Tutorial = Scribe.Flags({ "Done", "Rewarded", "Skipped" })`) |
+| The bot | `Content.NPC.Profiles.TutorialBot`; a bot entry's `Profile` (`SiegeBots.Spawn`) |
+| The crate | `Content.Crates.Definitions.Recruit` (`Hidden = true`: not in the Store or the Inventory's skin groups; 19 Rare-or-better skins from Afterburn, Glacier and the Cosmetic charms, no Commons, so Common's chance falls to Rare) |
+| The mode | `Content.Matchmaking` MODES `Tutorial` (`Kind = "Tutorial"`, Category `Training`, which no category row has, so the Game Modes panel doesn't list it); `Content.Games.Siege.ROUNDS.Tutorial = 2` |
+| Starting it | `Systems.Matchmaking.QueueService.JoinTutorial` (also the `Queue.Request` action `"Tutorial"`) |
+| The match | `Systems.Games.Siege.SiegeService` with its `tutorial` flag: `tutorialPicks`, training times, health, picks refused, `state.Tutorial`, site shown at Action; `SiegeService.IsTutorial()`, `SiegeService.Round()` |
+| Goals and reward | `Systems.Games.Siege.TutorialService` |
+| Client | `Client.Hud.Tutorial` (ClientOnly) |
+| UI (built in Studio) | `ReplicatedFirst.UILoader.Training` (ScreenGui, DisplayOrder 6: `Goal`, `Learned`, `Briefing`, `Prompt`, `Reward`) and `Main.Lobby.Training` |
+| Packets | `Packets.Tutorial`: `Request` (Start / Skip), `Progress`, `Learned`, `Finished` |
+
+## Tested (2026-11-17, Studio playtest, saving off)
+
+The test ran with the new `ScribeNoSave` workspace attribute (see below), so no real data was written.
+
+- First join: the popup showed after the lobby loaded, and the lobby button read FREE CRATE.
+- START TRAINING (a real click) started the match on Mansion: class Flash given, spawn Back Porch, site Main Floor, Selection skipped; the briefing read ROUND 1 · ATTACK; in Prep the goal card showed over the drone feed (FIND THE BOMBS, the bonus line, SKILLS 0/9).
+- Round 1 (done from a test script as the player): the player had 300 health; breaking a board gave BreakIn, killing the bot Kill, standing in room A PlantA, room B PlantB, and the round ended.
+- Round 2: the player was a defender; the FORTIFY card showed 0/2 with its hint after 12 s; two boards built gave Boards 1/2 then done, a camera view Cams, and killing the attacker ended the round as a defender win (Hold).
+- End: TRAINING COMPLETE showed SKILLS LEARNED 7/9 (the drone goals were skipped in the test); the data had Done, Rewarded and one Recruit Crate; back in the lobby the crate opened (a Mythic Glacier LMG) and the button then read PRACTICE.
+- 4,000 test rolls of the Recruit Crate: Rare 78%, Epic 15%, Legendary 5%, Mythic 1.5%, Secret 0.05%, Common 0.
+
+**Not tested:** driving the drone into the site and scanning by hand; a real fight with the bot (how easy it feels); a live server (the teleport to a reserved server and back); phones.
+
+## Studio: testing without saving
+
+`Shared.Data` (2026-11-17): in Studio only, the workspace attribute `ScribeNoSave = true` (set in Edit before Play) loads profiles in Scribe's `NoSave` mode: real data is read, nothing is written. Live servers ignore it. Remove the attribute when done.

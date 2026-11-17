@@ -77,6 +77,7 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 | `1v1` | 1 V 1 | 1 | 1 v 1 | 60 s (never smaller than 1 v 1) |
 | `5v5` | 5 V 5 | 5 | 1 v 1 | 60 s |
 | `ClearHouse` | CLEAR HOUSE (category ARCADE) | 5 players, 0 defenders (NPC guards) | 1 player | 20 s |
+| `Tutorial` | TRAINING (category `Training`, not shown in the panel) | 1 player, 1 bot | — | never queued: `QueueService.JoinTutorial` ([TUTORIAL.md](TUTORIAL.md)) |
 
 - `DEFAULT_MODE` is the mode the lobby bar starts on (`5v5` today; with `1v1` two players are enough for a match).
 - The leader picks the mode in the **Game Modes panel** (the MODE button right of PLAY; [UI.md](UI.md#the-game-modes-panel)). It has no key. The pick travels with the queue request; the server checks the mode exists and that the party fits on one side of it. A party of two can't queue for 1 V 1.

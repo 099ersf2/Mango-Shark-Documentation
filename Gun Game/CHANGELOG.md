@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-11-17: Recruit Training (the tutorial) and the Recruit Crate
+
+Tested in a Studio playtest with saving off (the new `ScribeNoSave` switch). See [TUTORIAL.md](TUTORIAL.md).
+
+### Added
+
+- **Recruit Training:** a 1v1 against a very easy bot, two rounds: attack (find the bombs with the drone, break in, plant both defusers), then defend (board up two doorways, check the cameras, hold). No class, site or spawn picks. Goals say what to do; the how appears as a hint only after the player is stuck. SKILL LEARNED toasts and a SKILLS n/9 counter. Built after looking at Rainbow Six Siege's Situations, Valorant's Basic Training, CS2's Training Day, Roblox BedWars and Valve's Portal/Half-Life 2.
+- **First-join invite** (START TRAINING / NOT NOW) and a lobby **TRAINING** button (FREE CRATE until earned, then OPEN CRATE, then PRACTICE). Skipping is saved; the reward stays available until they finish once.
+- **Recruit Crate:** given once, for the first finish. Rare or better (no Commons in it). Not sold.
+- Files: `Content.Games.Tutorial`, `Content.NPC.Profiles.TutorialBot`, `Content.Crates.Definitions.Recruit`, `Systems.Games.Siege.TutorialService`, `Client.Hud.Tutorial`, UI `UILoader.Training` and `Main.Lobby.Training`, packets `Packets.Tutorial`.
+- Saved data: `Tutorial` flags (`Done`, `Rewarded`, `Skipped`).
+- **Studio only:** the workspace attribute `ScribeNoSave = true` makes playtests read real data and never save (`Shared.Data`).
+
+### Changed
+
+- `SiegeService` plays a `Tutorial` mode match (given picks, training times, 300 health, site shown at Action); new `SiegeService.IsTutorial()` and `SiegeService.Round()`.
+- `QueueService.JoinTutorial` and the `Queue.Request` action `Tutorial`. Matchmaking mode `Tutorial` (hidden from the Game Modes panel); `Siege.ROUNDS.Tutorial = 2`.
+- `SiegeBots.Spawn` uses a bot entry's `Profile` when it has one.
+- Crates can be `Hidden` (left out of the Store and the Inventory's skin groups).
+
 ## 2026-11-17: Attacker bots push together, talk to each other and dress like players
 
 Tested in Studio playtests on Bank (basement forced) and Mansion. No player data was written.
