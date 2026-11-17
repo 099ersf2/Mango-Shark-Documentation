@@ -33,6 +33,10 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 
 `Content.Guns.Skins.SeasonSkins` makes a season's exclusive set by recoloring a crate collection (every color moved to the palette's dark, paint, metal or accent by brightness and saturation). Season 1: **Breach Point**, 10 skins from the Afterburn set and the Rocket charm, olive and gunmetal with a neon-lime accent; `SkinFinish` has a `BreachPoint` profile. They are in no crate or store item: only the battle pass gives them ([BATTLE_PASS.md](BATTLE_PASS.md)). Each has `BattlePass = true`.
 
+**Source-only skins (2026-11-17):** `SeasonSkins.Sources` holds skin modules that are no longer in the game but a set still copies. `AfterburnShield` is there because the Shield Crate was removed: Breach Point's shield (level 30 of the pass) is made from it.
+
+**Removed 2026-11-17:** the Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins (see [STORE.md](STORE.md)). A data migration takes them out of every player's data and puts an equipped one back to None. Every shield skin was in the Shield Crate, so only Breach Point's shield is left.
+
 ## Where things are
 
 | What | Where |

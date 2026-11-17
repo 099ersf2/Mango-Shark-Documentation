@@ -33,7 +33,7 @@ A throw works with any weapon held, or none. It's refused in the lobby, while a 
 | Server: count, throw, blast, smoke | `ServerScriptService.Modules.Systems.Consumables.ConsumableService` |
 | Client: input, HUD, button, picker | `ReplicatedStorage.Modules.Client.Guns.Consumables` (`ClientOnly`) |
 | Smoke sight check | `ReplicatedStorage.Modules.Shared.Smoke` (`Smoke.Blocks(from, to)`) |
-| Thrown models | `ReplicatedStorage.Assets.Models.Consumables.Grenade` / `SmokeBomb` (single parts, built in Studio) |
+| Thrown models | `ReplicatedStorage.Assets.Models.Consumables.Grenade` / `SmokeBomb` (built in Studio). Since 2026-11-17 each is its body part (the physics: the throw clones it) with welded detail parts inside (massless, no collision, no query or touch): the frag grenade's dark bands, fuse, lever and pull ring; the smoke can's caps, white band, vents, lever and pull ring. `ConsumableService.launch` places the details by hand, since welds only move them once the part is in the world. The old single parts are in `ServerStorage.Archive.ConsumableModels_2026_11_17`. The Loadout page shows the model (`ClassPanel.ConsumablePreview`) |
 | Smoke particles | `ReplicatedStorage.Assets.Vfx.SmokeCloud` (emitters `Core` and `Haze`) |
 | Effects | `Explosion` (the blast), `SmokePop`, `ConsumableThrow` in `Content.Effects.Registry` |
 | Packets | `Packets.Consumable.Throw(serverTime, lookDirection)` and `Packets.Consumable.Pick(id)` |

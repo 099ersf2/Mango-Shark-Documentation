@@ -4,6 +4,8 @@
 
 ## What it is and how it plays
 
+> **2026-11-17:** the Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins were removed (archived in `ServerStorage.Archive.RemovedCrates_2026_11_17`). Crates left: Cosmetic, Afterburn, Glacier. Players lose any of those skins and unopened crates they owned (data migration 2 in `Shared.Data`). The Starter Bundle now gives 2,000 Coins only, the 5,000 Coins pack says only that, the Battle Pass lost its 19 crate rewards from those crates, and the daily deal is only the 15,000 Coins pack. Mentions of those crates further down are history.
+
 There are two currencies:
 
 - **Coins** come from playing:
@@ -250,8 +252,8 @@ Checked on 2026-11-13 in a Studio playtest, on the server (no screens, as asked)
 
 | Name in `Shared.ProductIds` | Id | Price |
 | --- | --- | --- |
-| `Crate_Field` (also `SkinCrate`) | 3730208338 | 499 |
-| `Crate_Gilded` | 3731059935 | 299 |
+| `Crate_Field` (also `SkinCrate`) | 3730208338 | 499 (crate removed 2026-11-17: commented out, not sold in game) |
+| `Crate_Gilded` | 3731059935 | 299 (crate removed 2026-11-17: commented out, not sold in game) |
 | `Store_NeonCircuitBundle` (was `Store_Tokens50`; reused 2026-11-15) | 3731060058 | 149 |
 | `Store_Tokens150` (removed 2026-11-15) | 3731060067 | 249 |
 | `Store_Tokens400` (removed 2026-11-15) | 3731060078 | 499 |

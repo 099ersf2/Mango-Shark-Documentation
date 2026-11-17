@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-17: Five crates removed, new grenade and smoke bomb models
+
+- **Removed** the Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins (archived in `ServerStorage.Archive.RemovedCrates_2026_11_17`). As decided: players lose those skins and unopened crates (data migration 2 in `Shared.Data`, run once per profile when it loads; an equipped one goes back to None), and the rewards that gave them are dropped, not replaced: the Starter Bundle gives 2,000 Coins only, 19 Battle Pass crate rewards are gone (some pass sides are empty now), the daily deal is only the 15,000 Coins pack, the old Field Crate request refuses, and the `Crate_Field` and `Crate_Gilded` Robux products are no longer offered in game. Breach Point's shield (pass level 30) is still made, from a source-only copy of the Afterburn shield (`SeasonSkins.Sources`).
+- **New models** for the frag grenade (bands, fuse, lever, pull ring) and the smoke bomb (caps, white band, vents, lever, pull ring): welded details on the same physics part; the throw carries them along.
+- Checked in Studio: my test profile loaded, lost the removed AK-47 and still owns 20 skins; Inventory and Store opened with no errors; the Breach Point shield exists and the Afterburn shield doesn't.
+- **Publishing:** a server still on the old code kicks a player whose data was already cleaned up (Scribe fails closed on newer data), so after publishing, restart old servers (Migrate to Latest Update).
+
 ## 2026-11-17: Gadget model on the Loadout page
 
 - Picking a gadget (grenade or smoke bomb) on the selection screen's Loadout page shows its model in the panel, like the guns (`ClassPanel.ConsumablePreview`). Fixed on the way: the gun preview's turning kept aiming the camera at the last gun, which threw a gadget's model off-screen; it now only turns for guns.
