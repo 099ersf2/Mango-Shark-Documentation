@@ -177,6 +177,16 @@ Sounds go through `PooledSound`, which now supports `Looped` and a per-play `Dat
 
 Other players see crouch and slide through `Client.Movement.MovementPoses`, driven only by the replicated attributes.
 
+**Prone and slide animations (2026-11-17),** made in code in `MovementPoses` (no animation assets; ids in `Config.Animations` still replace them):
+
+| Animation | When | What moves |
+| --- | --- | --- |
+| Lie | Prone, still | The back rises with slow breathing (`BREATHS_PER_SECOND`); with no gun the forearms prop the chest up (`PRONE_ARMS`) |
+| Crawl | Prone, moving | A cycle per `CRAWL_STRIDE` (2.6) studs crawled: each leg in turn sweeps out to the side along the floor with a light knee bend, the body rolls and the waist twists with the stroke; with no gun the arms reach and pull in turn. Blends with Lie by speed |
+| Slide | Sliding | Leans further back over `SLIDE_SETTLE` (0.35 s) with a small speed wobble; with no gun the trailing hand reaches back toward the floor |
+
+A gun in hand keeps its arms to `Client.Guns.ThirdPersonGuns`. Checked in Studio from a fixed camera: lying (flat, head up, forearm propped) and crawling (legs alternate on the floor; a first version bent the hips up through the floor and was changed). The slide was only seen standing still against a wall (the sprint couldn't be started from a script), not in a real slide.
+
 - **With animation ids:** if `Config.Animations.Crouch`, `CrouchWalk` or `Slide` hold ids, they play through `AnimationHandler`.
 - **Without them** (the default), a pose is laid over the Animator's output: bent hips and knees for a crouch, one leg forward and a lean back for a slide, and the whole body tipped flat onto its front for prone (lowered by `ProneBodyDrop`, head raised).
 - **Your own character while prone:** its body parts move to the `ProneBody` collision group, which collides with nothing; the server registers it at start. The Humanoid keeps the torso's `CanCollide` on, so without this the lowered torso would lift the character off the floor. The root part keeps colliding, and the parts go back to their own groups on getting up.

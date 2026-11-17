@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-17: Prone and slide animations
+
+- **Prone:** a lying animation (breathing; forearms propped up when no gun is out) and a crawl animation that runs with the crawl speed (legs sweep out in turn, the body rolls, the arms pull when no gun is out). **Slide:** leans back further as it settles, with a wobble, and the trailing hand reaches for the floor when no gun is out. All made in code in `Client.Movement.MovementPoses`, seen by everyone. See [MOVEMENT.md](MOVEMENT.md).
+
 ## 2026-11-17: Scan marks as pins with meters, picks on the selection map stay put
 
 ### Changed
