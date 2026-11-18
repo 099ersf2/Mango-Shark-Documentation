@@ -155,6 +155,18 @@ The owner: no building while on cameras; no billboards while dead, on a camera o
 
 Checked in Recruit Training on the phone emulator: in the drone prompts are off; in the body the bomb marks show and prompts are on; dead, prompts are off and the result shows alone; on a camera the bomb marks are hidden and prompts off, and a temporary server script's attempt to start each of the 42 unfinished doorways was refused (the same attempt started building once out of the camera). No errors on the client or the server. Not published.
 
+### Spectate screen (2026-11-17)
+
+The owner: the spectate screen looked cluttered and janky. It was three loose pieces stacked in the bottom centre (the "<" ">" spectate bar with two floating lines, the killed-by card, and a SPECTATING plate whose one-life line ran into the name), with the weapon row, the touch buttons and Roblox's thumbstick still on screen.
+
+Now:
+
+- **One plate at the bottom centre** (Main.DeathScreen.Bottom, 440 x 60): SPECTATING over the watched player's name, centred. Siege's spectate bar (Main.SiegeHUD.Spectate) lies exactly on it, so PREV and NEXT are chevron buttons at the plate's two ends; its hint (WATCHING TEAMMATES, and the keys on desktop) is a small line just above. The status (respawn countdown, or "One life. Spectating until the round ends.") is a small line just under the plate, or alone inside it while nobody is watched (`placeStatus` in Client.Hud.DeathScreen). The bar's separate "ELIMINATED · ONE LIFE" line is gone.
+- **The killed-by card** sits at the top left, below the score bar's row (16, 60; 226 x 56), clear of the bomb sites on a phone.
+- **While dead, the gameplay controls hide** (Client.Core.ViewHide): Main.Mobile, Weapons, Gun, Consumable, DroneSlot, Crosshair and SiegeHUD.Ability, and Roblox's thumbstick and jump button. Each comes back as it was on respawn.
+
+Checked in a private 5v5 with four bots on the phone emulator: died in prep and watched a teammate. No errors. Not checked on desktop size (the emulator was on). Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.

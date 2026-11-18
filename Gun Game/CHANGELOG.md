@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-17: Cleaner spectate screen
+
+- One spectate plate at the bottom with PREV and NEXT on its ends, a hint above and the status under it; the killed-by card at the top left.
+- Gameplay controls and Roblox's thumbstick hide while dead.
+
+See UI.md. Not published.
+
 ## 2026-11-17: No building or billboards from cameras, drones or death
 
 - Server: no repairing or reinforcing while looking through a camera or driving a drone.

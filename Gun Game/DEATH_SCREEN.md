@@ -53,3 +53,7 @@ With `Players.RespawnTime` raised so the steps fit before the respawn:
 4. Respawn: the screen hid and the camera was on the new character.
 
 Not yet checked: a player killer (the avatar) with two players, and Elimination's "Out until the next round".
+
+## Layout since 2026-11-17
+
+One plate at the bottom centre (SPECTATING and the name), with Siege's spectate bar lying on it so PREV and NEXT are its two ends and its hint is a line above it; the status (countdown or one life) is a line under the plate, or inside it while nobody is watched. The killed-by card is at the top left. While dead, Client.Core.ViewHide hides the gameplay controls and Roblox's thumbstick and jump button. See UI.md "Spectate screen".
