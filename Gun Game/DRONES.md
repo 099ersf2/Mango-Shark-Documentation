@@ -10,7 +10,7 @@ Built 2026-11-11. It replaced an older drone system (a loose `DroneService` Scri
 Two pieces of a newer change did not match:
 
 - `Systems.Drones.DroneService` gives every drone an invisible hit box (`addHitbox`) padded by `Drones.HITBOX_PADDING`, but `Content.Drones` had no such setting. Every throw, and the Siege prep drone, errored at `DroneService:316` and no drone was placed. `Content.Drones.HITBOX_PADDING = 0.3` (studs, the same as a camera's in `Content.Cameras`).
-- `Client.Gadgets.DroneBoost` was rewritten to three charges (`Charges`, `Step(state, now, ...)`, `Level`), but `Client.Gadgets.DroneController` still read the old `Boost.Bars` (the feed errored every frame, and its boost label read "Label") and passed the frame's `dt` where the new `Step` wants the clock (a burst would never end and boost never come back). The controller now passes `os.clock()` and shows `Level * 3`.
+- `Client.Gadgets.DroneBoost` was rewritten to three charges (`Charges`, `Step(state, now, ...)`, `Level`), but `Client.Gadgets.DroneController` still read the old `Boost.Bars` (the feed errored every frame, and its boost label read "Label") and passed the frame's `dt` where the new `Step` wants the clock (a burst would never end and boost never come back). The controller was being edited at the same time and that fix to it was overwritten, so `DroneBoost` now meets it as it is: it reads `os.clock()` itself (whatever is passed as `now`) and keeps `state.Bars` (charges left plus the running burst, 0..3) for the feed.
 
 Checked in Recruit Training: the prep drone is placed, the player is in it, it drives, and a boost spends one charge (BOOST 3/3 to 2/3). No errors on the client or the server.
 

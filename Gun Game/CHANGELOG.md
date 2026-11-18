@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-17: Drone and camera feeds on a phone
+
+- Phone layouts also switch on for phone-sized screens with keyboard input.
+- Feeds on a phone: header below Roblox's buttons, a compact objective tag, a narrower compass and boost row, and Roblox's thumbstick and jump button hidden while the feed is up.
+- The training panel takes the objective tag's place in a feed on a phone, clear of the compass and touch buttons.
+- `Client.Gadgets.DroneBoost` reads the clock itself and keeps `Bars`, so the drone feed works with the controller as it is (an edit to the controller had been overwritten).
+
+Checked on the phone emulator. Not published.
+
 ## 2026-11-17: Drones can be driven again
 
 - `Content.Drones.HITBOX_PADDING` (0.3) added: `DroneService` used it for the drone's hit box and every drone placement errored, so no drone spawned.

@@ -127,6 +127,18 @@ The owner: pop-ups kept covering things, and the training steps covered the touc
 
 Checked on the emulated 750 x 382 touch screen in Recruit Training, including a banner started with the selection screen up and then closed. No UI errors in the Output. Not checked: a notice (Toast) and the planting bar on a phone in a real round. Not published.
 
+### Drone and camera feeds on a phone (2026-11-17, sixth phone test)
+
+The owner: the objective took too much of the screen on mobile, and the training panel covered important information in the drone feed.
+
+- **Phone layout by size too (Client.Core.UI `isPhone`, Client.Hud.Tutorial `phoneLayout`):** the phone layouts switch on for touch or for a screen whose shorter side is up to 500 pixels, since an emulated (or real) phone can report keyboard input. The owner's screenshot showed the desktop places because of that.
+- **Feeds (DroneFeed, CameraFeed; `layoutFeed`):** on a phone the header (DRONE 1, LIVE) moves below Roblox's top-bar buttons, which covered it, and the OBJECTIVE box becomes a compact two-line tag (the goal and the place, no caption). The compass (300 pixels) and the boost row (240) are narrower so they end before the feed's BOOST touch button. Desktop places are saved in attributes and come back on bigger screens.
+- **Roblox's touch controls hide while a feed is up on touch:** the feed has its own DRIVE stick and HOP button; Roblox's thumbstick and jump button sat under them. They come back when the feed closes (Client.Core.Menus does the same for menus).
+- **Training panel in a feed:** on a phone it takes the place of the feed's objective tag, under the header (the tag says the same goal and hides while the panel shows), so the compass, boost bar and the touch buttons (EXIT, SPOT, HOP, BOOST) stay clear.
+- **Drone boost (Client.Gadgets.DroneBoost):** the drone controller is being edited by the other developer and an earlier fix to it was overwritten, so the boost module now meets the controller as it is: it reads the clock itself (the controller passes `dt`) and keeps `state.Bars` for the feed. The feed no longer errors every frame, and its label shows BOOST n/3 (it read "Label").
+
+Checked on the emulated 750 x 382 touch screen in Recruit Training: the prep drone feed, then the action phase (feed closed, Roblox's controls and the objective tag back). No errors in the Output. Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.
