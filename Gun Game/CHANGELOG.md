@@ -7,7 +7,7 @@
 - PREP instead of PREPARE and ROUND 1/5 instead of ROUND 1 OF 5 (both were cut off on a phone). The phase banner stays clear of a feed's compass on a phone.
 - Lobby column watchers in Client.Core.Matchmaking now connect at start.
 
-See UI.md and DEATH_SCREEN.md. Checked on the phone emulator. Not published.
+See UI.md and DEATH_SCREEN.md. Checked on the phone emulator. Published 2026-11-18 16:01 UTC (place version 992).
 
 ## 2026-11-17: Cleaner spectate screen
 

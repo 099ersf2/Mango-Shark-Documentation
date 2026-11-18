@@ -196,7 +196,7 @@ The owner: the killer on the death screen overlapped the UI; remove every unnece
 
 Also fixed in passing: in Client.Core.Matchmaking, the lobby column's watchers for the screen size, the training tile and PLAY WITH PARTY were connected inside the input-change handler, so they only started after the input type changed.
 
-Checked on the emulated 750 x 382 touch screen: the lobby, the Store, a private 5v5 with four bots (selection screen, drone feed, prep and action HUD), and two deaths (to an enemy bot: KILLED BY / KILLED YOU · RIFLE in red; then SPECTATING a teammate). No errors in the Output. Not checked: desktop size and the keyboard hint, a camera feed, and the objective line without the phase word (changed after the last run). Not published.
+Checked on the emulated 750 x 382 touch screen: the lobby, the Store, a private 5v5 with four bots (selection screen, drone feed, prep and action HUD), and two deaths (to an enemy bot: KILLED BY / KILLED YOU · RIFLE in red; then SPECTATING a teammate). No errors in the Output. Not checked: desktop size and the keyboard hint, a camera feed, and the objective line without the phase word (changed after the last run). Published on 2026-11-18 at 16:01 UTC (place version 992).
 
 ## Mobile pass (2026-11-13)
 
