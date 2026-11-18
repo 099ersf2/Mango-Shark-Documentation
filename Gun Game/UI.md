@@ -18,6 +18,50 @@ How the game's UI is laid out, how it should look, and how it feels. Revamped 20
 
 The ScreenGuis (`Main`, `SiegeSelect`, `DroneFeed`, `CameraFeed`, `ScanAlert`) are no longer in `StarterGui`. Another developer moved them under the LocalScript `ReplicatedFirst.UILoader`, which parents them into `PlayerGui` when the client starts. **Edit the UI there.** Where this doc says `StarterGui.Main…`, read `ReplicatedFirst.UILoader.Main…`. Templates are still in `Assets.UI.Templates`.
 
+## UI standard and the Field look (2026-11-17, fourth look)
+
+The owner asked for every screen to be redone again, from researched conventions and many references. This look is not modeled on one game: it follows published guidelines and the layouts most shooters share. The previous UI is archived in ServerStorage.Archive.UIBeforeField_2026_11_17.
+
+### What the standard is based on
+
+- Xbox Accessibility Guidelines 101 (text) and 102 (contrast), learn.microsoft.com/gaming/accessibility: body text at least 18 px at 1080p on PC, 4.5:1 contrast for text, 3:1 for large text and inactive items, contrast measured against the lightest part of a busy background, sentence case for lines of text, left-aligned text, at most about 80 characters a line.
+- Game Accessibility Guidelines (gameaccessibilityguidelines.com): readable default text size, high contrast, never color alone, large well-spaced touch controls, simple clear text.
+- Touch targets: Apple HIG 44 x 44 pt, Material Design 48 x 48 dp, about 8 pt between targets.
+- Roblox Creator docs (UI/UX design, cross-platform design, on-screen containers): most important information first, bright color only for what matters, consistent close and lock conventions, CoreUISafeInsets for interactive UI, the bottom-left and bottom-right corners belong to the thumbstick and jump button, custom touch buttons placed relative to the jump button, only vital information on screen on mobile.
+- Screenshots on the Game UI Database (gameuidatabase.com): Rainbow Six Siege (home, operator select, HUD, death screen), Call of Duty: Mobile (lobby, HUD, layouts, results), Battlefield 2042 (mode select, HUD, results, settings). Common to all: nav across the top, currency and settings top right, the start button bottom right, health bottom left, ammo bottom right, score and timer top center, kill feed top right, settings as tabs with rows of name left and value right.
+
+### The rules (checked by an audit script over every label and button)
+
+| Rule | Value |
+|---|---|
+| Smallest text | 12 px anywhere; 14 design px inside fitted menus (Store, Inventory, Details, Battle Pass). Labels that scale have a UITextSizeConstraint with that minimum |
+| Contrast | 4.5:1 for text. Text on the mint accent, gold and team colors is dark (Theme.Ink, 11:1 on mint) |
+| Touch targets | 44 px both ways (close buttons, settings gear, arrows) |
+| Fonts | Titillium Web Bold for short capital labels, titles and numbers; Builder Sans (Roblox's UI font) for sentences |
+| One accent | Signal mint (52, 224, 176) marks the main action, what is selected and progress, once per screen. Gold only for currency. Team colors always come with a letter, icon or word |
+| Shape | Graphite glass panels, 6 px corners, 1 px hairline borders, a 2 px mint line along the top of every menu |
+| Phones | A fitted menu never shrinks below 72% (it was 55%: 12 px text became 7 pt). Short class and weapon panels show a compact version |
+
+The audit before the change found 716 of 767 labels that could shrink to any size, 101 labels under 4.5:1 (white on the old Siege blue was 3.5:1) and 37 buttons under 44 px.
+
+### What changed
+
+- **Content.Theme** is the Field palette and fonts. Theme.Map turns any older color into its Field role; it was run once over every GUI object (about 2,150 colors), and the hard-coded colors in 28 UI scripts were converted the same way. Fonts: 767 labels moved from Oswald and Roboto Condensed.
+- **Client.Core.AutoContrast** (new): when code recolors a button at runtime (PLAY turning red to cancel, BUY turning OWNED), text on a bright fill turns dark and text on a dark fill turns light. A gradient that darkens a fill is taken into account (store cards).
+- **Lobby**: one column in the bottom-right corner, where shooters put the start button: TRAINING and SQUAD side by side, the GAME MODE row with CHANGE, PLAY WITH PARTY, then PLAY, the one mint button, at the bottom. The Siege "< HOME" chip and the huge PLAY title are gone. On touch the column sits left of the jump button at the bottom edge. Settings is a 44 px gear icon (its key is in the tooltip). Client.Core.Matchmaking layoutBar places it.
+- **HUD**: same conventional places, now on dark glass plates so they read over bright maps: the health plate with a heart icon and a white bar, the ammo plate with a mint stripe and fire mode, weapon slots with key chips, gadget rows. Score boxes have dark numbers on the team colors; control hints over the world have an outline.
+- **Menus**: every menu has the same frame: title top left, tabs with a mint bar under the open one (Settings now matches the Store), a 44 px X icon top right, the mint line on top. The Game Modes screen is aligned to one left edge with a BACK button bottom left; mode cards have their own dark colors instead of all being the old blue, and ribbons are mint (RECOMMENDED, NEW) or orange (Fast).
+- **Store**: ribbons mean one thing each (HOT red, POPULAR gold, VALUE green, NEW mint). The item borders (Neon Circuit, Rainbow, Obsidian, Secret) got their own colors back. Featured cards are two to a row from three columns up, so a phone shows two.
+- **Inventory**: locked classes show a lock icon with the price under it instead of LOCKED text over the letter; the class text column no longer runs under the portrait.
+- **End screens**: the round result band has mint rules and bigger scores; the death screen's spectating line is its own plate (the name no longer overlaps SPECTATING); big titles and numbers use the heading face.
+- **New icons** in Content.Icons: settings, users, userPlus, user, heart, skull, eye, bomb, target, sword, shieldHalf, training, info, alert, plus, minus, search, up, down, refresh, map, mapPin, medal, award, clock, cctv, radar, scan, volume, gamepad, keyboard, monitor, leave.
+
+### Checked
+
+Studio playtests at 1920 x 783 and at a phone-sized 844 x 390 view (mouse input, so the touch layout itself was not shown): lobby, Shop, Inventory (both sizes), Settings, Party, Game Modes, the Recruit Training popup, the reveal screen, the drone feed and the soldier HUD in Recruit Training, and the round result, match result and death screens shown by hand. No errors in the Output.
+
+Not checked: a real phone or tablet, the touch button layout, the Battle Pass screen (the pass is off), the camera feed, crate opening, the gift picker, a full 5v5 match. Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.
@@ -127,7 +171,7 @@ How to use it:
 
 Kept as text: the separators `·` and `—` and the degree sign on drone and camera compasses. Coins keep their coin picture (`Content.Store.Style.COIN_ICON`).
 
-## Siege style (2026-11-17, third look)
+## Siege style (2026-11-17, third look, replaced by Field)
 
 Modeled on Rainbow Six Siege's menus (the owner's reference: Game UI Database, game id 264). The look before it is in `ServerStorage.Archive.UIBeforeSiege_2026_11_17`.
 

@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-11-17: Field UI, built from researched conventions
+
+Every screen was redone again, this time from published guidelines (Xbox Accessibility Guidelines 101 and 102, Game Accessibility Guidelines, Apple and Material touch targets, Roblox's UI and cross-platform docs) and screenshots of Rainbow Six Siege, Call of Duty: Mobile and Battlefield 2042 on the Game UI Database. See UI.md "UI standard and the Field look". Checked in Studio playtests at desktop and phone size; not checked on a real phone. Not published.
+
+### Changed
+
+- **Look:** graphite glass panels, one signal-mint accent with dark text on it, Titillium Web and Builder Sans, 6 px corners and hairlines, applied to every GUI object and to the colors in 28 UI scripts (`Content.Theme`).
+- **Standard:** no text under 12 px (14 in menus), 4.5:1 contrast, 44 px touch targets; menus shrink to no less than 72% on a phone.
+- **Lobby:** a bottom-right column with PLAY at the bottom; settings is a gear icon.
+- **HUD:** health, ammo, slots and gadgets on glass plates; dark numbers on team score boxes.
+- **Menus:** one frame for all of them (title, tabs with a mint bar, X close, mint top line); Game Modes aligned with a BACK button; store ribbons and item borders recolored; locked classes show a lock and price; compact class panels on phones.
+- **End screens:** round result, match result and death screen restyled; the spectating name no longer overlaps.
+
+### Added
+
+- `Client.Core.AutoContrast`: keeps text readable when code recolors a button.
+- 34 icons in `Content.Icons` (settings, users, heart, skull, eye, info and more).
+
 ## 2026-11-17: Icons instead of emoji
 
 Every emoji and symbol glyph in the UI is now an icon from one set of white line icons (Lucide, from the Creator Store), drawn by the new `Content.Icons` and `Client.Core.IconBinder` (see UI.md "Icons, not emoji"). Checked in a Studio playtest with saving off: lobby, Shop (Featured, Currency), Inventory, Settings and the selection screen, with no errors in the Output. Not checked: a phone, the Battle Pass screen (the pass is switched off), Recruit Training, the death and match-end screens. Not published.
