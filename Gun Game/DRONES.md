@@ -4,6 +4,16 @@ Small ground drones in the style of Rainbow Six Siege's. You throw one out and l
 
 Built 2026-11-11. It replaced an older drone system (a loose `DroneService` Script, a `DroneController` LocalScript and `DroneRemote`), which is kept, disabled, in `ServerStorage.Archive.OldDroneSystem` for reference.
 
+
+## Fix: drones could not be driven (2026-11-17)
+
+Two pieces of a newer change did not match:
+
+- `Systems.Drones.DroneService` gives every drone an invisible hit box (`addHitbox`) padded by `Drones.HITBOX_PADDING`, but `Content.Drones` had no such setting. Every throw, and the Siege prep drone, errored at `DroneService:316` and no drone was placed. `Content.Drones.HITBOX_PADDING = 0.3` (studs, the same as a camera's in `Content.Cameras`).
+- `Client.Gadgets.DroneBoost` was rewritten to three charges (`Charges`, `Step(state, now, ...)`, `Level`), but `Client.Gadgets.DroneController` still read the old `Boost.Bars` (the feed errored every frame, and its boost label read "Label") and passed the frame's `dt` where the new `Step` wants the clock (a burst would never end and boost never come back). The controller now passes `os.clock()` and shows `Level * 3`.
+
+Checked in Recruit Training: the prep drone is placed, the player is in it, it drives, and a boost spends one charge (BOOST 3/3 to 2/3). No errors on the client or the server.
+
 ## Bot drones (2026-11-16)
 
 Siege attacker bots drive their own scout drones (`Systems.Games.Siege.BotDrones`, see [SIEGE_BOTS.md](SIEGE_BOTS.md#drones-2026-11-16)). They are copies of the same model in `workspace.Drones` with `DroneOwner` (the bot's negative id), `Team` and `SiegeBot`, but the server moves them (anchored, no collision). `DroneService.AddExternal(model)` lists one in `DroneService.All`, so NPCs see and shoot it; `DroneService.preventFriendlyFire` keeps its teammates off it (it reads `Team`). They are not in `DroneService.Of` and have no charges. They slip under door boards and go through wall vents (a `PathfindingLink` labelled `Vent` through each model named `Vent`, made by `BotDrones.Prepare`).
@@ -89,7 +99,7 @@ The feed and alert ScreenGuis are built under `ReplicatedFirst.UILoader` and mov
 | X (`DroneView` key) | Leave the drone, back to your body. Does nothing on foot |
 | Drive | WASD (or left stick, or the touch thumbstick). Mouse / right stick / touch drag looks and turns the drone. 24 studs/s, fast to start and stop |
 | Hop | **Space**: about 2 studs up, every 1.1 s |
-| Boost | **Shift**: 36 studs/s for 2.5 s of bar; it refills in 4 s, and an empty bar is locked for 6 s (Siege's rule) |
+| Boost | **Shift**: three charges per drone (`Client.Gadgets.DroneBoost`). Holding it while driving spends one for a 2.5 s burst at 22 studs/s (`BOOST_TIME`, `BOOST_SPEED`); the next can start 8 s after a burst ends. Charges don't refill. The feed shows BOOST n/3 |
 | Spot | **Fire** (left mouse / RT): the enemy nearest the crosshair (within 6°, 150 studs, in clear view) is marked for your team for 8 s: a red outline and a diamond over them |
 | Your body | Stays where you left it, held still, and you can see it from the drone. Taking damage drops you out of the drone at once |
 | Health | 30. Your own and your teammates' shots don't hurt it. Destroyed: a small pop, "SIGNAL LOST", then your next drone or your body |

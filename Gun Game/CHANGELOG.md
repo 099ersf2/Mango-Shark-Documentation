@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-17: Drones can be driven again
+
+- `Content.Drones.HITBOX_PADDING` (0.3) added: `DroneService` used it for the drone's hit box and every drone placement errored, so no drone spawned.
+- `Client.Gadgets.DroneController` matches the rewritten `DroneBoost` (three charges): the feed no longer errors every frame, the boost label shows BOOST n/3, and boost bursts end and come back.
+
+See DRONES.md. Checked in Recruit Training. Not published.
+
 ## 2026-11-17: Pop-ups out of the way on phones
 
 - The phase banner no longer stays at the bottom over the health bar and weapons after the selection screen closes.
