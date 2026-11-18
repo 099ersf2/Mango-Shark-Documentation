@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-18: Performance pass
+
+- Profiled the client and server with Roblox's script profiler in the lobby and a 5v5 bot match. The server was already lean (about 0.3 ms of game scripts a frame); the client and its downloads were not.
+- The gun range moved from `Teams` (replicated: 20,807 instances and 72 client scripts for every player) to `ServerStorage.GunShowcase`.
+- Rainbow skins recolour only visible parts, 30 times a second. Third-person arm posing caches joint offsets per frame and no longer errors on a joint without attachments. The reinforce prompt searches 10 times a second. The Leo warning and the Siege top-bar clock stop writing when nothing changes.
+- Client scripts per frame: lobby 0.78 to 0.35 ms, match 1.37 to 1.00 ms.
+
+See PERFORMANCE.md. Not published.
+
 ## 2026-11-18: Exploit and lag pass
 
 - The network library caps packets a player a server frame (96; a request with a reply counts 8). A crafted flood had frozen the server for 553 ms; now the worst frame is 23 ms.
