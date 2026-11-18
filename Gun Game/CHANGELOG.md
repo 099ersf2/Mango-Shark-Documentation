@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-18: Killer in the death plate, less text everywhere
+
+- Death screen: the top-left killer card is gone; the bottom plate says KILLED YOU · WEAPON (or KILLED BY) over the killer's name in red, then SPECTATING over a teammate. No one-life line while spectating, and the spectate hint is only the keys.
+- Removed repeated text: the gun name on the ammo panel, "/100" on health, NO DEFUSER on the bomb chips, LIVE / OBJECTIVE / degrees / BOOST in the feeds, the phase word before the objective, the second line of PLAY and PLAY WITH PARTY, PRACTICE, CHANGE (now a chevron), SELECTED on mode cards, Store headers that repeat the tab, and the selection screen's NEXT line, rule lines, TOP VIEW and map hints.
+- PREP instead of PREPARE and ROUND 1/5 instead of ROUND 1 OF 5 (both were cut off on a phone). The phase banner stays clear of a feed's compass on a phone.
+- Lobby column watchers in Client.Core.Matchmaking now connect at start.
+
+See UI.md and DEATH_SCREEN.md. Checked on the phone emulator. Not published.
+
 ## 2026-11-17: Cleaner spectate screen
 
 - One spectate plate at the bottom with PREV and NEXT on its ends, a hint above and the status under it; the killed-by card at the top left.

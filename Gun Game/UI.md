@@ -162,10 +162,41 @@ The owner: the spectate screen looked cluttered and janky. It was three loose pi
 Now:
 
 - **One plate at the bottom centre** (Main.DeathScreen.Bottom, 440 x 60): SPECTATING over the watched player's name, centred. Siege's spectate bar (Main.SiegeHUD.Spectate) lies exactly on it, so PREV and NEXT are chevron buttons at the plate's two ends; its hint (WATCHING TEAMMATES, and the keys on desktop) is a small line just above. The status (respawn countdown, or "One life. Spectating until the round ends.") is a small line just under the plate, or alone inside it while nobody is watched (`placeStatus` in Client.Hud.DeathScreen). The bar's separate "ELIMINATED · ONE LIFE" line is gone.
-- **The killed-by card** sits at the top left, below the score bar's row (16, 60; 226 x 56), clear of the bomb sites on a phone.
+- **The killed-by card** sits at the top left, below the score bar's row (16, 60; 226 x 56), clear of the bomb sites on a phone. (Deleted on 2026-11-18: the killer is in the plate. See below.)
 - **While dead, the gameplay controls hide** (Client.Core.ViewHide): Main.Mobile, Weapons, Gun, Consumable, DroneSlot, Crosshair and SiegeHUD.Ability, and Roblox's thumbstick and jump button. Each comes back as it was on respawn.
 
 Checked in a private 5v5 with four bots on the phone emulator: died in prep and watched a teammate. No errors. Not checked on desktop size (the emulator was on). Not published.
+
+### Death screen killer line, and less text everywhere (2026-11-18)
+
+The owner: the killer on the death screen overlapped the UI; remove every unnecessary piece of text. Every label in every screen was listed (Main, the menus, the templates, the feeds, the selection screen, training) and each one that repeated something already on screen, or told the player what the screen already shows, was removed. What a label says that nothing else says stays (timers, scores, AUTO, the objective, the round result, key hints on desktop).
+
+**Death screen (Client.Hud.DeathScreen, Client.Core.Spectate):**
+- The killed-by card at the top left (`Main.DeathScreen.Card`: ELIMINATED, "Killed by", "with", avatar) is deleted. The killer is in the bottom plate instead, so nothing sits over the score bar, the bomb sites or the kill feed.
+- The plate's caption says what the name under it is: **KILLED YOU · RIFLE** while the camera follows your killer, **KILLED BY · RIFLE** while nobody is watched, **SPECTATING** (or **SPECTATING ENEMY** once no teammate is left) for anyone else. The name is red (Theme.Danger) for your killer and for enemies, white for teammates.
+- With one life (Siege) there is no status line under the plate while you watch someone; alone in the plate it reads "Out this round". The countdown ("Respawning in 3") stays in modes with respawns.
+- The spectate hint no longer says WATCHING TEAMMATES / NO TEAMMATES LEFT; it is only the keys (Fire next · Aim previous, or R1 / L1), under the plate, and nothing on touch (the arrows say it). The bar keeps a `Mode` attribute ("Team", "Enemy" or "") that the caption reads. The unused `Spectate.Out` label is deleted.
+
+**In play:**
+- Ammo panel: no gun name (`Main.Gun.GunName` hidden); the picture beside the ammo shows the gun.
+- Health: the current number only ("100", not "100/100"). Client.Hud.PersonalHealth writes it; the bar still animates through Classes.HealthUI.
+- Bomb chips: only the letter until a defuser is planted (no "NO DEFUSER"), then the letter and PLANTED.
+- Top bar: PREP instead of PREPARE (it was cut to "PREPA" in a feed on a phone). The objective line has no phase word in front ("Defend Upstairs", "Find the site"), since the top bar says the phase.
+- Drone and camera feeds: no LIVE in the header (the camera keeps "1 of 3", and OFFLINE when destroyed), no OBJECTIVE caption over the objective tag (the tag is shorter, 340 x 52), no heading in degrees under the compass, no BOOST word before the boost bar (BOOST 3/3 is over it).
+- The phase banner stays at the top centre while a feed is open on a phone (Content.Effects.Parts.Banner `topFor`): at 60% down it covered the feed's compass.
+
+**Lobby and menus:**
+- PLAY has no second line (the GAME MODE row names the mode; SEARCHING is the status line's). It keeps one for a party member ("YOUR LEADER QUEUES") and for PARTY TOO BIG. With no second line the label sits in the middle of the tile (Client.Core.Matchmaking `subLine`).
+- PLAY WITH PARTY: no "PRIVATE 1 V 1 · 3 PLAYERS" line (the tiles above show the mode and the party size); a member still reads "YOUR LEADER STARTS IT".
+- TRAINING: FREE CRATE or OPEN CRATE while there is something to get, otherwise no line (no PRACTICE).
+- GAME MODE: a chevron instead of the word CHANGE.
+- Mode cards: no SELECTED label (`Templates.ModeCard.Picked` deleted); the outline shows the pick.
+- Store: no section header repeating the open tab (Crates over the crates); the Featured page keeps its Daily Deal (with the timer) and Crates headers.
+- Selection screen (Client.Core.SiegeSelect): no "NEXT: PICK WHERE YOU SPAWN" line under the steps (`Header.Next` deleted), no rule lines on the location, class and ready pages (they were cut off on a phone, and the lists show free and taken), no "TOP VIEW" caption, no "pick in the list or on the map" legend (the legend's box hides while empty), the cutaway caption is only the site's name, and stacked site pins are named only when picked or pointed at. ROUND 1/5 instead of ROUND 1 OF 5, which was cut off on a phone.
+
+Also fixed in passing: in Client.Core.Matchmaking, the lobby column's watchers for the screen size, the training tile and PLAY WITH PARTY were connected inside the input-change handler, so they only started after the input type changed.
+
+Checked on the emulated 750 x 382 touch screen: the lobby, the Store, a private 5v5 with four bots (selection screen, drone feed, prep and action HUD), and two deaths (to an enemy bot: KILLED BY / KILLED YOU · RIFLE in red; then SPECTATING a teammate). No errors in the Output. Not checked: desktop size and the keyboard hint, a camera feed, and the objective line without the phase word (changed after the last run). Not published.
 
 ## Mobile pass (2026-11-13)
 

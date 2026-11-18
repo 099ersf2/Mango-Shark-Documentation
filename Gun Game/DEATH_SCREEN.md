@@ -10,11 +10,11 @@ Built 2026-11-11. It replaced the death screen that was part of the match HUD (`
 
 | | |
 | --- | --- |
-| The card (top) | "ELIMINATED", **Killed by NAME** (a player or an NPC), **with WEAPON**, and the killer's avatar for a player. "You died" with no killer (a fall, your own grenade) |
-| Spectating | A third-person camera 10 studs behind and 3 above the one you watch, easing after them and never through a wall. The bottom line says **SPECTATING NAME** |
+| The plate (bottom centre) | Since 2026-11-18 the killer is in the plate, no card: the caption says **KILLED YOU · WEAPON** over the killer's name (red) while the camera follows them, **KILLED BY · WEAPON** while nobody is watched. No killer (a fall, your own grenade): the plate shows only the status |
+| Spectating | A third-person camera 10 studs behind and 3 above the one you watch, easing after them and never through a wall. The plate says **SPECTATING** (or **SPECTATING ENEMY**) over their name; your killer is KILLED YOU instead |
 | Chain | The one you watch dies: you move on to their killer (the camera glides over). Up to 6 steps; a chain that comes back to you, or has no killer, ends it |
-| Nobody to watch | No killer, or the chain ran out: no spectating, the camera stays on your body, the SPECTATING line hides |
-| Countdown | "Respawning in N" (from `Players.RespawnTime`, which matches set from `RespawnDelay`), or "Out until the next round" in a no-respawn mode (`Eliminated`) |
+| Nobody to watch | No killer, or the chain ran out: no spectating, the camera stays on your body, the plate names your killer (KILLED BY) or shows only the status |
+| Countdown | "Respawning in N" (from `Players.RespawnTime`, which matches set from `RespawnDelay`), or "Out this round" in a one-life mode (`Eliminated`), alone in the plate; while you watch someone with one life there is no status line |
 | Respawn | The screen hides and the camera goes back to your new character |
 
 ## Files
@@ -23,7 +23,7 @@ Built 2026-11-11. It replaced the death screen that was part of the match HUD (`
 | --- | --- |
 | `ServerScriptService.Modules.Systems.Combat.DeathCamService` | Who killed whom, and who each dead player watches |
 | `ReplicatedStorage.Modules.Client.Hud.DeathScreen` (ClientOnly) | The screen and the follow camera |
-| `StarterGui.Main.DeathScreen` | The UI: `Shade` (darkened edges), `Card` (`Accent`, `Avatar`, `Text.Title`, `Text.Killer`, `Text.Weapon`), `Bottom.Spectating` (`Label`, `Name`), `Bottom.Respawn`. ZIndex 9 to 10: over the HUD, under the menus |
+| `StarterGui.Main.DeathScreen` | The UI: `Shade` (darkened edges), `Bottom.Spectating` (`Label`, `Name`), `Bottom.Respawn`. ZIndex 9 to 10: over the HUD, under the menus |
 | `Shared.Packets` `Death` group | `Killed` and `Spectate` |
 | `Systems.Combat.KillFeed` | Fires the `Combat.Death` extension point on every death |
 
@@ -56,4 +56,4 @@ Not yet checked: a player killer (the avatar) with two players, and Elimination'
 
 ## Layout since 2026-11-17
 
-One plate at the bottom centre (SPECTATING and the name), with Siege's spectate bar lying on it so PREV and NEXT are its two ends and its hint is a line above it; the status (countdown or one life) is a line under the plate, or inside it while nobody is watched. The killed-by card is at the top left. While dead, Client.Core.ViewHide hides the gameplay controls and Roblox's thumbstick and jump button. See UI.md "Spectate screen".
+One plate at the bottom centre (SPECTATING and the name), with Siege's spectate bar lying on it so PREV and NEXT are its two ends and its hint (keys only) is a line under it; the status (countdown or one life) is a line under the plate, or inside it while nobody is watched. The killed-by card at the top left was deleted on 2026-11-18 (it overlapped the HUD): the plate's caption names the killer (KILLED YOU / KILLED BY · WEAPON), and the hint is only the keys, under the plate (none on touch). While dead, Client.Core.ViewHide hides the gameplay controls and Roblox's thumbstick and jump button. See UI.md "Spectate screen".
