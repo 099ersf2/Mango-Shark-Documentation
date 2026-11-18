@@ -151,3 +151,7 @@ Prompts use the **Interact** action from `Shared.PlayerSettings` (default E, reb
 - Only parts and models tagged `Board` or `DoorBoard` become breakables. Older untagged window models are ignored.
 - No lag compensation, the same as the guns.
 - Board state is not saved, and boards are not reset by anything yet. Call `BreakableService.Reset` from a round system.
+
+## No building from a camera or a drone (2026-11-17)
+
+`BreakableService` `builderIsValid` also requires that the player is not looking through a security camera (`CameraViewing`) or driving a drone (`DroneControlling`), so a repair hold can't start from there and one in progress is cancelled at its next step. The Reinforce ability refuses the same. On the client `Client.Core.ViewHide` turns prompts off in those states. See UI.md.

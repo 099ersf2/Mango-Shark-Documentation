@@ -145,6 +145,16 @@ EXIT sat over SPOT in the drone feed (and over SCAN in the camera feed) on a 334
 
 An overlap check (every visible button on screen, any pair overlapping) at 750 x 382 touch found none in the lobby, Shop, Inventory, Settings, Party, Game Modes, the drone feed, the camera feed's buttons and the match HUD. Then checked in play on the phone emulator: the drone feed in Recruit Training's attack round (corner brackets hidden, EXIT clear) and the camera feed in its defend round (reached with SiegeService.ForceEnd from a temporary server script). Fixed there: the feeds' text drawn straight over the 3D view (header, integrity, boost row, notices) has a dark outline (it was hard to read over light walls); the camera feed's PREV and NEXT use the chevron icons instead of typed < >; the training panel keeps its phone size inside a feed (it shrank against the match's left buttons, which are hidden while a feed is up). No errors on the client or the server. Not checked: a real phone. Not published.
 
+### Nothing to see or build from a camera, a drone or death (2026-11-17)
+
+The owner: no building while on cameras; no billboards while dead, on a camera or in a drone.
+
+- **`Client.Core.ViewHide` (new, ClientOnly):** while the player is dead (no living Humanoid outside the lobby, or Main.DeathScreen showing), looks through a security camera (`CameraViewing` attribute or the CameraFeed up) or drives a drone (`DroneControlling` or the DroneFeed up), every BillboardGui in the workspace and PlayerGui is turned off (names, health bars, prompts, bomb marks, streak tags, hit numbers), and billboards made or re-enabled meanwhile are turned off too; they come back afterwards. The scan marks (`SpotMarker`) stay, since spotting is what drones and cameras are for. Interaction prompts are off for that client (`ProximityPromptService.Enabled`). State is checked five times a second.
+- **Server:** `Systems.Breakables.BreakableService` `builderIsValid` refuses a player who is looking through a camera or driving a drone, so a doorway can't be started or kept building from there (a build in progress is cancelled at its next step). `Systems.Classes.Abilities.Reinforce.Use` refuses the same ("Leave the camera first.").
+- **Round result over a death:** a death that ends the round brought the death screen up just after ROUND LOST, under it ("You died" under the band, seen on a phone). `Client.Hud.SiegeHud` now keeps the death screen and the spectate bar hidden while the round or match result shows.
+
+Checked in Recruit Training on the phone emulator: in the drone prompts are off; in the body the bomb marks show and prompts are on; dead, prompts are off and the result shows alone; on a camera the bomb marks are hidden and prompts off, and a temporary server script's attempt to start each of the 42 unfinished doorways was refused (the same attempt started building once out of the camera). No errors on the client or the server. Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.

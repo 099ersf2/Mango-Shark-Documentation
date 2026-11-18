@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-17: No building or billboards from cameras, drones or death
+
+- Server: no repairing or reinforcing while looking through a camera or driving a drone.
+- Client: `Client.Core.ViewHide` hides every billboard (except scan marks) and turns prompts off while dead, on a camera or in a drone.
+- The round result keeps the death screen hidden when a death ends the round.
+
+See UI.md. Not published.
+
 ## 2026-11-17: Feeds checked in play on a phone
 
 Drone and camera feeds checked in Recruit Training (attack and defend rounds) on the phone emulator. Feed text over the 3D view has an outline, camera PREV and NEXT have chevron icons, and the training panel keeps its size inside a feed. Not published.
