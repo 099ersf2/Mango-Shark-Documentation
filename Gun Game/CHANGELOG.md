@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-17: Kill feed with gun pictures, phone HUD without overlaps
+
+See UI.md "Guns as pictures and no overlaps on a phone". Not published.
+
+### Changed
+
+- Kill feed rows show the gun's picture (a white silhouette of its model) or an icon between the names, colored by side; two compact rows on touch.
+- On touch the weapon slots show the gun's model instead of its name.
+- On touch the weapon row, objective line and bomb sites are placed from the real edges of the pieces next to them; health and ammo no longer touch the bottom edge; the training goal panel shrinks to stay above the left buttons; banners settle under the crosshair on phones.
+
 ## 2026-11-17: Field UI bug fixes and phone pass
 
 From the owner's screenshots and a test on Studio's device emulator (750 x 382 touch). See UI.md "Bug fixes and the phone pass". Not published.

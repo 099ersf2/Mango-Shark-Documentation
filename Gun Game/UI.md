@@ -85,6 +85,18 @@ Phone (touch) layout:
 
 Checked on the emulated 750 x 382 touch screen: lobby, Shop (Featured and Classes), Inventory, Settings, Party, Game Modes, Recruit Training (prep and action, HUD and touch buttons), round result and death screen. No UI errors in the Output. Seen in passing, not UI: the server logged `DroneService:316` (`Content.Drones.HITBOX_PADDING` is missing) when it placed the training drone. Not checked: a real phone, the class pick page of the selection screen on a phone, a full 5v5 match. Not published.
 
+### Guns as pictures and no overlaps on a phone (2026-11-17, second phone test)
+
+From the owner's phone screenshot: pieces sat on top of each other, the weapon slots should show the gun rather than its name on mobile, and the kill feed should show the gun rather than text.
+
+- **Kill feed (Client.Combat.KillFeed, rewritten):** each row is the killer, a picture of the gun, then the victim. The picture is the gun's own model (Content.Guns.Registry, found by Id, display name or model) drawn as a white silhouette in a small ViewportFrame through `Client.Core.ItemDetails.GunPreview`; a knife shows the knife; other kills get an icon (bomb for grenades and explosives, sword for melee, skull otherwise). Players in this server are colored by side (allies blue, enemies red), and a row with you in it has a mint outline. Rows have a fixed height (26 pixels, 22 on touch); on touch at most two show, so the feed stays between the settings gear and the right thumb's buttons. `Main.KillFeed` no longer clips its rows. The old text row (`EntryTemplate`) stays hidden.
+- **Touch weapon row:** each slot shows the gun's model (the Preview viewport, wider view) with its key number small in the corner; the name is hidden.
+- **Stacking on touch (Client.Core.UI `stackTouch`):** the weapon row is placed from the real top of the health and ammo plates, the objective line and the bomb sites from the real bottom of the (bigger) score bar, so they never overlap whatever their sizes. Health and ammo sit 8 pixels above the bottom edge (they were cut off). The objective line is 40% bigger on small touch screens.
+- **Training goal panel on touch:** shrinks further (down to 50%) when a hint row makes it taller, so it always ends above the left touch buttons.
+- **Banners on a phone (Content.Effects.Parts.Banner):** on screens up to 500 pixels tall they settle just under the crosshair (58% down) instead of 30% down, where the score bar, objective and bomb sites now are.
+
+Checked on the emulated 750 x 382 touch screen in Recruit Training, with test kills sent from a temporary server script (a rifle kill, your own kill with the Ak-47, a grenade death): no overlaps, no UI errors. Not checked: a real phone, a real kill, the drone feed on a phone (the training drone is not placed: `DroneService:316`, `Content.Drones.HITBOX_PADDING` missing), desktop after these changes (the emulator stayed on). Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.
