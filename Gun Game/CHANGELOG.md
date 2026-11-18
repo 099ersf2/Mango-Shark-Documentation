@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-17: Pop-ups out of the way on phones
+
+- The phase banner no longer stays at the bottom over the health bar and weapons after the selection screen closes.
+- On touch, notices sit under the bomb sites and the planting bar above the weapon row.
+- On touch the training panel is just the goal and one line, clear of the left buttons.
+
+Checked on the phone emulator. Not published.
+
 ## 2026-11-17: No mint in the in-match HUD
 
 - The HUD in play is white, gray and team colors only; mint stays in menus (`Content.Theme` convention 3).

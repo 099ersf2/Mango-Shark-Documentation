@@ -117,6 +117,16 @@ The owner found the mint accent out of place on the in-match screen (the trainin
 
 Checked on the emulated 750 x 382 touch screen in Recruit Training. No UI errors in the Output. Seen during the test: `Content.Store.Store` had a syntax error for a moment (line 188, a new BarrierSpecialist class being added by the other developer), which stopped the data and store modules from loading; it was fixed when tested again. Not published.
 
+### Pop-ups in free lanes, compact training panel (2026-11-17, fifth phone test)
+
+The owner: pop-ups kept covering things, and the training steps covered the touch buttons.
+
+- **Phase banner at the bottom (Content.Effects.Parts.Banner):** a banner that starts while the selection screen is up settles at the bottom edge, between that screen's ready counts. The Prep banner starts just before the reveal screen closes, so it stayed at the bottom over the health bar and weapon row for its whole four seconds. It now moves to its normal place the moment the selection screen closes. On phones that place is 60% down: the free strip between the crosshair and the weapon row. Its second line is gray, not mint.
+- **Pop-up lanes on touch (Client.Core.UI `stackTouch`):** short notices (SiegeHUD.Toast) sit just under the bomb sites, and the planting bar (SiegeHUD.Plant) just above the weapon row; at their desktop places (78% and 70% down) they covered the weapons on a phone.
+- **Training panel on touch (Client.Hud.Tutorial):** only the goal's title and one line (the description, or the hint once stuck); the stepper and the bonus chip are hidden on touch, so the panel is short and never reaches the left touch buttons. It rests at 85% on phones (it still shrinks if it would reach them).
+
+Checked on the emulated 750 x 382 touch screen in Recruit Training, including a banner started with the selection screen up and then closed. No UI errors in the Output. Not checked: a notice (Toast) and the planting bar on a phone in a real round. Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.
