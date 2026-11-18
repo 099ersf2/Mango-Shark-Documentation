@@ -139,6 +139,12 @@ The owner: the objective took too much of the screen on mobile, and the training
 
 Checked on the emulated 750 x 382 touch screen in Recruit Training: the prep drone feed, then the action phase (feed closed, Roblox's controls and the objective tag back). No errors in the Output. Not published.
 
+### Exit buttons on a phone (2026-11-17, seventh phone test)
+
+EXIT sat over SPOT in the drone feed (and over SCAN in the camera feed) on a 334-pixel phone, because one was placed from the top and the other from the bottom. On phones `Client.Core.UI` (FEED_TOUCH) now places the feeds' touch buttons: EXIT in the top-right corner beside the score bar (NEXT drone left of it), the drone's integrity bar under them, SPOT under that, HOP and BOOST at the bottom right; the camera feed's SCAN, PREV and NEXT stack up from the bottom right; the NoSignal screens use the same places. The decorative corner brackets are hidden on phones (they ran through EXIT).
+
+An overlap check (every visible button on screen, any pair overlapping) at 750 x 382 touch found none in the lobby, Shop, Inventory, Settings, Party, Game Modes, the drone feed, the camera feed's buttons and the match HUD. Not checked: a real phone, the camera feed in a real defend round. Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.

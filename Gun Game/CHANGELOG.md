@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-17: Exit buttons no longer overlap on phones
+
+Drone and camera feeds: EXIT top right, other touch buttons placed so none overlap on a phone; no overlaps found in menus or the HUD either. See UI.md. Not published.
+
 ## 2026-11-17: Drone and camera feeds on a phone
 
 - Phone layouts also switch on for phone-sized screens with keyboard input.
