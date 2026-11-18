@@ -266,6 +266,8 @@ Add handlers on the server for rules. The client checks `PreventSprint` and `Pre
 | More than `StateChangesPerSecond` packets | Dropped |
 | Ground speed above `state speed × multiplier × SpeedTolerance + SpeedSlack` (slide speed allowed during and just after a slide) | Counted in `MoveViolations`; logged after `ViolationsToLog` samples in a row, at most once per `LogInterval`. Nobody is kicked |
 | Shot while sprinting or inside `SprintOutTime` | Refused in `GunService.tryShot` |
+| Moved further than the allowed speed adds up to since the last accepted place (2026-11-18), or rose more than that plus a jump | Put back at that place: at once when more than 12 studs over, after 3 samples otherwise. Counted in `MoveCorrections`. See SECURITY.md |
+| Off the ground and not falling fast for 2 s (2026-11-18) | Put back where it last stood (`MoveCorrections`) |
 
 ## Viewmodel and shots
 
@@ -278,4 +280,4 @@ Add handlers on the server for rules. The client checks `PreventSprint` and `Pre
 
 - **Normal jumps use the Humanoid's own air control.** Only slide-jumps carry extra momentum with limited air control.
 - **No third-person animations ship.** The built-in leg pose is used until ids are set in `Config.Animations`.
-- **The speed check measures ground speed only.** Vertical exploits such as fly or teleport aren't covered here.
+- **Teleports, CFrame speed hacks and hovering are caught by the position and hover checks (2026-11-18, SECURITY.md).** A cheat at about sprint speed or slower, and noclip at a legal speed, still pass.

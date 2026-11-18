@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-18: Exploit and lag pass
+
+- The network library caps packets a player a server frame (96; a request with a reply counts 8). A crafted flood had frozen the server for 553 ms; now the worst frame is 23 ms.
+- Unreliable packets: 30 a second per player, malformed ones dropped.
+- Movement: teleports, CFrame speed hacks, flying and hovering are put back (position and hover checks, `MoveCorrections`). Drones get the same position check (`DroneCorrections`).
+- Gun fire, gun bash and throws refuse infinite vectors; opening a crate re-checks the count inside the transaction; the reinforce hold is limited to 5 starts a second; a per-player table in Dead Call is cleared on leave; a debug print of the bot behaviour tree is gone.
+- Checked in Studio by attacking from a client script before and after, and in a 5v5 bot match (60 fps on the server and client).
+
+See SECURITY.md. Not published.
+
 ## 2026-11-18: Killer in the death plate, less text everywhere
 
 - Death screen: the top-left killer card is gone; the bottom plate says KILLED YOU · WEAPON (or KILLED BY) over the killer's name in red, then SPECTATING over a teammate. No one-life line while spectating, and the spectate hint is only the keys.

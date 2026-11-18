@@ -5,6 +5,10 @@ Small ground drones in the style of Rainbow Six Siege's. You throw one out and l
 Built 2026-11-11. It replaced an older drone system (a loose `DroneService` Script, a `DroneController` LocalScript and `DroneRemote`), which is kept, disabled, in `ServerStorage.Archive.OldDroneSystem` for reference.
 
 
+
+## Position check (2026-11-18)
+
+A driven drone may go no further than `BOOST_SPEED * SPEED_SLACK` allows since its last accepted place (kept a second, plus 4 studs), and rise no faster than `HOP_SPEED`. A drone moved further (a client setting its CFrame to teleport it into a site) is put back there and counted in the owner's `DroneCorrections` attribute. The server's own moves move the anchor. See SECURITY.md.
 ## Fix: drones could not be driven (2026-11-17)
 
 Two pieces of a newer change did not match:
