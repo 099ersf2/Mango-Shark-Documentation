@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-17: Gray held weapon slot, roomier training stepper
+
+- The held weapon slot is gray with a white outline (was a light fill with a mint outline).
+- The training stepper names only the current step on touch and narrow panels; on touch the hint replaces the description instead of growing the panel.
+
+Checked on the phone emulator. Not published.
+
 ## 2026-11-17: Kill feed with gun pictures, phone HUD without overlaps
 
 See UI.md "Guns as pictures and no overlaps on a phone". Not published.

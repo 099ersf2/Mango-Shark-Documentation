@@ -97,6 +97,14 @@ From the owner's phone screenshot: pieces sat on top of each other, the weapon s
 
 Checked on the emulated 750 x 382 touch screen in Recruit Training, with test kills sent from a temporary server script (a rifle kill, your own kill with the Ak-47, a grenade death): no overlaps, no UI errors. Not checked: a real phone, a real kill, the drone feed on a phone (the training drone is not placed: `DroneService:316`, `Content.Drones.HITBOX_PADDING` missing), desktop after these changes (the emulator stayed on). Not published.
 
+### Held weapon slot and the training stepper (2026-11-17, third phone test)
+
+- **Held weapon slot (Client.Guns.WeaponSlots):** a lighter gray than the other slots (Content.Theme Card) with a white outline and light text; the mint stripe is gone. It was a light fill with dark text and a mint outline, which the owner found odd.
+- **Training stepper (Client.Hud.Tutorial):** on touch, or when the panel has less than 70 design pixels per step, only the current step is named under its circle; the others are numbers (the title says what to do). The labels used to run together ("BREACHPLANT"). Rows in the goal panel have 8 pixels between them (6 before) and the links between steps are a little longer.
+- **Hint on touch:** once the hint appears, it takes the description line's place, so the panel does not grow over the left touch buttons; a new goal shows its description again.
+
+Checked on the emulated 750 x 382 touch screen in Recruit Training (attack round). No UI errors in the Output. Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.
