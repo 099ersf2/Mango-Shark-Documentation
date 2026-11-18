@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-17: Field UI bug fixes and phone pass
+
+From the owner's screenshots and a test on Studio's device emulator (750 x 382 touch). See UI.md "Bug fixes and the phone pass". Not published.
+
+### Fixed
+
+- Shop class cards showed the template's crate icon beside the class letter (`Content.Icons` now marks labels code has set; `Client.Core.IconBinder` skips them).
+- Class prices were invisible (dark text on the dark can't-afford button); `Client.Core.AutoContrast` now reaches nested text.
+- "NEW" and "INVENTORY" were cut off; auto-sized text is measured again once the fonts have loaded.
+- Menus started 58 pixels too low (the top bar was counted twice).
+- `Content.Store.Style` borders and ribbons have their own colors again.
+
+### Changed (touch)
+
+- Compact menu headers on short screens; the lobby nav and gear hide while a menu is open; Settings hides keyboard binds on touch.
+- HUD: health and ammo bottom center, weapon slots as a tappable row, SCORE beside the gear, bigger score bar and bomb sites.
+- Recruit Training: goal panel in the top-left corner, touch hints.
+- Game Modes and the death screen no longer overlap on a short screen.
+
 ## 2026-11-17: Field UI, built from researched conventions
 
 Every screen was redone again, this time from published guidelines (Xbox Accessibility Guidelines 101 and 102, Game Accessibility Guidelines, Apple and Material touch targets, Roblox's UI and cross-platform docs) and screenshots of Rainbow Six Siege, Call of Duty: Mobile and Battlefield 2042 on the Game UI Database. See UI.md "UI standard and the Field look". Checked in Studio playtests at desktop and phone size; not checked on a real phone. Not published.

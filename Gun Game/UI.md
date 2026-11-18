@@ -62,6 +62,29 @@ Studio playtests at 1920 x 783 and at a phone-sized 844 x 390 view (mouse input,
 
 Not checked: a real phone or tablet, the touch button layout, the Battle Pass screen (the pass is off), the camera feed, crate opening, the gift picker, a full 5v5 match. Not published.
 
+### Bug fixes and the phone pass (2026-11-17, after the owner's test)
+
+The owner found three bugs on screenshots and asked for a phone test; Studio's device emulator was set to a 750 x 382 touch screen, so this pass tested the real touch layout.
+
+Bugs:
+
+- **Crate icon beside class letters (Shop, CLASSES):** the StoreCard template's Glyph has `Icon = crate`. The Store wrote the class letter, then `Client.Core.IconBinder` saw the card arrive in PlayerGui and drew the crate again. Now any `Content.Icons` call from code marks the label `IconByCode`, and IconBinder leaves marked labels alone (`Icons.FromBinder` is set only while IconBinder itself applies a Studio label).
+- **Prices missing on class cards:** the price sits in `Prices.Coins.Content.Amount`, two levels inside the button. It was dark text on the dark can't-afford button. `Client.Core.AutoContrast` now checks every text drawn on a fill, however deep, and the StoreCard template's text defaults to light.
+- **"NE" and "INVENTOR" cut off:** boxes that size to their text measured it before Titillium Web had loaded. `Client.Core.UI` now waits for every font face the UI uses, then has every auto-sized box under PlayerGui measure again. Ribbons also have a 44 px minimum width.
+
+Phone (touch) layout:
+
+- **Menus start right under Roblox's top bar.** Main's coordinates already begin below the bar, but the menu fit added the bar's height a second time (58 of 382 pixels on a phone). The lobby nav room is now a `NavRoom` attribute (58) used only on screens taller than 600 pixels.
+- **Compact menu headers:** on short screens Store, Inventory and Battle Pass (`CompactHeader` attribute) hide their title and put the tabs in the wallet and close row; Settings does the same in its own code.
+- **The lobby nav row and the gear hide while a menu is open on a phone** (the menu has its own wallet and close); the coins sit beside the gear.
+- **Settings on touch** hides the CONTROLS tab (keyboard binds) and opens GAMEPLAY.
+- **HUD on touch:** health and ammo side by side in the bottom center, the weapon slots as one row of three tappable 45 px buttons above them (they were 13 px tall in the top-left corner, under the SCORE button), the SCORE button beside the gear, the score and timer bar and the bomb sites 30% bigger (`Client.Core.UI` TOUCH_LAYOUT and BOOSTS).
+- **Recruit Training on touch:** the goal panel moves from the middle of the left edge (over the thumbstick and the drone and ability buttons) to the top-left corner at 72%, and steps show touch hints (`TouchHint` in `Content.Games.Tutorial`: "Stick drives · jump button hops" instead of "WASD drive · Space hop").
+- **Game Modes:** the description moved up and BACK is pinned 12 px from the bottom, so they no longer overlap on a short screen.
+- **Death screen:** the spectated name on the left and the respawn countdown on the right of one plate (both can show at once).
+
+Checked on the emulated 750 x 382 touch screen: lobby, Shop (Featured and Classes), Inventory, Settings, Party, Game Modes, Recruit Training (prep and action, HUD and touch buttons), round result and death screen. No UI errors in the Output. Seen in passing, not UI: the server logged `DroneService:316` (`Content.Drones.HITBOX_PADDING` is missing) when it placed the training drone. Not checked: a real phone, the class pick page of the selection screen on a phone, a full 5v5 match. Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.
