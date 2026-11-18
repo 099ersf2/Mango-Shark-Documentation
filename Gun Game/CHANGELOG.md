@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-17: No mint in the in-match HUD
+
+- The HUD in play is white, gray and team colors only; mint stays in menus (`Content.Theme` convention 3).
+- Training help panel uses the HUD's glass plate; ammo panel without the stripe and with a gray AUTO; your top bar slot outlined white.
+- Won rounds ally blue, a won match gold; gadget meters white; Leo's warning gold.
+
+Checked on the phone emulator. Not published.
+
 ## 2026-11-17: Gray held weapon slot, roomier training stepper
 
 - The held weapon slot is gray with a white outline (was a light fill with a mint outline).

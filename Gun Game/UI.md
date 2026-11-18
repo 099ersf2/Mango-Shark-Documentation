@@ -105,6 +105,18 @@ Checked on the emulated 750 x 382 touch screen in Recruit Training, with test ki
 
 Checked on the emulated 750 x 382 touch screen in Recruit Training (attack round). No UI errors in the Output. Not published.
 
+### No mint in play (2026-11-17, fourth phone test)
+
+The owner found the mint accent out of place on the in-match screen (the training help panel did not match the other plates, the mint stripe on the ammo panel, the mint AUTO, the mint outline on your own slot in the top bar). New rule, written into `Content.Theme`: the accent is for menus; in play the HUD is white, gray and team colors only.
+
+- **Training help panel (StarterGui.Training.Goal):** the same glass plate as the health and ammo plates (Panel at 30%, 1 px Line outline, 6 px corners); the stepper, count bar and hint are white and gray; the bonus chip is a gray chip (its star is gold).
+- **Ammo panel:** the mint stripe is gone; the fire mode (AUTO) is Muted gray; the reload bar is white.
+- **Top bar:** your own slot has a white outline (Assets.UI.Templates.TopBarSlot `Me`); the line under the clock is gray.
+- **Everything else in play** (Main's HUD frames, DroneFeed, CameraFeed, the training panels and the HUD templates): mint became white, the dim accent gray and the accent wells gray cards. In code: the planted defuser and gadget meters (drone boost and health, scan hold, Dead Call) are white, the Leo motion warning is gold, the scoreboard's first place is gold, the picked gadget row and your kill feed rows have a white outline.
+- **Results:** a won round and your side are ally blue (Theme.Defend), lost rounds red, a won match gold; the round result's rules are white.
+
+Checked on the emulated 750 x 382 touch screen in Recruit Training. No UI errors in the Output. Seen during the test: `Content.Store.Store` had a syntax error for a moment (line 188, a new BarrierSpecialist class being added by the other developer), which stopped the data and store modules from loading; it was fixed when tested again. Not published.
+
 ## Mobile pass (2026-11-13)
 
 Sized and placed after other Roblox shooters on a phone (BedWars, Rivals and similar): a small timer pill at the top, nothing behind Roblox's top-left buttons, a column or row of small square buttons on the left, a big fire button with smaller ones in an arc for the right thumb, thin bars at the bottom, short messages instead of boxes over the view.
