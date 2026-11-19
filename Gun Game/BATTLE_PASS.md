@@ -4,6 +4,8 @@ Added 2026-11-16, changed the same day to a level track (no Battle Stars). A sea
 
 **Off for now (2026-11-16):** `Content.BattlePass.ENABLED = false` keeps the pass for its own update. No XP, quests or claims, and nothing of it is shown (button, screen, store item, unowned season skins, the Season 1 tag). To launch: set `ENABLED = true`, check `SEASON.Ends`, and put the Robux product's id at `Store_BattlePassS1` in `Shared.ProductIds`.
 
+> **2026-11-18:** quests now run while the pass is off and pay `XP * Content.Quests.COIN_SHARE` coins instead of pass XP; they show on the GOALS menu (`Client.Core.Goals`). A completed quest also gives account XP and Weekly Goal points ([PROGRESSION.md](PROGRESSION.md)).
+
 ## Where things are
 
 | What | Where |

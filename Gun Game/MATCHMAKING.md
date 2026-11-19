@@ -98,6 +98,11 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
   The lobby sends the fitted mode with each request, so with 1v1 picked a party of 2 queues 5v5 but plays a private 1v1; a party of 3 gets 5v5 for both. The Game Modes panel greys out modes the party is too big for (PARTY TOO BIG) and marks private-only ones (PRIVATE ONLY). Pressing one opens a popup (`Client.Core.Notice`) instead of changing the description line.
 - All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
 
+## Bot fill and Ranked (2026-11-18)
+
+- `5v5` and `1v1` have `BotFill` (30 s and 20 s): after the oldest ticket waits that long with no match, a match forms with whoever is queued (one player is enough) and Siege bots fill every empty spot (`QueueService` `fillBots`). Every public match of those modes is topped up. Private matches never are. Studio: workspace attribute `NoBotFill = true` turns it off.
+- New mode `Ranked` (SIEGE category, 5 v 5, smallest 1 v 1, 90 s): players only, `MinLevel = 5` (each member on the lobby server needs the `Level` attribute at 5+; a party with bots is refused). Rating in [PROGRESSION.md](PROGRESSION.md).
+
 ## Play with party (2026-11-12)
 
 > **Not run.** Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.

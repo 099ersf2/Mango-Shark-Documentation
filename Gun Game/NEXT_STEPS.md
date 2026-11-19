@@ -1,5 +1,13 @@
 # Next steps
 
+## Retention pass (2026-11-18)
+
+- [ ] **Reminders:** create the notification string and the `NotifyKey` secret on the Creator Hub (steps in PROGRESSION.md).
+- [ ] **Badges:** create them and fill `Content.Progress.BADGES`.
+- [ ] **Ranked with two real players:** check the rating moves and the toast shows back in the lobby.
+- [ ] **On a real phone:** the GOALS menu, the flame chip in the nav and the flame burst.
+- [ ] **Watch** the Creator Hub retention (D1/D7/D30) after publishing to see what moved.
+
 ## Rebuilt lobby and touch fix (2026-11-17)
 
 - [ ] **On a real phone:** the DEPLOY card above the jump button, the wallet strip and settings button on a narrow screen, the touch buttons' size in a match.

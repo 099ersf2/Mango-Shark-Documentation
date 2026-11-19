@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-18: Retention pass
+
+- **Quests are live** without the battle pass: they pay coins while the pass is off, on a new GOALS menu.
+- **Flame streak:** play a match a day to grow it; tiers SPARK to SUPERNOVA, shields, daily coins, milestones and up to +50% match coins. A flame chip in the nav and a full-screen flame burst on return.
+- **Weekly Goal:** points from matches, wins, quests and flame days; five tiers paying coins; resets Tuesdays.
+- **Account level**, **Ranked** mode (from level 5, Elo, Iron to Elite), **career stats**, **leaderboards** (week, flame, level, ranked).
+- **Bot fill:** 5v5 and 1v1 fill empty spots with bots after 30 / 20 s, so one player always gets a match.
+- **Invite friends** (Party menu, PROFILE), a one-time **favorite** prompt, Roblox's **notification opt-in**, and flame **reminders** (need Creator Hub setup), **badges** (need ids).
+
+Details in PROGRESSION.md. Not published.
+
 ## 2026-11-18: UI performance pass
 
 - Inventory Skins tab opens in 23 ms instead of about 145 ms: gun previews fill only near the screen (new `Client.Core.LazyPreviews`) and cards past the first 12 build over the next frames.
