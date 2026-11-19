@@ -49,6 +49,17 @@ A **public** match: queued from PLAY, bots included. PLAY WITH PARTY (private) a
 
 It waits for the training offer, a menu or Celebrate's flame burst to close, then shows once a day: the client sends `Packets.Progress.Seen "Daily"` and the server saves its own day in `Progress.Seen.Daily`. It shrinks to fit a phone (design 680 x 392). Wording is kind on purpose: research on streak screens (Mobbin's study of 859 streak designs, Duolingo's streak posts, reward calendar conventions) found loss threats and countdowns push players away, while a visible next step, a week view and a featured milestone pull them back.
 
+### Flame easter egg (2026-11-19)
+
+Every full-size flame (`Client.Core.FlameFx`: the Daily Flame popup, the flame burst, the GOALS card; not the small nav chip) can be played with:
+
+- **Tap:** a puff (it jumps and bounces, a ring and embers), a fire whoosh (`FlameTap`) and a haptic click. Quick taps (within 0.55 s) build a run: each whoosh higher, the fifth a big flare (`FlameRelease`).
+- **Drag** (finger or mouse): the tongues split apart and stretch toward the pointer, leaning into it, embers stream from the pointer, and it grows up to 1.6x over 1.6 s of holding, with crackles (`FlameCrackle`) and light haptic ticks while moving.
+- **Let go:** it springs back with a small wobble and flares as big as it grew (`FlameRelease`, a stronger haptic).
+- A controller can select the flame and press A for a tap. A flame that is out only sputters.
+
+Haptics use `HapticEffect` (UIClick, UIHover, GameplayCollision) and play only when the last input was touch or a gamepad. Sounds are ProSoundEffects fire whooshes in `Content.Effects.Registry` (UI group, so the Interface volume controls them). `FlameFx.new(frame, { Playable = false })` turns it off for a flame.
+
 ## Weekly Goal
 
 The card shows the points and each tier's coin reward on the track (2026-11-18: trimmed; the point values per action are listed here, not on the card).

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-19: Flame easter egg
+
+- The streak flame can be played with: tap for a puff with a fire whoosh and a haptic click (five quick taps flare); drag a finger or the mouse to split the flame apart and stretch it toward you as it grows bigger, with crackles and haptic ticks; let go and it springs back and flares. Haptics on phones and controllers only. Details in PROGRESSION.md.
+
+Checked in Studio (driving the flame's update by hand, because Studio's viewport wasn't drawing frames): five taps built a run and flared; a 1.6 s drag up-right grew the flame from 65 to 248 px wide and 1.6x tall; let go, it overshot a little and settled in about 1.5 s; the three sounds load. Not checked: a real press with the mouse or a finger, haptics on a device, how it looks (no screenshot). Not published.
+
 ## 2026-11-19: Daily Flame popup
 
 - New popup the first time a player is in the lobby on a new day and their flame isn't lit yet: the flame and its days, what one match today gets ("Play 1 match today to reach day 5 and earn 150 coins"), a week of day tiles with TODAY lit and milestone gifts, the days to the next tier with a bar, the match coin bonus, shields, and PLAY NOW / LATER. Once a day (new saved field `Progress.Seen.Daily`, set by the server). Details in PROGRESSION.md.
