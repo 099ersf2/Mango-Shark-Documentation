@@ -26,14 +26,14 @@ A **public** match: queued from PLAY, bots included. PLAY WITH PARTY (private) a
 - One public match on a UTC day grows the flame by one (once a day). Miss a whole day and it goes out (back to 1 on the next match), unless a **Shield** covers it. A Shield is earned at every 7th day, at most 2.
 - Each day pays `STREAK_DAY_COINS` (50 rising to 200 from day 7). Days 3, 7, 14, 30, 60, 100 pay `MILESTONES` extra (300 to 20,000 coins).
 - **Flame bonus:** +5% of the match's coin reward per day of flame, at most +50% (day 10), paid as "Flame bonus" after each match.
-- **Tiers** (name and colors of the fire): SPARK 1, BLAZE 3, INFERNO 7, HELLFIRE 14, SOULFIRE 30 (blue), SUPERNOVA 60 (violet-white). OUT is grey.
+- **Tiers** (name and colors of the fire): SPARK 1, BLAZE 3, WILDFIRE 7, FIRESTORM 14, SOULFIRE 30 (blue), SUPERNOVA 60 (violet-white). OUT is grey.
 - States: **Lit** (played today), **Risk** (played yesterday, or missed days that shields cover: play today or it goes out), **Out**.
 - Saved: `Progress.Streak.Days`, `Day` (UTC day number it last grew), `Best`, `Shields`. The field is `Days`, not `Count`: `Count` is a Scribe accessor method and a field of that name is unreachable (Scribe logs `API_NAME_COLLISION`).
 
 ### The look
 
 - The nav row shows a flame chip next to GOALS with the day count; its ring glows in the tier color and turns solid while the flame is at risk.
-- Back in the lobby with a bigger flame than last celebrated (`Progress.Seen.Streak`), a full-screen burst plays: the old count, a flare (the flame grows, a shockwave ring, a shower of embers), the new count, its tier ("NEW TIER: INFERNO" when it changed), the coins and the bonus, and how many days to the next tier. Side by side (760 x 330 design pixels), shrunk to fit a phone. Roblox's touch controls hide while it shows.
+- Back in the lobby with a bigger flame than last celebrated (`Progress.Seen.Streak`), a full-screen burst plays: the old count, a flare (the flame grows, a shockwave ring, a shower of embers), the new count, its tier ("NEW TIER: WILDFIRE" when it changed), the coins and the bonus, and how many days to the next tier. Side by side (760 x 330 design pixels), shrunk to fit a phone. Roblox's touch controls hide while it shows.
 - The fire is drawn with UI frames: teardrop tongues (a circle and a 45 degree square) in three layers that flicker on `math.noise`, two glow circles, rising embers. One RenderStepped connection drives every flame on screen; hidden flames cost nothing; the nav chip updates 30 times a second.
 
 ## Weekly Goal
@@ -95,12 +95,12 @@ Create the badges on the Creator Hub (the first ones each day are free) and put 
 | Test | Result |
 | --- | --- |
 | Lobby | GOALS word and the grey flame chip in the nav; no errors |
-| Seeded 13-day flame, Seen 12 | The burst played (INFERNO red, embers); GOALS tab shows the flame card, weekly track at 320 pts with tiers 1-2 lit, today's quests paying coins (+100, +87, +125) |
+| Seeded 13-day flame, Seen 12 | The burst played (WILDFIRE red, embers); GOALS tab shows the flame card, weekly track at 320 pts with tiers 1-2 lit, today's quests paying coins (+100, +87, +125) |
 | PROFILE | Level 8, XP bar, UNRANKED with placements 0/5, career tiles (K/D 1.40 from 42/30) |
 | LEADERBOARDS | Reads and writes the stores; zeros hidden ("Nobody on this board yet") |
 | Queue 1v1 alone | Matched against BOT Atlas / BOT Rook (bot fill) |
-| Won it with the flame last grown yesterday (6 days) | Flame 7 (INFERNO, a shield), +250 XP, +50 weekly points paying tier 2, coins +2,740 = win + day-7 coins + milestone + 35% flame bonus + tier 2 |
-| Back in the lobby | The burst (6 to 7, NEW TIER: INFERNO, Shield earned!), then Roblox's notification opt-in |
+| Won it with the flame last grown yesterday (6 days) | Flame 7 (WILDFIRE, a shield), +250 XP, +50 weekly points paying tier 2, coins +2,740 = win + day-7 coins + milestone + 35% flame bonus + tier 2 |
+| Back in the lobby | The burst (6 to 7, NEW TIER: WILDFIRE, Shield earned!), then Roblox's notification opt-in |
 | Ranked at level 3 / 8 | Refused ("opens at level 5") / queued; leaving works |
 
 Not tested: a Ranked match between two real players (the rating change), reminders being sent (needs the Creator Hub setup), badges (no ids yet), the favorite prompt on a live server, a real phone.

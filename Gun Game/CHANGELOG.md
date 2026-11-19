@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-18: Smaller PLAY card, no grey tint, renamed tiers
+
+- **PLAY card (`Client.Core.Matchmaking` `layoutBar`):** about 120 design pixels tall instead of 300. GAME MODE and PLAY now share the bottom row (GAME MODE 42% of the width), TRAINING and SQUAD are 48 high, PLAY WITH PARTY 44. It grows at most 1.15x on big screens (was 1.25x). On the 1852 x 840 Studio window: 391 x 198 pixels with PLAY WITH PARTY (was about 420 x 350). The GAME MODE tile's labels were resized for the narrower tile (`Main.Lobby.ModeButton` Label and Value: width minus 52).
+- **No grey tint:** the dark bands behind the nav bar and the PLAY card (`Main.NavShade`, `Main.PlayShade`) stay hidden, and a menu no longer darkens and greys the world (`Client.Core.MenuAmbience` grade set to zero; the blur stays).
+- **Renamed:** flame tiers INFERNO is now WILDFIRE and HELLFIRE is now FIRESTORM (`Content.Progress`); the knife skin shown as "Hellfire" is now "Emberfang" (its Id stays `HellfireKnife`, since owned skins and crate odds use the Id).
+
+Checked in a Studio playtest (desktop window). Not checked on a phone. Not published.
+
 ## 2026-11-18: Menu title, Store text and Goals text fixes
 
 - **Title over the tabs (every menu):** on a short screen a menu folds its title row into its tab row (`Client.Core.UI` `compactHeader`). Unfolding moved back only the parts still at 60 px or lower, so after a screen grew (a window short while loading, then resized) the tabs stayed on the title row and the title showed over them ("SHOP" over FEATURED, "GOALS" over GOALS). It now saves each part's place when folding and puts it back exactly.
