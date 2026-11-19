@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-19: Daily Flame popup
+
+- New popup the first time a player is in the lobby on a new day and their flame isn't lit yet: the flame and its days, what one match today gets ("Play 1 match today to reach day 5 and earn 150 coins"), a week of day tiles with TODAY lit and milestone gifts, the days to the next tier with a bar, the match coin bonus, shields, and PLAY NOW / LATER. Once a day (new saved field `Progress.Seen.Daily`, set by the server). Details in PROGRESSION.md.
+- `Client.Core.Matchmaking.Queued()` added (PLAY NOW never cancels a search).
+
+Checked in Studio: a 4-day flame from yesterday showed KEEP YOUR FLAME BURNING, tiles DAY 1-4 done, TODAY on day 5 (+150), gifts on day 3 and 7, "3 DAYS TO WILDFIRE"; PLAY NOW closed it and started a search; it didn't come back that day; a flame out showed LIGHT A NEW FLAME with the best. All text fits (measured). Not checked: a picture (Studio's screen capture timed out), a real phone. Not published.
+
 ## 2026-11-19: Training: coach off the hotbar, Tip, cameras tip
 
 - **Phones:** the coach line sat on the hotbar (the owner's screenshot). On a small screen outside a feed it is now a left column under the top bar (12, 56), 45% wide, left aligned; the goal card stays hidden on phones.

@@ -36,6 +36,19 @@ A **public** match: queued from PLAY, bots included. PLAY WITH PARTY (private) a
 - Back in the lobby with a bigger flame than last celebrated (`Progress.Seen.Streak`), a full-screen burst plays: the old count, a flare (the flame grows, a shockwave ring, a shower of embers), the new count, its tier ("NEW TIER: WILDFIRE" when it changed), the coins and the bonus, and how many days to the next tier. Side by side (760 x 330 design pixels), shrunk to fit a phone. Roblox's touch controls hide while it shows.
 - The fire is drawn with UI frames: teardrop tongues (a circle and a 45 degree square) in three layers that flicker on `math.noise`, two glow circles, rising embers. One RenderStepped connection drives every flame on screen; hidden flames cost nothing; the nav chip updates 30 times a second.
 
+### Daily Flame popup (2026-11-19)
+
+`Client.Core.DailyFlame`, UI `Main.DailyFlame` (built in Studio). The first time a player is in the lobby on a new UTC day and their flame isn't lit today, a popup shows what one match today gets them:
+
+- the flame (FlameFx) with its days and tier, or NOT LIT
+- a title and line by state: KEEP YOUR FLAME BURNING ("Play 1 match today to reach day 5 and earn 150 coins"), LIGHT A NEW FLAME (went out; shows the best), LIGHT YOUR FLAME (never lit)
+- a week of day tiles (days 1-7, 8-14, ...): done days checked on mint, TODAY in the flame's color with a breathing ring, coming days by weekday with their coins; milestone days show a gift with a gold ring
+- the next tier (days to go, a bar in its color) and the match coin bonus on the day reached
+- shields: how many, the day the next one comes, or that one saved the flame
+- PLAY NOW (queues the picked mode, like PLAY) and LATER / X
+
+It waits for the training offer, a menu or Celebrate's flame burst to close, then shows once a day: the client sends `Packets.Progress.Seen "Daily"` and the server saves its own day in `Progress.Seen.Daily`. It shrinks to fit a phone (design 680 x 392). Wording is kind on purpose: research on streak screens (Mobbin's study of 859 streak designs, Duolingo's streak posts, reward calendar conventions) found loss threats and countdowns push players away, while a visible next step, a week view and a featured milestone pull them back.
+
 ## Weekly Goal
 
 The card shows the points and each tier's coin reward on the track (2026-11-18: trimmed; the point values per action are listed here, not on the card).
