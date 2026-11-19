@@ -75,3 +75,17 @@ The test ran with the new `ScribeNoSave` workspace attribute (see below), so no 
 ## Studio: testing without saving
 
 `Shared.Data` (2026-11-17): in Studio only, the workspace attribute `ScribeNoSave = true` (set in Edit before Play) loads profiles in Scribe's `NoSave` mode: real data is read, nothing is written. Live servers ignore it. Remove the attribute when done.
+
+## The coach (2026-11-18)
+
+The owner sent a video of a fighting game's tutorial: one short instruction at a time, the exact key under it, a counter, a praise word when it is done, then the next step. Recruit Training now coaches the same way (our own look):
+
+- **`Client.Hud.TutorialCoach`** (UI `Training.Coach`, `Training.Skip`): one short line in the middle of the screen (above the bottom HUD on foot, near the top in a drone or camera feed), with the keys as key chips under it, using the player's own bindings (`Client.Settings.Keybinds`; a gold HOLD before keys that must be held, W A S D for driving). On a touch screen the real buttons glow instead: a pulsing mint ring and a bobbing arrow (under the target, pointing up, when it is near the top of the screen). HUD parts the step is about glow on every device (the bomb chips).
+- **Beats** come from `Content.Games.Tutorial` STEPS[].Coach (Text, Keys, Move, Hold, Touch, TouchText, Highlight, Until). Main goals of the phase first, then bonus goals. A beat with `Until = "Feed"` (open your drone) moves on once a feed is open; the last beat lasts until the server reaches the step. A counted step shows `1/2`.
+- **Praise:** reaching a step flashes NICE!, GOOD!, GREAT! or WELL DONE! for 1.4 s, then the next beat pops in (the side popup no longer shows). The old "stuck" hint no longer appears.
+- **Size and place:** 1x on a 720 px tall screen, down to 0.65x on a phone, lower on a phone so it never reaches the crosshair; wider on a narrow screen, and it wraps to two lines. It steps aside while the HUD's toast or plant bar shows.
+- **On a phone** the old goal card hides (the coach says the same); SKIP TRAINING takes the top-left corner (in a feed, under its header and site box).
+- **SKIP TRAINING:** one tap arms it (TAP AGAIN TO LEAVE, 3 s), the second asks `Packets.Tutorial.Request "Leave"`: `TutorialService` sets Skipped (if not Done) and sends the recruit back to the lobby (`MatchHost.ReturnAll`); no crate, since only a finished run gives one. In Studio, where there is no lobby to go to, the match ends instead.
+- The coach listens to `Packets.Siege.State` and `Packets.Tutorial.Progress` itself; the goal card's update is wrapped in a pcall that warns.
+
+Checked in Studio playtests (desktop window): Prep shows "Drive into the house to find the bombs" with W A S D, a reached goal shows NICE! then "Bonus: point at the defender and hold" with HOLD X, Action shows "Shoot the boards on a door to break in" with LMB, then the bomb chips glow for "Follow a bomb marker and stand in its room"; SKIP arms then leaves. Not checked: the glowing touch buttons on a real phone, round 2 (boards, cameras, hold) by hand.

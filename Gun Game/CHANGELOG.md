@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-18: Training coach
+
+- Recruit Training walks the player through each step: one short line in the middle, the exact keys as chips (gold HOLD for held keys), the real buttons glowing on a phone, the bomb chips glowing when the step is about them, a counter, a praise word when done, then the next line. New `Client.Hud.TutorialCoach`, beats in `Content.Games.Tutorial` STEPS[].Coach.
+- SKIP TRAINING (tap twice) leaves training for the lobby (no crate).
+- Fixed on the way: a feed closing just before Action's state put the Prep beat back.
+
+Details in TUTORIAL.md. Not published.
+
 ## 2026-11-18: Phone screenshots pass: overlaps, cut-off text, contrast, bomb B, camera scan
 
 From the owner's phone screenshots after v1018:
