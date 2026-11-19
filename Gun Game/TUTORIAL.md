@@ -88,7 +88,7 @@ The owner sent a video of a fighting game's tutorial: one short instruction at a
 - **SKIP TRAINING:** one tap arms it (TAP AGAIN TO LEAVE, 3 s), the second asks `Packets.Tutorial.Request "Leave"`: `TutorialService` sets Skipped (if not Done) and sends the recruit back to the lobby (`MatchHost.ReturnAll`); no crate, since only a finished run gives one. In Studio, where there is no lobby to go to, the match ends instead.
 - The coach listens to `Packets.Siege.State` and `Packets.Tutorial.Progress` itself; the goal card's update is wrapped in a pcall that warns.
 
-Checked in Studio playtests (desktop window): Prep shows "Drive into the house to find the bombs" with W A S D, a reached goal shows NICE! then "Bonus: point at the defender and hold" with HOLD X, Action shows "Shoot the boards on a door to break in" with LMB, then the bomb chips glow for "Follow a bomb marker and stand in its room"; SKIP arms then leaves. Not checked: the glowing touch buttons on a real phone, round 2 (boards, cameras, hold) by hand.
+Checked in Studio playtests (desktop window): Prep shows "Drive into the house to find the bombs" with W A S D, a reached goal shows NICE! then "Tip: scan the defender" with HOLD X, Action shows "Shoot the boards on a door to break in" with LMB, then the bomb chips glow for "Follow a bomb marker and stand in its room"; SKIP arms then leaves. Not checked: the glowing touch buttons on a real phone, round 2 (boards, cameras, hold) by hand.
 
 ## Quicker, less told, arrows (2026-11-19)
 
@@ -103,3 +103,7 @@ Checked in a Studio training run: Prep shows "Find the bombs" with no keys and a
 
 - 2026-11-19: the guide billboard keeps across respawns (ResetOnSpawn off) and only missing guide parts are remade; an arrow had stayed stuck on screen after a respawn.
 - 2026-11-19 (later): guide arrows are 3D parts in the world (a marker over the target, a pointer above the crosshair when it is off screen); rings glow 5 s then fade.
+
+### Tips and timed beats (2026-11-19)
+
+Optional lines start with "Tip:" (they were "Bonus"). A beat can have `After` (seconds into the phase before it shows) and its own `HintAfter` (when the keys and glowing buttons come in). Defending, after 30 s of Action the coach suggests the cameras (key 5, the phone's camera button after 2 s) until the player opens them. On phones the coach is a left column under the top bar so it never covers the hotbar.

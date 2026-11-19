@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-19: Training: coach off the hotbar, Tip, cameras tip
+
+- **Phones:** the coach line sat on the hotbar (the owner's screenshot). On a small screen outside a feed it is now a left column under the top bar (12, 56), 45% wide, left aligned; the goal card stays hidden on phones.
+- **"Bonus" is now "Tip"** in every coach line and the tag (`TEXT.Bonus = "TIP"`).
+- **Cameras tip:** 30 s into the defend Action phase, if the player hasn't opened the cameras, the coach says "Tip: check the cameras to find the attacker"; 2 s later the 5 key shows and the phone camera button glows. Opening the feed ends the tip. Beats can now have `After` (seconds into the phase) and their own `HintAfter`; the coach rechecks once a second.
+- **Banner:** a long title ("DEFUSER PLANTED ON BOMB B") was cut off on a phone; the title now grows to more lines.
+
+Checked in Studio: defend Action showed "Guard the bombs..." at 3 s and the cameras tip with the 5 key at 32 s; pressing 5 opened the feed and the line went back. The banner wrapped to three lines on a narrow window. Not checked on a real phone. Not published.
+
 ## 2026-11-19: Training: 3D guide arrows, shorter rings
 
 - **Physical arrows** (the owner: use physical arrows instead of on-screen ones when pointing to physical objects): the guide is now two 3D arrows made of neon mint parts on the client only (in the camera; no collisions, queries or touches): one over the target pointing down, bobbing and turning, seen through walls (a Highlight, AlwaysOnTop); and, when the target is off screen, a smaller one floating just above the crosshair, turned flat to the view so it points left, right, up or down (a target behind turns it to the nearer side). The on-screen edge arrow and the billboard are gone.
