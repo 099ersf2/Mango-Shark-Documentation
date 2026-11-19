@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-18: Game modes: BACK and EXIT together
+
+- `Main.Modes.Buttons` (bottom left, a horizontal list): **BACK** (to the categories, only inside a category) and **EXIT** (closes the screen; was labelled BACK, which was confusing) side by side. On the category list only EXIT shows, in the same place. `Client.Core.ModeMenu` finds them under `Buttons`.
+- The title-row "ALL MODES" button from earlier today is now this BACK.
+
+Checked in a Studio playtest: SIEGE shows BACK and EXIT together; BACK returns to SELECT A MODE with EXIT in the same spot. Not published.
+
 ## 2026-11-18: Phone menus: nav stays, no overlaps
 
 From the owner's phone screenshots after v1016:
