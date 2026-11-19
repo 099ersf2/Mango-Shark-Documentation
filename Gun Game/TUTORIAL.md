@@ -102,3 +102,4 @@ The owner: the tutorial was confusing; shorter timers, don't give them all the i
 Checked in a Studio training run: Prep shows "Find the bombs" with no keys and an edge arrow toward the site (68 m); Action shows "Break in", an arrow to the nearest boarded doorway (40 m), LMB after 8 s, and the 2:00 timer. Not checked: round 2 by hand, a real phone.
 
 - 2026-11-19: the guide billboard keeps across respawns (ResetOnSpawn off) and only missing guide parts are remade; an arrow had stayed stuck on screen after a respawn.
+- 2026-11-19 (later): guide arrows are 3D parts in the world (a marker over the target, a pointer above the crosshair when it is off screen); rings glow 5 s then fade.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-19: Training: 3D guide arrows, shorter rings
+
+- **Physical arrows** (the owner: use physical arrows instead of on-screen ones when pointing to physical objects): the guide is now two 3D arrows made of neon mint parts on the client only (in the camera; no collisions, queries or touches): one over the target pointing down, bobbing and turning, seen through walls (a Highlight, AlwaysOnTop); and, when the target is off screen, a smaller one floating just above the crosshair, turned flat to the view so it points left, right, up or down (a target behind turns it to the nearer side). The on-screen edge arrow and the billboard are gone.
+- **Rings** around HUD parts and touch buttons glow for 5 s once they come in (`RING_TIME`), then fade (the owner: the bomb rings stayed too long).
+
+Checked in Studio: a full training run (both rounds) with a watcher: rings shown 4.9 s, no arrow outside Prep/Action, one marker and one pointer at the end; screenshots of the pointer in the drone feed (right, toward the site) and on foot (left, toward a boarded door); the arrow shape checked from two angles in Edit. Not published.
+
 ## 2026-11-19: Training: stuck guide arrow
 
 - The owner: an arrow got stuck on screen (v1030). The guide's floating marker (a BillboardGui straight in PlayerGui) was removed on a respawn (ResetOnSpawn), and `guideParts` then made all three parts again, leaving the old screen-edge arrow visible and no longer updated (and an attachment more each round). Now the billboard has ResetOnSpawn off, only a missing part is made again, the arrows hide whenever the coach's loop stops or a guide search errors (pcall), and ring arrows show only during a live beat.
