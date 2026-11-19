@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-19: Training: stuck guide arrow
+
+- The owner: an arrow got stuck on screen (v1030). The guide's floating marker (a BillboardGui straight in PlayerGui) was removed on a respawn (ResetOnSpawn), and `guideParts` then made all three parts again, leaving the old screen-edge arrow visible and no longer updated (and an attachment more each round). Now the billboard has ResetOnSpawn off, only a missing part is made again, the arrows hide whenever the coach's loop stops or a guide search errors (pcall), and ring arrows show only during a live beat.
+
+Checked in Studio: a full training run (both rounds, forced round ends) with a watcher on the client: no arrow outside Prep/Action or without the coach line, one edge arrow and one anchor at the end (the same run before the fix showed the arrow stuck through RoundEnd, round 2's Reveal and End). Not published.
+
 ## 2026-11-19: Training: quicker, less told, guide arrows
 
 - Shorter training timers: briefing 5 s, prep 30 / 40 s, attack and defend 2 minutes, results 5 and 10 s.

@@ -100,3 +100,5 @@ The owner: the tutorial was confusing; shorter timers, don't give them all the i
 - **Defend tip:** round 2 Action says "Guard the bombs. Take down the attacker to win the round faster".
 
 Checked in a Studio training run: Prep shows "Find the bombs" with no keys and an edge arrow toward the site (68 m); Action shows "Break in", an arrow to the nearest boarded doorway (40 m), LMB after 8 s, and the 2:00 timer. Not checked: round 2 by hand, a real phone.
+
+- 2026-11-19: the guide billboard keeps across respawns (ResetOnSpawn off) and only missing guide parts are remade; an arrow had stayed stuck on screen after a respawn.
