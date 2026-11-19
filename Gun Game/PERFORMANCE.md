@@ -26,6 +26,28 @@ Totals for the client's own scripts (Roblox's core scripts included, Studio plug
 - **Lobby:** 0.78 ms per frame before, 0.35 after. The client holds about 25,000 fewer instances (98k to 73k in Studio, which counts Studio's own too).
 - **Match:** 1.37 ms per frame before, 1.00 after. The rest is spread thin: arm posing, the viewmodel, aim assist, Roblox's camera and chat.
 
+## UI pass (2026-11-18)
+
+Steady-state UI scripts were already cheap: the lobby with the Inventory or Store open runs about 0.3 ms of client scripts a frame, and no hidden menu updates itself. The cost was the hitch when a menu page is drawn. Timed by calling each menu's Open from a temporary LocalScript in a playtest (phone emulator, 750 x 382).
+
+| Opening | Before | After |
+|---|---|---|
+| Inventory, Skins tab (51 cards) | 145-150 ms, 7,300 new instances | 23 ms; the rest builds at 4 ms a frame |
+| Inventory or Store, reopened with nothing changed | 11-35 ms (full redraw) | 0.2 ms |
+| Store, first open | 30-35 ms | 22 ms |
+
+- **Gun previews only near the screen (new `Client.Core.LazyPreviews`, ClientOnly):** a card's 3D preview (a gun model cloned into a ViewportFrame) is filled only when the card is within one screen of the page's visible window, and more fill as the page scrolls. Used by the Inventory and Store cards. On a phone the Skins tab fills 2 previews at first instead of every one.
+- **Pages are kept (Inventory, Store):** `render` remembers what the drawn page shows (tab or section, filter, search, card columns, the daily deal, and a `dataVersion` that every data change bumps). The same key draws nothing again, so reopening a menu or clicking the open tab is free.
+- **Inventory drew twice on every open:** `Menus.Changed` drew it and `Inventory.Open` drew it again. The second call now hits the kept page.
+- **Inventory cards build a few at a time:** the first 12 cards are built at once (the top of the page), the rest in the next frames within 4 ms each. A card is 78 instances; 51 of them cloned and parented in one go took about 66 ms.
+- **Store data changes are batched:** the Store redrew the whole page once per changed value (coins, tokens, skins, items) after a purchase; it now redraws once at the end of the frame, like the Inventory.
+- **Store glow animation:** glowing cards' sheen and border gradients are found once when the card is made (it ran 4 `FindFirstChild` per card per frame), and the daily deal timer's text is set once a second, not every frame.
+- **Classes tile click:** clicking a class tile redrew every tile; now only the outlines change.
+
+**Bug fixed on the way:** the Inventory's Classes tab (the tab it opens on) errored every time it drew (`Inventory:1005 attempt to get length of a nil value`): the "n of m classes owned" line read two lists from another function. It now counts the classes under the team filter ("10 of 19 classes owned").
+
+Not changed: switching from the Skins tab to another still destroys its cards in one frame (about 20-38 ms). The crate reel still builds 66 previews when a crate is opened.
+
 ## Not changed
 
 - **Sword combat** (a standing rule).

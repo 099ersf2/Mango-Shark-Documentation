@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-18: UI performance pass
+
+- Inventory Skins tab opens in 23 ms instead of about 145 ms: gun previews fill only near the screen (new `Client.Core.LazyPreviews`) and cards past the first 12 build over the next frames.
+- Inventory and Store keep their drawn page: reopening with nothing changed costs 0.2 ms instead of a full redraw. The Inventory no longer draws twice per open.
+- Store: one redraw per burst of data changes, glow parts cached, deal timer text set once a second.
+- Fixed: the Inventory's Classes tab errored on every draw (its owned count).
+
+Details in PERFORMANCE.md. Not published.
+
 ## 2026-11-18: Performance pass
 
 - Profiled the client and server with Roblox's script profiler in the lobby and a 5v5 bot match. The server was already lean (about 0.3 ms of game scripts a frame); the client and its downloads were not.
