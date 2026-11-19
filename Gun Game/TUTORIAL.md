@@ -89,3 +89,14 @@ The owner sent a video of a fighting game's tutorial: one short instruction at a
 - The coach listens to `Packets.Siege.State` and `Packets.Tutorial.Progress` itself; the goal card's update is wrapped in a pcall that warns.
 
 Checked in Studio playtests (desktop window): Prep shows "Drive into the house to find the bombs" with W A S D, a reached goal shows NICE! then "Bonus: point at the defender and hold" with HOLD X, Action shows "Shoot the boards on a door to break in" with LMB, then the bomb chips glow for "Follow a bomb marker and stand in its room"; SKIP arms then leaves. Not checked: the glowing touch buttons on a real phone, round 2 (boards, cameras, hold) by hand.
+
+## Quicker, less told, arrows (2026-11-19)
+
+The owner: the tutorial was confusing; shorter timers, don't give them all the info, lead them with arrows, 2-minute attack and defend, and tell defenders that killing the attacker wins faster.
+
+- **Timers** (`Content.Games.Tutorial`): briefing 5 s (was 8), prep 30 s attack / 40 s defend (was 45 / 60), action 120 s (was 240), round result 5 s and match result 10 s (new `ROUND_END_TIME`, `END_TIME`, used by `SiegeService` in training; Siege's are 8 and 18).
+- **Figure it out first:** each coach line now names only the goal ("Find the bombs", "Break in", "Defuse a bomb", "Board up the doorways"). Its keys and the glowing buttons appear only after the step's `HintAfter` seconds (6 to 15) if it isn't done by then, with a soft sound.
+- **Guide arrows** (`Client.Hud.TutorialCoach`, beat field `Guide`): a mint arrow bobbing over the target with its distance (a BillboardGui `CoachGuide`, seen through walls) and, when the target is off screen or behind, an arrow at the screen's edge pointing the way (`Training.CoachEdge`). Targets: Site (the middle of the site's bombs), Bomb (the nearest bomb without a defuser), Boarded (the nearest doorway with boards), Open (the nearest unfinished doorway within 50 studs of the site), Bot (the bot in `workspace.Enemies`). The map is `workspace[TutorialContent.MAP]` (other maps can sit in workspace too). Doorways are found once per map (it is rebuilt every round).
+- **Defend tip:** round 2 Action says "Guard the bombs. Take down the attacker to win the round faster".
+
+Checked in a Studio training run: Prep shows "Find the bombs" with no keys and an edge arrow toward the site (68 m); Action shows "Break in", an arrow to the nearest boarded doorway (40 m), LMB after 8 s, and the 2:00 timer. Not checked: round 2 by hand, a real phone.

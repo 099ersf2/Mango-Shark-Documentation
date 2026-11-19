@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-19: Training: quicker, less told, guide arrows
+
+- Shorter training timers: briefing 5 s, prep 30 / 40 s, attack and defend 2 minutes, results 5 and 10 s.
+- The coach names only the goal; keys and glowing buttons come only if the player is stuck (6 to 15 s).
+- Arrows lead the way: over the target with its distance, or at the screen's edge when it is off screen (the site, the nearest boarded door, the bombs, open doorways, the bot).
+- Defending: "Take down the attacker to win the round faster".
+
+Details in TUTORIAL.md. Not published.
+
 ## 2026-11-18: Training coach
 
 - Recruit Training walks the player through each step: one short line in the middle, the exact keys as chips (gold HOLD for held keys), the real buttons glowing on a phone, the bomb chips glowing when the step is about them, a counter, a praise word when done, then the next line. New `Client.Hud.TutorialCoach`, beats in `Content.Games.Tutorial` STEPS[].Coach.
