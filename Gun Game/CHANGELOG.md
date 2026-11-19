@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-18: Phone menus: nav stays, no overlaps
+
+From the owner's phone screenshots after v1016:
+
+- **HOME, SHOP, INVENTORY, GOALS stay visible over menus on a phone,** to switch menus quickly. `Client.Core.Store` no longer hides the nav row (and the settings gear) while a menu is open on a short screen; `Client.Core.UI` keeps `SHORT_NAV_ROOM` (40 px) free above fitted menus there, so they start below it.
+- **Coins box and X:** on a short screen the folded header also hides the menu's own coin box (the nav row shows the coins). In the tab row it sat on the Inventory's search box and crowded the close button.
+- **Game modes screen:** the category BACK button (now "ALL MODES") hung left of the panel and was cut off on a phone; it now sits at the right end of the title row. The screen starts 56 px down (`Main.Modes`), below the nav row. The description box is as wide as the cards; Ranked's text is shorter ("Win to climb from Iron to Elite. Players only, level 5+.").
+
+Checked in Studio with the short-screen layout forced on (the phone emulator could not be driven from here): the nav row sits above the Inventory and the mode screen, no coin box in the menu, X and search apart, ALL MODES visible. Not checked on a real phone.
+
 ## 2026-11-18: Smaller PLAY card, no grey tint, renamed tiers
 
 - **PLAY card (`Client.Core.Matchmaking` `layoutBar`):** about 120 design pixels tall instead of 300. GAME MODE and PLAY now share the bottom row (GAME MODE 42% of the width), TRAINING and SQUAD are 48 high, PLAY WITH PARTY 44. It grows at most 1.15x on big screens (was 1.25x). On the 1852 x 840 Studio window: 391 x 198 pixels with PLAY WITH PARTY (was about 420 x 350). The GAME MODE tile's labels were resized for the narrower tile (`Main.Lobby.ModeButton` Label and Value: width minus 52).
