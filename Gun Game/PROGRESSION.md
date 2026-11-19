@@ -38,6 +38,9 @@ A **public** match: queued from PLAY, bots included. PLAY WITH PARTY (private) a
 
 ## Weekly Goal
 
+The card shows the points and each tier's coin reward on the track (2026-11-18: trimmed; the point values per action are listed here, not on the card).
+
+
 Points: match +20, win +15, daily quest +25, all dailies +40, weekly quest +60, flame day +15. Tiers at 100 / 250 / 450 / 700 / 1000 points pay 300 / 600 / 1,000 / 1,600 / 3,000 coins at once. Resets with the weekly quests (Tuesday 00:00 UTC). Saved: `Progress.Weekly.Week`, `Points`, `Paid`.
 
 ## Quests without the battle pass

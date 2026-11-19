@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-18: Menu title, Store text and Goals text fixes
+
+- **Title over the tabs (every menu):** on a short screen a menu folds its title row into its tab row (`Client.Core.UI` `compactHeader`). Unfolding moved back only the parts still at 60 px or lower, so after a screen grew (a window short while loading, then resized) the tabs stayed on the title row and the title showed over them ("SHOP" over FEATURED, "GOALS" over GOALS). It now saves each part's place when folding and puts it back exactly.
+- **Unreadable Store text:** dark text stayed on dark fills: the OWNED bar on the detail page and the Store cards, and greyed prices (the Robux price beside OWNED). `ItemDetails` (`textOn`) and `Store.priceButton` now set the text color with the fill: Ink on bright fills, light (muted when it can't be bought) on dark ones, mint OWNED on its dark green.
+- **Less text on GOALS:** the flame card shows the days, the tier, one short line ("Done for today", "Play within 5h 12m!", "Play a match to light it"), the bonus with shields, and the days to the next tier (hidden while the flame is out). The Weekly Goal card shows the points and the coin reward of each tier (the points line under each tier and the long points hint are gone).
+
+Checked in a Studio playtest (desktop window): GOALS and SHOP titles sit above their tabs, the owned Obsidian Pack shows a mint OWNED and a readable R$ 149. Not published.
+
 ## 2026-11-18: Retention pass
 
 - **Quests are live** without the battle pass: they pay coins while the pass is off, on a new GOALS menu.
