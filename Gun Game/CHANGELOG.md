@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-11-18: Phone screenshots pass: overlaps, cut-off text, contrast, bomb B, camera scan
+
+From the owner's phone screenshots after v1018:
+
+- **Icons on text** (`Content.Icons`): a Lead/Trail icon was sized to the font's line height (~1.5 em for Titillium) but the spaces kept for it are sized in ems, so the star, timer and check icons covered the first letter ("SCAN THE DEFENDER", "NEW IN", "OWNED"). The icon is now never wider than its spaces (`reservedWidth`).
+- **Training popups** (`Client.Hud.Tutorial`): the "goal done" popup (DEFUSE A BOMB, FORTIFY, HOLD THE LINE) sits at the left under the goal panel instead of the middle, where it covered the bomb bar, the drone's ENEMY SCANNED and the match result's cards. In training's Reveal the player card hides under the briefing (the briefing names the side and class; it covered half the card on a phone).
+- **Reveal cards** (`Client.Core.SiegeSelect`): the line under a player shows only the pick ("MAIN FLOOR"), not "SITE VOTE  ·  MAIN FLOOR", which was cut off.
+- **Drone feed on a phone** (`Client.Core.UI` `layoutFeed`): the keyboard's "HOP" ready label by the boost bar hides (the HOP button says it).
+- **Match result** (`Client.Hud.SiegeHud`): one color per stat everywhere (KILLS red, DEATHS violet, DAMAGE gold, BUILT mint) in the headers (now full words, wider columns: player 34%, 15/17/17/17), every row, the team totals and the MVP cards. The count-up always ends on the real number (a redraw could leave team totals at 0).
+- **PROFILE**: the level card is tighter so "Next level" stays inside it on a phone; MATCHES is never below wins + losses (matches before the career counter); "1 day".
+- **Item page** (`Client.Core.ItemDetails`): fully opaque (the page behind showed through and looked like part of it). Facts without a picture (a skin's Rarity, Weapon, Owned, From) show a caption and the value under it, full width, two lines if needed, instead of the bundle row layout with an empty picture slot and a 50 px value ("From  Afterb").
+- **Class panel on a phone** (`Client.Core.ClassPanel`): compact mode keeps the ability (name and description, moved up under the class name) and hides only stats, rule, kit and status. It showed nothing but the name.
+- **Bomb B blue** on the bomb bar (`SiegeHud`, `Main.SiegeHUD.Bombs.BombB.Letter`), like its markers: red A, blue B.
+- **Camera scan** (`Systems.Cameras.CameraService`): scanned only enemy players, so a camera could never scan a bot (training, bot-filled matches). It now also scans NPC characters with a Team (workspace and one folder down, `workspace.Enemies`), never cameras or drones.
+- **Readable over the world** (new `Client.Core.Readability`, ClientOnly): light text with no panel behind it gets a thin dark outline; Roblox's Background Transparency accessibility setting (`GuiService.PreferredTransparency`) is applied to see-through panels.
+
+Checked in Studio playtests (a 919 x 889 window, the short-screen layout forced on for the menus): PROFILE, the Inventory class panel, the skin page, a 1v1 against a bot (BOT Mako is in workspace.Enemies with a Team and a Head), the colored match result. Not checked: a real phone, the compact class panel at phone height, the training popups and briefing in a training run, a camera scan by hand. Not published.
+
 ## 2026-11-18: Game modes: BACK and EXIT together
 
 - `Main.Modes.Buttons` (bottom left, a horizontal list): **BACK** (to the categories, only inside a category) and **EXIT** (closes the screen; was labelled BACK, which was confusing) side by side. On the category list only EXIT shows, in the same place. `Client.Core.ModeMenu` finds them under `Buttons`.
