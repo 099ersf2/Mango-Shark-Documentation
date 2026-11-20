@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-20: Card entrance in the Party menu
+
+- The Party menu's five member slots come in one after another each time it opens (`CardIntro.Replay`, for rows made once and reused), and the invite list's rows come in too (`CardIntro.Arm`). The Shop already had it (v1051: opening and each section).
+
+Checked in Studio: opening Party staggers the five slots (each starts small and tilted with its sweep); the Shop's crate cards do the same. Not seen moving: Studio's view still draws no frames (tweens paused). Not published.
+
 ## 2026-11-20: Card entrance animation
 
 - New `Client.Core.CardIntro`: when a menu opens or its tab changes, its cards come in one after another (45 ms apart, at most 0.55 s): each pops up from 72% with a 5 degree tilt (Back easing, 0.42 s), Store and Inventory cards also rise 34 px into place, and a light sweep crosses each card once. Used by the Game Modes panel (both pages), the Store (open and each section), the Inventory (open, tabs, filters) and GOALS (quests and leaderboard rows). Not on data redraws (a purchase doesn't replay it). Roblox's Reduced Motion setting turns it off.
