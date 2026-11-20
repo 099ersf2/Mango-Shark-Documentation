@@ -600,3 +600,7 @@ Two things found and fixed in that run: the bar still said MATCH FOUND after the
 - **The crosshair and hitmarker**, the kill feed and the death screen: fonts and corners only. (The ammo box, weapon slots, health and the feeds were redone on 2026-11-17.)
 - **Icons.** There are none: classes show a letter (on an emblem since 2026-11-17), buttons are text. Class art would make the class grid and the player cards much better.
 - Hover and press scaling nudges neighbors by a pixel or two inside list layouts.
+
+## Card entrance (2026-11-20)
+
+`Client.Core.CardIntro.Arm(container)` right before a menu draws its page: the cards added in the next 0.8 s come in staggered (pop from 72% with a slight tilt, Store and Inventory cards rise, one light sweep). Arm it only on opening a menu or changing its tab, never on a data redraw. Reduced Motion turns it off.

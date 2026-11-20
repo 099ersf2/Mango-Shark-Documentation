@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-20: Card entrance animation
+
+- New `Client.Core.CardIntro`: when a menu opens or its tab changes, its cards come in one after another (45 ms apart, at most 0.55 s): each pops up from 72% with a 5 degree tilt (Back easing, 0.42 s), Store and Inventory cards also rise 34 px into place, and a light sweep crosses each card once. Used by the Game Modes panel (both pages), the Store (open and each section), the Inventory (open, tabs, filters) and GOALS (quests and leaderboard rows). Not on data redraws (a purchase doesn't replay it). Roblox's Reduced Motion setting turns it off.
+
+Checked in Studio: every menu arms it, the cards start small and tilted and come in staggered with their sweep, no errors. Not seen moving: Studio's view stopped drawing frames during the test (RenderStepped 0, tweens paused), so the motion itself is unverified. Not published.
+
 ## 2026-11-20: Flame reminder switched on
 
 - The owner made the notification string on the Creator Hub; its id is in `Content.Progress.NOTIFICATIONS.FlameReminder`. With the `NotifyKey` secret in place, live servers send the 8 PM reminder. Not checked: a reminder actually arriving (needs the live game, an opted-in account, and the secret). Not published.
