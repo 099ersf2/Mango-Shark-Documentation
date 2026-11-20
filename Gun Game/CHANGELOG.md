@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-19: Streak crates and skins, PLAY green and stop icon, HOME button
+
+- Flame milestones now give crates and skins (day 3 crate, day 7 skin, day 10 crate, day 14 skin, ...; table in PROGRESSION.md). The Daily Flame tiles use the game's coin, crate and skin icons, gold rings on crate and skin days, and much shorter text.
+- PLAY, PLAY NOW and the PLAY WITH PARTY edge use a new green (#3AD660) instead of the mint accent. While searching, PLAY's round icon is a stop square.
+- HOME in the lobby nav is a button now (it was only a label): it closes any open menu.
+- The earlier Studio test had marked the owner's Daily Flame as seen for today in the real save; reset to 0 so it shows live.
+
+Checked in Studio: the popup with the real save (KEEP YOUR STREAK, "+75 coins", crate on day 3, skin on day 7, "Day 3: CRATE"), all text fits; PLAY green; searching shows CANCEL with the stop square, cancelling brings the play arrow back; HOME clicked with the Store open closed it. Not checked: a crate or skin actually granted on a milestone day (needs a public match on that day). Not published.
+
 ## 2026-11-19: Flame easter egg
 
 - The streak flame can be played with: tap for a puff with a fire whoosh and a haptic click (five quick taps flare); drag a finger or the mouse to split the flame apart and stretch it toward you as it grows bigger, with crackles and haptic ticks; let go and it springs back and flares. Haptics on phones and controllers only. Details in PROGRESSION.md.

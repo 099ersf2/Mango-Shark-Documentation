@@ -49,6 +49,24 @@ A **public** match: queued from PLAY, bots included. PLAY WITH PARTY (private) a
 
 It waits for the training offer, a menu or Celebrate's flame burst to close, then shows once a day: the client sends `Packets.Progress.Seen "Daily"` and the server saves its own day in `Progress.Seen.Daily`. It shrinks to fit a phone (design 680 x 392). Wording is kind on purpose: research on streak screens (Mobbin's study of 859 streak designs, Duolingo's streak posts, reward calendar conventions) found loss threats and countdowns push players away, while a visible next step, a week view and a featured milestone pull them back.
 
+### Flame rewards: crates and skins (2026-11-19)
+
+Every flame day pays its day coins (`STREAK_DAY_COINS`) plus, on milestone days, crates or a skin (`Content.Progress.MILESTONES`, read through `Progress.DayReward(day)`):
+
+| Day | Extra |
+|---|---|
+| 3 | Cosmetic crate |
+| 5 | 500 coins |
+| 7 | a Glacier skin the player doesn't own |
+| 10 | Afterburn crate |
+| 14 | an Afterburn skin (luck 2) |
+| 21 | 2 Glacier crates |
+| 30 | a Glacier skin (luck 3) + 2000 coins |
+| 60 | an Afterburn skin (luck 3) + 5000 coins |
+| 100 | 3 Glacier crates + 10000 coins |
+
+From day 30, every 7th day with no milestone gives a Cosmetic crate. Crates go to the crate inventory; a skin is given at once through `StoreGrants.OpenCrate` (if every skin of that crate is owned, its refund coins instead), in one `Data.Transaction` (`ProgressService` grantItems). The Daily Flame tiles show each day's biggest reward with the game's own icons (`Progress.RewardBadge`: coin, crate, skins); crate and skin days are ringed in gold, and the popup names the next one ("Day 3: CRATE"). The popup text was cut down: KEEP YOUR STREAK / START A NEW STREAK / START YOUR STREAK, "Play a match today: +75 coins".
+
 ### Flame easter egg (2026-11-19)
 
 Every full-size flame (`Client.Core.FlameFx`: the Daily Flame popup, the flame burst, the GOALS card; not the small nav chip) can be played with:
