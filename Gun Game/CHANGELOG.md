@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-20: Card entrance on the Inventory's Classes tab
+
+- The Inventory opens on CLASSES, whose class tiles live in their own panel (`Inventory.ClassView.Cards`), so v1051's entrance (armed on the Skins and Crates page) missed them. The tiles are armed too now: on opening, on tab changes and on filters, the 19 class tiles come in one after another.
+
+Checked in Studio: opening the Inventory staggers the class tiles (small with their sweep, in order). Not seen moving (Studio draws no frames). Not published.
+
 ## 2026-11-20: Card entrance in the Party menu
 
 - The Party menu's five member slots come in one after another each time it opens (`CardIntro.Replay`, for rows made once and reused), and the invite list's rows come in too (`CardIntro.Arm`). The Shop already had it (v1051: opening and each section).
