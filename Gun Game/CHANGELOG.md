@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-20: Flame on the player's clock, 8 PM to 12 AM
+
+- The daily flame runs on each player's own time: a window opens at 8 PM and closes at 12 AM; one match in it keeps the streak, a missed window resets it (shields still cover one). The device sends its time zone; the server checks it and lets it change at most once a week. Popup, GOALS card and reminders follow the window. Details in PROGRESSION.md.
+
+Checked in Studio: the rule at 8:00 PM, 11:59 PM, 12:00 AM, a day later, with and without a shield (all as specified); the owner's save got Tz -480 and shows "Done. Next at 8 PM" with no popup in the morning; with the save moved to 9 PM the popup showed "Play before 12 AM (3h 0m left)" and today's tile on Friday. The save was put back (Tz -480, Day 20776, Seen.Daily 0). Not checked: a real match growing the flame inside a window. Not published.
+
 ## 2026-11-19: Gold win-streak flame, Training in Game Modes, streak rewards view
 
 - **Win streak = gold flame:** the tag above a player's head (StatsService's StreakTag, from 2 wins in a row) now shows a small live gold flame (`Client.Hud.StreakTags`, FlameFx with `Content.Progress.WIN_FLAME`) instead of the flat image, for every player's tag; the lobby leaderboard's STREAK column shows the same gold flame with the count.

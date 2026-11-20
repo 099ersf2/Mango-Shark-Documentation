@@ -49,6 +49,16 @@ A **public** match: queued from PLAY, bots included. PLAY WITH PARTY (private) a
 
 It waits for the training offer, a menu or Celebrate's flame burst to close, then shows once a day: the client sends `Packets.Progress.Seen "Daily"` and the server saves its own day in `Progress.Seen.Daily`. It shrinks to fit a phone (design 680 x 392). Wording is kind on purpose: research on streak screens (Mobbin's study of 859 streak designs, Duolingo's streak posts, reward calendar conventions) found loss threats and countdowns push players away, while a visible next step, a week view and a featured milestone pull them back.
 
+### The flame window: 8 PM to 12 AM, the player's own clock (2026-11-20)
+
+The owner's rule: the flame runs on each player's time. Every evening a window opens at **8 PM** their time and closes at **12 AM**. One public match inside it grows the flame. A window that closes without one puts the flame out, unless a Shield covers it. Matches outside the window don't count for the flame (they still pay everything else).
+
+- `Content.Progress.Window(now, tz)`: the window's number (the one that opened most recently; `Streak.Day` saves it), whether it's open, and seconds until it closes or the next one opens. `WINDOW_OPEN` 20:00, `WINDOW_LENGTH` 4 h.
+- `FlameState(count, day, shields, now, tz)` / `FlameOf(streak, now)`: Lit (played this window), Risk (window open, not played), Wait (alive, between windows), Out.
+- The player's clock: the client sends its UTC offset (`Progress.DeviceOffset`, rounded to 15 min) with `Packets.Progress.Zone`; the server checks it (-12 h to +14 h, multiple of 15) and saves `Streak.Tz`; it can change at most once in `TZ_CHANGE_DAYS` (7) days (`Streak.TzSet`), so a player can't hop zones to reopen a window.
+- The Daily Flame popup shows once per window, only while it's open ("Play before 12 AM (3h 0m left)"); STREAK REWARDS still opens it any time. The GOALS flame card says "Done. Next at 8 PM", "Play before 12 AM: 2h 5m left", "Window opens in 6h 3m". The flame reminder notification is booked for the player's next 8 PM.
+- Saves from before (UTC day numbers in `Streak.Day`) carry over: the numbers line up closely enough that a flame lit yesterday stays lit until tonight's window.
+
 ### Flame rewards: crates and skins (2026-11-19)
 
 Every flame day pays its day coins (`STREAK_DAY_COINS`) plus, on milestone days, crates or a skin (`Content.Progress.MILESTONES`, read through `Progress.DayReward(day)`):
