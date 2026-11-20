@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-19: Daily Flame tiles drawn like the game's items
+
+- The owner: the daily rewards should use the icons already in the game and show what the player can get. Each day tile now draws its reward the way the Store and Inventory do: coins as the wallet's gold coin picture, a crate as the Inventory's crate card (its rarity's colors, the crate icon), a skin as the 3D gun of that crate's rarest gun skin (ItemDetails.GunPreview; knives skipped, they read as a line at that size), e.g. the Glacier LMG on day 7.
+- Studio tests opening the popup marked the owner's real save as seen for today (ScribeNoSave didn't stop that); reset to 0 again.
+
+Checked in Studio with a screenshot: coin tiles, the day 3 crate card, the day 7 Glacier LMG. Not published.
+
 ## 2026-11-19: Streak crates and skins, PLAY green and stop icon, HOME button
 
 - Flame milestones now give crates and skins (day 3 crate, day 7 skin, day 10 crate, day 14 skin, ...; table in PROGRESSION.md). The Daily Flame tiles use the game's coin, crate and skin icons, gold rings on crate and skin days, and much shorter text.
