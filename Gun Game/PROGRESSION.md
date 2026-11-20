@@ -130,13 +130,11 @@ THIS WEEK (weekly points, a store per week), FLAME (days now), LEVEL (total XP),
 - **Notifications opt-in:** after a flame burst from day 2, Roblox's opt-in (`ExperienceNotificationService:PromptOptIn`), at most once a week from the game (Roblox itself limits it to once per 30 days and 13+).
 - **Flame reminders:** when the flame grows, a reminder is booked for 16:00 UTC the next day (MemoryStore SortedMap `FlameReminders_v1`). Growing it again re-books it, so it only reaches players who haven't played that day. Lobby servers send the due ones once a minute (claimed so only one server sends each).
 
-### To switch reminders on (Creator Hub, by the owner)
+### Reminders (set up 2026-11-20)
 
-1. Creator Hub > the experience > Engagement > Notifications: create a notification string, for example `Your {count}-day flame goes out at midnight UTC. Keep it burning!` Put its id in `Content.Progress.NOTIFICATIONS.FlameReminder`.
-2. Create an Open Cloud API key with the `user.user-notification:write` permission for this experience, and add it as an experience secret named `NotifyKey` (Creator Hub > the experience > Secrets).
-3. HTTP requests are already on (`HttpService.HttpEnabled`).
-
-Until then booking runs and nothing is sent.
+- Notification string `dfcd7e84-4355-974b-aefb-2b16902a6631`: "Your {count}-day flame window is open! Play a match before midnight." (in `Content.Progress.NOTIFICATIONS.FlameReminder`).
+- Open Cloud API key with `user-notification` write for this experience, IPs `0.0.0.0/0`, stored as the experience secret `NotifyKey` (domain `apis.roblox.com`). The key itself is never written anywhere else.
+- HTTP requests are on. The reminder goes out when the player's next 8 PM window opens (`NotifyService`), only to players 13+ who opted in, at most one a day. It never sends from Studio (secrets work only in live servers and Team Test).
 
 ### To switch badges on
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-20: Flame reminder switched on
+
+- The owner made the notification string on the Creator Hub; its id is in `Content.Progress.NOTIFICATIONS.FlameReminder`. With the `NotifyKey` secret in place, live servers send the 8 PM reminder. Not checked: a reminder actually arriving (needs the live game, an opted-in account, and the secret). Not published.
+
 ## 2026-11-20: Flame on the player's clock, 8 PM to 12 AM
 
 - The daily flame runs on each player's own time: a window opens at 8 PM and closes at 12 AM; one match in it keeps the streak, a missed window resets it (shields still cover one). The device sends its time zone; the server checks it and lets it change at most once a week. Popup, GOALS card and reminders follow the window. Details in PROGRESSION.md.
