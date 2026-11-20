@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-19: Gold win-streak flame, Training in Game Modes, streak rewards view
+
+- **Win streak = gold flame:** the tag above a player's head (StatsService's StreakTag, from 2 wins in a row) now shows a small live gold flame (`Client.Hud.StreakTags`, FlameFx with `Content.Progress.WIN_FLAME`) instead of the flat image, for every player's tag; the lobby leaderboard's STREAK column shows the same gold flame with the count.
+- **TRAINING is a card in the Game Modes panel** (last on the first page: 1V1 VS BOT, FREE CRATE / OPEN CRATE ribbon until earned and opened). The lobby bar's TRAINING tile is gone (SQUAD takes the row).
+- **The training invite** shows only to a player who never finished or skipped it and has played no match of any mode (Career.Matches + Wins + Losses = 0).
+- **STREAK REWARDS** button on the GOALS flame card opens the Daily Flame panel any time to see the week's rewards (`DailyFlame.View`: does not use up the once-a-day popup; on a day already played it says STREAK REWARDS, "Done today. Tomorrow: +...", and the next tile says NEXT).
+
+Checked in Studio with screenshots: the Game Modes page with TRAINING; a gold flame on a real streak tag (copied to the screen, captures don't show billboards); STREAK REWARDS from GOALS opens the panel and leaves Seen.Daily at 0. The owner's Seen.Daily was found marked by a test again and reset to 0. Not checked: the leaderboard column on screen, the invite with a brand-new account. Not published.
+
 ## 2026-11-19: Daily Flame tiles drawn like the game's items
 
 - The owner: the daily rewards should use the icons already in the game and show what the player can get. Each day tile now draws its reward the way the Store and Inventory do: coins as the wallet's gold coin picture, a crate as the Inventory's crate card (its rarity's colors, the crate icon), a skin as the 3D gun of that crate's rarest gun skin (ItemDetails.GunPreview; knives skipped, they read as a line at that size), e.g. the Glacier LMG on day 7.
