@@ -4,7 +4,7 @@
 
 - The owner: PumpShotgun, Revolver, SMG, SawedOffShotgun, SiegeCarbine, SiegePistol, SiegeSMG, SiegeShotgun and Tactical_Bullpup_1 were one full mesh each, hard to animate. Each is now made of the separate pieces its mesh was built from (177 parts in all), placed exactly where they were and welded to the Handle, with named key parts (Magazine, Barrel, Body, Grip, Trigger, Pump, Slide, Cylinder...). Nine Model assets uploaded to the group. Originals backed up in `ServerStorage.GunModelsBackup_20261122`. Details in ADDING_GUNS.md.
 
-Checked in Studio: all nine side by side with their originals (identical shapes; the Magazine is the real magazine on the four guns that have one); skins apply on the new models with their details (PumpShotgun, Revolver, SawedOff, SiegeCarbine, SMG). Not checked: a reload or inspect in a playtest moving the new Magazine; first-person views. Not saved or published.
+Checked in Studio: all nine side by side with their originals (identical shapes; the Magazine is the real magazine on the four guns that have one); skins apply on the new models with their details (PumpShotgun, Revolver, SawedOff, SiegeCarbine, SMG). Reload checked in a playtest on the SiegeCarbine (first person): its Magazine hides and the left hand carries a copy out and back, and ammo refills. The SMG, SiegeSMG and Bullpup have a visible Magazine the same way; the shotguns, Revolver and SiegePistol have none and keep the hand-only reload. Not checked: inspect, and the other guns in play. Not saved or published.
 
 ## 2026-11-20: Card entrance on the Inventory's Classes tab
 
