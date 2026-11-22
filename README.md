@@ -1,12 +1,22 @@
 # Gun Game documentation
 
-Browse the [documentation index](Gun%20Game/index.md) or read the [API reference](Gun%20Game/API.md) directly on GitHub.
+## Read the docs
 
-The documentation site uses MkDocs Material. To preview it locally:
+Start with the [documentation index](Gun%20Game/index.md), or open the [API reference](Gun%20Game/API.md).
+
+**Website status:** The docs site is not published yet. Until GitHub Pages is enabled, use the Markdown guides linked from the index above.
+
+## For maintainers
+
+### Preview locally
+
+Install the docs dependencies, then run the local preview server:
 
 ```sh
 python -m pip install -r requirements-docs.txt
 mkdocs serve
 ```
 
-The site is configured for GitHub Pages at <https://099ersf2.github.io/Mango-Shark-Documentation/>. To publish it, a repository maintainer must select **Settings → Pages → GitHub Actions** and set the repository variable `DOCS_PAGES_ENABLED` to `true`. Until then, the documentation remains available as Markdown in the [source index](Gun%20Game/index.md).
+### Publish the site
+
+Before merging docs-site changes, enable **Settings → Pages → Build and deployment → Source: GitHub Actions**. The workflow then publishes the site on pushes to `main` at `https://099ersf2.github.io/Mango-Shark-Documentation/`.
