@@ -1,16 +1,16 @@
-[Documentation home](../README.md) / Gun Game
+[Documentation home](index.md) / Gun Game
 
 # CLAUDE.md: Gun Game (Roblox place "FPS")
 
 Context for Claude working on this project. Read it before doing anything. For the full coding rules, read
 [AI_CODING_GUIDE.md](AI_CODING_GUIDE.md); for the system you touch, use its guide linked from the
-[documentation home](../README.md).
+[documentation home](index.md).
 
 ## The project
 
 - **What it is:** a Roblox FPS game. The place is "FPS": placeId `80699390327837`, universe `10775243847`.
 - **How you work on it:** in Roblox Studio, through the Studio tools (execute Luau, multi-edit, playtests, screenshots). There is no local source tree; the code lives in the place.
-- **Docs:** maintained in the `Gun Game/` folder of `099ersf2/Mango-Shark-Documentation`, with the repository [README](../README.md) as the home page.
+- **Docs:** maintained in the `Gun Game/` folder of `099ersf2/Mango-Shark-Documentation`, with [index.md](index.md) as the documentation home page.
 - **Other contributors:** other developers and other AI agents work on the place and on the docs repo at the same time. Keep what they built, and merge with their doc changes rather than overwriting them.
 
 ## Hard rules
@@ -29,6 +29,7 @@ Context for Claude working on this project. Read it before doing anything. For t
 9. **Publishing:** never publish without the user asking. To publish, run `publish-studio.ps1` (it sends Alt+P to Studio).
 10. **Docs, every change:**
     - write the system doc, plus `API.md`, `CHANGELOG.md` and `NEXT_STEPS.md`;
+    - add new guides to `index.md` and `mkdocs.yml`, then run `mkdocs build --strict`;
     - push them to the docs repo: `git pull`, diff against the repo copy, merge, then copy and commit;
     - check `git show --stat HEAD` for deletions you didn't mean.
 11. **Privacy:** treat the user's personal details as private.

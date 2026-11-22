@@ -1,0 +1,108 @@
+site_name: Gun Game Documentation
+site_description: Guides and API reference for the Gun Game Roblox FPS.
+site_url: https://099ersf2.github.io/Mango-Shark-Documentation/
+repo_url: https://github.com/099ersf2/Mango-Shark-Documentation
+repo_name: 099ersf2/Mango-Shark-Documentation
+edit_uri: edit/main/Gun%20Game/
+
+docs_dir: Gun Game
+site_dir: site
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: light-blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search:
+      lang: en
+
+nav:
+  - Home: index.md
+  - Get started:
+      - AI coding guide: AI_CODING_GUIDE.md
+      - Claude project context: CLAUDE.md
+      - Next steps: NEXT_STEPS.md
+  - Game:
+      - Siege: SIEGE.md
+      - Matchmaking and parties: MATCHMAKING.md
+      - Recruit Training: TUTORIAL.md
+      - Lobby: LOBBY.md
+      - Clear House: CLEAR_HOUSE.md
+      - UI: UI.md
+      - Movement and camera: MOVEMENT.md
+      - Music: MUSIC.md
+      - Death screen and spectating: DEATH_SCREEN.md
+      - Kill feed: KILL_FEED.md
+  - Combat systems:
+      - Guns:
+          - Gun system: GUN_SYSTEM.md
+          - Adding guns: ADDING_GUNS.md
+          - Third-person gun animation: THIRD_PERSON_GUNS.md
+          - Gun animation range: GUN_SHOWCASE.md
+          - Aim assist: AIM_ASSIST.md
+      - Siege classes: CLASSES.md
+      - Scout drones: DRONES.md
+      - Breakables: BREAKABLES.md
+      - Soft walls: SOFTWALLS.md
+      - Consumables: CONSUMABLES.md
+      - NPCs:
+          - Adding NPCs: ADDING_NPCS.md
+          - Siege bots: SIEGE_BOTS.md
+  - Progression and economy:
+      - Progression and retention: PROGRESSION.md
+      - Battle pass and quests: BATTLE_PASS.md
+      - Store, currencies, crates, and stats: STORE.md
+      - Weapon skins: SKINS.md
+      - Analytics: ANALYTICS.md
+  - Reference:
+      - API reference: API.md
+      - Design decisions: DECISIONS.md
+      - Performance: PERFORMANCE.md
+      - Security: SECURITY.md
+      - Changelog: CHANGELOG.md
+      - Historical:
+          - Matches, modes, and teams: MATCH.md
+          - Team deathmatch rounds: ROUND_SYSTEM.md

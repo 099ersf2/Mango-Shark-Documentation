@@ -1,10 +1,10 @@
-[Documentation home](../README.md) / Gun Game
+[Documentation home](index.md) / Gun Game
 
 # AI coding guide: Gun Game (FPS place)
 
 Give this file to any AI agent before it writes code for the Roblox place **"FPS"** (Mango Shark Studios, placeId `80699390327837`, universe `10775243847`). It explains how the game is built and how new code must be written. Follow it exactly. When this file and your habits disagree, this file wins.
 
-Use the [documentation home](../README.md) to find system guides. In particular, see [API.md](API.md) for the public interface, [SIEGE.md](SIEGE.md) for the current game mode, [MATCHMAKING.md](MATCHMAKING.md) for queues and parties, and [DECISIONS.md](DECISIONS.md) for recorded design answers.
+Use the [documentation home](index.md) to find system guides. In particular, see [API.md](API.md) for the public interface, [SIEGE.md](SIEGE.md) for the current game mode, [MATCHMAKING.md](MATCHMAKING.md) for queues and parties, and [DECISIONS.md](DECISIONS.md) for recorded design answers.
 
 *Updated 2026-11-11.* Read the doc for the system you touch before changing it.
 
@@ -338,7 +338,7 @@ Grenades and smoke bombs ([CONSUMABLES.md](CONSUMABLES.md)) are the reference ex
    - Plays the local whoosh at once and updates the HUD from the attributes.
 5. **UI built in Studio:** a HUD frame in `Main` (Scale), a button in `Main.Mobile` (copied from a sibling), and a picker in the Loadout menu.
 6. **Effects** in `Content.Effects.Registry`, models in `Assets.Models.Consumables`, particles in `Assets.Vfx`.
-7. **Docs:** a new system guide in `Gun Game/`, plus updates to [API.md](API.md), the controls table in [ADDING_GUNS.md](ADDING_GUNS.md), the [documentation home](../README.md), and [CHANGELOG.md](CHANGELOG.md).
+7. **Docs:** a new system guide in `Gun Game/`, plus updates to [API.md](API.md), the controls table in [ADDING_GUNS.md](ADDING_GUNS.md), the [documentation home](index.md), and [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -394,7 +394,7 @@ Grenades and smoke bombs ([CONSUMABLES.md](CONSUMABLES.md)) are the reference ex
 
 ## 12. Documentation (part of every change)
 
-The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-Shark-Documentation`; the repository [README](../README.md) is the home page.
+The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-Shark-Documentation`; [index.md](index.md) is their home page.
 
 - **New system:** write `<SYSTEM>.md` in `Gun Game/` with these sections:
   - What it is and how it plays
@@ -406,10 +406,11 @@ The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-
   - Testing (what was checked, with numbers, and what wasn't)
   - Limits
 
-  Add a link for it to the [documentation home](../README.md).
+  Add a link for it to the [documentation home](index.md) and a navigation entry in `mkdocs.yml`.
 - **`API.md`:** add every new public function, packet, extension point, data field, attribute, tag and collision group.
 - **`CHANGELOG.md`:** add an entry at the top, `## YYYY-MM-DD: Title`, with **Added** / **Changed** / **Fixed** bullets.
 - **`NEXT_STEPS.md`:** add checklist items for anything not yet verified (phone, gamepad, multiplayer).
+- **Before submitting doc changes:** run `mkdocs build --strict` to check the site build and navigation.
 - **Writing style:** plain, short sentences. Tables for reference. Say what you checked and what you didn't.
 - **The docs repo is shared with other agents.** Before copying your files over `Gun Game/`, `git pull`, and diff each file against yours, so you merge their additions instead of erasing them. After committing, check `git show --stat HEAD` for deletions you didn't mean.
 
