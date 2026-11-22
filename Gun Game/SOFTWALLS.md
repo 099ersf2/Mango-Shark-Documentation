@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Soft walls
 
 A soft wall is a part that weapons cut real holes through. Bullets pass through it with less damage and can still hit whatever is behind. The holes are physical: players see through them, shoot through them, and walk through them once they are big enough. Holes that cut a piece loose from everything holding it up (a ring of shots, say) make that piece fall out of the wall.

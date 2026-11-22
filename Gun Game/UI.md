@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # UI
 
 How the game's UI is laid out, how it should look, and how it feels. Revamped 2026-11-12 as the MVP pass: the lobby, the party, the Siege screens, one look for the menus, sound and motion on every button, and touch sizes. **Nobody has looked at it yet**: Studio was not rendering frames during the work, so everything was laid out and checked by measurement. See [Tested](#tested-2026-11-12).

@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Gun animation range
 
 > **Stored away (2026-11-18):** the range had been parked in `Teams`, where it replicated to every player (20,807 instances) and its 72 rig scripts ran on every client while nothing used it. It now sits unchanged in `ServerStorage.GunShowcase`. To use it, move it into Workspace (named `GunShowcase`) before starting a playtest. See PERFORMANCE.md.

@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Weapon skins and the skin shop
 
 A skin restyles one gun's model: new colors and materials, a few resized parts, and a few small detail parts welded on. Stats never change. Players get skins from a Robux **skin crate** in the lobby shop and equip them there.

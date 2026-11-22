@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Matches, modes and teams
 
 > **Since 2026-11-12 the only mode is Siege**, and it does not run the way this page describes. Read [SIEGE.md](SIEGE.md) and [MATCHMAKING.md](MATCHMAKING.md) first.

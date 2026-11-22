@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Gun system architecture
 
 A short map of how guns work. For adding guns and abilities, see [ADDING_GUNS.md](ADDING_GUNS.md); for NPCs, [ADDING_NPCS.md](ADDING_NPCS.md).

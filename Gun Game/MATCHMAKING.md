@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Matchmaking and parties
 
 Players queue for Siege from a lobby server, alone or as a party of up to five. When a match forms, everyone in it is teleported to one reserved server that hosts that match and nothing else. When the match ends they go back to lobby servers, each party together.

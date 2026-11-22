@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Consumables (grenade and smoke bomb)
 
 Every player carries one kind of consumable: a **frag grenade** or a **smoke bomb**. They get **2 per life**, and the count refills when they respawn. They pick the kind in the Loadout menu, and the pick is saved.

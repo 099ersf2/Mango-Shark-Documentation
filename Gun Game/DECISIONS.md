@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Design decisions
 
 The answers to open design questions, so the code and the docs follow the same rules. Newest first. Each entry says what was decided and where it lives in the place.

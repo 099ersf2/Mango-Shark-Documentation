@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Siege
 
 Siege is the game's only mode since 2026-11-11. Two teams of up to five. The **defenders'** two bombs are already in place at one site; the **attackers** must plant a defuser on both. The defenders only have to keep them away from the bombs until the clock runs out. Nobody plants a bomb: only defusers are planted. One match is one round, and everyone has one life.
@@ -188,7 +190,7 @@ See [DRONES.md](DRONES.md) for the drone itself.
 - In Prep the attacker is held in the drone's view. In Action they go in and out with the Drone key (5), DPad Left, or the touch DRONE button.
 - A destroyed drone is gone for the match: the NO SIGNAL screen shows at once, and again for 2.5 s whenever the attacker tries the drone later.
 - **Scan** (Fire in the drone, every 5 s): marks where the defender in the crosshair stands, for all attackers, for 30 s. The mark does not follow the defender; a new scan of the same defender replaces it. The first scan of a defender also reveals their class to the attackers for the rest of the match.
-- If no player or NPC is selected, a drone scan can instead mark a live enemy security camera for the team. See [DRONES.md](DRONES.md#camera-scans-and-feed-ui).
+- If no player or NPC is selected, a drone scan can instead mark a live enemy security camera for the team. See [DRONES.md](DRONES.md#camera-scans-and-feed-ui-2026-11-12).
 - **Site located**: the first time any attacker's drone is inside any part of `Sites/<site>`, the attackers are told "Site located" and get a red A and a blue B mark on the bombs. Once per match.
 - A dead attacker's drone is locked: the server takes its physics back and refuses every view and scan.
 

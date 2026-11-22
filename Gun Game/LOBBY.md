@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Lobby
 
 Players start each session in the lobby, a separate area with no guns, where they can open the skin shop. A portal takes them to the arena, and a return portal in the arena brings them back.

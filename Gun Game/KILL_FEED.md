@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Kill feed
 
 The top-right list of recent kills: `Killer  [Item]  Victim`, newest on top. It shows player and NPC kills by any weapon that passes an attacker to `Combat.ApplyHit`.

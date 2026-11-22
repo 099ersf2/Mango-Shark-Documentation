@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Adding NPCs
 
 NPCs pick up the same guns as players and fight like them. Every NPC shot goes through `GunService.FireAs`, so damage, headshots, abilities, effects and sounds are the players' own, and a new gun works on NPCs with no extra code. Their decisions come from a behavior tree built with **BehaviorTreeCreator** (BTrees V5), which you can open and edit in the **BTrees Editor** plugin.

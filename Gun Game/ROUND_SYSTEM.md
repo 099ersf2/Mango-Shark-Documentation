@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Team deathmatch rounds (replaced)
 
 The fixed Red vs Blue round system (`Systems.Round.RoundService`, `Content.Round`, `Client.Hud.RoundHud`) was replaced on 2026-11-11 by the modular match system: see [MATCH.md](MATCH.md).

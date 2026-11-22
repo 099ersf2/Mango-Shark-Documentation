@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Store, currencies, crates and stats
 
 *Added 2026-11-13.*

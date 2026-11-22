@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Gun Game API
 
 Every function, hook, packet, command, attribute, tag and data field you can use to control the FPS place, in one page. Start with **Recipes** for common jobs, then look a module up by name. Signatures are copied from the code (2026-11-10). The other docs explain how each system works; this page is the reference.

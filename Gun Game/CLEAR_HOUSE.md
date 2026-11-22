@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Clear House (Arcade)
 
 Added 2026-11-14. Up to five players against NPC guards in a house (Mansion or Bank, voted). Every door and window is boarded up. The players breach in and clear every room. No bombs, no defenders' cameras, one round.

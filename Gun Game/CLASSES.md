@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Classes
 
 In Siege every player picks a class: a default loadout, the guns they may swap to, and one ability. A class can be held by one player per team, so each team has five. Built 2026-11-11. See [SIEGE.md](SIEGE.md) for the mode.

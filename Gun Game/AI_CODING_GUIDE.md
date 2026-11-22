@@ -1,8 +1,10 @@
+[Documentation home](../README.md) / Gun Game
+
 # AI coding guide: Gun Game (FPS place)
 
 Give this file to any AI agent before it writes code for the Roblox place **"FPS"** (Mango Shark Studios, placeId `80699390327837`, universe `10775243847`). It explains how the game is built and how new code must be written. Follow it exactly. When this file and your habits disagree, this file wins.
 
-The other docs go deeper on each system: `API.md` (every function, packet, hook, attribute), `ADDING_GUNS.md`, `GUN_SYSTEM.md`, `THIRD_PERSON_GUNS.md`, `GUN_SHOWCASE.md`, `MOVEMENT.md`, `ADDING_NPCS.md` (including Guard mode), `SIEGE.md` (the game mode), `MATCHMAKING.md` (queue, parties, reserved servers), `CLASSES.md` (Siege classes and abilities), `MATCH.md` (MatchService and teams), `DRONES.md`, `DEATH_SCREEN.md`, `CONSUMABLES.md`, `BREAKABLES.md`, `SOFTWALLS.md`, `SKINS.md`, `LOBBY.md`, `KILL_FEED.md`, `AIM_ASSIST.md`, `DECISIONS.md` (design answers already given).
+Use the [documentation home](../README.md) to find system guides. In particular, see [API.md](API.md) for the public interface, [SIEGE.md](SIEGE.md) for the current game mode, [MATCHMAKING.md](MATCHMAKING.md) for queues and parties, and [DECISIONS.md](DECISIONS.md) for recorded design answers.
 
 *Updated 2026-11-11.* Read the doc for the system you touch before changing it.
 
@@ -281,7 +283,7 @@ This is how features change each other without editing each other's code.
 
 ### Products
 
-- Add the id to `Shared.ProductIds`, and handle the purchase through the existing Scribe receipt handling (see `docs/SKINS.md`).
+- Add the id to `Shared.ProductIds`, and handle the purchase through the existing Scribe receipt handling (see [SKINS.md](SKINS.md)).
 - `ProductIds.IsSet(id)` is false for the `0` placeholder, so the feature must hide or disable itself until a real id is set.
 
 ---
@@ -315,7 +317,7 @@ This is how features change each other without editing each other's code.
 - **Workspace folders made at runtime:** `Enemies`, `Drones`, `Thrown`. The gun range lives in `workspace.GunShowcase`.
 - **Lobby:** the `InLobby` player attribute is true in the lobby. Only a player's first spawn of a session is in the lobby. Weapons, consumables and abilities must be refused there.
 - **Teams:**
-  - Teams are our own system (`Systems.Match.TeamService`, `Content.Match.Teams`), not Roblox `Teams`: a player's team is the `Team` attribute. Code that targets enemies must skip players with the same `Team` attribute (see `Client.Guns.AimAssist`), and use `TeamService.AreAllies` on the server. Matches and modes: `docs/MATCH.md`.
+  - Teams are our own system (`Systems.Match.TeamService`, `Content.Match.Teams`), not Roblox `Teams`: a player's team is the `Team` attribute. Code that targets enemies must skip players with the same `Team` attribute (see `Client.Guns.AimAssist`), and use `TeamService.AreAllies` on the server. The [match-system guide](MATCH.md) is historical; use [SIEGE.md](SIEGE.md) for the current flow.
   - Friendly-fire rules go through `Combat.PreventFriendlyFire` (or a `…DamageMultiplier` point), not hardcoded checks.
 - **Match flow:** `Systems.Match.MatchService` runs matches. A new mode is one ModuleScript in `Content.Match.Modes`. Systems that should reset between matches listen to `Match.Started` (drones do).
 
@@ -323,7 +325,7 @@ This is how features change each other without editing each other's code.
 
 ## 7. A typical feature, end to end
 
-Grenades and smoke bombs (`docs/CONSUMABLES.md`) are the reference example. Copy this shape:
+Grenades and smoke bombs ([CONSUMABLES.md](CONSUMABLES.md)) are the reference example. Copy this shape:
 
 1. **`Content.Consumables.Consumables`:** the definitions and every number, an exported type, `Get(id)`, `List`, and constants such as `PER_LIFE`. Tagged `ScribeFragment` to save the player's pick.
 2. **`Shared.Packets`:** a `Consumable` group with `Throw` (client → server: server time, look direction) and `Pick` (client → server: id).
@@ -336,7 +338,7 @@ Grenades and smoke bombs (`docs/CONSUMABLES.md`) are the reference example. Copy
    - Plays the local whoosh at once and updates the HUD from the attributes.
 5. **UI built in Studio:** a HUD frame in `Main` (Scale), a button in `Main.Mobile` (copied from a sibling), and a picker in the Loadout menu.
 6. **Effects** in `Content.Effects.Registry`, models in `Assets.Models.Consumables`, particles in `Assets.Vfx`.
-7. **Docs:** a new `docs/CONSUMABLES.md`, plus updates to `API.md`, the controls table in `ADDING_GUNS.md`, `GUN_GAME.md` and `CHANGELOG.md`.
+7. **Docs:** a new system guide in `Gun Game/`, plus updates to [API.md](API.md), the controls table in [ADDING_GUNS.md](ADDING_GUNS.md), the [documentation home](../README.md), and [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -392,9 +394,9 @@ Grenades and smoke bombs (`docs/CONSUMABLES.md`) are the reference example. Copy
 
 ## 12. Documentation (part of every change)
 
-Docs are Markdown in `docs/`, plus `GUN_GAME.md` (home page) and `CHANGELOG.md`. They're pushed to the GitHub repo `099ersf2/Mango-Shark-Documentation` (folder `Gun Game/`).
+The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-Shark-Documentation`; the repository [README](../README.md) is the home page.
 
-- **New system:** write `docs/<SYSTEM>.md` with these sections:
+- **New system:** write `<SYSTEM>.md` in `Gun Game/` with these sections:
   - What it is and how it plays
   - Controls
   - Where things are
@@ -404,7 +406,7 @@ Docs are Markdown in `docs/`, plus `GUN_GAME.md` (home page) and `CHANGELOG.md`.
   - Testing (what was checked, with numbers, and what wasn't)
   - Limits
 
-  Add a row for it in `GUN_GAME.md`.
+  Add a link for it to the [documentation home](../README.md).
 - **`API.md`:** add every new public function, packet, extension point, data field, attribute, tag and collision group.
 - **`CHANGELOG.md`:** add an entry at the top, `## YYYY-MM-DD: Title`, with **Added** / **Changed** / **Fixed** bullets.
 - **`NEXT_STEPS.md`:** add checklist items for anything not yet verified (phone, gamepad, multiplayer).

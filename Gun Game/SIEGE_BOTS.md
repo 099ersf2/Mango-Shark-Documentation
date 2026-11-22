@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Siege bots
 
 Added 2026-11-16. Bots play Siege beside and against players: they pick classes their teammates aren't using, pick spawns or vote a site, defend the two bombs, and break in to plant defusers. For now only **admins** (`Modules.Classes.Admins`) can add them.
