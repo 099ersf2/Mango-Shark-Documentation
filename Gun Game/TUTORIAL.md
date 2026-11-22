@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Recruit Training (the tutorial)
 
 Added 2026-11-17. A two-round 1v1 against a very easy bot that teaches both sides of Siege: **round 1 the player attacks** (drone, breaking in, planting defusers), **round 2 they defend** (building boards, cameras, holding). Nothing is picked: the class, the site and the spawn are given. The first time a player finishes, they get the **Recruit Crate** (always Rare or better). A player can skip it on first join and start it any time later from the lobby's TRAINING button; the crate waits until they finish once.

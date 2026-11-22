@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Changelog
 
 ## 2026-11-22: One-piece gun meshes split into parts
@@ -1563,7 +1565,7 @@ Not playtested (by request): compile-checked, and the panel measured at phone an
 
 ## 2026-11-12: UI revamp (MVP pass)
 
-See [docs/UI.md](UI.md). Laid out and checked by measurement only: nobody has seen it rendered yet.
+See [UI.md](UI.md). Laid out and checked by measurement only: nobody has seen it rendered yet.
 
 ### Added
 
@@ -1586,7 +1588,7 @@ See [docs/UI.md](UI.md). Laid out and checked by measurement only: nobody has se
 
 ## 2026-11-12: Siege bombs are in place from the prep phase
 
-See [docs/SIEGE.md](SIEGE.md#the-bombs).
+See [SIEGE.md](SIEGE.md#the-bombs).
 
 ### Added
 
@@ -1603,7 +1605,7 @@ See [docs/SIEGE.md](SIEGE.md#the-bombs).
 
 ## 2026-11-12: Siege, global matchmaking, parties and classes
 
-See [docs/SIEGE.md](SIEGE.md), [docs/MATCHMAKING.md](MATCHMAKING.md) and [docs/CLASSES.md](CLASSES.md). Tested in Studio with one player only; nothing cross-server has run live.
+See [SIEGE.md](SIEGE.md), [MATCHMAKING.md](MATCHMAKING.md) and [CLASSES.md](CLASSES.md). Tested in Studio with one player only; nothing cross-server has run live.
 
 ### Added
 
@@ -1634,7 +1636,7 @@ In `ServerStorage.Archive.OldMatchModes`: the Team Deathmatch, Free-for-All and 
 
 ## 2026-11-11: NPC guard mode
 
-See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Guard mode).
+See [ADDING_NPCS.md](ADDING_NPCS.md) (Guard mode).
 
 ### Added
 
@@ -1686,7 +1688,7 @@ Measured on the gun range: every gun's body sits on top of the fist (0.03 studs 
 
 ## 2026-11-11: Third-person guns fixed: no more guns through heads, revolvers fixed
 
-See [docs/THIRD_PERSON_GUNS.md](docs/THIRD_PERSON_GUNS.md).
+See [THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md).
 
 ### Fixed
 
@@ -1706,7 +1708,7 @@ Measured on the gun range, all 72 rigs:
 
 ## 2026-11-11: Gun animation range
 
-See [docs/GUN_SHOWCASE.md](docs/GUN_SHOWCASE.md).
+See [GUN_SHOWCASE.md](GUN_SHOWCASE.md).
 
 ### Added
 
@@ -1731,7 +1733,7 @@ Tested in a playtest:
 
 ## 2026-11-11: Third-person gun animation for every gun
 
-See [docs/THIRD_PERSON_GUNS.md](docs/THIRD_PERSON_GUNS.md).
+See [THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md).
 
 ### Added
 
@@ -1770,7 +1772,7 @@ Checked in a playtest: played on Rig2, the barrel pointed within 0.7 degrees of 
 
 ## 2026-11-11: Death screen and spectating the killer chain
 
-See [docs/DEATH_SCREEN.md](docs/DEATH_SCREEN.md).
+See [DEATH_SCREEN.md](DEATH_SCREEN.md).
 
 ### Added
 
@@ -1786,7 +1788,7 @@ Tested in a playtest: killed by the Soldier NPC, the camera followed it; when th
 
 ## 2026-11-11: Quicker, smoother movement and faster slides
 
-See [docs/MOVEMENT.md](docs/MOVEMENT.md) (Tuning).
+See [MOVEMENT.md](MOVEMENT.md) (Tuning).
 
 ### Changed
 
@@ -1800,7 +1802,7 @@ Measured in a playtest: a full slide lasted 1.1 s, peaked at 37 studs/s and cove
 
 ## 2026-11-11: Siege-style scout drones
 
-See [docs/DRONES.md](docs/DRONES.md).
+See [DRONES.md](DRONES.md).
 
 ### Changed
 
@@ -1827,7 +1829,7 @@ Tested in a Studio playtest: a throw lands and is handed to the client, the feed
 
 ## 2026-11-11: Modular matches and our own teams
 
-See [docs/MATCH.md](docs/MATCH.md).
+See [MATCH.md](MATCH.md).
 
 ### Changed
 
@@ -1846,7 +1848,7 @@ Tested in a Studio playtest with one player: waiting, admin start, team assignme
 
 ## 2026-11-10: Team deathmatch rounds
 
-See [Team deathmatch rounds](ROUND_SYSTEM.md). *Replaced on 2026-11-11 by the modular match system ([docs/MATCH.md](docs/MATCH.md)); Team Deathmatch is now one of its modes.*
+See [Team deathmatch rounds](ROUND_SYSTEM.md). *Replaced on 2026-11-11 by the modular match system ([MATCH.md](MATCH.md)); Team Deathmatch is now one of its modes.*
 
 ### Added
 
@@ -1864,7 +1866,7 @@ See [Team deathmatch rounds](ROUND_SYSTEM.md). *Replaced on 2026-11-11 by the mo
 
 ## 2026-11-10: NPCs board up doors and windows
 
-See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics, Board up).
+See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics, Board up).
 
 ### Added
 
@@ -1888,7 +1890,7 @@ Tested: a Soldier facing the test Rig behind the glass held fire, went round, cu
 
 ## 2026-11-10: NPCs move, hunt and get around
 
-See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
+See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
 
 ### Fixed
 
@@ -1905,7 +1907,7 @@ See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
 
 ## 2026-11-10: NPCs decide to break in
 
-See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
+See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
 
 ### Added
 
@@ -1919,7 +1921,7 @@ See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
 
 ## 2026-11-10: Smarter NPCs
 
-See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
+See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
 
 ### Added
 
@@ -1941,7 +1943,7 @@ See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
 ### Changed
 
 - **Grenades and smoke bombs stay near where they land.** They're heavy and barely bounce, keep half their speed on landing, then roll about 2–4 studs to a stop (`Bounce`, `LandingKeep`, `RollDrag` in `Content.Consumables`). They used to roll away like a light ball.
-- **Grenades remove more of boards and soft walls.** Board damage 80 → 350: a blast 4 studs from a board strips all 6 pieces (it took 2). Soft walls: hole 1.6 → 3.5 studs, reach 6 → 10 studs, up to 6 walls (was 3); a blast 2 studs from a wall removed 9.0 cubic studs of it (2.0 before). Player damage is unchanged. See [docs/CONSUMABLES.md](docs/CONSUMABLES.md).
+- **Grenades remove more of boards and soft walls.** Board damage 80 → 350: a blast 4 studs from a board strips all 6 pieces (it took 2). Soft walls: hole 1.6 → 3.5 studs, reach 6 → 10 studs, up to 6 walls (was 3); a blast 2 studs from a wall removed 9.0 cubic studs of it (2.0 before). Player damage is unchanged. See [CONSUMABLES.md](CONSUMABLES.md).
 
 ## 2026-11-10: SMG sound and a new gun bash
 
@@ -1951,37 +1953,37 @@ See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
 
 ### Changed
 
-- **The gun bash is a long straight jab.** The gun pulls back toward the shoulder, then thrusts about 1.6 studs straight forward (full scale) with a slight cant, holds a beat, and snaps back. It stays on its own side of the screen instead of swinging across the middle. No camera shake. Tune the `BASH_*` constants in `Client.Guns.Viewmodel.Actions`. See [docs/ADDING_GUNS.md](docs/ADDING_GUNS.md).
+- **The gun bash is a long straight jab.** The gun pulls back toward the shoulder, then thrusts about 1.6 studs straight forward (full scale) with a slight cant, holds a beat, and snaps back. It stays on its own side of the screen instead of swinging across the middle. No camera shake. Tune the `BASH_*` constants in `Client.Guns.Viewmodel.Actions`. See [ADDING_GUNS.md](ADDING_GUNS.md).
 
 ## 2026-11-10: Tracers no longer come out of your face
 
 ### Fixed
 
-- **Your own tracers start out at the barrel.** The viewmodel's muzzle sits about 1.2 studs from the eye (on the crosshair when aimed), so full-size tracers started there looked like they came out of your head. They now start on the same screen line but 4 studs out (`TRACER_START_DISTANCE` in `Client.Guns.GunEffects`), or just in front of a closer wall or target. Checked in a playtest: hip and aimed tracers first appear 4.0 studs out, at the barrel's spot on screen. Hits are unchanged (still from the camera). See [docs/ADDING_GUNS.md](docs/ADDING_GUNS.md).
+- **Your own tracers start out at the barrel.** The viewmodel's muzzle sits about 1.2 studs from the eye (on the crosshair when aimed), so full-size tracers started there looked like they came out of your head. They now start on the same screen line but 4 studs out (`TRACER_START_DISTANCE` in `Client.Guns.GunEffects`), or just in front of a closer wall or target. Checked in a playtest: hip and aimed tracers first appear 4.0 studs out, at the barrel's spot on screen. Hits are unchanged (still from the camera). See [ADDING_GUNS.md](ADDING_GUNS.md).
 
 ## 2026-11-10: Stronger head aim assist
 
 ### Changed
 
-- **Aim assist favors the head.** The head now wins about two thirds of the space between head and chest, gets 1.4× friction and 1.6× pull, and the assist sticks to the point it locked last frame so a small wobble doesn't drop it to the chest. Tuning: `HEAD_PREFERENCE`, `STICKY`, `HEAD_FRICTION_BOOST`, `HEAD_PULL_BOOST`, `MAX_FRICTION` in `Client.Guns.AimAssist`. See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+- **Aim assist favors the head.** The head now wins about two thirds of the space between head and chest, gets 1.4× friction and 1.6× pull, and the assist sticks to the point it locked last frame so a small wobble doesn't drop it to the chest. Tuning: `HEAD_PREFERENCE`, `STICKY`, `HEAD_FRICTION_BOOST`, `HEAD_PULL_BOOST`, `MAX_FRICTION` in `Client.Guns.AimAssist`. See [AIM_ASSIST.md](AIM_ASSIST.md).
 
 ## 2026-11-10: Aim assist holds headshots
 
 ### Changed
 
-- **Aim assist sticks to the head or the chest, whichever is nearer the crosshair.** It used to know only the chest, so aiming at a head got pulled down to the body. Now aiming near the head holds the head. See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+- **Aim assist sticks to the head or the chest, whichever is nearer the crosshair.** It used to know only the chest, so aiming at a head got pulled down to the body. Now aiming near the head holds the head. See [AIM_ASSIST.md](AIM_ASSIST.md).
 
 ## 2026-11-10: Aim assist on PC for testing
 
 ### Added
 
-- **`aimassistpc <player> [true/false]`** (alias `aapc`), an admin Cmdr command that gives a player controller aim assist on mouse and keyboard, so it can be tried on PC. With no true/false it toggles. It sets the server-side player attribute `AimAssistPC`, which `Client.Guns.AimAssist` reads; the Aim assist setting must also be on. See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+- **`aimassistpc <player> [true/false]`** (alias `aapc`), an admin Cmdr command that gives a player controller aim assist on mouse and keyboard, so it can be tried on PC. With no true/false it toggles. It sets the server-side player attribute `AimAssistPC`, which `Client.Guns.AimAssist` reads; the Aim assist setting must also be on. See [AIM_ASSIST.md](AIM_ASSIST.md).
 
 ## 2026-11-10: AI coding guide
 
 ### Added
 
-- **[docs/AI_CODING_GUIDE.md](docs/AI_CODING_GUIDE.md):** one file to give any AI agent before it codes in the FPS place: the hard rules, where code lives, how ModuleLoader loads it, the module template and code style, the shared building blocks (packets, extension points, Scribe data, effects, states, input, Cmdr, products), world conventions, a feature walkthrough, testing and docs standards, and a done checklist.
+- **[AI_CODING_GUIDE.md](AI_CODING_GUIDE.md):** one file to give any AI agent before it codes in the FPS place: the hard rules, where code lives, how ModuleLoader loads it, the module template and code style, the shared building blocks (packets, extension points, Scribe data, effects, states, input, Cmdr, products), world conventions, a feature walkthrough, testing and docs standards, and a done checklist.
 
 ### Fixed
 
@@ -1989,7 +1991,7 @@ See [docs/ADDING_NPCS.md](docs/ADDING_NPCS.md) (Tactics).
 
 ## 2026-11-10: Stronger aim assist
 
-See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+See [AIM_ASSIST.md](AIM_ASSIST.md).
 
 ### Changed
 
@@ -1998,7 +2000,7 @@ See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
 
 ## 2026-11-10: Grenade and smoke bomb
 
-See [docs/CONSUMABLES.md](docs/CONSUMABLES.md).
+See [CONSUMABLES.md](CONSUMABLES.md).
 
 ### Added
 
@@ -2019,11 +2021,11 @@ See [docs/CONSUMABLES.md](docs/CONSUMABLES.md).
 
 ### Added
 
-- **[docs/API.md](docs/API.md)**: one page covering every public function, extension point, packet, Cmdr command, attribute, tag, data field and collision group, with recipes for common jobs.
+- **[API.md](API.md)**: one page covering every public function, extension point, packet, Cmdr command, attribute, tag, data field and collision group, with recipes for common jobs.
 
 ## 2026-11-09: Decisions round (shop stand, keys, recoil, bash, debris, Revolver)
 
-Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
+Follows the answers in [DECISIONS.md](DECISIONS.md).
 
 ### Changed
 
@@ -2049,7 +2051,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
 - **`Shared.ProductIds`**: one module for every developer product and game pass id. The skin crate reads `Products.SkinCrate` from it instead of the old `SkinCrateProductId` attribute.
 - **Crate refund.** Buying a crate with every skin owned gives 500 coins (`Skins.CRATE_REFUND_COINS`).
 
-- **Aim assist for controller and touch** (`Client.Guns.AimAssist`): friction and a gentle pull toward enemies, stronger when aimed, never on mouse. Settings > Toggles turns it off. See [docs/AIM_ASSIST.md](docs/AIM_ASSIST.md).
+- **Aim assist for controller and touch** (`Client.Guns.AimAssist`): friction and a gentle pull toward enemies, stronger when aimed, never on mouse. Settings > Toggles turns it off. See [AIM_ASSIST.md](AIM_ASSIST.md).
 - **The HUD scales with the screen.** Health, ammo, weapon slots and kill feed are sized in scale with aspect locks. On touch, the ammo box moves above the health bar, the weapon slots go top left, and small screens get a bigger HUD. The touch buttons keep their original pixel layout.
 
 - **Skin crate product is live.** "Skin Crate", 499 Robux, product id `3730208338`, in `Shared.ProductIds`.
@@ -2091,7 +2093,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
 ### Added
 
 - **Cmdr commands** `softwallpunch [radius] [ring]` and `softwallreset [all]`.
-- **Docs.** New `docs/SOFTWALLS.md`, plus updates to the shot flow in `GUN_SYSTEM.md`, a board note in `BREAKABLES.md` and a link in `GUN_GAME.md`.
+- **Docs.** New `SOFTWALLS.md`, plus updates to the shot flow in `GUN_SYSTEM.md`, a board note in `BREAKABLES.md` and a link from the documentation home (`README.md`).
 
 ## 2026-11-09: Gun recoil patterns, gun client refactor and Shotgun model fix
 
@@ -2105,7 +2107,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
   - The springs stay fast enough that every shot of a fast gun still reads.
 - **Per-gun feel.**
   - Rifle (steady), Pistol (snap), Shotgun (one big kick), Burst Rifle (tight burst), SMG (fast, jittery) and LMG (heavy, slow).
-  - Every number is in the gun's `Recoil` table, with defaults in `Content.Guns.Registry`. See "Tuning recoil" in `docs/ADDING_GUNS.md`.
+  - Every number is in the gun's `Recoil` table, with defaults in `Content.Guns.Registry`. See "Tuning recoil" in `ADDING_GUNS.md`.
 - **`Client.Guns.Recoil`.** Pure recoil math that can be tested from Studio's command bar.
 
 ### Changed
@@ -2150,7 +2152,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
 
 ### Added
 
-- **Docs.** `docs/SKINS.md`, `docs/LOBBY.md` and `docs/KILL_FEED.md`, plus a DoorBoard section in `docs/BREAKABLES.md`.
+- **Docs.** `SKINS.md`, `LOBBY.md` and `KILL_FEED.md`, plus a DoorBoard section in `BREAKABLES.md`.
 
 ## 2026-11-08: Breakable boards and the Interact key
 
@@ -2168,7 +2170,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
 - **`Systems.Breakables.BreakableService`.** A weapon-agnostic API (`Damage`, `DamageRadius`, `Repair`, `Reset`, `IsBreakable`, `Get`) with `Breakable.*` extension points. New breakable types come from the data-driven `Content.Breakables` registry.
 - **Interact keybind.** A rebindable Interact action (default E, gamepad DPad Up) in Settings > Controls. Every ProximityPrompt uses the player's Interact key and updates live when it is rebound (`Client.Interact.PromptKeys`).
 - **Effects.** `BoardBreak` and `BoardPlace`, with ProSoundEffects wood-crack, hammer and spray-can sounds and a pooled `BoardDust` burst.
-- **Docs.** New `docs/BREAKABLES.md`.
+- **Docs.** New `BREAKABLES.md`.
 
 ## 2026-11-08: Crouch on C, prone on Left Ctrl
 
@@ -2244,7 +2246,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
   - Sounds in `Assets.Sounds` and the dust emitters `SlideDust`, `LandDust` and `StepDust` in `Assets.Vfx`.
 - **UI.** `Main.Mobile.CrouchButton`, and the `SprintButton` wired with a label. The `MovementDebug` template.
 - **Cmdr.** `movedebug` toggles an on-screen movement readout.
-- **Docs.** `docs/MOVEMENT.md`.
+- **Docs.** `MOVEMENT.md`.
 
 ### Changed
 
@@ -2281,7 +2283,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
   - NPCs on the same team don't hurt each other.
 - **Cmdr.** `spawnnpc <profile> [count]` and `clearnpcs`, with an `npcProfile` argument type.
 - **Test area.** `Workspace.NPCTestArea` (three NPCSpawn parts and cover crates) and `Workspace.Enemies`. The Enemies folder also fixes the existing `HealthBillboards` startup error.
-- **Docs.** `docs/ADDING_NPCS.md`.
+- **Docs.** `ADDING_NPCS.md`.
 
 ### Changed
 
@@ -2356,7 +2358,7 @@ Follows the answers in [docs/DECISIONS.md](docs/DECISIONS.md).
   - `Main.Hitmarker`.
   - `Main.Mobile` buttons: `FireButton`, `AimButton` and `ReloadButton`.
 - **Cmdr.** `givegun <player> <gunId>`, with a `gun` argument type.
-- **Docs.** `docs/ADDING_GUNS.md` and `docs/GUN_SYSTEM.md`.
+- **Docs.** `ADDING_GUNS.md` and `GUN_SYSTEM.md`.
 
 ### Changed
 

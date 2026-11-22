@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Death screen and spectating
 
 When you die you see who killed you and with what, and the camera follows your killer until you respawn. If your killer dies, you follow whoever killed them, and so on. If there is nobody left to watch, the camera stays on your body. When you respawn the camera goes back to you.

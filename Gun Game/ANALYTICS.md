@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Analytics
 
 *Added 2026-11-14.*

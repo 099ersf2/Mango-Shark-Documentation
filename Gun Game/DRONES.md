@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Scout drones
 
 Small ground drones in the style of Rainbow Six Siege's. You throw one out and look through its camera at once. You drive it fast and low, hop over things, boost, and spot enemies for your team. Drones are fragile: a couple of bullets, one shot to the camera, or any grenade destroys one. A destroyed drone comes back after a 30 s cooldown. You have one drone out at a time: 5 takes you into it (or throws one) and out again; X only takes you out. NPCs see, hear and shoot drones.

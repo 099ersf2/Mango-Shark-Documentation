@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Next steps
 
 ## Retention pass (2026-11-18)

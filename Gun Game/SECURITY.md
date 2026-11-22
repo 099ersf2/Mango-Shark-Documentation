@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Security and lag pass (2026-11-18)
 
 The owner asked for the game to be attacked like an exploiter would, so the holes can be patched and the server stays lag free. Every client-to-server entry point was read (Shared.Packets, Shared.UnreliablePackets, the Rappel remote, Scribe's transport, QuestAtlis, Cmdr), then attacked in Studio playtests from a client script, then patched and attacked again.

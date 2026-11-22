@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Performance pass (2026-11-18)
 
 The owner asked for the code to be optimized across the game. Rather than rewrite by guesswork, every change below came from Roblox's script profiler (`ScriptProfilerService`), run in Studio playtests in the lobby and in a 5v5 Siege match with 9 bots, before and after.

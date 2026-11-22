@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Third-person gun animation
 
 How other players and NPCs look while holding a gun: idle, walking and running, sprinting, aiming (following where they look), recoil on every shot, and reloading. It's done in code (`Client.Guns.ThirdPersonGuns`), not with animation assets, so it works for every gun, and for any gun added later, with nothing to upload.

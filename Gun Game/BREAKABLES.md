@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Breakables
 
 Breakable objects are models made of pieces that weapons knock off one at a time and players put back. The first type is the **Board**: planks nailed across a window, with a coat of spray paint on top. **DoorBoard** is the door-sized version, with the same rules.

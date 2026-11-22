@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Movement and camera feel
 
 How sprinting, crouching, sliding, the camera and the FOV setting work in the FPS place, and how to tune them or add a state. For guns see [ADDING_GUNS.md](ADDING_GUNS.md); for the shot flow, [GUN_SYSTEM.md](GUN_SYSTEM.md).

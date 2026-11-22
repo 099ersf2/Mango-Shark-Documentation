@@ -1,13 +1,16 @@
+[Documentation home](../README.md) / Gun Game
+
 # CLAUDE.md: Gun Game (Roblox place "FPS")
 
-Context for Claude working on this project. Read it before doing anything. For the full coding rules read
-`docs/AI_CODING_GUIDE.md`, and for the system you touch, its doc in `docs/` (index: `GUN_GAME.md`).
+Context for Claude working on this project. Read it before doing anything. For the full coding rules, read
+[AI_CODING_GUIDE.md](AI_CODING_GUIDE.md); for the system you touch, use its guide linked from the
+[documentation home](../README.md).
 
 ## The project
 
 - **What it is:** a Roblox FPS game. The place is "FPS": placeId `80699390327837`, universe `10775243847`.
 - **How you work on it:** in Roblox Studio, through the Studio tools (execute Luau, multi-edit, playtests, screenshots). There is no local source tree; the code lives in the place.
-- **Docs:** pushed to the GitHub repo `099ersf2/Mango-Shark-Documentation`: the `Gun Game/` folder, plus `Gun Game Documentation.MD` as its home page.
+- **Docs:** maintained in the `Gun Game/` folder of `099ersf2/Mango-Shark-Documentation`, with the repository [README](../README.md) as the home page.
 - **Other contributors:** other developers and other AI agents work on the place and on the docs repo at the same time. Keep what they built, and merge with their doc changes rather than overwriting them.
 
 ## Hard rules

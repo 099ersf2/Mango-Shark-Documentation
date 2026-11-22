@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Battle Pass and Quests
 
 Added 2026-11-16, changed the same day to a level track (no Battle Stars). A seasonal battle pass: XP fills levels, and every level has **Free** rewards (everyone) and **Premium** rewards (pass owners), claimed once the level is reached. A side can hold one reward, several, or none. Quests (daily, weekly, milestones) are the main source of XP.

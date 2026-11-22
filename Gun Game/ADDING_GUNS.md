@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Adding guns
 
 This guide covers the gun system in the FPS place: how it fits together, how to add a gun, how to write an ability, and what to check when something goes wrong. For the architecture alone, see [GUN_SYSTEM.md](GUN_SYSTEM.md).
@@ -147,7 +149,7 @@ Add a `ModuleScript` to `ReplicatedStorage.Content.Guns.Definitions`. Only `Id`,
 ```lua
 --!strict
 --[[
-	Carbine: a short rifle. Every field is listed in docs/ADDING_GUNS.md. Leave a field out to use its default.
+	Carbine: a short rifle. Every field is listed in [ADDING_GUNS.md](ADDING_GUNS.md). Leave a field out to use its default.
 ]]
 
 return {

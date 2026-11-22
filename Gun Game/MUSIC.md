@@ -1,3 +1,5 @@
+[Documentation home](../README.md) / Gun Game
+
 # Music
 
 One song plays at a time, and every change is a crossfade: the old song's volume slides to 0 while the new one rises from 0 to its own volume. The client does it all (`Client.Core.Music`); the numbers are in `Content.Music`.
