@@ -70,7 +70,7 @@ Extensions.Add("Gun.DamageMultiplier", function(who, gunId, humanoid, hit)
 end)
 ```
 
-See [API reference: extension points](API.md#extension-points) for the complete extension list.
+See the [shared API reference](API_SHARED.md) for the complete extension-point list.
 
 ## Read a player setting on the server
 

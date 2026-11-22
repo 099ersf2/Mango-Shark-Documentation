@@ -1,10 +1,10 @@
 # Gun Game documentation
 
-## Read the docs
+Internal developer documentation for the Roblox FPS place **Gun Game**.
 
-Start with the [documentation index](Gun%20Game/index.md), or open the [API reference](Gun%20Game/API.md).
-
-**Website status:** The docs site is not published yet. Until GitHub Pages is enabled, use the Markdown guides linked from the index above.
+- **Published site:** [099ersf2.github.io/Mango-Shark-Documentation](https://099ersf2.github.io/Mango-Shark-Documentation/)
+- **Start with the documentation index:** [Gun Game/index.md](Gun%20Game/index.md)
+- **Browse the API:** [Gun Game/API.md](Gun%20Game/API.md)
 
 ## For maintainers
 
@@ -19,4 +19,4 @@ mkdocs serve
 
 ### Publish the site
 
-Before merging docs-site changes, enable **Settings → Pages → Build and deployment → Source: GitHub Actions**. The workflow then publishes the site on pushes to `main` at `https://099ersf2.github.io/Mango-Shark-Documentation/`.
+GitHub Pages is configured to use **GitHub Actions**. Merging documentation changes into `main` builds and publishes the site at `https://099ersf2.github.io/Mango-Shark-Documentation/`.

@@ -2,7 +2,20 @@
 
 # UI
 
-How the game's UI is laid out, how it should look, and how it feels. Revamped 2026-11-12 as the MVP pass: the lobby, the party, the Siege screens, one look for the menus, sound and motion on every button, and touch sizes. **Nobody has looked at it yet**: Studio was not rendering frames during the work, so everything was laid out and checked by measurement. See [Tested](#tested-2026-11-12).
+How the game's UI is structured, what conventions it follows, and how to verify UI changes.
+
+> **Status:** Mixed. This guide contains current implementation notes and dated design history. The latest recorded phone checks used Studio's device emulator; a physical phone or tablet is not verified here. Treat each dated **Checked** note as evidence for that test only.
+
+## At a glance
+
+| Concern | Guidance |
+| --- | --- |
+| Edit UI assets | Edit the ScreenGuis under `ReplicatedFirst.UILoader`; shared templates live in `ReplicatedStorage.Assets.UI.Templates`. |
+| Update behavior | Client UI modules are under `ReplicatedStorage.Modules.Client` and load with the `ClientOnly` attribute. |
+| Follow conventions | Use the [UI rules](#the-rules), existing templates, and [touch layout](#touch-buttons-2026-11-12-not-run) rather than creating UI in code. |
+| Verify | Check desktop and touch layouts, keyboard/gamepad/touch input, and the Output window. See the [verification notes](#tested-2026-11-12) and [verification queue](NEXT_STEPS.md). |
+
+The sections below include dated redesign notes. They explain how the current UI evolved, but do not replace checking the current assets and behavior in Studio.
 
 ## The rules
 
