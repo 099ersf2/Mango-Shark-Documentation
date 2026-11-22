@@ -4,6 +4,16 @@
 
 This guide covers the gun system in the FPS place: how it fits together, how to add a gun, how to write an ability, and what to check when something goes wrong. For the architecture alone, see [GUN_SYSTEM.md](GUN_SYSTEM.md).
 
+## At a glance
+
+| Concern | Guidance |
+| --- | --- |
+| Definition | Add a ModuleScript under `ReplicatedStorage.Content.Guns.Definitions`. |
+| Model | Add or update a model under `ReplicatedStorage.Assets.Models.Guns`; preserve the Handle and required attachments. |
+| Runtime | The client handles input and presentation; the server validates shots and determines damage. See the [gun API](API_SERVER.md) and [shared gun API](API_SHARED.md). |
+| First check | Use `givegun` in a Studio playtest, check the Output window, and verify firing, reload, and aiming. |
+| Verification limits | The 2026-11-22 split-mesh reload check was exercised on SiegeCarbine only; inspect and other guns still need in-game checks. |
+
 ## Overview
 
 A gun is **one definition file + one model**. Everything else (input, networking, server checks, damage, viewmodel, effects, UI) is shared code that reads the definition.

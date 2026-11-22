@@ -1,11 +1,13 @@
 # Gun Game documentation
 
-Documentation for the Roblox FPS place **Gun Game**. Use the sidebar to browse by topic, or search across every guide.
+Internal developer documentation for the Roblox FPS place **Gun Game**. Use the sidebar to browse by system, or search across every guide. Current implementation guidance is separated from historical references and dated change records.
 
 ## Start here
 
 - **New to the project or changing code?** Read the [AI coding guide](AI_CODING_GUIDE.md) first.
 - **Looking for a function, packet, command, or data field?** Start with the [API reference](API.md).
+- **Writing or updating a guide?** Follow the [documentation authoring template](DOC_TEMPLATE.md).
+- **Need a code sample for a specific task?** Browse the [task-based examples](EXAMPLES.md).
 - **Learning the current game flow?** Read [Siege](SIEGE.md), then [matchmaking and parties](MATCHMAKING.md).
 - **Checking what remains to be done?** See [next steps](NEXT_STEPS.md).
 
@@ -56,13 +58,15 @@ Documentation for the Roblox FPS place **Gun Game**. Use the sidebar to browse b
 | Guide | Covers |
 | --- | --- |
 | [API reference](API.md) | Public functions, packets, commands, tags, and data |
+| [Documentation authoring](DOC_TEMPLATE.md) | Page structure, status labels, and verification notes |
+| [Task-based code examples](EXAMPLES.md) | Copyable snippets for common server and client tasks |
 | [AI coding guide](AI_CODING_GUIDE.md) | Project architecture, implementation rules, and testing |
 | [Claude project context](CLAUDE.md) | Condensed project-specific instructions for Claude |
 | [Performance](PERFORMANCE.md) | Performance measurements and optimizations |
 | [Security](SECURITY.md) | Server validation and security review notes |
 | [Design decisions](DECISIONS.md) | Recorded decisions that guide implementation |
-| [Changelog](CHANGELOG.md) | Chronological feature and change history |
-| [Next steps](NEXT_STEPS.md) | Follow-up work and items awaiting verification |
+| [Changelog](CHANGELOG.md) | Recent implementation notes, with dated archives |
+| [Next steps](NEXT_STEPS.md) | Focused verification queue |
 
 ## Historical references
 
@@ -71,4 +75,4 @@ These pages describe systems that have been replaced or are no longer the curren
 - [Matches, modes, and teams](MATCH.md) — older modular match-system documentation; Siege is now the active mode.
 - [Team deathmatch rounds](ROUND_SYSTEM.md) — replaced by the current Siege flow.
 
-Treat the system guide and [API reference](API.md) as the primary technical references. The [changelog](CHANGELOG.md) records history and may describe behavior that has since changed. Check each guide's testing notes before relying on an unverified feature.
+Treat the system guide and focused [API references](API.md) as the primary technical references. The [changelog](CHANGELOG.md) and [historical backlog](NEXT_STEPS_ARCHIVE.md) preserve context; neither is a guarantee of current behavior. Check each guide's status and testing notes before relying on an unverified feature.

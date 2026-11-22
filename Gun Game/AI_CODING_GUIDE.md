@@ -4,7 +4,7 @@
 
 Give this file to any AI agent before it writes code for the Roblox place **"FPS"** (Mango Shark Studios, placeId `80699390327837`, universe `10775243847`). It explains how the game is built and how new code must be written. Follow it exactly. When this file and your habits disagree, this file wins.
 
-Use the [documentation home](index.md) to find system guides. In particular, see [API.md](API.md) for the public interface, [SIEGE.md](SIEGE.md) for the current game mode, [MATCHMAKING.md](MATCHMAKING.md) for queues and parties, and [DECISIONS.md](DECISIONS.md) for recorded design answers.
+Use the [documentation home](index.md) to find system guides. In particular, see the [API overview](API.md) and its focused [current Siege](API_SIEGE.md), [server](API_SERVER.md), [shared](API_SHARED.md), and [client](API_CLIENT.md) references, plus [SIEGE.md](SIEGE.md) for the current game mode, [MATCHMAKING.md](MATCHMAKING.md) for queues and parties, and [DECISIONS.md](DECISIONS.md) for recorded design answers.
 
 *Updated 2026-11-11.* Read the doc for the system you touch before changing it.
 
@@ -396,7 +396,7 @@ Grenades and smoke bombs ([CONSUMABLES.md](CONSUMABLES.md)) are the reference ex
 
 The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-Shark-Documentation`; [index.md](index.md) is their home page.
 
-- **New system:** write `<SYSTEM>.md` in `Gun Game/` with these sections:
+- **New system:** start from [DOC_TEMPLATE.md](DOC_TEMPLATE.md), then write `<SYSTEM>.md` in `Gun Game/` with the applicable sections:
   - What it is and how it plays
   - Controls
   - Where things are
@@ -407,11 +407,12 @@ The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-
   - Limits
 
   Add a link for it to the [documentation home](index.md) and a navigation entry in `mkdocs.yml`.
-- **`API.md`:** add every new public function, packet, extension point, data field, attribute, tag and collision group.
-- **`CHANGELOG.md`:** add an entry at the top, `## YYYY-MM-DD: Title`, with **Added** / **Changed** / **Fixed** bullets.
-- **`NEXT_STEPS.md`:** add checklist items for anything not yet verified (phone, gamepad, multiplayer).
-- **Before submitting doc changes:** run `mkdocs build --strict` to check the site build and navigation.
-- **Writing style:** plain, short sentences. Tables for reference. Say what you checked and what you didn't.
+- **API references:** add every new public function, packet, extension point, data field, attribute, tag and collision group to the appropriate focused page; keep [API.md](API.md) as the overview and routing page.
+- **`CHANGELOG.md`:** add an entry at the top, `## YYYY-MM-DD: Title`, with **Added** / **Changed** / **Fixed** bullets. Keep older entries in the linked date-range archives.
+- **`NEXT_STEPS.md`:** list only actionable work confirmed to remain open. Record the last check and evidence; move stale or completed dated snapshots to an archive rather than carrying them forward as active.
+- **Status and verification:** label pages as current, historical, or mixed where needed. State what was tested, in which environment/device, and what remains unverified.
+- **Before submitting doc changes:** run `mkdocs build --strict`; it checks the site, navigation, local links and anchors.
+- **Writing style:** plain, short sentences. Tables for reference. Keep implementation guidance separate from historical notes.
 - **The docs repo is shared with other agents.** Before copying your files over `Gun Game/`, `git pull`, and diff each file against yours, so you merge their additions instead of erasing them. After committing, check `git show --stat HEAD` for deletions you didn't mean.
 
 ---

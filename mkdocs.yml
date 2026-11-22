@@ -55,6 +55,17 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
 
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+  links:
+    not_found: warn
+    anchors: warn
+
+extra_css:
+  - stylesheets/extra.css
+
 plugins:
   - search:
       lang: en
@@ -64,6 +75,7 @@ nav:
   - Get started:
       - AI coding guide: AI_CODING_GUIDE.md
       - Claude project context: CLAUDE.md
+      - Documentation authoring: DOC_TEMPLATE.md
       - Next steps: NEXT_STEPS.md
   - Game:
       - Siege: SIEGE.md
@@ -98,11 +110,26 @@ nav:
       - Weapon skins: SKINS.md
       - Analytics: ANALYTICS.md
   - Reference:
-      - API reference: API.md
+      - Task-based code examples: EXAMPLES.md
+      - API reference:
+          - Overview: API.md
+          - Current Siege APIs: API_SIEGE.md
+          - Common recipes: API_RECIPES.md
+          - Server-side APIs: API_SERVER.md
+          - Shared APIs: API_SHARED.md
+          - Client APIs: API_CLIENT.md
+          - Content and metadata: API_CONTENT.md
       - Design decisions: DECISIONS.md
       - Performance: PERFORMANCE.md
       - Security: SECURITY.md
-      - Changelog: CHANGELOG.md
+      - Changelog:
+          - Recent changes: CHANGELOG.md
+          - Archive:
+              - Nov 15–17: CHANGELOG_2026-11-15_to_17.md
+              - Nov 12–14: CHANGELOG_2026-11-12_to_14.md
+              - Nov 9–11: CHANGELOG_2026-11-09_to_11.md
+              - Nov 7–8: CHANGELOG_2026-11-07_to_08.md
       - Historical:
           - Matches, modes, and teams: MATCH.md
           - Team deathmatch rounds: ROUND_SYSTEM.md
+          - Verification backlog: NEXT_STEPS_ARCHIVE.md
