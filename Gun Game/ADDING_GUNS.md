@@ -136,6 +136,10 @@ The model is drawn at full size in third person (as the Tool), and at 32% in fir
 
 To place `Aim` on a mesh with no separate sight parts, find the tops of the rear sight and the front bead (raycast down onto a clone in Edit mode) and put `Aim` just above the line between them. Then check by script that the model has `Handle.Muzzle`, `Handle.Aim`, `Handle.RightGrip` and `Handle.LeftGrip`.
 
+**One-piece meshes were split (2026-11-22).** PumpShotgun, Revolver, SMG, SawedOffShotgun, SiegeCarbine, SiegePistol, SiegeSMG, SiegeShotgun and Tactical_Bullpup_1 were each one MeshPart, which the procedural reload and inspect couldn't move part by part. Each mesh was split into the separate pieces it was built from (8 to 36 per gun), uploaded to the group as a Model, and placed back exactly where the mesh was: every piece is its own MeshPart welded to the Handle, with the old color and material. The Handle and its attachments did not move. Key pieces are named like the part-built guns (`Magazine`, `Barrel`, `Body`, `Grip`, `Trigger`, `TriggerGuard`, `Stock`, `Pump`, `Slide`, `Cylinder`, `Hammer`, sights); rail teeth are `RailTooth01...` and the rest `Detail01...`. The originals are in `ServerStorage.GunModelsBackup_20261122`. Guns with a real magazine piece: SiegeCarbine, SiegeSMG, SMG, Tactical_Bullpup_1 (the SMG's old invisible stand-in magazine was removed).
+
+To split another one-piece mesh the same way: read it with `AssetService:CreateEditableMeshAsync`, merge vertices at the same position, take connected pieces, export them to a .glb (one node per piece, centred on its own bounds), upload it with Open Cloud as a Model with the **group** as creator (the game is group-owned), and place each piece at `oldMesh.CFrame * CFrame.new(center * scale) * CFrame.Angles(0, math.pi, 0)` (the importer turns models 180 degrees about Y) with `Size = pieceSize * scale`, where scale is the old MeshPart's size over the mesh's own bounds.
+
 ### 2. Write the definition
 
 Add a `ModuleScript` to `ReplicatedStorage.Content.Guns.Definitions`. Only `Id`, `Model` and `Damage` are required; every other field gets the default in the table below.

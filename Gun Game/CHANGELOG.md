@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-22: One-piece gun meshes split into parts
+
+- The owner: PumpShotgun, Revolver, SMG, SawedOffShotgun, SiegeCarbine, SiegePistol, SiegeSMG, SiegeShotgun and Tactical_Bullpup_1 were one full mesh each, hard to animate. Each is now made of the separate pieces its mesh was built from (177 parts in all), placed exactly where they were and welded to the Handle, with named key parts (Magazine, Barrel, Body, Grip, Trigger, Pump, Slide, Cylinder...). Nine Model assets uploaded to the group. Originals backed up in `ServerStorage.GunModelsBackup_20261122`. Details in ADDING_GUNS.md.
+
+Checked in Studio: all nine side by side with their originals (identical shapes; the Magazine is the real magazine on the four guns that have one); skins apply on the new models with their details (PumpShotgun, Revolver, SawedOff, SiegeCarbine, SMG). Not checked: a reload or inspect in a playtest moving the new Magazine; first-person views. Not saved or published.
+
 ## 2026-11-20: Card entrance on the Inventory's Classes tab
 
 - The Inventory opens on CLASSES, whose class tiles live in their own panel (`Inventory.ClassView.Cards`), so v1051's entrance (armed on the Skins and Crates page) missed them. The tiles are armed too now: on opening, on tab changes and on filters, the 19 class tiles come in one after another.
