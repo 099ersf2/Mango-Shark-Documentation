@@ -1,4 +1,4 @@
-[Documentation home](../README.md) / Gun Game
+[Documentation home](index.md) / Gun Game
 
 # Recruit Training (the tutorial)
 

@@ -1,4 +1,4 @@
-[Documentation home](../README.md) / Gun Game
+[Documentation home](index.md) / Gun Game
 
 # Consumables (grenade and smoke bomb)
 

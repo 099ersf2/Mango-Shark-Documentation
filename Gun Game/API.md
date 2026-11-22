@@ -1,8 +1,25 @@
-[Documentation home](../README.md) / Gun Game
+[Documentation home](index.md) / Gun Game
 
 # Gun Game API
 
-Every function, hook, packet, command, attribute, tag and data field you can use to control the FPS place, in one page. Start with **Recipes** for common jobs, then look a module up by name. Signatures are copied from the code (2026-11-10). The other docs explain how each system works; this page is the reference.
+Every function, hook, packet, command, attribute, tag and data field you can use to control the FPS place. Use the site search to find a symbol, the quick links below to browse by area, or the system guides for implementation details.
+
+> **Current-game note:** Siege is the active mode. Some entries below are historical and describe archived match modes or APIs. Use the dated Siege reference as authoritative when entries conflict; check the linked system guide before relying on an API.
+
+## Quick links
+
+| Looking for | Jump to |
+| --- | --- |
+| Current Siege, matchmaking, classes, and camera APIs | [Current Siege reference](#siege-matchmaking-classes-cameras-2026-11-12) |
+| Server-side gun functions | [Server: guns](#server-guns) |
+| Damage and combat functions | [Server: combat](#server-combat) |
+| World, NPC, movement, and gameplay services | [Server: world](#server-world) |
+| Shared modules, packets, and data | [Shared](#shared) |
+| Client APIs | [Client](#client) |
+| Tuning and game data | [Content](#content-data-you-edit) |
+| Commands, attributes, tags, and collision groups | [Reference lists](#cmdr-commands) |
+
+The navigation panel follows these sections; use its search box to search every guide.
 
 **Paths used below:**
 
