@@ -6,6 +6,7 @@ Documentation for the Roblox FPS place **Gun Game**. Use the sidebar to browse b
 
 - **New to the project or changing code?** Read the [AI coding guide](AI_CODING_GUIDE.md) first.
 - **Looking for a function, packet, command, or data field?** Start with the [API reference](API.md).
+- **Need a code sample for a specific task?** Browse the [task-based examples](EXAMPLES.md).
 - **Learning the current game flow?** Read [Siege](SIEGE.md), then [matchmaking and parties](MATCHMAKING.md).
 - **Checking what remains to be done?** See [next steps](NEXT_STEPS.md).
 
@@ -56,6 +57,7 @@ Documentation for the Roblox FPS place **Gun Game**. Use the sidebar to browse b
 | Guide | Covers |
 | --- | --- |
 | [API reference](API.md) | Public functions, packets, commands, tags, and data |
+| [Task-based code examples](EXAMPLES.md) | Copyable snippets for common server and client tasks |
 | [AI coding guide](AI_CODING_GUIDE.md) | Project architecture, implementation rules, and testing |
 | [Claude project context](CLAUDE.md) | Condensed project-specific instructions for Claude |
 | [Performance](PERFORMANCE.md) | Performance measurements and optimizations |

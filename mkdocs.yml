@@ -55,6 +55,9 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
 
+extra_css:
+  - stylesheets/extra.css
+
 plugins:
   - search:
       lang: en
@@ -98,6 +101,7 @@ nav:
       - Weapon skins: SKINS.md
       - Analytics: ANALYTICS.md
   - Reference:
+      - Task-based code examples: EXAMPLES.md
       - API reference: API.md
       - Design decisions: DECISIONS.md
       - Performance: PERFORMANCE.md

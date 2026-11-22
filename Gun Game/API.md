@@ -2,7 +2,7 @@
 
 # Gun Game API
 
-Every function, hook, packet, command, attribute, tag and data field you can use to control the FPS place. Use the site search to find a symbol, the quick links below to browse by area, or the system guides for implementation details.
+Every function, hook, packet, command, attribute, tag and data field you can use to control the FPS place. Use site search to find a symbol, the quick links below to browse by area, or the [task-based examples](EXAMPLES.md) for copyable code.
 
 > **Current-game note:** Siege is the active mode. Some entries below are historical and describe archived match modes or APIs. Use the dated Siege reference as authoritative when entries conflict; check the linked system guide before relying on an API.
 
@@ -10,6 +10,7 @@ Every function, hook, packet, command, attribute, tag and data field you can use
 
 | Looking for | Jump to |
 | --- | --- |
+| A working snippet for a common task | [Task-based examples](EXAMPLES.md) |
 | Current Siege, matchmaking, classes, and camera APIs | [Current Siege reference](#siege-matchmaking-classes-cameras-2026-11-12) |
 | Server-side gun functions | [Server: guns](#server-guns) |
 | Damage and combat functions | [Server: combat](#server-combat) |
