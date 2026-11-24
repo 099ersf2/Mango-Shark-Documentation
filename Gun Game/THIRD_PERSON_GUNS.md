@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Third-person gun animation
 
 How other players and NPCs look while holding a gun: idle, walking and running, sprinting, aiming (following where they look), recoil on every shot, and reloading. It's done in code (`Client.Guns.ThirdPersonGuns`), not with animation assets, so it works for every gun, and for any gun added later, with nothing to upload.
@@ -11,6 +9,7 @@ Built 2026-11-11. Before this, every gun's `Animations` slots were empty, so oth
 ## Gun size and kind
 
 The gun models are built big (a full-size rifle is 4.4 studs, the pump shotgun 5.8, while an R15 arm reaches about 1.7). So the **third-person Tool is scaled down** when it's made (`Systems.Guns.GunService`, `thirdPersonScale`):
+
 - long guns come out about **2.2 studs** long (`LONG_GUN_LENGTH`), and pistols and revolvers about **1.15** (`SIDEARM_LENGTH`);
 - a gun is never made bigger;
 - the scale is stored as the Tool's `ModelScale` attribute, and `Content.Guns.Skins.Skins` scales skin sizes and offsets by it.
@@ -38,30 +37,31 @@ Poses ease into each other. The waist leans with a quarter of the aim pitch and 
 Every frame, in `RunService.PreSimulation` (after the Animator), for each R15 character within 250 studs of the camera that holds a gun with `Aim` and `LeftGrip` attachments on its Handle:
 
 1. **Placement:**
-   - pistols, and long guns when aiming, have the gun's `Aim` attachment (the rear sight) placed in front of the eyes by the pose;
-   - long guns' idle, sprint and reload place the grip (the Handle) instead, because the rear sight is in a different spot on every long gun (on a shotgun it is on the grip), while the grip is always where the hand is;
-   - all poses are blended as sight placements, so they ease into each other alike. The pose is turned by the character's facing and its aim pitch:
-   - **Players:** the relayed pitch (`UnreliablePackets.GunAimRelay`).
-   - **NPCs:** the `AimPitch` attribute.
-   - **Your own body:** your camera.
+    - pistols, and long guns when aiming, have the gun's `Aim` attachment (the rear sight) placed in front of the eyes by the pose;
+    - long guns' idle, sprint and reload place the grip (the Handle) instead, because the rear sight is in a different spot on every long gun (on a shotgun it is on the grip), while the grip is always where the hand is;
+    - all poses are blended as sight placements, so they ease into each other alike. The pose is turned by the character's facing and its aim pitch:
+    - **Players:** the relayed pitch (`UnreliablePackets.GunAimRelay`).
+    - **NPCs:** the `AimPitch` attribute.
+    - **Your own body:** your camera.
 2. The right hand goes where the gun's grip needs it (the gun is welded to the right hand by `RightGrip`). The left palm goes on the gun's `LeftGrip`.
 3. **Settle** (up to 5 rounds):
-   - the gun slides straight back, level, by what the left arm is short of the front grip, at most 0.45 studs in all (`MAX_SLIDE`). Without the cap, a gun held out to the side met no body to stop it, and slid back until its stock was over the shoulder; that was the shotgun idles. It is never pulled down or sideways, so it keeps the pose's height. An earlier version pulled it toward the left shoulder, which dragged long guns down to the waist;
-   - it moves forward out of the head and torso, checking every corner of its outline (a stock may rest 0.15 studs into the chest, the shoulder pocket);
-   - it comes back toward the right shoulder if the right arm is short (the gun is welded to that hand).
+    - the gun slides straight back, level, by what the left arm is short of the front grip, at most 0.45 studs in all (`MAX_SLIDE`). Without the cap, a gun held out to the side met no body to stop it, and slid back until its stock was over the shoulder; that was the shotgun idles. It is never pulled down or sideways, so it keeps the pose's height. An earlier version pulled it toward the left shoulder, which dragged long guns down to the waist;
+    - it moves forward out of the head and torso, checking every corner of its outline (a stock may rest 0.15 studs into the chest, the shoulder pocket);
+    - it comes back toward the right shoulder if the right arm is short (the gun is welded to that hand).
 
-   If the front grip is still out of reach, the left hand holds as far along the gun toward it as it can.
+    If the front grip is still out of reach, the left hand holds as far along the gun toward it as it can.
 4. Two-bone IK sets the shoulder, elbow and wrist joints' `Transform`. It works with both Motor6D and `AnimationConstraint` rigs.
 
 Guns are sorted by shape: a muzzle within 1.3 studs of the grip is a **pistol**; a `Spherecast` gun or one named shotgun is a **shotgun**; anything else is a **rifle**.
 
 What it skips (Roblox's animations hold these):
+
 - R6 characters;
 - melee tools (no `Aim` or `LeftGrip`);
 - characters more than 250 studs from the camera;
 - your own body while you're in first person. It is posed when the camera is away from your head, such as from a drone.
 
-See every gun's poses side by side at the gun range ([GUN_SHOWCASE.md](GUN_SHOWCASE.md), the `range` command).
+See every gun's poses side by side at the gun range ([Gun animation range](GUN_SHOWCASE.md), the `range` command).
 
 ## Server side
 
@@ -76,6 +76,7 @@ Players' pitch was already relayed by `GunService` (`UnreliablePackets.GunAim` â
 ## Tuning
 
 At the top of `Client.Guns.ThirdPersonGuns`:
+
 - `POSES`: where each pose holds the gun, per pistol or rifle.
 - `PITCH_SHARE`: how much of the aim pitch each pose follows.
 - `KICK`: recoil degrees per kind.
@@ -86,7 +87,7 @@ At the top of `Client.Guns.ThirdPersonGuns`:
 
 ## Checking the fit
 
-`ThirdPersonGuns.Report()` (client) returns each posed character's gun kind, how deep the gun still goes into the body (`Clip`), and how far each hand is off (`RightMiss`, `LeftMiss`). The gun range ([GUN_SHOWCASE.md](GUN_SHOWCASE.md)) is the place to read it for every gun at once.
+`ThirdPersonGuns.Report()` (client) returns each posed character's gun kind, how deep the gun still goes into the body (`Clip`), and how far each hand is off (`RightMiss`, `LeftMiss`). The gun range ([Gun animation range](GUN_SHOWCASE.md)) is the place to read it for every gun at once.
 
 **Heights on the range (2026-11-11, after raising the guns), measured from the head center:**
 
@@ -101,6 +102,7 @@ At the top of `Client.Guns.ThirdPersonGuns`:
 Clipping was 0.02 studs at most, the right hand always reached, and the left hand averaged 0.5 studs from the front grip, holding along the gun body.
 
 **On the range, all 72 rigs (2026-11-11, earlier fit check):**
+
 - **Clipping:** at most 0.10 studs into the body. Before, whole stocks went through heads.
 - **Right hand:** always on the grip.
 - **Left hand:** on average 0.19 studs from the front grip, about 0.4 at worst on the long rifles when aimed.

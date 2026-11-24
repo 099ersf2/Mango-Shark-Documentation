@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Aim assist
 
 Aim assist helps controller and touch players hit targets in the FPS place. Mouse players only get it when an admin turns it on for them with the `aimassistpc` command, for testing. It only changes how the camera turns: the server never reads it, and every bullet still goes where the camera points.

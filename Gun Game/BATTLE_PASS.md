@@ -1,12 +1,12 @@
-[Documentation home](index.md) / Gun Game
-
 # Battle Pass and Quests
 
 Added 2026-11-16, changed the same day to a level track (no Battle Stars). A seasonal battle pass: XP fills levels, and every level has **Free** rewards (everyone) and **Premium** rewards (pass owners), claimed once the level is reached. A side can hold one reward, several, or none. Quests (daily, weekly, milestones) are the main source of XP.
 
 **Off for now (2026-11-16):** `Content.BattlePass.ENABLED = false` keeps the pass for its own update. No XP, quests or claims, and nothing of it is shown (button, screen, store item, unowned season skins, the Season 1 tag). To launch: set `ENABLED = true`, check `SEASON.Ends`, and put the Robux product's id at `Store_BattlePassS1` in `Shared.ProductIds`.
 
-> **2026-11-18:** quests now run while the pass is off and pay `XP * Content.Quests.COIN_SHARE` coins instead of pass XP; they show on the GOALS menu (`Client.Core.Goals`). A completed quest also gives account XP and Weekly Goal points ([PROGRESSION.md](PROGRESSION.md)).
+!!! note "Updated 2026-11-18"
+
+    Quests now run while the pass is off and pay `XP * Content.Quests.COIN_SHARE` coins instead of pass XP; they show on the GOALS menu (`Client.Core.Goals`). A completed quest also gives account XP and Weekly Goal points ([Progression and retention](PROGRESSION.md)).
 
 ## Where things are
 
@@ -30,11 +30,11 @@ Added 2026-11-16, changed the same day to a level track (no Battle Stars). A sea
 - 50 levels of 1,500 XP (75,000 XP). XP stops at the season's end (`SEASON.Ends`, 2027-02-01 00:00 UTC) and at level 50.
 - Each level has a list of Free and a list of Premium rewards (`TRACK[level] = { Free = { ... }, Premium = { ... } }`, made from `ROWS`; `LIST` holds every reward). A reward's Id is `S1_L<level>_F` or `S1_L<level>_P`, and `_F2` / `_P2` for a level's second reward on that side.
 - Season 1 (2026-11-16):
-  - **Coins** are always 250 (`COINS`), and every 5th level pays **1,000** (`COINS_BIG`) on the Free side.
-  - **Empty Free levels:** 2, 7, 12, 16, 19, 23, 27, 31, 34, 38, 42, 44, 47.
-  - **Two rewards:** levels 1, 8, 15, 25, 32, 40, 45 and 50.
-  - **Classes:** only at level 50: Matteo (Medic) free, Caleb (Hacker) premium, beside the Breach Point Knife.
-  - A Breach Point skin on every 5th Premium level; the Breach Point Charm free at 8 and the Season 1 Dog Tag charm free at 45.
+    - **Coins** are always 250 (`COINS`), and every 5th level pays **1,000** (`COINS_BIG`) on the Free side.
+    - **Empty Free levels:** 2, 7, 12, 16, 19, 23, 27, 31, 34, 38, 42, 44, 47.
+    - **Two rewards:** levels 1, 8, 15, 25, 32, 40, 45 and 50.
+    - **Classes:** only at level 50: Matteo (Medic) free, Caleb (Hacker) premium, beside the Breach Point Knife.
+    - A Breach Point skin on every 5th Premium level; the Breach Point Charm free at 8 and the Season 1 Dog Tag charm free at 45.
 - A reward can be claimed once its level is reached; a Premium one also needs the pass. Buying the pass later unlocks every Premium reward already reached. **CLAIM ALL** claims everything claimable at once.
 - A skin or class already owned pays 500 Coins instead.
 - The whole track: 21,750 Coins, 11 season skins (only from the pass; the knife at level 50), 2 classes, 31 crates, in 97 rewards.

@@ -1,33 +1,33 @@
-[Documentation home](index.md) / Gun Game
-
 # Store, currencies, crates and stats
 
 *Added 2026-11-13.*
 
 ## What it is and how it plays
 
-> **2026-11-17:** the Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins were removed (archived in `ServerStorage.Archive.RemovedCrates_2026_11_17`). Crates left: Cosmetic, Afterburn, Glacier. Players lose any of those skins and unopened crates they owned (data migration 2 in `Shared.Data`). The Starter Bundle now gives 2,000 Coins only, the 5,000 Coins pack says only that, the Battle Pass lost its 19 crate rewards from those crates, and the daily deal is only the 15,000 Coins pack. Mentions of those crates further down are history.
+!!! note "Updated 2026-11-17"
+
+    The Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins were removed (archived in `ServerStorage.Archive.RemovedCrates_2026_11_17`). Crates left: Cosmetic, Afterburn, Glacier. Players lose any of those skins and unopened crates they owned (data migration 2 in `Shared.Data`). The Starter Bundle now gives 2,000 Coins only, the 5,000 Coins pack says only that, the Battle Pass lost its 19 crate rewards from those crates, and the daily deal is only the 15,000 Coins pack. Mentions of those crates further down are history.
 
 There are two currencies:
 
 - **Coins** come from playing:
-  - **Win:** 100.
-  - **Finish a match on the losing side:** 30.
-  - **Draw:** 50, only if the match ran at least 60 s.
-  - **Play time:** 15 every 5 minutes in any server.
-  - The VIP pass doubles all of these.
+    - **Win:** 100.
+    - **Finish a match on the losing side:** 30.
+    - **Draw:** 50, only if the match ran at least 60 s.
+    - **Play time:** 15 every 5 minutes in any server.
+    - The VIP pass doubles all of these.
 - **Siege Tokens were removed (2026-11-15).** Coins are the only currency. Nothing is priced in Tokens or pays them out, `StoreService` refuses them, and the wallet doesn't show them. The saved `Tokens` field stays unused so old saves load.
 
 What can be bought:
 
-- **Crates** with Coins or Robux. Opening one plays the reel (see [SKINS.md](SKINS.md)).
+- **Crates** with Coins or Robux. Opening one plays the reel (see [Weapon skins](SKINS.md)).
 - **Everything in the Store** (lobby: STORE button on the wallet bar at the top):
-  - crates;
-  - coin packs (for Robux);
-  - game passes;
-  - bundles;
-  - special skins (Store only, never in a crate);
-  - classes.
+    - crates;
+    - coin packs (for Robux);
+    - game passes;
+    - bundles;
+    - special skins (Store only, never in a crate);
+    - classes.
 
 Every match result counts:
 
@@ -49,8 +49,8 @@ Every match result counts:
 
 - **Robux only.** `StoreService` refuses Coins for an item in the `Bundles` section or marked `Pass`.
 - **New contents reach owners.** Add a skin or class to a bundle's or pass's `Grants` and every owner gets it on their next join:
-  - bundles: owned = in `OwnedItems`, or in the purchase log (then recorded);
-  - passes: `PassCosmetics` checks every `Pass` item with Roblox (retries once after 5 s), and right after a purchase.
+    - bundles: owned = in `OwnedItems`, or in the purchase log (then recorded);
+    - passes: `PassCosmetics` checks every `Pass` item with Roblox (retries once after 5 s), and right after a purchase.
 - Coins and crates in `Grants` are given once, at purchase, never again.
 - Price buttons are on the card. Clicking the card opens the detail page.
 
@@ -119,7 +119,7 @@ The box at the right of the Inventory's filter chips narrows the open tab to car
 
 ### Battle Pass (2026-11-16)
 
-The store item `BattlePassS1` (Passes, 399 Robux, once, giftable) is Season 1's premium battle pass: `Grants = { BattlePass = "S1" }` (`StoreGrants.GivePremium`). Its Robux product (`Store_BattlePassS1`) isn't set up yet. See [BATTLE_PASS.md](BATTLE_PASS.md).
+The store item `BattlePassS1` (Passes, 399 Robux, once, giftable) is Season 1's premium battle pass: `Grants = { BattlePass = "S1" }` (`StoreGrants.GivePremium`). Its Robux product (`Store_BattlePassS1`) isn't set up yet. See [Battle pass and quests](BATTLE_PASS.md).
 
 ### Crate inventory
 
@@ -151,21 +151,21 @@ Bought crates wait in `CrateInventory` until opened (`Packets.Store.Open` → `S
 ## How it works
 
 - **Robux:** `StoreService.Buy` opens the product's prompt (Scribe's `PromptPurchase`) or the game pass prompt. The receipt runs the product's Grant in `Shared.Data`:
-  - a crate gives a random skin the player doesn't own and equips it;
-  - an item applies its `Grants`.
-  A Robux crate's skin shows up in the player's data, and the Armory plays the reel for it.
+    - a crate gives a random skin the player doesn't own and equips it;
+    - an item applies its `Grants`.
+    A Robux crate's skin shows up in the player's data, and the Armory plays the reel for it.
 - **Coins and Tokens:** Scribe's `Data.Purchase` takes the price and gives the item in one transaction. For a crate, the skin is picked inside it and sent back, and the reel lands on that skin.
 - **Refusals:**
-  - an unknown item, or no price in that currency;
-  - a product or pass id still 0 (shows SOON);
-  - not enough currency, or the rate limit;
-  - a once-only item already owned (skins, classes, passes, items marked `Once`);
-  - a crate the player owns every skin of.
+    - an unknown item, or no price in that currency;
+    - a product or pass id still 0 (shows SOON);
+    - not enough currency, or the rate limit;
+    - a once-only item already owned (skins, classes, passes, items marked `Once`);
+    - a crate the player owns every skin of.
 - **Results:** `StatsService` listens to `Match.Ended` (Siege ends through `MatchService.Finish`). Each player with a `Team` attribute:
-  - gets a win or a loss;
-  - their mode's streak goes up or back to 0;
-  - `LastMode` is saved, and coins are paid.
-  A match with no winner pays the draw coins and records nothing.
+    - gets a win or a loss;
+    - their mode's streak goes up or back to 0;
+    - `LastMode` is saved, and coins are paid.
+    A match with no winner pays the draw coins and records nothing.
 - **Classes:** a class Id in `Content.Store.Store.LOCKED_CLASSES` must be owned (`OwnedClasses`) to be picked in Siege. `SiegeService` asks `StoreService.OwnsClass`, both for a pick and for the random class given at the end of Selection. None is locked now.
 
 ## API and extension points
@@ -203,16 +203,16 @@ Player attributes: `WinStreak`, and `TotalWins` (saved `Wins`, for the lobby lea
 ## How to add more
 
 - **A crate:** add a ModuleScript to `Content.Crates.Definitions` (copy one, change its `Id` and `Order`):
-  - `Skins` maps skin Ids to weights;
-  - set `Coins`, and `Robux` for the price shown;
-  - for Robux, create a developer product and put its id at `Crate_<Id>` in `Shared.ProductIds`.
+    - `Skins` maps skin Ids to weights;
+    - set `Coins`, and `Robux` for the price shown;
+    - for Robux, create a developer product and put its id at `Crate_<Id>` in `Shared.ProductIds`.
 - **A store item:** add a ModuleScript to `Content.Store.Definitions` (copy one, change its `Id` and `Order`), with a `Section` and prices. Ribbon and coin colors come from `Content.Store.Style`. `Grants` takes Coins, Skins and Classes. For Robux, put the product id at `Store_<Id>`.
 - **A game pass:** an item with `Pass = true` and `Perks`. Put the pass id at `GamePasses.<Id>`.
 - **A special skin:** add the skin to `Content.Guns.Skins.Skins` (in no crate), and an item in the `Skins` section that grants it.
 - **A class for sale:**
-  - add `[classId] = true` to `LOCKED_CLASSES`;
-  - add an item in the `Classes` section with `Grants = { Classes = { classId } }`.
-  - Locking a class takes it away from everyone who doesn't own it.
+    - add `[classId] = true` to `LOCKED_CLASSES`;
+    - add an item in the `Classes` section with `Grants = { Classes = { classId } }`.
+    - Locking a class takes it away from everyone who doesn't own it.
 - **Battle pass or quests:** call `StoreService.Give(player, "Coins", n, "Battle pass")`.
 
 ## Testing
@@ -222,13 +222,13 @@ Checked on 2026-11-13 in a Studio playtest, on the server (no screens, as asked)
 - A new player's `Tokens` was 5.
 - `Give` added coins.
 - Buying:
-  - The Field Crate with coins was refused for a player who owns all its skins ("You already own every skin in that crate").
-  - Obsidian with 5 tokens was refused (needs 30).
-  - The Tokens50 pack for Robux was refused while its id is 0 ("isn't for sale yet").
-  - The coins pack with coins was refused (no coin price).
+    - The Field Crate with coins was refused for a player who owns all its skins ("You already own every skin in that crate").
+    - Obsidian with 5 tokens was refused (needs 30).
+    - The Tokens50 pack for Robux was refused while its id is 0 ("isn't for sale yet").
+    - The coins pack with coins was refused (no coin price).
 - Stats:
-  - Two wins put the `5v5` and `Siege` wins at 2, the streak at 2, the 🔥 2 tag on the head and `LastMode` at `5v5`.
-  - A loss reset the streak to 0, kept the best at 2 and removed the tag.
+    - Two wins put the `5v5` and `Siege` wins at 2, the streak at 2, the 🔥 2 tag on the head and `LastMode` at `5v5`.
+    - A loss reset the streak to 0, kept the best at 2 and removed the tag.
 - Console clean.
 - The test's coins and stats were taken back off the profile afterwards (Studio saves to the real DataStore).
 

@@ -1,12 +1,12 @@
-[Documentation home](index.md) / [API reference](API.md)
-
 # Current Siege APIs
 
-> **Status:** Current-game reference for Siege, matchmaking, classes, cameras and drones. Check the linked system guides and their verification notes before relying on an entry.
+!!! info "Status"
+
+    Current-game reference for Siege, matchmaking, classes, cameras and drones. Check the linked system guides and their verification notes before relying on an entry.
 
 ## Siege, matchmaking, classes, cameras (2026-11-12)
 
-Current Siege, matchmaking, class, camera and drone APIs are summarized here. For implementation details, see [SIEGE.md](SIEGE.md), [MATCHMAKING.md](MATCHMAKING.md), [CLASSES.md](CLASSES.md) and [DRONES.md](DRONES.md). Legacy admin match controls, `Packets.Match.Admin`, the `match` / `matchmode` / `matchset` commands, the Match key, `Packets.Drone.Spot` / `Spotted` and the Team Deathmatch, Free-for-All and Elimination modes are not current; see the historical references linked from [API.md](API.md).
+Current Siege, matchmaking, class, camera and drone APIs are summarized here. For implementation details, see [Siege](SIEGE.md), [Matchmaking and parties](MATCHMAKING.md), [Siege classes](CLASSES.md) and [Scout drones](DRONES.md). Legacy admin match controls, `Packets.Match.Admin`, the `match` / `matchmode` / `matchset` commands, the Match key, `Packets.Drone.Spot` / `Spotted` and the Team Deathmatch, Free-for-All and Elimination modes are not current; see the historical references linked from [Overview](API.md).
 
 ### Recipes
 
@@ -14,7 +14,7 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | --- | --- |
 | Know what kind of server this is | `ServerRole.Kind()`: `"Lobby"`, `"Match"` or `"Studio"` |
 | Queue a player's party | `QueueService.Join(player, modeId?)` (the leader only; no mode: `Content.Matchmaking.DEFAULT_MODE`) |
-| Add a queue mode (2v2, 3v3…) | Add a row to `Content.Matchmaking.MODES` ([MATCHMAKING.md](MATCHMAKING.md#queue-modes)) |
+| Add a queue mode (2v2, 3v3…) | Add a row to `Content.Matchmaking.MODES` ([Matchmaking and parties](MATCHMAKING.md#queue-modes)) |
 | Start a Siege match alone in Studio | Set the workspace attribute `SiegeTestTeam` to `Attackers` or `Defenders`, then press PLAY (K) |
 | Know the Siege phase / a player's side | `SiegeService.Phase()` / `SiegeService.TeamOf(player)` |
 | End the round now | `SiegeService.ForceEnd("Attackers", "BombsPlanted")` |
@@ -25,6 +25,25 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | Show players a static mark | `DroneService.Mark(players, key, position, seconds)` |
 | Add a security camera | `CameraService.Add(model, name, team, bulletproof)` |
 | Change the plant time | `Extensions.Add("Siege.PlantTimeMultiplier", function(player, bombName) return 0.5 end)` |
+
+!!! example "Read the match and hook into it"
+
+    ```lua
+    local Systems = game.ServerScriptService.Modules.Systems
+    local SiegeService = require(Systems.Games.Siege.SiegeService)
+    local ServerRole = require(Systems.Matchmaking.ServerRole)
+    local Extensions = require(game.ReplicatedStorage.Modules.Shared.Extensions)
+
+    if ServerRole.IsMatch() or ServerRole.IsLocal() then
+    	print(SiegeService.Phase(), SiegeService.TeamOf(player), #SiegeService.Players("Defenders", true))
+    end
+
+    Extensions.Add("Siege.PlantTimeMultiplier", function(player, bombName)
+    	return 0.5 -- everyone plants twice as fast
+    end)
+    ```
+
+    More: [Siege examples](EXAMPLES.md#siege).
 
 ### Server functions
 
@@ -45,10 +64,10 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | `Client.Core.Tooltip.Set(object, text?)` / attribute `Tooltip` | A hover tooltip on a UI element (nil or "" removes it) |
 | `Client.Core.ItemDetails.Spin(viewport, on)` / `Hover(viewport, on)` | Turns a `GunPreview` around (the page); a card's while hovered, one at a time |
 | `ItemDetails` `Row.Description` | A row's own description, shown when the row is clicked |
-| `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Games.ClearHouse.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([CLEAR_HOUSE.md](CLEAR_HOUSE.md)) |
+| `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rows()` / `Rooms()` / `Clear()` | `Systems.Games.ClearHouse.ClearHouse`: boards the map and finds rooms / places guards / guard counts and records ([Clear House](CLEAR_HOUSE.md)) |
 | `Content.Games.ClearHouse` | Clear House numbers: Action time, guard counts (`ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`) and profiles, room finder settings |
 | `Packets.Siege.Pick("Map", name)` / snapshot `Maps` | Clear House's map vote during Selection: `{ Name, Votes }` per map of the mode |
-| `Content.BattlePass` | The season, `TRACK` (a Free and a Premium reward per level), `LevelOf`, `Progress`, `Unlocked`, `Reward`, `Totals`, `SecondsLeft`, `MATCH_XP`, `PREMIUM_ITEM` ([BATTLE_PASS.md](BATTLE_PASS.md)) |
+| `Content.BattlePass` | The season, `TRACK` (a Free and a Premium reward per level), `LevelOf`, `Progress`, `Unlocked`, `Reward`, `Totals`, `SecondsLeft`, `MATCH_XP`, `PREMIUM_ITEM` ([Battle pass and quests](BATTLE_PASS.md)) |
 | `Content.Quests` | `DAILY`, `WEEKLY`, `MILESTONES`, `Get`, `Day`, `Week` |
 | `BattlePassService.AddXP(player, amount, reason)` / `Claim(player, rewardId or "ALL")` / `Level(player)` | Server: battle pass XP, claims, level |
 | `QuestService.Add(player, stat, amount?)` | Server: counts toward quests ("Kills", "MatchesWon"...) |
@@ -74,10 +93,10 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 
 | Function | What it does |
 | --- | --- |
-| `Client.Core.UIFeel.Play(kind)` / `Pop(object)` / `Pulse(object)` | A UI sound (`Hover`, `Press`, `Open`, `Close`, `Confirm`, `Error`, `Tick`, `Notify`) / pop something in / a quick grow and settle. Needs a `UIScale` named `Feel` in the object ([UI.md](UI.md#feel)) |
-| `Client.Hud.Nameplates.Refresh()` | Sets every other player's name and health display again: shown for teammates, hidden for enemies ([UI.md](UI.md)) |
+| `Client.Core.UIFeel.Play(kind)` / `Pop(object)` / `Pulse(object)` | A UI sound (`Hover`, `Press`, `Open`, `Close`, `Confirm`, `Error`, `Tick`, `Notify`) / pop something in / a quick grow and settle. Needs a `UIScale` named `Feel` in the object ([UI](UI.md#feel)) |
+| `Client.Hud.Nameplates.Refresh()` | Sets every other player's name and health display again: shown for teammates, hidden for enemies ([UI](UI.md)) |
 | `Client.Core.Matchmaking.PlayWithParty()` | The lobby's PLAY WITH PARTY button |
-| `Client.Core.Music.Play(kind)` / `.CurrentSong` / `.Playlist` | Crossfades to a random song of a kind (`Background`, `Start`, `Panic`, `End`) / the Sound playing now / the background folder ([MUSIC.md](MUSIC.md)) |
+| `Client.Core.Music.Play(kind)` / `.CurrentSong` / `.Playlist` | Crossfades to a random song of a kind (`Background`, `Start`, `Panic`, `End`) / the Sound playing now / the background folder ([Music](MUSIC.md)) |
 | `Client.Core.ModeMenu.Selected()` / `Pick(modeId)` / `Open()` / `.Changed` | The picked queue mode's Id / picks one / opens the Game Modes panel (`Menus` name `Modes`) / fires with the new Id |
 | `Client.Core.Matchmaking.Play()` / `OpenModes()` / `OpenParty()` | The lobby's PLAY button (queue or cancel, for the picked mode) / opens the Game Modes panel (leader only, not while searching) / opens the Party menu (`Menus` name `Party`). The old Play menu is archived |
 | `Client.Core.SiegeSelect` | No API: the selection and reveal screens |
@@ -105,7 +124,7 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | `Siege.Pick` | Client → server | kind (`Site`, `Spawn`, `Class`, `Gun`, `Ready`), value (`Ready`: `"1"` done picking, `"0"` changing picks) |
 | `Siege.Plant` | Server → one attacker | bomb (`""` for none), server time it started, seconds |
 | `Siege.Board` | Server → one client | Scoreboard rows, filtered for their team |
-| `Tutorial.Request` | Client → server, answered (ok, message) | `"Start"` (training, alone) or `"Skip"` (2026-11-17, [TUTORIAL.md](TUTORIAL.md)) |
+| `Tutorial.Request` | Client → server, answered (ok, message) | `"Start"` (training, alone) or `"Skip"` (2026-11-17, [Recruit Training](TUTORIAL.md)) |
 | `Tutorial.Progress` / `Tutorial.Learned` / `Tutorial.Finished` | Server → the recruit | `{ Round, Phase, Done, Missed, Counts }` / a goal Id reached / true if this finish gave the Recruit Crate |
 | `Siege.RequestState` | Client → server | — |
 | `Class.Use` | Client → server, answered (ok, message) | server time, camera position, unit look |
@@ -135,7 +154,7 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | `Classes.CooldownMultiplier` | Product | player, classId, abilityId |
 | `Classes.AbilityUsed` / `Classes.Assigned` | Fire | player, classId, abilityId / player, classId |
 | `Classes.GadgetPlaced` / `Classes.GadgetDestroyed` | Fire | player, kind, model / owner?, kind, model, killer? |
-| Ability points | | `Classes.BreachDetonated`, `PreventFlash`, `FlashTimeMultiplier`, `Flashed`, `PreventPulseMark`, `Pulsed`, `PreventMineTrigger`, `MineDetonated`, `HealMultiplier`, `Healed` ([CLASSES.md](CLASSES.md#extension-points)) |
+| Ability points | | `Classes.BreachDetonated`, `PreventFlash`, `FlashTimeMultiplier`, `Flashed`, `PreventPulseMark`, `Pulsed`, `PreventMineTrigger`, `MineDetonated`, `HealMultiplier`, `Healed` ([Siege classes](CLASSES.md#extension-points)) |
 | `Camera.PreventView` / `Camera.PreventDamage` | Any | player, model / attacker, model |
 | `Camera.Viewed` / `Camera.Destroyed` | Fire | player, model? / model, killer? |
 | `Camera.Scanned` | Fire | spotter, targetModel (a live defender camera scanned a player; Siege uses it to reveal attacker classes; `Camera.PreventView` also gates scans) |
@@ -154,7 +173,7 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | `Content.Games.Siege` | Phase times, plant time, map folder names, bomb labels and colors, texts, win reasons |
 | `Content.Crates.Crates` / `Content.Store.Store` | Loaded from one file per crate / store item in `Content.Crates.Definitions` / `Content.Store.Definitions` (sorted by `Order`); the shared colors are in `Content.Store.Style` |
 | `Systems.Store.BotCoinService` | Pays `REWARDS.BotKill` Coins for an NPC kill |
-| `Systems.Games.Siege.SiegeBots` | Siege bots: `Pick(entry, team, info, teamEntries)`, `Spawn(entry, cframe)`, `Despawn(entry)`, `Update(context)`, `Reset()`, `NewMatch()`, `Scout(entry, cframe)`, `SiteFound()`, `IsBot(userId)`, `IsBotModel(model)`. See [SIEGE_BOTS.md](SIEGE_BOTS.md) |
+| `Systems.Games.Siege.SiegeBots` | Siege bots: `Pick(entry, team, info, teamEntries)`, `Spawn(entry, cframe)`, `Despawn(entry)`, `Update(context)`, `Reset()`, `NewMatch()`, `Scout(entry, cframe)`, `SiteFound()`, `IsBot(userId)`, `IsBotModel(model)`. See [Siege bots](SIEGE_BOTS.md) |
 | `Systems.Games.Siege.BotDrones` | Bot scout drones: `Deploy(userId, team, cframe)`, `Of(userId)`, `Drive(model, goal?)`, `State(model)`, `Clear()`, `Prepare(map)` (links through wall vents) |
 | `Content.Theme` | The UI style (tactical since 2026-11-17): Void, Base, Panel, Raised, Card, Line, Accent (+Dim, Well), Highlight, Text, Muted, Faint, Ink, Danger, Success, `FONT`, `FONT_BOLD`, `BLUR`, `Map(color)`, `IsBright(color)`; the old names (Aqua, Pink, Midnight...) now give the new colors |
 | `Client.Core.MenuAmbience` | No API: blurs and greys the world while a menu is open |
@@ -185,7 +204,7 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | `Planted` | A bomb in the map | A defuser is on it |
 | `SiegeTestTeam` | Workspace (you set, Studio only) | Puts everyone queued on that side |
 | Tag `Camera` | A part or model in the map | A security camera |
-| Tag `FitScale` (and `DesignHeight`, `WidthShare`, `BelowTopbar`) | A UIScale in a full-screen menu frame | `Client.Core.UI` scales the menu to fit the screen, under the top bar ([UI.md](UI.md#full-screen-menus-that-fit-fitscale)). On `SiegeSelect.Screen.Content.Fit` |
+| Tag `FitScale` (and `DesignHeight`, `WidthShare`, `BelowTopbar`) | A UIScale in a full-screen menu frame | `Client.Core.UI` scales the menu to fit the screen, under the top bar ([UI](UI.md#full-screen-menus-that-fit-fitscale)). On `SiegeSelect.Screen.Content.Fit` |
 | `Main.MenuButtons.TouchScale` | UIScale | 0.8 on small touch screens |
 | `Main.RoundResult` / `Main.MatchResult` | Frame | The Siege round banner and the final match screen (`Client.Hud.SiegeHud`); templates `RoundPip`, `MvpCard`, `TeamColumn`, `ResultRow` |
 | `Classes.Reinforced` (extension, Fire) | player, model | A reinforced wall was placed; Siege counts it as Built |
@@ -196,11 +215,11 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | `TotalWins` | Player | Saved total wins, set by `StatsService`; the lobby leaderboard sorts by it |
 | `Content.Games.Siege.ROUNDS` / `DEFAULT_ROUNDS` / `ROUND_END_TIME` / `MATCH_ENDING_REASONS` | Content | Rounds per mode, the pause between rounds, reasons that end the whole match |
 | `DronesMax` | Player | How many drones they may have out at once (`Content.Drones.MAX_ATTRIBUTE`). `DroneService.AddCharge(player)` raises it by one until the next refund |
-| `StoreService.Buy` / `Give` / `Perk` / `OwnsClass` / `OwnsPass`, `StatsService.Record` | Server | See [STORE.md](STORE.md#api-and-extension-points) |
+| `StoreService.Buy` / `Give` / `Perk` / `OwnsClass` / `OwnsPass`, `StatsService.Record` | Server | See [Store, currencies, crates, and stats](STORE.md#api-and-extension-points) |
 | `Store.Buy` / `Store.Open` / `Store.Reward` | Packets | Buy a crate (into the inventory), item or class; open a crate from the inventory; a reward was earned |
 | `Client.Core.Store.Open(section?)`, `Client.Core.Inventory.Open(tab?)`, `Client.Core.ItemDetails.Show(view)`, `Client.Core.StoreViews` | Client | Store, Inventory, detail page, shared views |
 | `CrateInventory` | Saved data | `[crateId].Count`: crates bought and not opened |
-| `Store.PreventBuy`, `Store.Bought`, `Store.Given`, `Stats.Recorded` | Extension points | See [STORE.md](STORE.md) |
+| `Store.PreventBuy`, `Store.Bought`, `Store.Given`, `Stats.Recorded` | Extension points | See [Store, currencies, crates, and stats](STORE.md) |
 | `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | Saved data | From `Content.Store.Store` (ScribeFragment). `Tokens` is unused since 2026-11-15 |
 | `WinStreak` | Player attribute | The win streak shown above the head |
 | `Skins.FamilyOf(gunId)` | Shared | The skin family a gun wears ("Rifle", "Pistol", else its own Id). `Skins.EquipField(gunId)` returns the family's field |

@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Matchmaking and parties
 
 Players queue for Siege from a lobby server, alone or as a party of up to five. When a match forms, everyone in it is teleported to one reserved server that hosts that match and nothing else. When the match ends they go back to lobby servers, each party together.
@@ -34,7 +32,7 @@ The place is one place with two kinds of server (`Systems.Matchmaking.ServerRole
 
 ## How it plays
 
-The UI was rebuilt on 2026-11-12 ([UI.md](UI.md#the-lobby)): the queue and the party are no longer one menu.
+The UI was rebuilt on 2026-11-12 ([UI](UI.md#the-lobby)): the queue and the party are no longer one menu.
 
 - **PLAY** is a big green button in the bottom center of the lobby (`Main.Lobby.Play`, key K). Pressing it queues the party at once. While searching it is red and cancels, with the status and timer above it. Only the party leader can use it; for a member it is grey. The bar hides during a match.
 - **PARTY** (beside PLAY, key L) opens the Party menu (`Main.Party`): five member rows; the leader can make a member the leader (LEAD) or KICK them; anyone can LEAVE PARTY.
@@ -63,7 +61,7 @@ The UI was rebuilt on 2026-11-12 ([UI.md](UI.md#the-lobby)): the queue and the p
 
 ## Bots in parties (2026-11-16)
 
-An admin who leads a party can add bots from the Party menu's BOTS tab ([SIEGE_BOTS.md](SIEGE_BOTS.md)).
+An admin who leads a party can add bots from the Party menu's BOTS tab ([Siege bots](SIEGE_BOTS.md)).
 
 - A bot is a member with a negative UserId.
 - It is in the ticket (`M`, and `B` with its name) and in the match record's `Teams` and `Bots`, never in `Expected`.
@@ -79,35 +77,37 @@ A party queues for one **mode**, and only tickets of the same mode are matched t
 | `1v1` | 1 V 1 | 1 | 1 v 1 | 60 s (never smaller than 1 v 1) |
 | `5v5` | 5 V 5 | 5 | 1 v 1 | 60 s |
 | `ClearHouse` | CLEAR HOUSE (category ARCADE) | 5 players, 0 defenders (NPC guards) | 1 player | 20 s |
-| `Tutorial` | TRAINING (category `Training`, not shown in the panel) | 1 player, 1 bot | — | never queued: `QueueService.JoinTutorial` ([TUTORIAL.md](TUTORIAL.md)) |
+| `Tutorial` | TRAINING (category `Training`, not shown in the panel) | 1 player, 1 bot | — | never queued: `QueueService.JoinTutorial` ([Recruit Training](TUTORIAL.md)) |
 
 - `DEFAULT_MODE` is the mode the lobby bar starts on (`5v5` today; with `1v1` two players are enough for a match).
-- The leader picks the mode in the **Game Modes panel** (the MODE button right of PLAY; [UI.md](UI.md#the-game-modes-panel)). It has no key. The pick travels with the queue request; the server checks the mode exists and that the party fits on one side of it. A party of two can't queue for 1 V 1.
+- The leader picks the mode in the **Game Modes panel** (the MODE button right of PLAY; [UI](UI.md#the-game-modes-panel)). It has no key. The pick travels with the queue request; the server checks the mode exists and that the party fits on one side of it. A party of two can't queue for 1 V 1.
 - The mode's Id is in the ticket (`G`) and in the match record (`Mode`).
 - **Categories.** Each mode names a category (`CATEGORIES`). The panel shows one card per category that has a mode. Since the owner's edit on 2026-11-12 there is one category, **SIEGE**, holding both modes, and `DEFAULT_MODE` is `5v5` (the table above still lists the modes correctly).
-- **Card look.** A category row and a mode row both carry `Tag`, `TagColor`, `Color`, `Image` and `Icon` ([UI.md](UI.md#what-a-card-shows)).
+- **Card look.** A category row and a mode row both carry `Tag`, `TagColor`, `Color`, `Image` and `Icon` ([UI](UI.md#what-a-card-shows)).
 - **To add a mode**, add a row to `MODES` (Id, Name, Category, Tag, Color, TagColor, Image, Icon, Description, TeamSize, MinTeamSize, MaxWait). Nothing else changes: the panel and the matchmaker read the table. Never reuse an old Id. To add a category, add a row to `CATEGORIES`.
 - **Kind and Maps (2026-11-14).** A mode's `Kind` says how the match server plays it: nil for Siege, `"ClearHouse"` for [Clear House](CLEAR_HOUSE.md). `Maps` limits the maps it is played on; with no `Maps`, it uses `Content.Games.Siege.MAP_POOL`.
 - **Party size.** `Matchmaking.PartyLimit(mode)` is the largest party allowed: the smaller side, or the only side when the other is 0. The queue and the matchmaker's ticket check both use it.
 - **Party size picks the mode (2026-11-15).** `PrivateLimit(mode)` is the largest party for a private match: both sides together, at most `MAX_PARTY_SIZE`. `FitMode(modeId, size, private)` gives the picked mode when the party fits it, else the mode of the same category with the smallest limit that fits, or nil.
 
-  | Mode | PLAY (PartyLimit) | PLAY WITH PARTY (PrivateLimit) |
-  | --- | --- | --- |
-  | 1v1 | 1 | 2 |
-  | 5v5 | 5 | 5 |
-  | Clear House | 5 | 5 |
+    | Mode | PLAY (PartyLimit) | PLAY WITH PARTY (PrivateLimit) |
+    | --- | --- | --- |
+    | 1v1 | 1 | 2 |
+    | 5v5 | 5 | 5 |
+    | Clear House | 5 | 5 |
 
-  The lobby sends the fitted mode with each request, so with 1v1 picked a party of 2 queues 5v5 but plays a private 1v1; a party of 3 gets 5v5 for both. The Game Modes panel greys out modes the party is too big for (PARTY TOO BIG) and marks private-only ones (PRIVATE ONLY). Pressing one opens a popup (`Client.Core.Notice`) instead of changing the description line.
+    The lobby sends the fitted mode with each request, so with 1v1 picked a party of 2 queues 5v5 but plays a private 1v1; a party of 3 gets 5v5 for both. The Game Modes panel greys out modes the party is too big for (PARTY TOO BIG) and marks private-only ones (PRIVATE ONLY). Pressing one opens a popup (`Client.Core.Notice`) instead of changing the description line.
 - All modes share one queue map, so the matchmaker still makes one queue read per pass. It reads the 100 oldest tickets of all modes together; if one mode ever fills that window, give each mode its own map.
 
 ## Bot fill and Ranked (2026-11-18)
 
 - `5v5` and `1v1` have `BotFill` (30 s and 20 s): after the oldest ticket waits that long with no match, a match forms with whoever is queued (one player is enough) and Siege bots fill every empty spot (`QueueService` `fillBots`). Every public match of those modes is topped up. Private matches never are. Studio: workspace attribute `NoBotFill = true` turns it off.
-- New mode `Ranked` (SIEGE category, 5 v 5, smallest 1 v 1, 90 s): players only, `MinLevel = 5` (each member on the lobby server needs the `Level` attribute at 5+; a party with bots is refused). Rating in [PROGRESSION.md](PROGRESSION.md).
+- New mode `Ranked` (SIEGE category, 5 v 5, smallest 1 v 1, 90 s): players only, `MinLevel = 5` (each member on the lobby server needs the `Level` attribute at 5+; a party with bots is refused). Rating in [Progression and retention](PROGRESSION.md).
 
 ## Play with party (2026-11-12)
 
-> **Not run.** Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
+!!! warning "Not run"
+
+    Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
 
 The lobby bar's **PLAY WITH PARTY** button (`Main.Lobby.PartyPlay`, above PLAY) starts a match with only the party's own members in it.
 
@@ -178,7 +178,7 @@ If the reserve or the save fails, the tickets stay queued and the next pass trie
 
 1. The first player's `MatchId` is only a key. The server reads the record from MemoryStore and checks the record's `ServerId` is its own `PrivateServerId`, so a made-up id can't start another match there.
 2. **Teams come from the record, never from teleport data or the client.**
-3. `Matchmaking.MatchReady` fires; Siege waits for the expected players ([SIEGE.md](SIEGE.md)).
+3. `Matchmaking.MatchReady` fires; Siege waits for the expected players ([Siege](SIEGE.md)).
 4. A player who is not in the record is sent back to a lobby.
 5. At the end `MatchHost.ReturnAll` teleports each party together to a lobby server with `{ PartyId }`.
 
@@ -262,6 +262,7 @@ ServerRole.Kind()                -- "Lobby", "Match" or "Studio"
 Not verified: the Game Modes panel (built after this test, compile-checked only), two real players queueing 1 V 1 against each other, a party refused for 1 V 1 from the UI, and everything on live servers (below).
 
 **Not verified. None of this has run on live servers:**
+
 - MemoryStore and MessagingService themselves (Studio used the local stand-ins).
 - `ReserveServer`, the teleport to the match server, and the teleport back.
 - The matchmaker lease with more than one lobby server, and failover.
@@ -272,7 +273,7 @@ Not verified: the Game Modes panel (built after this test, compile-checked only)
 
 ## Limits
 
-- The lobby is still off in the place (its portals are missing), so on a lobby server players currently spawn on the map with guns while they queue. See [NEXT_STEPS.md](NEXT_STEPS.md).
+- The lobby is still off in the place (its portals are missing), so on a lobby server players currently spawn on the map with guns while they queue. See [Next steps](NEXT_STEPS.md).
 - No skill or region matching: oldest first.
 - A restored party's leader is whoever arrives first on the owner server, unless the old leader lands on that same server.
 - If a parked party's first server dies before the others arrive, the rest are not rejoined.

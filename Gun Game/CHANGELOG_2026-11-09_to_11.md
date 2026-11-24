@@ -1,32 +1,26 @@
----
-hide:
-  - toc
----
-
-[Documentation home](index.md) / [Changelog](CHANGELOG.md)
-
 # Changelog archive: 2026-11-09 to 11
 
 Historical implementation notes, retained as written for search and context. Verify behavior against current system guides before using these details.
 
 ## 2026-11-11: NPC guard mode
 
-See [ADDING_NPCS.md](ADDING_NPCS.md) (Guard mode).
+See [Adding NPCs](ADDING_NPCS.md) (Guard mode).
 
 ### Added
 
 - **Guard mode for every NPC** (for a future game mode). A guard:
-  - stays in its room (a part tagged `NPCRoom`);
-  - patrols it and watches its doors and windows;
-  - rebuilds any damaged door or window board of the room, at any health, the most broken first, so the room can't be sieged;
-  - always fights first: an enemy it can shoot, or a hit it just took, stops a repair, and it fights from inside the room;
-  - never chases, pursues through glass or breaks out.
+    - stays in its room (a part tagged `NPCRoom`);
+    - patrols it and watches its doors and windows;
+    - rebuilds any damaged door or window board of the room, at any health, the most broken first, so the room can't be sieged;
+    - always fights first: an enemy it can shoot, or a hit it just took, stops a repair, and it fights from inside the room;
+    - never chases, pursues through glass or breaks out.
 - **Turning it on:** `NPCService.SetMode(npc, "Guard", room)` / `"Roam"`, or `Mode = "Guard"` (and optional `Room`) on an `NPCSpawn` part. NPC models show `NPCMode` and `GuardRoom`.
 
 Partly tested in a playtest on a temporary room in the NPC test area:
+
 - **Patrol:** a guard patrolled and never left the room (0 of 16 samples outside).
 - **Repair:** with an enemy visible through the broken window, it fought instead of repairing, as designed.
-- **Not tested:** a full repair with no enemy in view, and a repair interrupted by a hit. Those weren't checked; see [NEXT_STEPS.md](NEXT_STEPS.md).
+- **Not tested:** a full repair with no enemy in view, and a repair interrupted by a hit. Those weren't checked; see [Next steps](NEXT_STEPS.md).
 
 
 ## 2026-11-11: Shotgun idles fixed
@@ -34,11 +28,12 @@ Partly tested in a playtest on a temporary room in the NPC test area:
 ### Fixed
 
 - **Both shotgun idles** (Shotgun, SiegeShotgun) held the gun too far back, with the stock up over the shoulder.
-  - **Cause:** the gun slides back when the left hand can't reach the front grip. Held out to the side, a shotgun met no body to stop it.
-  - **Slide limit:** the slide is now capped at 0.45 studs.
+    - **Cause:** the gun slides back when the left hand can't reach the front grip. Held out to the side, a shotgun met no body to stop it.
+    - **Slide limit:** the slide is now capped at 0.45 studs.
 - **One idle for every long gun:** the long-gun idle, sprint and reload are now placed by the grip, not the rear sight, which sits in a different spot on every gun (on a shotgun it's on the grip). Every long gun now idles in the same low ready: the hand at the right of the chest, the stock at the right shoulder, the muzzle 25 degrees down and a little across the body.
 
 Checked on the gun range:
+
 - **Shotguns:** both are in the low ready, seen from the side.
 - **Fit, all 72 rigs:** clipping 0.01 studs at most, and the right hand always on the grip.
 
@@ -51,6 +46,7 @@ Checked on the gun range:
 - **The poses are higher:** long guns aim with the sights at eye level beside the right cheek, idle and reload sit at chest height, and the pistol idle is higher.
 
 Measured on the gun range, all 72 rigs:
+
 - **Long guns aiming:** the sight sits at eye level (+0.10 from the head center); before, it was at -0.25 and 0.38 studs to the wrong side.
 - **Long guns at idle:** chin/shoulder height.
 - **Fit:** clipping 0.02 studs at most, and the right hand always on the grip.
@@ -67,7 +63,7 @@ Measured on the gun range: every gun's body sits on top of the fist (0.03 studs 
 
 ## 2026-11-11: Third-person guns fixed: no more guns through heads, revolvers fixed
 
-See [THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md).
+See [Third-person gun animation](THIRD_PERSON_GUNS.md).
 
 ### Fixed
 
@@ -81,6 +77,7 @@ See [THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md).
 - `ThirdPersonGuns.Report()` gives each character's gun fit, for checking.
 
 Measured on the gun range, all 72 rigs:
+
 - **Clipping:** at most 0.10 studs into the body.
 - **Right hand:** always on the grip.
 - **Left hand:** 0.19 studs from the front grip on average.
@@ -88,15 +85,15 @@ Measured on the gun range, all 72 rigs:
 
 ## 2026-11-11: Gun animation range
 
-See [GUN_SHOWCASE.md](GUN_SHOWCASE.md).
+See [Gun animation range](GUN_SHOWCASE.md).
 
 ### Added
 
 - **A gun range with 72 rigs** (`workspace.GunShowcase`, east of the map): one per gun (12) and animation (idle, walk, sprint, aim, shoot, reload), each doing only that one, for real.
-  - **Shoot:** fire real bullets at their lane's target in the gun's own rhythm and reload when empty.
-  - **Reload:** reload on a loop.
-  - **Walk and Sprint:** pace their lanes.
-  - **Aim:** aim at their target.
+    - **Shoot:** fire real bullets at their lane's target in the gun's own rhythm and reload when empty.
+    - **Reload:** reload on a loop.
+    - **Walk and Sprint:** pace their lanes.
+    - **Aim:** aim at their target.
 - **Driver:** `Systems.Showcase.GunShowcase` runs them; the rigs can't be hurt.
 - **The `range` command** (alias `showcase`) takes you there.
 
@@ -105,6 +102,7 @@ See [GUN_SHOWCASE.md](GUN_SHOWCASE.md).
 - `Client.Guns.ThirdPersonGuns` treats only an Ammo drop of at most 3 rounds as a shot. It also poses `GunShowcase`-tagged rigs; `Client.Guns.GunEffects` draws their tracers.
 
 Tested in a playtest:
+
 - **Guns:** all 72 rigs were armed.
 - **Shooters:** every one fired and reloaded.
 - **Lanes:** the walk and sprint rigs moved.
@@ -114,17 +112,17 @@ Tested in a playtest:
 
 ## 2026-11-11: Third-person gun animation for every gun
 
-See [THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md).
+See [Third-person gun animation](THIRD_PERSON_GUNS.md).
 
 ### Added
 
 - **Other players and NPCs now hold, aim, shoot and reload guns properly** in third person, for all guns (`Client.Guns.ThirdPersonGuns`). Before, every gun's animation slots were empty and characters used Roblox's one-arm hold.
-  - **Idle:** a two-handed low ready, with a walk bob.
-  - **Sprint:** long guns are carried across the chest, pistols held low.
-  - **Aim:** the sights come up to the eyes and follow where they look, with the waist and head following too.
-  - **Shoot:** a recoil kick on every shot (pistols 13 degrees, shotguns 10, rifles 5).
-  - **Reload:** the left hand goes to the magazine, down to the belt and back, with the magazine hidden while it's out.
-  - **Lower body:** the legs keep the normal walk and run.
+    - **Idle:** a two-handed low ready, with a walk bob.
+    - **Sprint:** long guns are carried across the chest, pistols held low.
+    - **Aim:** the sights come up to the eyes and follow where they look, with the waist and head following too.
+    - **Shoot:** a recoil kick on every shot (pistols 13 degrees, shotguns 10, rifles 5).
+    - **Reload:** the left hand goes to the magazine, down to the belt and back, with the magazine hidden while it's out.
+    - **Lower body:** the legs keep the normal walk and run.
 - It is code, not animation files: each gun is posed from its own sight and grip attachments with IK, so new guns work with nothing to upload. Long guns slide back toward the body until both hands reach their grips.
 - New shared state: `GunAiming` (characters), `Reloading` (gun tools), `AimPitch` (NPCs).
 
@@ -133,6 +131,7 @@ See [THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md).
 - The old third-person aim tilt in `Client.Guns.GunEffects` is replaced by the new system.
 
 Tested in a playtest on the test-area NPCs:
+
 - **Pistol aim:** the sight sat 1.17 studs in front of the eyes, on the aim line.
 - **Idle:** the left hand sat on the front grip (0.00 studs) for the pistol, burst rifle and shotgun.
 - **Reload:** the full magazine path.
@@ -144,10 +143,10 @@ Tested in a playtest on the test-area NPCs:
 ### Added
 
 - **A "Pistol Shoot" animation** for the R15 rig `Workspace.Enemies.Rig2` and the Pistol it holds, saved as `ServerStorage.RBX_ANIMSAVES.Rig2."Pistol Shoot"` (open it in the Animation Editor). It is 0.3 s, plays once, priority Action, and moves only the upper body (waist, neck, both arms), so it layers over walking:
-  - 0 s: an aimed two-handed stance: barrel level and straight ahead, the rear sight on the eye line 1.16 studs in front of the eyes, the support hand on the pistol's `LeftGrip` point.
-  - 0.04 s: the kick: muzzle up 13.5 degrees and pulled 0.2 studs toward the face, hands still on the gun.
-  - 0.12 s: settling (muzzle 2.7 degrees up), easing back.
-  - 0.3 s: back on target.
+    - 0 s: an aimed two-handed stance: barrel level and straight ahead, the rear sight on the eye line 1.16 studs in front of the eyes, the support hand on the pistol's `LeftGrip` point.
+    - 0.04 s: the kick: muzzle up 13.5 degrees and pulled 0.2 studs toward the face, hands still on the gun.
+    - 0.12 s: settling (muzzle 2.7 degrees up), easing back.
+    - 0.3 s: back on target.
 - The poses were solved from the rig's real joints (its `AnimationConstraint`s and attachments) and the pistol's attachments, not hand-placed. The solved joint angles are kept on Rig2 as the `SolvedAimPose` and `SolvedKickPose` attributes (JSON) to build more pistol animations from.
 
 Checked in a playtest: played on Rig2, the barrel pointed within 0.7 degrees of straight ahead at the aim frame and 13.5 degrees up at the kick frame (screenshots).
@@ -155,7 +154,7 @@ Checked in a playtest: played on Rig2, the barrel pointed within 0.7 degrees of 
 
 ## 2026-11-11: Death screen and spectating the killer chain
 
-See [DEATH_SCREEN.md](DEATH_SCREEN.md).
+See [Death screen and spectating](DEATH_SCREEN.md).
 
 ### Added
 
@@ -172,7 +171,7 @@ Tested in a playtest: killed by the Soldier NPC, the camera followed it; when th
 
 ## 2026-11-11: Quicker, smoother movement and faster slides
 
-See [MOVEMENT.md](MOVEMENT.md) (Tuning).
+See [Movement and camera](MOVEMENT.md) (Tuning).
 
 ### Changed
 
@@ -187,7 +186,7 @@ Measured in a playtest: a full slide lasted 1.1 s, peaked at 37 studs/s and cove
 
 ## 2026-11-11: Siege-style scout drones
 
-See [DRONES.md](DRONES.md).
+See [Scout drones](DRONES.md).
 
 ### Changed
 
@@ -215,7 +214,7 @@ Tested in a Studio playtest: a throw lands and is handed to the client, the feed
 
 ## 2026-11-11: Modular matches and our own teams
 
-See [MATCH.md](MATCH.md).
+See [Matches, modes, and teams](MATCH.md).
 
 ### Changed
 
@@ -235,7 +234,7 @@ Tested in a Studio playtest with one player: waiting, admin start, team assignme
 
 ## 2026-11-10: Team deathmatch rounds
 
-See [Team deathmatch rounds](ROUND_SYSTEM.md). *Replaced on 2026-11-11 by the modular match system ([MATCH.md](MATCH.md)); Team Deathmatch is now one of its modes.*
+See [Team deathmatch rounds](ROUND_SYSTEM.md). *Replaced on 2026-11-11 by the modular match system ([Matches, modes, and teams](MATCH.md)); Team Deathmatch is now one of its modes.*
 
 ### Added
 
@@ -254,7 +253,7 @@ See [Team deathmatch rounds](ROUND_SYSTEM.md). *Replaced on 2026-11-11 by the mo
 
 ## 2026-11-10: NPCs board up doors and windows
 
-See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics, Board up).
+See [Adding NPCs](ADDING_NPCS.md) (Tactics, Board up).
 
 ### Added
 
@@ -280,7 +279,7 @@ Tested: a Soldier facing the test Rig behind the glass held fire, went round, cu
 
 ## 2026-11-10: NPCs move, hunt and get around
 
-See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
+See [Adding NPCs](ADDING_NPCS.md) (Tactics).
 
 ### Fixed
 
@@ -298,7 +297,7 @@ See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
 
 ## 2026-11-10: NPCs decide to break in
 
-See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
+See [Adding NPCs](ADDING_NPCS.md) (Tactics).
 
 ### Added
 
@@ -313,7 +312,7 @@ See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
 
 ## 2026-11-10: Smarter NPCs
 
-See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
+See [Adding NPCs](ADDING_NPCS.md) (Tactics).
 
 ### Added
 
@@ -336,7 +335,7 @@ See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
 ### Changed
 
 - **Grenades and smoke bombs stay near where they land.** They're heavy and barely bounce, keep half their speed on landing, then roll about 2–4 studs to a stop (`Bounce`, `LandingKeep`, `RollDrag` in `Content.Consumables`). They used to roll away like a light ball.
-- **Grenades remove more of boards and soft walls.** Board damage 80 → 350: a blast 4 studs from a board strips all 6 pieces (it took 2). Soft walls: hole 1.6 → 3.5 studs, reach 6 → 10 studs, up to 6 walls (was 3); a blast 2 studs from a wall removed 9.0 cubic studs of it (2.0 before). Player damage is unchanged. See [CONSUMABLES.md](CONSUMABLES.md).
+- **Grenades remove more of boards and soft walls.** Board damage 80 → 350: a blast 4 studs from a board strips all 6 pieces (it took 2). Soft walls: hole 1.6 → 3.5 studs, reach 6 → 10 studs, up to 6 walls (was 3); a blast 2 studs from a wall removed 9.0 cubic studs of it (2.0 before). Player damage is unchanged. See [Consumables](CONSUMABLES.md).
 
 
 ## 2026-11-10: SMG sound and a new gun bash
@@ -347,42 +346,42 @@ See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
 
 ### Changed
 
-- **The gun bash is a long straight jab.** The gun pulls back toward the shoulder, then thrusts about 1.6 studs straight forward (full scale) with a slight cant, holds a beat, and snaps back. It stays on its own side of the screen instead of swinging across the middle. No camera shake. Tune the `BASH_*` constants in `Client.Guns.Viewmodel.Actions`. See [ADDING_GUNS.md](ADDING_GUNS.md).
+- **The gun bash is a long straight jab.** The gun pulls back toward the shoulder, then thrusts about 1.6 studs straight forward (full scale) with a slight cant, holds a beat, and snaps back. It stays on its own side of the screen instead of swinging across the middle. No camera shake. Tune the `BASH_*` constants in `Client.Guns.Viewmodel.Actions`. See [Adding guns](ADDING_GUNS.md).
 
 
 ## 2026-11-10: Tracers no longer come out of your face
 
 ### Fixed
 
-- **Your own tracers start out at the barrel.** The viewmodel's muzzle sits about 1.2 studs from the eye (on the crosshair when aimed), so full-size tracers started there looked like they came out of your head. They now start on the same screen line but 4 studs out (`TRACER_START_DISTANCE` in `Client.Guns.GunEffects`), or just in front of a closer wall or target. Checked in a playtest: hip and aimed tracers first appear 4.0 studs out, at the barrel's spot on screen. Hits are unchanged (still from the camera). See [ADDING_GUNS.md](ADDING_GUNS.md).
+- **Your own tracers start out at the barrel.** The viewmodel's muzzle sits about 1.2 studs from the eye (on the crosshair when aimed), so full-size tracers started there looked like they came out of your head. They now start on the same screen line but 4 studs out (`TRACER_START_DISTANCE` in `Client.Guns.GunEffects`), or just in front of a closer wall or target. Checked in a playtest: hip and aimed tracers first appear 4.0 studs out, at the barrel's spot on screen. Hits are unchanged (still from the camera). See [Adding guns](ADDING_GUNS.md).
 
 
 ## 2026-11-10: Stronger head aim assist
 
 ### Changed
 
-- **Aim assist favors the head.** The head now wins about two thirds of the space between head and chest, gets 1.4× friction and 1.6× pull, and the assist sticks to the point it locked last frame so a small wobble doesn't drop it to the chest. Tuning: `HEAD_PREFERENCE`, `STICKY`, `HEAD_FRICTION_BOOST`, `HEAD_PULL_BOOST`, `MAX_FRICTION` in `Client.Guns.AimAssist`. See [AIM_ASSIST.md](AIM_ASSIST.md).
+- **Aim assist favors the head.** The head now wins about two thirds of the space between head and chest, gets 1.4× friction and 1.6× pull, and the assist sticks to the point it locked last frame so a small wobble doesn't drop it to the chest. Tuning: `HEAD_PREFERENCE`, `STICKY`, `HEAD_FRICTION_BOOST`, `HEAD_PULL_BOOST`, `MAX_FRICTION` in `Client.Guns.AimAssist`. See [Aim assist](AIM_ASSIST.md).
 
 
 ## 2026-11-10: Aim assist holds headshots
 
 ### Changed
 
-- **Aim assist sticks to the head or the chest, whichever is nearer the crosshair.** It used to know only the chest, so aiming at a head got pulled down to the body. Now aiming near the head holds the head. See [AIM_ASSIST.md](AIM_ASSIST.md).
+- **Aim assist sticks to the head or the chest, whichever is nearer the crosshair.** It used to know only the chest, so aiming at a head got pulled down to the body. Now aiming near the head holds the head. See [Aim assist](AIM_ASSIST.md).
 
 
 ## 2026-11-10: Aim assist on PC for testing
 
 ### Added
 
-- **`aimassistpc <player> [true/false]`** (alias `aapc`), an admin Cmdr command that gives a player controller aim assist on mouse and keyboard, so it can be tried on PC. With no true/false it toggles. It sets the server-side player attribute `AimAssistPC`, which `Client.Guns.AimAssist` reads; the Aim assist setting must also be on. See [AIM_ASSIST.md](AIM_ASSIST.md).
+- **`aimassistpc <player> [true/false]`** (alias `aapc`), an admin Cmdr command that gives a player controller aim assist on mouse and keyboard, so it can be tried on PC. With no true/false it toggles. It sets the server-side player attribute `AimAssistPC`, which `Client.Guns.AimAssist` reads; the Aim assist setting must also be on. See [Aim assist](AIM_ASSIST.md).
 
 
 ## 2026-11-10: AI coding guide
 
 ### Added
 
-- **[AI_CODING_GUIDE.md](AI_CODING_GUIDE.md):** one file to give any AI agent before it codes in the FPS place: the hard rules, where code lives, how ModuleLoader loads it, the module template and code style, the shared building blocks (packets, extension points, Scribe data, effects, states, input, Cmdr, products), world conventions, a feature walkthrough, testing and docs standards, and a done checklist.
+- **[AI coding guide](AI_CODING_GUIDE.md):** one file to give any AI agent before it codes in the FPS place: the hard rules, where code lives, how ModuleLoader loads it, the module template and code style, the shared building blocks (packets, extension points, Scribe data, effects, states, input, Cmdr, products), world conventions, a feature walkthrough, testing and docs standards, and a done checklist.
 
 ### Fixed
 
@@ -391,7 +390,7 @@ See [ADDING_NPCS.md](ADDING_NPCS.md) (Tactics).
 
 ## 2026-11-10: Stronger aim assist
 
-See [AIM_ASSIST.md](AIM_ASSIST.md).
+See [Aim assist](AIM_ASSIST.md).
 
 ### Changed
 
@@ -401,7 +400,7 @@ See [AIM_ASSIST.md](AIM_ASSIST.md).
 
 ## 2026-11-10: Grenade and smoke bomb
 
-See [CONSUMABLES.md](CONSUMABLES.md).
+See [Consumables](CONSUMABLES.md).
 
 ### Added
 
@@ -424,12 +423,12 @@ See [CONSUMABLES.md](CONSUMABLES.md).
 
 ### Added
 
-- **[API.md](API.md)**: one page covering every public function, extension point, packet, Cmdr command, attribute, tag, data field and collision group, with recipes for common jobs.
+- **[Overview](API.md)**: one page covering every public function, extension point, packet, Cmdr command, attribute, tag, data field and collision group, with recipes for common jobs.
 
 
 ## 2026-11-09: Decisions round (shop stand, keys, recoil, bash, debris, Revolver)
 
-Follows the answers in [DECISIONS.md](DECISIONS.md).
+Follows the answers in [Design decisions](DECISIONS.md).
 
 ### Changed
 
@@ -443,10 +442,10 @@ Follows the answers in [DECISIONS.md](DECISIONS.md).
 - **Per-gun soft-wall holes.** Each gun's `SoftWallConfig.Guns[Id].HoleRadius` applies (Pistol 0.15, LMG 0.25, SMG 0.18, Shotgun pellets 0.15, and so on). BurstRifle explosive rounds stop at soft walls (`Penetrates = false`).
 - **Door board prompt** reads "Door board".
 - **Old helpers tidied** to house style (headers, `--!strict`), with these fixes:
-  - `Services.PlayerJoin` sets the Player collision group when parts are added instead of scanning every character each frame; only the UpperTorso rule still runs per frame.
-  - `Client.Hud.HealthBillboards` no longer errors without `workspace.Enemies`, and its waits time out.
-  - `Handlers.AnimationHandler.RemoveAnim` works with numeric ids; `Handlers.StateHandler.SetStun` finds the Humanoid on the character.
-  - `Client.Combat.CharacterHurt` drops an unused camera shaker. `Main`, `UI`, `CharacterAdded`, `CmdrClient`, `CursorAim`, `TableHelpers`, `UIHelpers`, `SetCollisionGroup`, `CmdrSetup`, `TokenBucket`, `UnreliablePackets`, `PersonalHealth`, `HealthUI` and `config` got headers.
+    - `Services.PlayerJoin` sets the Player collision group when parts are added instead of scanning every character each frame; only the UpperTorso rule still runs per frame.
+    - `Client.Hud.HealthBillboards` no longer errors without `workspace.Enemies`, and its waits time out.
+    - `Handlers.AnimationHandler.RemoveAnim` works with numeric ids; `Handlers.StateHandler.SetStun` finds the Humanoid on the character.
+    - `Client.Combat.CharacterHurt` drops an unused camera shaker. `Main`, `UI`, `CharacterAdded`, `CmdrClient`, `CursorAim`, `TableHelpers`, `UIHelpers`, `SetCollisionGroup`, `CmdrSetup`, `TokenBucket`, `UnreliablePackets`, `PersonalHealth`, `HealthUI` and `config` got headers.
 
 ### Added
 
@@ -455,7 +454,7 @@ Follows the answers in [DECISIONS.md](DECISIONS.md).
 - **`Shared.ProductIds`**: one module for every developer product and game pass id. The skin crate reads `Products.SkinCrate` from it instead of the old `SkinCrateProductId` attribute.
 - **Crate refund.** Buying a crate with every skin owned gives 500 coins (`Skins.CRATE_REFUND_COINS`).
 
-- **Aim assist for controller and touch** (`Client.Guns.AimAssist`): friction and a gentle pull toward enemies, stronger when aimed, never on mouse. Settings > Toggles turns it off. See [AIM_ASSIST.md](AIM_ASSIST.md).
+- **Aim assist for controller and touch** (`Client.Guns.AimAssist`): friction and a gentle pull toward enemies, stronger when aimed, never on mouse. Settings > Toggles turns it off. See [Aim assist](AIM_ASSIST.md).
 - **The HUD scales with the screen.** Health, ammo, weapon slots and kill feed are sized in scale with aspect locks. On touch, the ammo box moves above the health bar, the weapon slots go top left, and small screens get a bigger HUD. The touch buttons keep their original pixel layout.
 
 - **Skin crate product is live.** "Skin Crate", 499 Robux, product id `3730208338`, in `Shared.ProductIds`.
@@ -466,19 +465,19 @@ Follows the answers in [DECISIONS.md](DECISIONS.md).
 ### Added
 
 - **Gun bash.** Press Q (rebindable "Melee" in Settings > Controls), click the mouse wheel, or press R3 on a gamepad to hit with any gun.
-  - It deals 45 damage within 6 studs (35° cone) on a 0.9 s cooldown.
-  - The Pistol is lighter and quicker; the Shotgun and LMG hit harder.
-  - Scrolling the wheel still switches weapons.
+    - It deals 45 damage within 6 studs (35° cone) on a 0.9 s cooldown.
+    - The Pistol is lighter and quicker; the Shotgun and LMG hit harder.
+    - Scrolling the wheel still switches weapons.
 - **Server-decided hits** (`Systems.Combat.GunMelee`).
-  - Hits are credited like bullets: the kill feed shows "<Gun> bash", plus the hitmarker and DamageLog.
-  - Each bash knocks one piece (the spray paint or a plank) off a board, and cuts a melee-sized hole in soft walls.
+    - Hits are credited like bullets: the kill feed shows "<Gun> bash", plus the hitmarker and DamageLog.
+    - Each bash knocks one piece (the spray paint or a plank) off a board, and cuts a melee-sized hole in soft walls.
 - **Animation.** A spring-based gun-jab in the viewmodel. It ends aiming, sprinting and inspecting, and isn't possible while reloading.
 - **Config and hooks.**
-  - Numbers and per-gun overrides live in `Content.Guns.Melee`.
-  - New extension points `Gun.PreventMelee` and `Gun.MeleeHit`, and a new packet `Packets.Melee.Swing`.
+    - Numbers and per-gun overrides live in `Content.Guns.Melee`.
+    - New extension points `Gun.PreventMelee` and `Gun.MeleeHit`, and a new packet `Packets.Melee.Swing`.
 - **Effects.**
-  - New: `MeleeSwing`, `MeleeImpact`, and the soft-wall `SoftWallHole` and `SoftWallChunk` (stone knock, rubble and dust).
-  - New sounds: `MeleeImpact`, `RockImpact`, `RubbleFall` (ProSoundEffects).
+    - New: `MeleeSwing`, `MeleeImpact`, and the soft-wall `SoftWallHole` and `SoftWallChunk` (stone knock, rubble and dust).
+    - New sounds: `MeleeImpact`, `RockImpact`, `RubbleFall` (ProSoundEffects).
 
 
 ## 2026-11-09: Soft walls rebuilt
@@ -486,11 +485,11 @@ Follows the answers in [DECISIONS.md](DECISIONS.md).
 ### Changed
 
 - **Soft walls rebuilt (`Systems.Destruction.SoftWalls`).**
-  - Every hit that lands on a wall while it waits or rebuilds is cut in one CSG pass, so a shotgun blast is one rebuild.
-  - Caps limit rebuilds per frame, rebuilds in flight and cuts per rebuild. Nothing runs while idle.
+    - Every hit that lands on a wall while it waits or rebuilds is cut in one CSG pass, so a shotgun blast is one rebuild.
+    - Caps limit rebuilds per frame, rebuilds in flight and cuts per rebuild. Nothing runs while idle.
 - **Loose pieces fall as debris** instead of vanishing.
-  - Debris doesn't collide with players, and bullets pass through it. It's removed after 8 s, with at most 20 pieces at once.
-  - New support rule: `Auto`, `Bottom`, `Touching` or `All`, set per wall with the `SoftWallSupport` attribute.
+    - Debris doesn't collide with players, and bullets pass through it. It's removed after 8 s, with at most 20 pieces at once.
+    - New support rule: `Auto`, `Bottom`, `Touching` or `All`, set per wall with the `SoftWallSupport` attribute.
 - **Bullets lose damage through soft walls.** `PenetrationMultiplier` applies per wall and can be set per gun, up to 4 walls, without using up the gun's Pierce. Before this, the multiplier was never applied.
 - **Square holes,** turned by a random angle (`HoleShape`, `HoleSpin`). Round holes cost about 10× more with the precise collision that holes need.
 - **Melee and explosions.** Melee cuts 0.45-stud holes (source `"Melee"`). Explosions now damage boards whose planks have holes.
@@ -510,21 +509,21 @@ Follows the answers in [DECISIONS.md](DECISIONS.md).
 - **Camera and gun recoil are separate.** The camera (where you aim) and the gun in your hands (push-back, muzzle flip, twist, roll) each have their own spring. While you aim, the gun turns about its sights, so they stay centered.
 - **Recovery respects your pull-down.** After firing, the aim returns only by the recoil you didn't already pull against, and never drags the view below where you put it.
 - **Stance and fire rate.**
-  - Multipliers for ADS, crouch (also used while sliding) and prone, plus a first-shot multiplier.
-  - The springs stay fast enough that every shot of a fast gun still reads.
+    - Multipliers for ADS, crouch (also used while sliding) and prone, plus a first-shot multiplier.
+    - The springs stay fast enough that every shot of a fast gun still reads.
 - **Per-gun feel.**
-  - Rifle (steady), Pistol (snap), Shotgun (one big kick), Burst Rifle (tight burst), SMG (fast, jittery) and LMG (heavy, slow).
-  - Every number is in the gun's `Recoil` table, with defaults in `Content.Guns.Registry`. See "Tuning recoil" in `ADDING_GUNS.md`.
+    - Rifle (steady), Pistol (snap), Shotgun (one big kick), Burst Rifle (tight burst), SMG (fast, jittery) and LMG (heavy, slow).
+    - Every number is in the gun's `Recoil` table, with defaults in `Content.Guns.Registry`. See "Tuning recoil" in `ADDING_GUNS.md`.
 - **`Client.Guns.Recoil`.** Pure recoil math that can be tested from Studio's command bar.
 
 ### Changed
 
 - **Viewmodel split.** `Client.Guns.Viewmodel` is now three documented parts:
-  - the frame and API;
-  - `Viewmodel.GunModel`: gun copies, skins, near guard;
-  - `Viewmodel.Actions`: reload, inspect, knife swing.
+    - the frame and API;
+    - `Viewmodel.GunModel`: gun copies, skins, near guard;
+    - `Viewmodel.Actions`: reload, inspect, knife swing.
 
-  Behavior is unchanged.
+    Behavior is unchanged.
 - **House style.** SMG, LMG and Loadouts follow it now. The docs list the SMG and LMG, and the six loadouts with the knife slot.
 
 ### Fixed
@@ -540,12 +539,12 @@ Follows the answers in [DECISIONS.md](DECISIONS.md).
 ### Changed
 
 - **Lobby moved into the loader.** The loose `ServerScriptService.LobbySpawn` script is now `Systems.Lobby.LobbyService`, with the same behavior:
-  - first spawn in the lobby;
-  - the arena and return portals;
-  - the `InLobby` attribute;
-  - a 2-second portal cooldown.
+    - first spawn in the lobby;
+    - the arena and return portals;
+    - the `InLobby` attribute;
+    - a 2-second portal cooldown.
 
-  Portals now also check that the player is really next to them, and dying in the lobby gives your guns once on the next spawn instead of twice.
+    Portals now also check that the player is really next to them, and dying in the lobby gives your guns once on the next spawn instead of twice.
 - **Skin shop uses Studio-built UI and packets.** The shop is `StarterGui.Main.SkinShop`, with `Main.SkinShopButton` and the `Assets.UI.Templates.SkinRow` template, instead of UI built by script. Requests go through `Packets.Skins.Equip` and `Packets.Skins.BuyCrate` instead of the runtime `SkinShopRemote`.
 - **Skins are data.** `Content.Guns.Skins` describes each skin's colors, resized parts and detail parts. The saved `<Gun>Skin` fields and the shop are built from that list, so adding a skin is one entry.
 - **Kill feed, Nuke and DoorBoard documented and tidied.** No behavior change. DoorBoard no longer shares tables with Board.

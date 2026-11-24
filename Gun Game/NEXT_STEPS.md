@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Internal developers
-
 # Verification queue
 
 This page keeps a short list of high-value checks for the current game. The dated checklist is preserved in the [historical backlog](NEXT_STEPS_ARCHIVE.md). Items below have no later verification recorded in the docs; re-check the current build and guides before scheduling them.

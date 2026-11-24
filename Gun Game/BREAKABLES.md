@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Breakables
 
 Breakable objects are models made of pieces that weapons knock off one at a time and players put back. The first type is the **Board**: planks nailed across a window, with a coat of spray paint on top. **DoorBoard** is the door-sized version, with the same rules.
@@ -98,7 +96,7 @@ BreakableService.Repair(target, player?, expectedPiece?): (boolean, reason?)
 BreakableService.Reset(target)   -- every piece back, no effects (round start)
 ```
 
-The gun melee ("gun punch", `Systems.Combat.GunMelee`, see [ADDING_GUNS.md](ADDING_GUNS.md#melee-gun-punch)) calls it with the part its hit found. By default it deals exactly the top piece's health, so each bash knocks off one piece:
+The gun melee ("gun punch", `Systems.Combat.GunMelee`, see [Adding guns](ADDING_GUNS.md#melee-gun-punch)) calls it with the part its hit found. By default it deals exactly the top piece's health, so each bash knocks off one piece:
 
 ```lua
 if BreakableService.IsBreakable(hitPart) then

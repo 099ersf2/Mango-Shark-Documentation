@@ -1,17 +1,18 @@
-[Documentation home](index.md) / Gun Game
-
 # Matches, modes and teams
 
-> **Since 2026-11-12 the only mode is Siege**, and it does not run the way this page describes. Read [SIEGE.md](SIEGE.md) and [MATCHMAKING.md](MATCHMAKING.md) first.
->
-> - Siege is an **External** mode (`External = true` in `Content.Match.Modes.Siege`): `Systems.Games.Siege.SiegeService` runs its phases, teams, spawning and win rules. For an External mode `MatchService` never starts a match, shuffles teams, respawns anyone or ends a round by itself. It keeps kills and deaths, friendly fire, the `Eliminated` attribute and the snapshot the HUD's top bar shows.
-> - New calls for the owner of an External mode: `MatchService.BeginExternal(id, endsAt)`, `SetClock(endsAt)`, `Finish(winner?)`, `Reset()`, `Kills(player)`, `Refresh()`.
-> - **Archived** in `ServerStorage.Archive.OldMatchModes` (nothing deleted): Team Deathmatch, Free-for-All, Elimination; the admin Match menu and `Packets.Match.Admin`; the `match`, `matchmode`, `matchset` commands; the Match key (M); the old scoreboard (now `Client.Hud.Scoreboard`).
-> - Teams gained `Attackers` and `Defenders` (`Content.Match.Teams`).
->
-> The rest of this page describes self-run modes: the phases, settings and hooks still work for a mode without `External`, but no such mode is in the place.
+!!! warning "Historical page"
+
+    **Since 2026-11-12 the only mode is Siege**, and it does not run the way this page describes. Read [Siege](SIEGE.md) and [Matchmaking and parties](MATCHMAKING.md) first.
+
+    - Siege is an **External** mode (`External = true` in `Content.Match.Modes.Siege`): `Systems.Games.Siege.SiegeService` runs its phases, teams, spawning and win rules. For an External mode `MatchService` never starts a match, shuffles teams, respawns anyone or ends a round by itself. It keeps kills and deaths, friendly fire, the `Eliminated` attribute and the snapshot the HUD's top bar shows.
+    - New calls for the owner of an External mode: `MatchService.BeginExternal(id, endsAt)`, `SetClock(endsAt)`, `Finish(winner?)`, `Reset()`, `Kills(player)`, `Refresh()`.
+    - **Archived** in `ServerStorage.Archive.OldMatchModes` (nothing deleted): Team Deathmatch, Free-for-All, Elimination; the admin Match menu and `Packets.Match.Admin`; the `match`, `matchmode`, `matchset` commands; the Match key (M); the old scoreboard (now `Client.Hud.Scoreboard`).
+    - Teams gained `Attackers` and `Defenders` (`Content.Match.Teams`).
+
+    The rest of this page describes self-run modes: the phases, settings and hooks still work for a mode without `External`, but no such mode is in the place.
 
 The match system runs the game's matches. It's modular:
+
 - **A mode** is one data module.
 - **Settings** are adjustable per match, by admins, from a menu or Cmdr.
 - **Teams** are our own system, not Roblox `Teams`, so they can be customized freely.
@@ -28,7 +29,7 @@ It replaced the fixed Red vs Blue `Systems.Round.RoundService` on 2026-11-11.
 | The match loop | `ServerScriptService.Modules.Systems.Match.MatchService` |
 | The team system | `Systems.Match.TeamService` |
 | HUD, scoreboard | `Client.Hud.MatchHud` → `StarterGui.Main.MatchHUD` |
-| Death screen, spectating | `Client.Hud.DeathScreen` → `StarterGui.Main.DeathScreen`, `Systems.Combat.DeathCamService` ([DEATH_SCREEN.md](DEATH_SCREEN.md)) |
+| Death screen, spectating | `Client.Hud.DeathScreen` → `StarterGui.Main.DeathScreen`, `Systems.Combat.DeathCamService` ([Death screen and spectating](DEATH_SCREEN.md)) |
 | Admin match menu | `Client.Core.MatchMenu` → `StarterGui.Main.MatchMenu`, opened with `MenuButtons.MatchButton` or **M** |
 | Templates | `Assets.UI.Templates.MatchTeamScore`, `ScoreboardRow`, `ScoreboardTeam`. The menu reuses `LoadoutCard`, `SliderRow` and `ToggleRow` |
 | Packets | `Packets.Match.State`, `Death`, `RequestState`, `Admin` |
@@ -45,6 +46,7 @@ It replaced the fixed Red vs Blue `Systems.Round.RoundService` on 2026-11-11.
 | **Ended** | Shows the winner and the scoreboard for `Intermission` seconds | Intermission or Waiting |
 
 These things happen when a match starts:
+
 1. **Teams:** the mode's teams are set (`TeamCount` of them, from `Content.Match.Teams`), and arena players are shuffled and dealt onto the smallest team each time, so teams are even.
 2. **Scores:** scores reset.
 3. **Respawn time:** `Players.RespawnTime` becomes the mode's `RespawnDelay`.
@@ -53,9 +55,10 @@ These things happen when a match starts:
 **Joining mid-match:** a player who enters the arena mid-match joins the smallest team.
 
 **Deaths:** `Systems.Combat.KillFeed` reports each player death to `MatchService.OnPlayerDeath(victim, killer)`.
+
 - **Stats:** kills and deaths are counted. A kill on a teammate doesn't count.
 - **Hooks:** the mode's `OnKill` and `OnDeath` run.
-- **Death screen:** the victim gets it, spectating their killer (and their killer's killer when they die); see [DEATH_SCREEN.md](DEATH_SCREEN.md). It works in and out of matches.
+- **Death screen:** the victim gets it, spectating their killer (and their killer's killer when they die); see [Death screen and spectating](DEATH_SCREEN.md). It works in and out of matches.
 
 **Time up:** the mode's `OnTimeUp` runs. Without one, the leader wins, and a tie is a draw. In round modes, the team with the most players alive wins the round.
 
@@ -66,6 +69,7 @@ These things happen when a match starts:
 Admins are the users in `Classes.Admins.UserIds`. Only they see the **Match [M]** button, and the server checks every request again.
 
 The **Match menu** works like the Settings menu:
+
 - **Now playing:** the running match, its phase and time left, and how many players are in the arena. The buttons are **Start now** (skips waiting and the intermission, even below `MinPlayers`), **End match** (the leader wins) and **Restart with next setup**.
 - **Next match: mode:** a card per mode. **Select** makes it the next match's mode, with its default settings.
 - **Next match: settings:** a row per setting the chosen mode uses. Numbers are sliders that snap to the setting's step and are sent when you let go. On/off settings are buttons.
@@ -172,6 +176,7 @@ A player's team is the server-set player attribute **`Team`** (a team Id), nil i
 **NPC models** have their own `Team` attribute (`Hostile`), so `TeamService.AreAllies` works for players and NPCs alike.
 
 **Team spawns:**
+
 1. **Team-marked spawns:** give a SpawnLocation a `Team` attribute (for example `Red`) and it belongs to that team.
 2. **Without marked spawns:** the arena's enabled SpawnLocations are split into one block per team along the arena's longest side, in team order. Spawns on the player's `SelectedMap` are used first; `Workspace.Lobby` is never used.
 3. **Free-for-all:** the spawn farthest from every other living player is used.
@@ -192,16 +197,16 @@ A player's team is the server-set player attribute **`Team`** (a team Id), nil i
 ## HUD and scoreboard
 
 - **Top bar** (scaled; under the menu buttons):
-  - **Content:** the mode's name, the clock, and a score chip per team around it (`MatchTeamScore`, in the team color).
-  - **Round modes:** chips show rounds won and players alive ("RED · 3").
-  - **Free-for-all:** your score and the leader's.
+    - **Content:** the mode's name, the clock, and a score chip per team around it (`MatchTeamScore`, in the team color).
+    - **Round modes:** chips show rounds won and players alive ("RED · 3").
+    - **Free-for-all:** your score and the leader's.
 - **Status line:** waiting for players (x/needed), the countdown to the next match, the round number, or the result.
 - **Banner:** "RED WIN", "RED WIN THE ROUND", "DRAW", for 4 seconds.
 - **Scoreboard:** hold **Tab** (rebindable as "Scoreboard"), or tap the top bar on touch.
-  - **Layout:** team headers with totals, then each player's kills, deaths and score (your own row highlighted, dead players dimmed).
-  - **When it shows by itself:** while a match has ended.
-  - **Roblox player list:** it replaces it, which used Tab too.
-- **Death screen:** who killed you and with what; the camera follows them until you respawn, moving on to their killer if they die. In Elimination it says "Out until the next round". See [DEATH_SCREEN.md](DEATH_SCREEN.md).
+    - **Layout:** team headers with totals, then each player's kills, deaths and score (your own row highlighted, dead players dimmed).
+    - **When it shows by itself:** while a match has ended.
+    - **Roblox player list:** it replaces it, which used Tab too.
+- **Death screen:** who killed you and with what; the camera follows them until you respawn, moving on to their killer if they die. In Elimination it says "Out until the next round". See [Death screen and spectating](DEATH_SCREEN.md).
 
 ## Extension points
 
@@ -224,10 +229,10 @@ Checked in a Studio playtest on 2026-11-11 (one player, so matches were started 
 - **Free-for-All:** I had no team; at the score limit of 5 I won.
 - **Elimination:** dying as the only player ended round 1 (drawn), and after the 5 s break round 2 started with me back in.
 - **HUD and menu:**
-  - The HUD showed the mode, clock and team chips.
-  - The scoreboard showed team headers and my row.
-  - An admin request from the client set the time limit to 10:00.
-  - The menu showed 3 mode cards and the chosen mode's setting rows.
-  - Requests closer together than 0.15 s are refused ("Too fast").
+    - The HUD showed the mode, clock and team chips.
+    - The scoreboard showed team headers and my row.
+    - An admin request from the client set the time limit to 10:00.
+    - The menu showed 3 mode cards and the chosen mode's setting rows.
+    - Requests closer together than 0.15 s are refused ("Too fast").
 
 Not yet tried: real kills between two players, a 3- or 4-team match, a phone, and a gamepad.

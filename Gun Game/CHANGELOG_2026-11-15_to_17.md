@@ -1,10 +1,3 @@
----
-hide:
-  - toc
----
-
-[Documentation home](index.md) / [Changelog](CHANGELOG.md)
-
 # Changelog archive: 2026-11-15 to 17
 
 Historical implementation notes, retained as written for search and context. Verify behavior against current system guides before using these details.
@@ -221,7 +214,7 @@ Checked in a Studio playtest with saving off (lobby, Store, Inventory, the Notic
 
 ## 2026-11-17: Recruit Training (the tutorial) and the Recruit Crate
 
-Tested in a Studio playtest with saving off (the new `ScribeNoSave` switch). See [TUTORIAL.md](TUTORIAL.md).
+Tested in a Studio playtest with saving off (the new `ScribeNoSave` switch). See [Recruit Training](TUTORIAL.md).
 
 ### Added
 
@@ -276,12 +269,12 @@ Tested in Studio playtests on Bank (basement forced) and Mansion. No player data
 
 - **Crawl:** a low crawl: one knee drawn up and out to the side like a frog while the other leg stretches back, swapping as it moves, flat on the floor.
 - **Slide:** a seated slide: hips on the floor, legs straight out in front, leaning back, one hand forward.
-- Both now replace Roblox's walk animation instead of adding to it, which had lifted the crawling legs off the floor. See [MOVEMENT.md](MOVEMENT.md).
+- Both now replace Roblox's walk animation instead of adding to it, which had lifted the crawling legs off the floor. See [Movement and camera](MOVEMENT.md).
 
 
 ## 2026-11-17: Prone and slide animations
 
-- **Prone:** a lying animation (breathing; forearms propped up when no gun is out) and a crawl animation that runs with the crawl speed (legs sweep out in turn, the body rolls, the arms pull when no gun is out). **Slide:** leans back further as it settles, with a wobble, and the trailing hand reaches for the floor when no gun is out. All made in code in `Client.Movement.MovementPoses`, seen by everyone. See [MOVEMENT.md](MOVEMENT.md).
+- **Prone:** a lying animation (breathing; forearms propped up when no gun is out) and a crawl animation that runs with the crawl speed (legs sweep out in turn, the body rolls, the arms pull when no gun is out). **Slide:** leans back further as it settles, with a wobble, and the trailing hand reaches for the floor when no gun is out. All made in code in `Client.Movement.MovementPoses`, seen by everyone. See [Movement and camera](MOVEMENT.md).
 
 
 ## 2026-11-17: Scan marks as pins with meters, picks on the selection map stay put
@@ -325,16 +318,16 @@ Tested in Studio playtests (lobby menus and a Siege match on Mansion). No player
 
 ## 2026-11-17: Siege UI pass: pre-match screens, top bar, hit effects, HUD
 
-Our own take on what Rainbow Six Siege's screens do well, in SiegeBlox's look: dark navy panels, gold for "you" and "next", the team's color for your side and red for the enemy, rounded blocky shapes with a little "stud" on class emblems, and Fredoka One everywhere. Tested in Studio playtests with bots on Mansion and Bank, at 1920 wide and at a narrow 919 wide (see [UI.md](UI.md#siege-ui-pass-2026-11-17)). The only player data written was the gadget pick (Frag grenade to Smoke bomb and back again).
+Our own take on what Rainbow Six Siege's screens do well, in SiegeBlox's look: dark navy panels, gold for "you" and "next", the team's color for your side and red for the enemy, rounded blocky shapes with a little "stud" on class emblems, and Fredoka One everywhere. Tested in Studio playtests with bots on Mansion and Bank, at 1920 wide and at a narrow 919 wide (see [UI](UI.md#siege-ui-pass-2026-11-17)). The only player data written was the gadget pick (Frag grenade to Smoke bomb and back again).
 
 ### Added
 
 - **Pre-match in four steps** (`Client.Core.SiegeSelect`, rewritten; the old one is in `ServerStorage.Archive.SiegeSelectOld`): LOCATION, CLASS, LOADOUT, READY across the top, the current one gold, done ones ticked (click one to go back), and a NEXT line saying what to do.
-  - **Location** shows the map in a viewport. Attackers see it from above with a pin per spawn (click a pin to take it, a teammate's shows their name). Defenders see a pin per site; pointing at a site (or voting it) shows it **cut away**: everything above that floor hidden, the A and B rooms drawn in red and blue, the bombs pinned. Clear House previews the map you point at.
-  - **Class** is a grid of class tiles and a big panel: role, difficulty, speed (from the primary gun), ability, weapons and gadgets, with your avatar on the team's color. Picking a free class takes you to the loadout once the server confirms it.
-  - **Loadout**: primary, secondary, ability and gadget rows with arrows, and a panel with the focused gun's damage, fire rate, magazine and mobility as bars against the best gun in the game. CONFIRM LOADOUT readies you.
-  - **Ready / Reveal**: a tall player card per teammate (avatar, class badge and name, spawn or vote, a tick when ready), dealt one by one at the reveal.
-  - The footer counts who is ready on each team (a dot per player).
+    - **Location** shows the map in a viewport. Attackers see it from above with a pin per spawn (click a pin to take it, a teammate's shows their name). Defenders see a pin per site; pointing at a site (or voting it) shows it **cut away**: everything above that floor hidden, the A and B rooms drawn in red and blue, the bombs pinned. Clear House previews the map you point at.
+    - **Class** is a grid of class tiles and a big panel: role, difficulty, speed (from the primary gun), ability, weapons and gadgets, with your avatar on the team's color. Picking a free class takes you to the loadout once the server confirms it.
+    - **Loadout**: primary, secondary, ability and gadget rows with arrows, and a panel with the focused gun's damage, fire rate, magazine and mobility as bars against the best gun in the game. CONFIRM LOADOUT readies you.
+    - **Ready / Reveal**: a tall player card per teammate (avatar, class badge and name, spawn or vote, a tick when ready), dealt one by one at the reveal.
+    - The footer counts who is ready on each team (a dot per player).
 - **Top bar** (`Client.Hud.SiegeTopBar`, `Main.SiegeHUD.TopBar`): a tile per player on both teams (class letter, team stripe, you outlined in gold, dead players crossed out; an enemy shows "?" until seen), both scores, the clock and the round. The drone and camera feeds have the same bar.
 - **"3 VS 4"** in the middle of the screen whenever someone dies in Action, your side first, with ENEMY ELIMINATED or TEAMMATE DOWN.
 - **Hit effects** (`Client.Combat.DamageFeedback`, `Main.DamageFX`): red at the screen's edges on every loss of health (stronger for bigger hits), an arrow round the crosshair pointing at the attacker (new packet `Combat.Hurt`, sent to the victim by `Combat.ApplyHit`), and at 35% health or less a heartbeat pulse, a greyer world and a red health bar.
@@ -362,7 +355,7 @@ Tested in a Studio playtest (no player data written).
 
 ## 2026-11-16: Siege bots: drones, shooting boards from range, team memory, defenders breaking in
 
-Tested in Studio playtests: private matches of one admin player and four bots on Bank and Mansion (see [SIEGE_BOTS.md](SIEGE_BOTS.md#drones-memory-and-breaking-in-2026-11-16)). No player data was written. One run was cut short when Studio lost its connection to Roblox (DataStore and asset requests timed out and the server kicked the player: "We couldn't load your data").
+Tested in Studio playtests: private matches of one admin player and four bots on Bank and Mansion (see [Siege bots](SIEGE_BOTS.md#drones-memory-and-breaking-in-2026-11-16)). No player data was written. One run was cut short when Studio lost its connection to Roblox (DataStore and asset requests timed out and the server kicked the player: "We couldn't load your data").
 
 ### Added
 
@@ -382,7 +375,7 @@ Tested in Studio playtests: private matches of one admin player and four bots on
 
 ## 2026-11-16: NPC pathfinding: stairs, climbing, the pool, breaking in through doors
 
-Tested in Studio playtests with attacker bots sent from the attacker spawns to the bomb rooms of both maps, boards up (results in [SIEGE_BOTS.md](SIEGE_BOTS.md#getting-to-the-bomb-rooms-2026-11-16-studio-boards-up-no-defenders)). No player data was written.
+Tested in Studio playtests with attacker bots sent from the attacker spawns to the bomb rooms of both maps, boards up (results in [Siege bots](SIEGE_BOTS.md#getting-to-the-bomb-rooms-2026-11-16-studio-boards-up-no-defenders)). No player data was written.
 
 ### Fixed
 
@@ -405,20 +398,20 @@ Tested in Studio playtests with attacker bots sent from the attacker spawns to t
 
 ## 2026-11-16: Siege bots (admins only for now)
 
-Tested in Studio playtests with one admin player and three bots (see [SIEGE_BOTS.md](SIEGE_BOTS.md#tested-2026-11-16-studio-playtests-one-admin-player)). No player data was written.
+Tested in Studio playtests with one admin player and three bots (see [Siege bots](SIEGE_BOTS.md#tested-2026-11-16-studio-playtests-one-admin-player)). No player data was written.
 
 ### Added
 
 - **Siege bots** (`Systems.Games.Siege.SiegeBots`, `Content.Games.SiegeBots`, `Content.NPC.Profiles.SiegeBot`):
-  - **Selection:** a bot picks a class no teammate has. An attacker bot picks a free spawn next to its team's; a defender bot votes for the site its player teammates voted for. A player who takes a bot's class or spawn gets it, and the bot picks again.
-  - **Defending:** defender bots guard the two bomb rooms (Guard mode: stay in, rebuild boards, fight first). They all go to a bomb being planted, and hold the other bomb once one has its defuser.
-  - **Attacking:** attacker bots find the site (a drone, a bot walking into it, or after 25 s of Action) and split between the bombs. To get in they break boarded doors and windows, or shoot open a hatch over a room below (the Mansion basement) and drop through. They hold the room while the defuser plants.
-  - Bots count for the win rules and appear on the scoreboard, kill feed and result screen. They get no rewards, quests or analytics.
+    - **Selection:** a bot picks a class no teammate has. An attacker bot picks a free spawn next to its team's; a defender bot votes for the site its player teammates voted for. A player who takes a bot's class or spawn gets it, and the bot picks again.
+    - **Defending:** defender bots guard the two bomb rooms (Guard mode: stay in, rebuild boards, fight first). They all go to a bomb being planted, and hold the other bomb once one has its defuser.
+    - **Attacking:** attacker bots find the site (a drone, a bot walking into it, or after 25 s of Action) and split between the bombs. To get in they break boarded doors and windows, or shoot open a hatch over a room below (the Mansion basement) and drop through. They hold the room while the defuser plants.
+    - Bots count for the win rules and appear on the scoreboard, kill feed and result screen. They get no rewards, quests or analytics.
 - **BOTS tab** in the Party menu, for admins (`Modules.Classes.Admins`): ADD puts a bot in the party (`Party.Request` "AddBot"). Bots queue and play like members, can be kicked, never lead, and come back with the party after a match.
 - `NPCService.Spawn(id, cframe, part, ignoreCap, options)`:
-  - `options` gives an NPC its own `Team`, `Name`, `Gun` and `AlwaysAwake` (never sleeps far from players).
-  - `NPCService.AgentOf(model)` returns the live agent of an NPC model.
-  - Profiles may set `AimErrorScale` and `AimErrorFloor`.
+    - `options` gives an NPC its own `Team`, `Name`, `Gun` and `AlwaysAwake` (never sleeps far from players).
+    - `NPCService.AgentOf(model)` returns the live agent of an NPC model.
+    - Profiles may set `AimErrorScale` and `AimErrorFloor`.
 - NPC objectives (`agent.Objective`, `ObjectivePart`, `ObjectiveShoot`, `ObjectiveDirect`): with nothing to fight, `Tasks.Patrol` walks there (breaking in if it must), shoots a point open, or walks straight in.
 
 ### Changed
@@ -435,11 +428,11 @@ Tested in a Studio playtest (server and client). No data was written (Coins 1,05
 ### Changed
 
 - **The Battle Pass is off** (`Content.BattlePass.ENABLED = false`), so it can launch later as its own update. While it's off:
-  - **No XP:** `BattlePassService.AddXP` pays nothing (matches and quests).
-  - **No quests:** `QuestService` doesn't start, count or draw anything.
-  - **No claims:** `Claim` answers "The Battle Pass isn't out yet."
-  - **Nothing shown:** the BATTLE PASS button in the lobby is hidden (the wallet closes up), the screen won't open, the pass isn't in the Store (`Hidden`), season skins show only to owners in the Inventory, a season skin's page says COMING SOON, and no "Season 1" tag is shown (`SeasonOf` gives nil).
-  - To launch it: set `ENABLED = true`, check `SEASON.Ends` (now 2027-02-01), and link the Robux product (`Store_BattlePassS1` in `Shared.ProductIds`).
+    - **No XP:** `BattlePassService.AddXP` pays nothing (matches and quests).
+    - **No quests:** `QuestService` doesn't start, count or draw anything.
+    - **No claims:** `Claim` answers "The Battle Pass isn't out yet."
+    - **Nothing shown:** the BATTLE PASS button in the lobby is hidden (the wallet closes up), the screen won't open, the pass isn't in the Store (`Hidden`), season skins show only to owners in the Inventory, a season skin's page says COMING SOON, and no "Season 1" tag is shown (`SeasonOf` gives nil).
+    - To launch it: set `ENABLED = true`, check `SEASON.Ends` (now 2027-02-01), and link the Robux product (`Store_BattlePassS1` in `Shared.ProductIds`).
 - **Store items can be hidden:** an item with `Hidden = true` is left out of `Content.Store.Store.ITEMS`, so it isn't shown or sold. `BattlePassS1` sets `Hidden = not BattlePass.ENABLED`. Its description now names Caleb (Hacker) instead of "classes".
 
 ### Fixed
@@ -474,8 +467,8 @@ Tested in a Studio playtest on the phone screen (device emulator). No player dat
 ### Fixed
 
 - **The Shield class (Bruno) appeared to shoot through walls.** Lying prone or holding the shield against a wall puts his third-person pistol's muzzle on the far side (measured 1.3 studs past a 1-stud wall). Other players draw his shots from that muzzle, so tracers, flashes and impacts came out of the wall. The real bullet was already stopped (tested: a dummy behind the wall took no damage).
-  - `Client.Guns.GunEffects`: a shot drawn from a muzzle now starts in front of any wall between the shooter's eye and the muzzle (`clearStart`), for other players' and NPCs' shots and the local player's own in third person. The first-person tracer start no longer falls back to a muzzle that is inside a wall.
-  - `Systems.Guns.GunService` (server): the shot's origin is checked for line of sight from the HumanoidRootPart (the collision box) instead of the head, which poses can push through a wall. A blocked origin moves to just in front of the wall instead of to the head. Only solid (CanCollide) parts block it.
+    - `Client.Guns.GunEffects`: a shot drawn from a muzzle now starts in front of any wall between the shooter's eye and the muzzle (`clearStart`), for other players' and NPCs' shots and the local player's own in third person. The first-person tracer start no longer falls back to a muzzle that is inside a wall.
+    - `Systems.Guns.GunService` (server): the shot's origin is checked for line of sight from the HumanoidRootPart (the collision box) instead of the head, which poses can push through a wall. A blocked origin moves to just in front of the wall instead of to the head. Only solid (CanCollide) parts block it.
 - **Battle Pass track restored:** a later save had put back the old `Content.BattlePass`. The new track (several or no rewards per level, `LIST`, `SeasonOf`) was applied again; the totals match (97 rewards, 21,750 Coins).
 - Old require paths fixed in `Content.Crates.Crates` (skins) and in the new `DroneShield` and `BulletproofCamera` abilities (classes).
 
@@ -483,10 +476,10 @@ Tested in a Studio playtest on the phone screen (device emulator). No player dat
 
 - **One coin icon everywhere:** every coin picture is `Content.Store.Style.COIN_ICON`. The new `Client.Core.CoinIcon` sets every ImageLabel or ImageButton named `CoinIcon` in the UI to it (the wallet, the Store and Inventory headers, the detail page, the StoreCard prices), including ones cloned later; Coins cards and rewards already used it. The Studio pictures were set to it too, and the coin emoji was taken out of the wallet texts and the reward line ("+500 Coins").
 - **Camera bob** (`Client.Movement.MovementCamera`, `Content.Movement.Config`):
-  - none while crouched, prone or sliding;
-  - about half while walking (`BobUp` 0.035, `BobSide` 0.022, `BobRoll` 0.15);
-  - none in third person, and no strafe tilt there either.
-  - Measured walking 2.5 s: first person standing 0.028 studs of sway; crouched, prone and third person 0.
+    - none while crouched, prone or sliding;
+    - about half while walking (`BobUp` 0.035, `BobSide` 0.022, `BobRoll` 0.15);
+    - none in third person, and no strafe tilt there either.
+    - Measured walking 2.5 s: first person standing 0.028 studs of sway; crouched, prone and third person 0.
 - **Touch controls behind menus:** the move stick and jump button are hidden while a menu is open (`Client.Core.Menus`, `GuiService.TouchControlsEnabled`) and come back when it closes.
 - **No UI sounds** on Roblox's own touch move stick and jump button (`Client.Core.UIFeel` skips the `TouchGui`).
 
@@ -497,18 +490,18 @@ Tested in a Studio playtest on the phone screen (device emulator). No player dat
 
 ## 2026-11-16: Battle Pass track rework, shared quests, season tags, skins in files, menu buttons toggle, no reset in the lobby
 
-Tested in a Studio playtest (server and client). The test claim was undone (Coins back to 308, XP 0, no claims, the crate taken back). See [BATTLE_PASS.md](BATTLE_PASS.md).
+Tested in a Studio playtest (server and client). The test claim was undone (Coins back to 308, XP 0, no claims, the crate taken back). See [Battle pass and quests](BATTLE_PASS.md).
 
 ### Changed
 
 - **Everyone has the same quests.** Today's dailies are drawn with the UTC day number as the seed and this week's weeklies with the week number, so every player on every server gets the same ones. A saved set that isn't today's (including sets drawn per player before this change) is replaced, and its progress for that day or week is cleared.
 - **Battle Pass track** (`Content.BattlePass`):
-  - A level can hold **several rewards on a side, or none**. Season 1 has 8 levels with two rewards (1, 8, 15, 25, 32, 40, 45, 50) and 13 empty Free levels.
-  - **Coins:** always 250 (`COINS`), and **1,000 on every 5th level** (`COINS_BIG`) on the Free side.
-  - **Classes:** only two, both at level 50: Matteo (Medic) free and Caleb (Hacker) premium, with the Breach Point Knife.
-  - The whole track: 21,750 Coins, 11 season skins, 2 classes, 31 crates in 97 rewards.
-  - `TRACK[level]` is now `{ Free = { Reward }, Premium = { Reward } }`; new `LIST` (every reward). A level's second reward on a side has the Id `S1_L<n>_F2` / `_P2`.
-  - The screen widens a level's column for two rewards side by side, and shows a dim empty slot for a side with none.
+    - A level can hold **several rewards on a side, or none**. Season 1 has 8 levels with two rewards (1, 8, 15, 25, 32, 40, 45, 50) and 13 empty Free levels.
+    - **Coins:** always 250 (`COINS`), and **1,000 on every 5th level** (`COINS_BIG`) on the Free side.
+    - **Classes:** only two, both at level 50: Matteo (Medic) free and Caleb (Hacker) premium, with the Breach Point Knife.
+    - The whole track: 21,750 Coins, 11 season skins, 2 classes, 31 crates in 97 rewards.
+    - `TRACK[level]` is now `{ Free = { Reward }, Premium = { Reward } }`; new `LIST` (every reward). A level's second reward on a side has the Id `S1_L<n>_F2` / `_P2`.
+    - The screen widens a level's column for two rewards side by side, and shows a dim empty slot for a side with none.
 - **Season tag:** skins and classes the pass gives show "Season 1" before their rarity or team, like "Season 1 · Epic · Rifle" or "Season 1 · Defenders" (`Content.BattlePass.SeasonOf`, `SEASON.Tag`; `StoreViews.SkinRarity` and `ClassTeam` in the Inventory, Store and detail pages).
 - **Skins in files, like guns and classes:** `Content.Guns.Skins` is now a folder: the `Skins` module, `Definitions` (one ModuleScript per skin, in a folder per WeaponId, 115 skins), `Styles` (shared part styles), and `SkinFinish` and `SeasonSkins` moved in. Requires are `Content.Guns.Skins.Skins`.
 - **Menu buttons toggle:** pressing STORE, INVENTORY or BATTLE PASS while that menu is open closes it (the other lobby buttons already did).
@@ -531,34 +524,34 @@ Tested in a Studio playtest (server and client): every module loads with no erro
 
 - **One file per entry, like guns.** Each of these is now a Folder holding its module and a `Definitions` folder, one ModuleScript per entry with an `Order` field (lowest first). The module only loads and sorts them; it no longer holds a copy of the data. A file that fails to load, has no Id or repeats an Id is warned about and left out.
 
-  | Before | Module | Definitions |
-  | --- | --- | --- |
-  | `Content.Classes` + `Content.ClassDefinitions` | `Content.Classes.Classes` | `Content.Classes.Definitions` (17 classes) |
-  | `Content.Crates` | `Content.Crates.Crates` | `Content.Crates.Definitions` (8 crates) |
-  | `Content.Store` | `Content.Store.Store` | `Content.Store.Definitions` (7 items) |
-  | `Content.Consumables` | `Content.Consumables.Consumables` | `Content.Consumables.Definitions` (Grenade, Smoke) |
+    | Before | Module | Definitions |
+    | --- | --- | --- |
+    | `Content.Classes` + `Content.ClassDefinitions` | `Content.Classes.Classes` | `Content.Classes.Definitions` (17 classes) |
+    | `Content.Crates` | `Content.Crates.Crates` | `Content.Crates.Definitions` (8 crates) |
+    | `Content.Store` | `Content.Store.Store` | `Content.Store.Definitions` (7 items) |
+    | `Content.Consumables` | `Content.Consumables.Consumables` | `Content.Consumables.Definitions` (Grenade, Smoke) |
 
-  - `Content.Store.Style` (new) holds the shared look: `TAG_COLORS`, `COIN_COLOR`, `COIN_ICON`, `BORDERS`. Store items use it; `Store.TAG_COLORS`, `BORDERS` and `COIN_ICON` still work.
-  - `Content.Store.Store` and `Content.Consumables.Consumables` keep the `ScribeFragment` tag, so saved data is unchanged.
-  - Every `require` was updated.
+    - `Content.Store.Style` (new) holds the shared look: `TAG_COLORS`, `COIN_COLOR`, `COIN_ICON`, `BORDERS`. Store items use it; `Store.TAG_COLORS`, `BORDERS` and `COIN_ICON` still work.
+    - `Content.Store.Store` and `Content.Consumables.Consumables` keep the `ScribeFragment` tag, so saved data is unchanged.
+    - Every `require` was updated.
 - **Games folder:** `Content.Siege` and `Content.ClearHouse` are now `Content.Games.Siege` and `Content.Games.ClearHouse`. On the server, `Systems.Siege` became `Systems.Games.Siege` (`SiegeService`, `SiegeMap`, `SpectateService`) and `Systems.Games.ClearHouse.ClearHouse`. `SiegeService`'s optional calls take a dotted folder (`call("Games.Siege", "SpectateService", ...)`).
 - The Battle Pass store item's text no longer mentions Battle Stars.
 
 ### Removed
 
 - **Every RemoteEvent and RemoteFunction in ReplicatedStorage** (`HologramPose`, `HologramGlitch`, `DeadCallState`, `DeadCallControl`, `DeadCallPhoneRequest`, and the Store's open-many and buy remotes). The scripts use Packets instead:
-  - `Packets.Store.OpenMany(crateId, count)`, answered with ok, a message and the results; the Store's Buy now uses `Packets.Store.Buy`.
-  - `Packets.Camera.Look`;
-  - `Packets.Class.HologramPose`, `Packets.Class.HologramGlitch`;
-  - `Packets.DeadCall.State`, `Control`, `Phone` (answered).
+    - `Packets.Store.OpenMany(crateId, count)`, answered with ok, a message and the results; the Store's Buy now uses `Packets.Store.Buy`.
+    - `Packets.Camera.Look`;
+    - `Packets.Class.HologramPose`, `Packets.Class.HologramGlitch`;
+    - `Packets.DeadCall.State`, `Control`, `Phone` (answered).
 - The loose `ServerScriptService.BotCoins` and `ServerScriptService.SecretTeleport` scripts, replaced by modules:
-  - `Systems.Store.BotCoinService`: pays `Content.Store.Store.REWARDS.BotKill` (10 Coins) for an NPC kill.
-  - `Systems.Lobby.Teleporters`: any part tagged `Teleporter` with a `TeleportTo` attribute (the name of a part in Workspace) sends a player touching it there (1 s cooldown, 3 studs up). TeleportA → TeleportBox and TeleportB → TeleportReturn are set up.
+    - `Systems.Store.BotCoinService`: pays `Content.Store.Store.REWARDS.BotKill` (10 Coins) for an NPC kill.
+    - `Systems.Lobby.Teleporters`: any part tagged `Teleporter` with a `TeleportTo` attribute (the name of a part in Workspace) sends a player touching it there (1 s cooldown, 3 studs up). TeleportA → TeleportBox and TeleportB → TeleportReturn are set up.
 
 
 ## 2026-11-16: Battle Pass as a level track, and a screen that matches the game
 
-Tested in a Studio playtest; the test data was removed afterwards. See [BATTLE_PASS.md](BATTLE_PASS.md).
+Tested in a Studio playtest; the test data was removed afterwards. See [Battle pass and quests](BATTLE_PASS.md).
 
 ### Changed
 
@@ -574,13 +567,13 @@ Tested in a Studio playtest; the test data was removed afterwards. See [BATTLE_P
 
 ## 2026-11-16: Battle Pass and quests
 
-Tested in a Studio playtest with one player; the test data was removed afterwards. See [BATTLE_PASS.md](BATTLE_PASS.md).
+Tested in a Studio playtest with one player; the test data was removed afterwards. See [Battle pass and quests](BATTLE_PASS.md).
 
 ### Added
 
 - **Battle Pass, Season 1: Breach Point** (Fortnite-style): XP fills 50 levels (1,500 XP each, bonus levels to 100); each level gives 5 Battle Stars; stars buy rewards on 6 pages (and a bonus page), in any order. Pages open at levels 1, 8, 16, 24, 32 and 40, or when the page before is fully claimed.
-  - Rewards: Coins, the new **Breach Point** skins, classes, crates. Free rewards for everyone; the rest need the pass (store item `BattlePassS1`, 399 Robux, giftable: GIFT THE PASS).
-  - `Content.BattlePass`, `Systems.BattlePass.BattlePassService`, `Packets.BattlePass`.
+    - Rewards: Coins, the new **Breach Point** skins, classes, crates. Free rewards for everyone; the rest need the pass (store item `BattlePassS1`, 399 Robux, giftable: GIFT THE PASS).
+    - `Content.BattlePass`, `Systems.BattlePass.BattlePassService`, `Packets.BattlePass`.
 - **Quests:** 3 dailies (reset 00:00 UTC, +500 XP for all three), 5 weeklies (reset Tuesday 00:00 UTC), 5 milestones of 5 stages. Counted from matches (kills, guards, wins, damage, builds, plants, scans, abilities) and crates opened; private matches count for nothing. `Content.Quests`, `Systems.BattlePass.QuestService`.
 - **Match XP:** 120 per public match, +120 for a win, +15 per kill (10 at most).
 - **The screen** `Main.BattlePass` (`Client.Core.BattlePass`): REWARDS and QUESTS tabs, level, XP bar, stars, countdown, GET BATTLE PASS and GIFT THE PASS; the lobby's **BATTLE PASS** button under STORE and INVENTORY; "+XP" and LEVEL UP lines at the top (`Main.PassToast`).
@@ -609,12 +602,12 @@ Compile-checked only (not playtested, as asked).
 ### Added
 
 - **A search box in the Inventory** (`Main.Inventory.Search`, built in Studio: a magnifier icon, the text box `Input`, and an X `Clear` button that shows while there is text), at the right end of the filter chips (the chip row is 236 px narrower for it).
-  - Fixed the same day: the box was drawn under the Inventory panel (ZIndex 1 against the panel's 12), so it didn't show. It is now 13, its parts 14 and X 15.
-  - The magnifier is an image from the Creator Store ("Search Icon Round", decal 85365761530931, image `rbxassetid://139935609048710`), tinted light grey, instead of an emoji.
-  - Typing narrows the open tab (Classes, Skins or Crates) to the cards whose name, subtitle or lock hint holds every word typed, in any case: "gilded rifle", "mythic", "shield crate", "defenders".
-  - It works on top of the chip filter, and stays when the tab changes.
-  - While searching, the section headings give way to one `RESULTS FOR "..."` heading; with no card left the status line says "No matches. Try another word, or clear the search."
-  - The outline lights up while the box is focused. Tooltips on the box and on X.
+    - Fixed the same day: the box was drawn under the Inventory panel (ZIndex 1 against the panel's 12), so it didn't show. It is now 13, its parts 14 and X 15.
+    - The magnifier is an image from the Creator Store ("Search Icon Round", decal 85365761530931, image `rbxassetid://139935609048710`), tinted light grey, instead of an emoji.
+    - Typing narrows the open tab (Classes, Skins or Crates) to the cards whose name, subtitle or lock hint holds every word typed, in any case: "gilded rifle", "mythic", "shield crate", "defenders".
+    - It works on top of the chip filter, and stays when the tab changes.
+    - While searching, the section headings give way to one `RESULTS FOR "..."` heading; with no card left the status line says "No matches. Try another word, or clear the search."
+    - The outline lights up while the box is focused. Tooltips on the box and on X.
 
 
 ## 2026-11-15: Class files moved up, face-on shields and phones, still items on the detail page
@@ -624,9 +617,9 @@ Tested in a Studio playtest: on the Starter Bundle page the whole bundle turned,
 ### Changed
 
 - **Class files are in `Content.ClassDefinitions`** (a folder right under Content, like `Content.Guns.Definitions`), not inside the `Content.Classes` module.
-  - `Content.Classes` had its whole class list back in it (most likely an open script editor saved an older copy over the change). The files were made again from that list, which is the newest: 16 matched, and Leo's Id is now `Motion_Scanner` (renamed in that list).
-  - `Content.Classes` now only loads `Content.ClassDefinitions` and answers questions (`Get`, `ForTeam`, `Allows`...). Its header says to edit classes in the folder. Checked: 17 classes in the same order.
-  - **Anyone with `Content.Classes` open in a script editor should close it without saving**, or the old list comes back again.
+    - `Content.Classes` had its whole class list back in it (most likely an open script editor saved an older copy over the change). The files were made again from that list, which is the newest: 16 matched, and Leo's Id is now `Motion_Scanner` (renamed in that list).
+    - `Content.Classes` now only loads `Content.ClassDefinitions` and answers questions (`Get`, `ForTeam`, `Allows`...). Its header says to edit classes in the folder. Checked: 17 classes in the same order.
+    - **Anyone with `Content.Classes` open in a script editor should close it without saving**, or the old list comes back again.
 - **Shields and phones face the viewer** in every preview (cards, detail page, rows): a shield shows its plated front, a phone its screen (`FACE_ON` in `ItemDetails`). Spinning starts from the front.
 - **Things that aren't models work like guns on the detail page:** Coins (the coin picture), crates (📦) and pass perks (like x2) in a bundle or pass can be clicked: the big picture, their name and their own description show, under the bundle's title, without turning. Rows show their picture in a new `Icon` / `IconGlyph` slot of `Templates.ContentRow`. `Row.Image` and `Row.Glyph`.
 
@@ -642,17 +635,17 @@ Tested in a Studio playtest: a hovered Inventory card turned and showed its tool
 ### Added
 
 - **Previews turn.**
-  - Inventory and Store cards: the gun turns while the pointer is on the card, one card at a time (`ItemDetails.Hover`).
-  - The detail page: the gun turns the whole time the page is open (`ItemDetails.Spin`).
+    - Inventory and Store cards: the gun turns while the pointer is on the card, one card at a time (`ItemDetails.Hover`).
+    - The detail page: the gun turns the whole time the page is open (`ItemDetails.Spin`).
 - **Bundle items on the detail page.** A row with a preview (a bundle's or pass's items, a crate's skins, a class's guns) can be clicked:
-  - the big preview shows that item, turning;
-  - the subtitle shows its name and kind, and the description its own description (`Row.Description`, filled from skins and classes);
-  - the title stays the bundle's, crate's or pass's;
-  - the row is outlined; clicking it again shows the whole bundle again.
-  - Template `ContentRow` got a transparent `Select` button and a `Selected` outline.
+    - the big preview shows that item, turning;
+    - the subtitle shows its name and kind, and the description its own description (`Row.Description`, filled from skins and classes);
+    - the title stays the bundle's, crate's or pass's;
+    - the row is outlined; clicking it again shows the whole bundle again.
+    - Template `ContentRow` got a transparent `Select` button and a `Selected` outline.
 - **Tooltips.** `Main.Tooltip` (built in Studio) and `Client.Core.Tooltip` (ClientOnly): resting the mouse 0.35 s on an element with a `Tooltip` attribute (on it or an ancestor) shows a small box by the pointer. Mouse only.
-  - Set in Studio: the lobby bar (PLAY, PARTY, MODE, PLAY WITH PARTY), STORE and INVENTORY, Settings, the Coins chip, the detail page's BACK, EXIT, GIFT, Coins and Robux, and the Store, Inventory, Modes and Party close buttons.
-  - Set in code (`Tooltip.Set`): Inventory and Store cards (name, kind, where it comes from, "Click for details"), Game Modes cards, and detail page rows.
+    - Set in Studio: the lobby bar (PLAY, PARTY, MODE, PLAY WITH PARTY), STORE and INVENTORY, Settings, the Coins chip, the detail page's BACK, EXIT, GIFT, Coins and Robux, and the Store, Inventory, Modes and Party close buttons.
+    - Set in code (`Tooltip.Set`): Inventory and Store cards (name, kind, where it comes from, "Click for details"), Game Modes cards, and detail page rows.
 
 
 ## 2026-11-15: One file per class
@@ -662,11 +655,11 @@ Checked in Studio without a playtest (as asked): every file compiles, and the ne
 ### Changed
 
 - **Classes are separate files, like guns.** Each class is a ModuleScript in `Content.Classes.Definitions` (17 files, named by class Id: `Breacher`, `Hacker`, `Motion Scanner`, ...), returning that class's table with its comments.
-  - New field `Order`: the class's place in the menu. `Content.Classes` loads every file once and sorts by `Order`, then `Name`, so the menu order is the same as before.
-  - A file that fails to load, has no `Id`, or repeats an `Id` is warned about and skipped.
-  - `Content.Classes` keeps its API (`List`, `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN`), so nothing that uses it changed.
-  - The old list's shared `SIDEARM`, `ACTION` and `PREP_AND_ACTION` tables are now declared at the top of each file that uses them.
-  - Checked: same 17 classes in the same order with the same fields. The one difference is Leo's (`Motion Scanner`) ability description, which someone edited in Studio during the move; its latest text is in `Definitions.Motion Scanner`.
+    - New field `Order`: the class's place in the menu. `Content.Classes` loads every file once and sorts by `Order`, then `Name`, so the menu order is the same as before.
+    - A file that fails to load, has no `Id`, or repeats an `Id` is warned about and skipped.
+    - `Content.Classes` keeps its API (`List`, `Get`, `ForTeam`, `CategoryOf`, `Allows`, `Choices`, `GunCategories`, `HIDDEN`), so nothing that uses it changed.
+    - The old list's shared `SIDEARM`, `ACTION` and `PREP_AND_ACTION` tables are now declared at the top of each file that uses them.
+    - Checked: same 17 classes in the same order with the same fields. The one difference is Leo's (`Motion Scanner`) ability description, which someone edited in Studio during the move; its latest text is in `Definitions.Motion Scanner`.
 - Space-indented classes (Caleb, Wren, Tiffany, Blake) were reindented with tabs.
 
 
@@ -675,17 +668,17 @@ Checked in Studio without a playtest (as asked): every file compiles, and the ne
 ### Fixed
 
 - **The prep drone couldn't be driven.** Only what is within `StreamingTargetRadius` (1024 studs) of a player's body streams in to their client, and during Prep the attacker's body waited at the lobby, about 1300 studs from Mansion and Bank. The drone is driven by the client, so it wasn't there to drive, or fell through a floor that hadn't loaded yet.
-  - In Prep the attacker's body now waits `PREP_HOLD_HEIGHT` (120) studs above their spawn: invisible, anchored, can't be touched, hit by rays or hurt (a hidden ForceField), no name, no weapons (`holdAt` in SiegeService). Action gives a new body at the spawn as before.
-  - The drone is handed over only after `Player:RequestStreamAroundAsync` around the spawn (up to `PREP_STREAM_WAIT`, 6 s), so the floor is there first.
-  - Tested: the hidden body sat 120 studs above the Bank spawn, invisible and anchored. Before the stream wait, the client's drone had fallen to Y -500. With the wait in place, a full Prep wasn't run again (the test player's data kept failing to load), so driving is **not yet confirmed**.
+    - In Prep the attacker's body now waits `PREP_HOLD_HEIGHT` (120) studs above their spawn: invisible, anchored, can't be touched, hit by rays or hurt (a hidden ForceField), no name, no weapons (`holdAt` in SiegeService). Action gives a new body at the spawn as before.
+    - The drone is handed over only after `Player:RequestStreamAroundAsync` around the spawn (up to `PREP_STREAM_WAIT`, 6 s), so the floor is there first.
+    - Tested: the hidden body sat 120 studs above the Bank spawn, invisible and anchored. Before the stream wait, the client's drone had fallen to Y -500. With the wait in place, a full Prep wasn't run again (the test player's data kept failing to load), so driving is **not yet confirmed**.
 - **A match went on after a side left, and could say the remaining side lost.**
-  - The round's winning group was read from the roster, which still held players who had left, with the team of the round they left in. After a side swap that is the other side's team, so the side that left could be credited.
-  - Each round's "a side left" check used that round's starting count, so a side that left during RoundEnd started the next round with 0 players and the check never fired.
-  - Now: the winning group is the group playing the winning team this round (`teamOfGroup`). Each side group's size at the start of the match (`groupStart`) is kept; a group with nobody left loses the match at once, in any phase from Selection to Action, and `nextRound` checks right away. A side that left forfeits the match whatever the score.
-  - Not tested with real players (needs two).
+    - The round's winning group was read from the roster, which still held players who had left, with the team of the round they left in. After a side swap that is the other side's team, so the side that left could be credited.
+    - Each round's "a side left" check used that round's starting count, so a side that left during RoundEnd started the next round with 0 players and the check never fired.
+    - Now: the winning group is the group playing the winning team this round (`teamOfGroup`). Each side group's size at the start of the match (`groupStart`) is kept; a group with nobody left loses the match at once, in any phase from Selection to Action, and `nextRound` checks right away. A side that left forfeits the match whatever the score.
+    - Not tested with real players (needs two).
 - **Bullets stopped in some broken doorways and windows (Bank).** Bank's bomb-room volumes (`Sites`, up to 68 studs across) and both maps' spawn markers were invisible and walk-through but could still be hit by rays. Bullets stopped on them once the boards were down.
-  - Those parts are now `CanQuery`/`CanTouch` off in both maps (30 parts), and `SiegeMap.Load` makes sure of it for every map.
-  - Tested: Mansion 32 and Bank 47 boards broken, then shot through: Bank blocked 9 before, 0 after.
+    - Those parts are now `CanQuery`/`CanTouch` off in both maps (30 parts), and `SiegeMap.Load` makes sure of it for every map.
+    - Tested: Mansion 32 and Bank 47 boards broken, then shot through: Bank blocked 9 before, 0 after.
 
 ### Changed
 
@@ -693,11 +686,11 @@ Checked in Studio without a playtest (as asked): every file compiles, and the ne
 - **No health bars over other players.** Names stay; NPCs keep their bars (`Client.Hud.HealthBillboards`).
 - **Siege "Built" counts whole doors and windows,** not planks: only the piece that completes a board counts (and reinforced walls, as before). The MASTER BUILDER card and BUILT column use it.
 - **Clear House guards:**
-  - **Roam their room:** a new patrol spot is at least 45% of the room's size away when possible (`GUARD_SPREAD`), and they stand 0.6 to 1.8 s between walks (was 1.5 to 4). Tested with a player nearby (guards sleep beyond 350 studs): 61 to 228 studs walked in 24 s, covering most of each room.
-  - **No Grenadier:** `PROFILES = { Soldier = 3, Breacher = 1 }`.
-  - **Count:** `ROOM_SHARE` 2/3, one guard per room first, so at least 2/3 of the rooms hold one (maps with no hand-made spawn rooms).
-  - The indoor check no longer needs a bomb room (`Sites`); a map's `NPCIndoorVolumes`, when it has them, still bound the guards.
-  - Mansion and Bank now have hand-made `ClearHouseSpawnRooms` and `NPCIndoorVolumes` (14 each) and floor **waves** (Main 6, Upstairs 4, Basement 6; 16 guards, the next floor after the last is cleared). Those were added by another developer and are not changed here; with waves only one floor holds guards at a time.
+    - **Roam their room:** a new patrol spot is at least 45% of the room's size away when possible (`GUARD_SPREAD`), and they stand 0.6 to 1.8 s between walks (was 1.5 to 4). Tested with a player nearby (guards sleep beyond 350 studs): 61 to 228 studs walked in 24 s, covering most of each room.
+    - **No Grenadier:** `PROFILES = { Soldier = 3, Breacher = 1 }`.
+    - **Count:** `ROOM_SHARE` 2/3, one guard per room first, so at least 2/3 of the rooms hold one (maps with no hand-made spawn rooms).
+    - The indoor check no longer needs a bomb room (`Sites`); a map's `NPCIndoorVolumes`, when it has them, still bound the guards.
+    - Mansion and Bank now have hand-made `ClearHouseSpawnRooms` and `NPCIndoorVolumes` (14 each) and floor **waves** (Main 6, Upstairs 4, Basement 6; 16 guards, the next floor after the last is cleared). Those were added by another developer and are not changed here; with waves only one floor holds guards at a time.
 
 
 ## 2026-11-15: Party-size popup
@@ -707,10 +700,10 @@ Tested in a Studio playtest: with a party of 3, pressing 1v1 opened the popup, n
 ### Changed
 
 - **"Party too big" is a popup now**, not text in the Game Modes panel's description line. The description always shows the mode's own description.
-  - Pressing a greyed-out mode or category: PARTY TOO BIG popup, "Your party of N is too big for X. Pick a different mode." Nothing is picked.
-  - Picking a PRIVATE ONLY mode: a PRIVATE ONLY popup says what PLAY and PLAY WITH PARTY will play (a notify sound, not an error).
-  - PLAY or PLAY WITH PARTY with no mode that fits, the server's own size refusal, and a party growing too big for every mode of the category also open the popup.
-  - The note under the bar when the party's size switches PLAY stays as it was.
+    - Pressing a greyed-out mode or category: PARTY TOO BIG popup, "Your party of N is too big for X. Pick a different mode." Nothing is picked.
+    - Picking a PRIVATE ONLY mode: a PRIVATE ONLY popup says what PLAY and PLAY WITH PARTY will play (a notify sound, not an error).
+    - PLAY or PLAY WITH PARTY with no mode that fits, the server's own size refusal, and a party growing too big for every mode of the category also open the popup.
+    - The note under the bar when the party's size switches PLAY stays as it was.
 
 ### Added
 
@@ -725,14 +718,14 @@ Tested in a Studio playtest with one player and a party faked from the server (2
 ### Changed
 
 - **PLAY WITH PARTY plays the picked mode.** A private 1v1, 5v5 or Clear House instead of a fixed "Private" Siege match.
-  - The record's `Mode` is the mode's Id, with `Private = true`. So a private Clear House is Clear House (map vote, guards), and rounds come from `Content.Siege.ROUNDS` for the mode.
-  - Teams: dealt evenly as before; in a mode with no defenders (Clear House) everyone attacks.
-  - Results still count under `Mode:Private` / `Category:Private` (`StatsService`), never the public mode's stats.
+    - The record's `Mode` is the mode's Id, with `Private = true`. So a private Clear House is Clear House (map vote, guards), and rounds come from `Content.Siege.ROUNDS` for the mode.
+    - Teams: dealt evenly as before; in a mode with no defenders (Clear House) everyone attacks.
+    - Results still count under `Mode:Private` / `Category:Private` (`StatsService`), never the public mode's stats.
 - **Party size picks the mode.** Each mode has two limits:
-  - queue (PLAY): `PartyLimit` (1v1: 1, 5v5: 5, Clear House: 5);
-  - private (PLAY WITH PARTY): `PrivateLimit`, both sides together, at most 5 (1v1: 2, 5v5: 5, Clear House: 5).
+    - queue (PLAY): `PartyLimit` (1v1: 1, 5v5: 5, Clear House: 5);
+    - private (PLAY WITH PARTY): `PrivateLimit`, both sides together, at most 5 (1v1: 2, 5v5: 5, Clear House: 5).
 
-  PLAY and PLAY WITH PARTY each use the picked mode when the party fits, else the mode of the same category with the smallest limit that fits (`Content.Matchmaking.FitMode`). With 1v1 picked: 2 players queue 5v5 while the private match stays 1v1; a third makes the private match 5v5 too; back to 1, it is 1v1 again. Arcade works the same way.
+    PLAY and PLAY WITH PARTY each use the picked mode when the party fits, else the mode of the same category with the smallest limit that fits (`Content.Matchmaking.FitMode`). With 1v1 picked: 2 players queue 5v5 while the private match stays 1v1; a third makes the private match 5v5 too; back to 1, it is 1v1 again. Arcade works the same way.
 - **The bar says so:** PLAY's line shows the mode it queues for, PLAY WITH PARTY shows "PRIVATE 1 V 1 · 2 PLAYERS", and a line under the bar says when the party's size switched either one ("Party of 2: PLAY now queues for 5 V 5.").
 - **Game Modes panel:** a mode the party is too big for, even privately, is greyed out, says PARTY TOO BIG and can't be picked. A mode the party fits only privately says PRIVATE ONLY. (The explanations moved to a popup later the same day.) A category with no mode that fits is greyed out too.
 - **Too big:** if no mode of the category fits, PLAY and PLAY WITH PARTY say "Your party is too big for X. Pick a different mode." The server checks the same limits.
@@ -751,18 +744,18 @@ Tested in a Studio playtest: Coins purchases of bundles and the VIP pass were re
 ### Changed
 
 - **Bundles and game passes are Robux only.**
-  - `StoreService` refuses Coins for any item in the `Bundles` section or marked `Pass`, whatever its data says.
-  - The Obsidian Pack lost its 3,000 Coins price (149 Robux, as before).
-  - The Neon Circuit Bundle is 149 Robux. It reuses the old "50 Siege Tokens" product (3731060058), renamed through Open Cloud to "Neon Circuit Bundle" at 149 Robux with a new icon, as `Store_NeonCircuitBundle` in `Shared.ProductIds`. Checked in a playtest: purchasable, and Roblox reports the new name and price.
-  - `DAILY_DEALS`: the Obsidian Pack was replaced by `Crate:Eclipse`, since a deal only lowers Coins prices.
+    - `StoreService` refuses Coins for any item in the `Bundles` section or marked `Pass`, whatever its data says.
+    - The Obsidian Pack lost its 3,000 Coins price (149 Robux, as before).
+    - The Neon Circuit Bundle is 149 Robux. It reuses the old "50 Siege Tokens" product (3731060058), renamed through Open Cloud to "Neon Circuit Bundle" at 149 Robux with a new icon, as `Store_NeonCircuitBundle` in `Shared.ProductIds`. Checked in a playtest: purchasable, and Roblox reports the new name and price.
+    - `DAILY_DEALS`: the Obsidian Pack was replaced by `Crate:Eclipse`, since a deal only lowers Coins prices.
 
 ### Added
 
 - **New contents reach owners.** When skins or classes are added to a bundle's or game pass's `Grants`, players who own it get them the next time they join.
-  - Bundles (`backfillOwned` in `StoreService`): owned means recorded in `OwnedItems` or found in the purchase log (`Item:<Id>`, `<Id>` or `Store_<Id>`), not "has every skin", so a bundle with a new skin still counts as bought.
-  - Game passes (`PassCosmetics`): every `Pass` item now, not only VIP. Also right after a pass is bought.
-  - Only skins and classes are given again. Coins and crates in `Grants` are given once, at purchase.
-  - New `StoreGrants.Missing(data, grants)` and `StoreGrants.ApplyLasting(data, grants)`.
+    - Bundles (`backfillOwned` in `StoreService`): owned means recorded in `OwnedItems` or found in the purchase log (`Item:<Id>`, `<Id>` or `Store_<Id>`), not "has every skin", so a bundle with a new skin still counts as bought.
+    - Game passes (`PassCosmetics`): every `Pass` item now, not only VIP. Also right after a pass is bought.
+    - Only skins and classes are given again. Coins and crates in `Grants` are given once, at purchase.
+    - New `StoreGrants.Missing(data, grants)` and `StoreGrants.ApplyLasting(data, grants)`.
 
 
 ## 2026-11-15: Siege Tokens removed, crate contents rows, Clear House end screen and guard count
@@ -772,24 +765,24 @@ Tested in a Studio playtest (server and client). No player data was written.
 ### Removed
 
 - **Siege Tokens** are gone as a currency. Coins are the only one.
-  - No crate or store item has a Tokens price; the three token packs (`Tokens50`, `Tokens150`, `Tokens400`) are no longer sold. Their product ids were taken out of `Shared.ProductIds`; turn the products off on the Creator Dashboard. (Later that day the Tokens50 product became the Neon Circuit Bundle.)
-  - The Starter Bundle no longer grants 25 Tokens (its text was updated).
-  - Bundles that had a Tokens price were first given Coins prices; later the same day bundles became Robux only (see above).
-  - `StoreService` refuses Tokens: `CURRENCIES = { Coins = true }`, for buying and for `Give`.
-  - The Tokens chips are hidden in `Main.Wallet`, the Store and Inventory headers, and the detail page's Tokens button.
-  - The saved `Tokens` field stays (unused) so old saves still load.
+    - No crate or store item has a Tokens price; the three token packs (`Tokens50`, `Tokens150`, `Tokens400`) are no longer sold. Their product ids were taken out of `Shared.ProductIds`; turn the products off on the Creator Dashboard. (Later that day the Tokens50 product became the Neon Circuit Bundle.)
+    - The Starter Bundle no longer grants 25 Tokens (its text was updated).
+    - Bundles that had a Tokens price were first given Coins prices; later the same day bundles became Robux only (see above).
+    - `StoreService` refuses Tokens: `CURRENCIES = { Coins = true }`, for buying and for `Give`.
+    - The Tokens chips are hidden in `Main.Wallet`, the Store and Inventory headers, and the detail page's Tokens button.
+    - The saved `Tokens` field stays (unused) so old saves still load.
 
 ### Fixed
 
 - **Crate contents rows overlapped** (`Templates.ContentRow`): long names ran under the odds, and the detail ran under OWNED.
-  - The name and detail now end 130 px before the right edge.
-  - The odds and OWNED are 50 px wide.
-  - The detail is 12 px and cut off with "…"; the name shrinks to fit (10 px at least) and is cut off below that.
+    - The name and detail now end 130 px before the right edge.
+    - The odds and OWNED are 50 px wide.
+    - The detail is 12 px and cut off with "…"; the name shrinks to fit (10 px at least) and is cut off below that.
 
 ### Changed
 
 - **Clear House end screen:** the guards' stats are no longer shown. The server sends only the players' rows, and the client shows only YOUR TEAM (no HOUSE GUARDS column).
 - **Clear House guard count:** every room the finder found counts, not only the rooms with indoor guard spots. Guards = half the rooms (rounded up) + 2 for each player after the first.
-  - Guards still stand only on indoor spots (`NPCIndoorVolumes` or `Sites` volumes, with a ceiling and walls around). Mansion has 7 such rooms of 26, Bank 6 of 29.
-  - Rooms fill up to `MAX_PER_ROOM` first; if guards are left over, any free indoor spot is used. A warning is printed if the spots run out.
-  - Tested: Mansion 13 guards for 1 player and 21 for 5; Bank 15 and 23. All of them indoors.
+    - Guards still stand only on indoor spots (`NPCIndoorVolumes` or `Sites` volumes, with a ceiling and walls around). Mansion has 7 such rooms of 26, Bank 6 of 29.
+    - Rooms fill up to `MAX_PER_ROOM` first; if guards are left over, any free indoor spot is used. A warning is printed if the spots run out.
+    - Tested: Mansion 13 guards for 1 player and 21 for 5; Bank 15 and 23. All of them indoors.

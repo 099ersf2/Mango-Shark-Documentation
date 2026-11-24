@@ -1,18 +1,18 @@
-[Documentation home](index.md) / [API reference](API.md)
-
 # Content and metadata reference
 
-> **Scope:** Game data, Cmdr commands, attributes, tags and collision groups. Entries for older match modes are historical; consult the active system guide before using them.
+!!! abstract "Scope"
+
+    Game data, Cmdr commands, attributes, tags and collision groups. Entries for older match modes are historical; consult the active system guide before using them.
 
 ## Content (data you edit)
 
 | Module | What it holds / API |
 | --- | --- |
-| `Content.Guns.Definitions.*` | One file per gun (see [ADDING_GUNS.md](ADDING_GUNS.md)) |
-| `Content.Match.Modes.*` | One file per match mode ([MATCH.md](MATCH.md)) |
+| `Content.Guns.Definitions.*` | One file per gun (see [Adding guns](ADDING_GUNS.md)) |
+| `Content.Match.Modes.*` | One file per match mode ([Matches, modes, and teams](MATCH.md)) |
 | `Content.Match.Settings` | Every match setting and its range; `List`, `Get`, `Clean`, `Describe`, `DEFAULT_MODE` |
 | `Content.Match.Teams` | Every team (Red, Blue, Green, Yellow); `List`, `Get` |
-| `Content.Drones` | Every drone setting and attribute name ([DRONES.md](DRONES.md)) |
+| `Content.Drones` | Every drone setting and attribute name ([Scout drones](DRONES.md)) |
 | `Content.Guns.Registry` | Every gun by Id, with defaults filled in: `Registry[gunId]` |
 | `Content.Guns.Loadouts` | The loadouts; `Loadouts.Get(id)` |
 | `Content.Guns.Skins.Skins` | `List`, `CRATE_PRICE` (499), `CRATE_REFUND_COINS` (500); `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)` |
@@ -24,6 +24,22 @@
 | `Content.Destruction.SoftWallConfig` | Soft wall settings and `Guns[Id]` (hole radius, penetration) |
 | `Content.Movement.Config` | Speeds, heights, camera feel |
 | `Content.NPC.Profiles` | NPC profiles (Soldier, Breacher, Grenadier) |
+
+!!! example "Read content data"
+
+    ```lua
+    local Content = game.ReplicatedStorage.Content
+    local Registry = require(Content.Guns.Registry)
+    local Consumables = require(Content.Consumables.Consumables)
+
+    local rifle = Registry.Rifle            -- defaults filled in
+    print(rifle.DisplayName, rifle.Damage, rifle.MagSize)
+
+    local grenade = Consumables.Get("Grenade")
+    print(Consumables.PER_LIFE)            -- 2
+    ```
+
+    Content modules are data: read them anywhere, change numbers there rather than in system code.
 
 ---
 
@@ -42,7 +58,7 @@ Open the bar with **F2**, or the **CMD** touch button (shown only to admins in `
 | `announce` | text | A banner for everyone (the example command) |
 | `match` | start / end / restart | Starts the next match now, ends the running one, or restarts with the next setup |
 | `matchmode` | mode | The next match's mode (TeamDeathmatch, FreeForAll, Elimination, …) |
-| `range` (`showcase`) | — | Takes you to the gun animation range ([GUN_SHOWCASE.md](GUN_SHOWCASE.md)) |
+| `range` (`showcase`) | — | Takes you to the gun animation range ([Gun animation range](GUN_SHOWCASE.md)) |
 | `matchset` | setting, value | One of the next match's settings: a number, or on/off |
 | `movedebug` | — | Toggles the movement readout |
 | `aimassistpc` (`aapc`) | player, on? | Turns controller aim assist on or off for that player on mouse and keyboard, for testing; leave out `on` to toggle |
@@ -60,7 +76,7 @@ Read them anywhere with `:GetAttribute`; the **server** sets them unless noted.
 | `InLobby` | Player | In the lobby (no guns) |
 | `NPCMode`, `GuardRoom` | NPC model | `"Roam"` or `"Guard"` / the guarded `NPCRoom`'s name (`NPCService.SetMode`) |
 | `Team` | Player, NPC model, SpawnLocation (you set) | A `Content.Match.Teams` Id: the player's team (our team system), an NPC's side, or which team a spawn belongs to |
-| `GunAiming` | Player character, NPC model | Aiming down sights (players) or aiming at a target (NPCs); the third-person aim pose ([THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md)) |
+| `GunAiming` | Player character, NPC model | Aiming down sights (players) or aiming at a target (NPCs); the third-person aim pose ([Third-person gun animation](THIRD_PERSON_GUNS.md)) |
 | `Reloading` | Gun Tool | True while the gun reloads (the third-person reload) |
 | `ModelScale` | Gun Tool | The third-person gun's scale (`GunService`); `Content.Guns.Skins.Skins` scales skins by it |
 | `AimPitch` | NPC model | Where the NPC aims, radians up (the third-person aim pitch) |

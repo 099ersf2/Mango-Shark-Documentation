@@ -1,10 +1,3 @@
----
-hide:
-  - toc
----
-
-[Documentation home](index.md) / [Changelog](CHANGELOG.md)
-
 # Changelog archive: 2026-11-07 to 08
 
 Historical implementation notes, retained as written for search and context. Verify behavior against current system guides before using these details.
@@ -14,13 +7,13 @@ Historical implementation notes, retained as written for search and context. Ver
 ### Added
 
 - **Breakable boards.**
-  - At server start, every part tagged `Board` is replaced with `Assets.Models.Board`, positioned by its BasePart.
-  - Damage removes the spray paint first, then planks from the highest number down (planks 60 HP, spray paint 25 HP).
-  - Broken pieces hide and stop blocking players and bullets.
+    - At server start, every part tagged `Board` is replaced with `Assets.Models.Board`, positioned by its BasePart.
+    - Damage removes the spray paint first, then planks from the highest number down (planks 60 HP, spray paint 25 HP).
+    - Broken pieces hide and stop blocking players and bullets.
 - **Board repair.**
-  - Hold the Interact key on the board's prompt to place the next missing piece: planks 1 to N, then the spray paint last.
-  - The server checks distance, cooldown and order.
-  - Numbers are in `Content.Breakables.Definitions.Board`.
+    - Hold the Interact key on the board's prompt to place the next missing piece: planks 1 to N, then the spray paint last.
+    - The server checks distance, cooldown and order.
+    - Numbers are in `Content.Breakables.Definitions.Board`.
 - **Guns damage boards.** Every bullet, including shotgun pellets and ricochets, damages the board piece it hits, and explosive rounds damage boards in their blast radius. Intact planks stop bullets like walls.
 - **`Systems.Breakables.BreakableService`.** A weapon-agnostic API (`Damage`, `DamageRadius`, `Repair`, `Reset`, `IsBreakable`, `Get`) with `Breakable.*` extension points. New breakable types come from the data-driven `Content.Breakables` registry.
 - **Interact keybind.** A rebindable Interact action (default E, gamepad DPad Up) in Settings > Controls. Every ProximityPrompt uses the player's Interact key and updates live when it is rebound (`Client.Interact.PromptKeys`).
@@ -35,9 +28,9 @@ Historical implementation notes, retained as written for search and context. Ver
 - **Controls.** C crouches (or slides while sprinting) and Left Ctrl goes prone; press Left Ctrl again to get up. Z no longer does anything by default.
 - **Second crouch key removed.** `CrouchAlt` (Left Ctrl) is gone from `Shared.PlayerSettings`. The Settings menu now shows one "Crouch / slide" row (C) and "Prone" (LCtrl).
 - **Saved keybinds move over.**
-  - When keybinds load, `Client.Settings.Keybinds` moves a saved Prone still on the old default Z to Left Ctrl, and saves it through `Packets.Settings.Keybind`. It doesn't move it if the player already put another action on Left Ctrl.
-  - Old profiles keep an unused `CrouchAlt` field, which Scribe loads without errors.
-  - To move another default later, add its old key to `MOVED_DEFAULTS`.
+    - When keybinds load, `Client.Settings.Keybinds` moves a saved Prone still on the old default Z to Left Ctrl, and saves it through `Packets.Settings.Keybind`. It doesn't move it if the player already put another action on Left Ctrl.
+    - Old profiles keep an unused `CrouchAlt` field, which Scribe loads without errors.
+    - To move another default later, add its old key to `MOVED_DEFAULTS`.
 - **Unchanged:** gamepad (B: tap crouch, hold prone) and touch (Crouch button: tap or hold).
 
 ### Fixed
@@ -50,12 +43,12 @@ Historical implementation notes, retained as written for search and context. Ver
 ### Added
 
 - **Prone.**
-  - Lie down with Z (rebindable), hold gamepad B or hold the touch Crouch button. Press again, crouch, jump or sprint to get up; you stay down under anything too low to rise into.
-  - Crawls at `ProneSpeed` (3.5). The eye is about 1.3 studs above the floor, and spread is best here (`Spread.Prone`, default 0.5).
-  - No jumping and no footsteps. `ProneCooldown` applies between going down and getting up, on both client and server.
-  - Sets the `Prone` attribute and StateHandler state, and adds the `Movement.PreventProne` extension point.
-  - Third person: the body tips flat onto its front through `MovementPoses`, or plays `Config.Animations.Prone` if set. The viewmodel gets a braced prone pose.
-  - The server registers the `ProneBody` collision group; the prone player's own body parts use it so the lowered torso can't lift the character.
+    - Lie down with Z (rebindable), hold gamepad B or hold the touch Crouch button. Press again, crouch, jump or sprint to get up; you stay down under anything too low to rise into.
+    - Crawls at `ProneSpeed` (3.5). The eye is about 1.3 studs above the floor, and spread is best here (`Spread.Prone`, default 0.5).
+    - No jumping and no footsteps. `ProneCooldown` applies between going down and getting up, on both client and server.
+    - Sets the `Prone` attribute and StateHandler state, and adds the `Movement.PreventProne` extension point.
+    - Third person: the body tips flat onto its front through `MovementPoses`, or plays `Config.Animations.Prone` if set. The viewmodel gets a braced prone pose.
+    - The server registers the `ProneBody` collision group; the prone player's own body parts use it so the lowered torso can't lift the character.
 
 ### Fixed
 
@@ -70,38 +63,38 @@ Historical implementation notes, retained as written for search and context. Ver
 ### Added
 
 - **Movement states.** Walk, Sprint, TacticalSprint (double-tap sprint), Crouch, Slide and Air.
-  - Flags and the one transition table live in `Shared.Movement.States`.
-  - Every tunable number lives in `Content.Movement.Config`.
+    - Flags and the one transition table live in `Shared.Movement.States`.
+    - Every tunable number lives in `Content.Movement.Config`.
 - **`Client.Movement.MovementController`.** Runs the state machine on the client for instant response.
-  - WalkSpeed ramps; HipHeight crouch with a headroom shapecast before standing.
-  - A reused `LinearVelocity` drives slides (slope gain and loss, steering, cooldown) and carries slide-jump momentum with limited air control.
-  - Footsteps run on a stride timer for this player and nearby others.
-  - Keys come from Keybinds; the gamepad uses L3 and B; touch uses Sprint and Crouch buttons plus thumbstick auto-sprint.
+    - WalkSpeed ramps; HipHeight crouch with a headroom shapecast before standing.
+    - A reused `LinearVelocity` drives slides (slope gain and loss, steering, cooldown) and carries slide-jump momentum with limited air control.
+    - Footsteps run on a stride timer for this player and nearby others.
+    - Keys come from Keybinds; the gamepad uses L3 and B; touch uses Sprint and Crouch buttons plus thumbstick auto-sprint.
 - **`Client.Movement.MovementCamera`.** One RenderStep at Camera + 1, layered on the default camera.
-  - Crouch and slide eye height on a spring, FOV kicks, strafe and slide tilt, a landing dip, and head bob tied to footsteps.
-  - Gun recoil is in the same spring stack. CameraShaker is kept for impacts and explosions only.
+    - Crouch and slide eye height on a spring, FOV kicks, strafe and slide tilt, a landing dip, and head bob tied to footsteps.
+    - Gun recoil is in the same spring stack. CameraShaker is kept for impacts and explosions only.
 - **`Systems.Movement.MovementService`.**
-  - It checks each `Packets.Movement.SetState` against the transition table, cooldowns, grounded state and `Stunned` / `CantDoAnything`, and corrects with `Packets.Movement.Correct`.
-  - It sets the `Sprinting`, `Crouching` and `Sliding` StateHandler states and attributes, plus `MoveState`, WalkSpeed and HipHeight.
-  - It runs a 4 Hz speed check that logs and counts violations (`MoveViolations`) without kicking.
+    - It checks each `Packets.Movement.SetState` against the transition table, cooldowns, grounded state and `Stunned` / `CantDoAnything`, and corrects with `Packets.Movement.Correct`.
+    - It sets the `Sprinting`, `Crouching` and `Sliding` StateHandler states and attributes, plus `MoveState`, WalkSpeed and HipHeight.
+    - It runs a 4 Hz speed check that logs and counts violations (`MoveViolations`) without kicking.
 - **`Client.Movement.MovementPoses`.** Third-person crouch and slide leg poses for every character, from the replicated attributes. It uses `Config.Animations` ids through AnimationHandler when they're set, and works with Motor6D and AnimationConstraint joints.
 - **Extension points.** `Movement.PreventSprint`, `Movement.PreventSlide` and `Movement.SpeedMultiplier`.
 - **Settings.**
-  - Actions `Sprint` (Left Shift), `Crouch` (C) and `CrouchAlt` (Left Ctrl).
-  - `PlayerSettings.Options`, saved under `Settings.Options` through the new `Packets.Settings.Option`:
-    - `Fov` (60–110, default 80) and `CameraBob` (0–100%);
-    - `HoldSprint`, `HoldCrouch`, `MobileAutoSprint` and `SprintWhileReloading`.
-  - `Client.Settings.Options` loads and applies them, previewing live while a slider is dragged.
-  - Settings menu sections **Movement** and **Display**, with rows from the new `ToggleRow` and `SliderRow` templates.
+    - Actions `Sprint` (Left Shift), `Crouch` (C) and `CrouchAlt` (Left Ctrl).
+    - `PlayerSettings.Options`, saved under `Settings.Options` through the new `Packets.Settings.Option`:
+        - `Fov` (60–110, default 80) and `CameraBob` (0–100%);
+        - `HoldSprint`, `HoldCrouch`, `MobileAutoSprint` and `SprintWhileReloading`.
+    - `Client.Settings.Options` loads and applies them, previewing live while a slider is dragged.
+    - Settings menu sections **Movement** and **Display**, with rows from the new `ToggleRow` and `SliderRow` templates.
 - **`Client.Settings.Slider`.** The drag and snap logic shared by every settings slider; the volume sliders use it too.
 - **Gun fields.** `SprintOutTime` (default 0.15) and `MoveSpeedMultiplier` (default 1), plus `Spread.Crouch` (0.7) and `Spread.Slide` (2).
-  - Pistol: 0.1s and 1.05.
-  - Shotgun: 0.2s and 0.95.
-  - BurstRifle: 0.18s and 0.95.
+    - Pistol: 0.1s and 1.05.
+    - Shotgun: 0.2s and 0.95.
+    - BurstRifle: 0.18s and 0.95.
 - **Effects.**
-  - Registry entries: `SlideStart`, `SlideLoop` (Persistent), `Land` and `Footstep` (variants Concrete, Grass, Soft, Wood and Metal).
-  - A pooled `Dust` effect part.
-  - Sounds in `Assets.Sounds` and the dust emitters `SlideDust`, `LandDust` and `StepDust` in `Assets.Vfx`.
+    - Registry entries: `SlideStart`, `SlideLoop` (Persistent), `Land` and `Footstep` (variants Concrete, Grass, Soft, Wood and Metal).
+    - A pooled `Dust` effect part.
+    - Sounds in `Assets.Sounds` and the dust emitters `SlideDust`, `LandDust` and `StepDust` in `Assets.Vfx`.
 - **UI.** `Main.Mobile.CrouchButton`, and the `SprintButton` wired with a label. The `MovementDebug` template.
 - **Cmdr.** `movedebug` toggles an on-screen movement readout.
 - **Docs.** `MOVEMENT.md`.
@@ -109,16 +102,16 @@ Historical implementation notes, retained as written for search and context. Ver
 ### Changed
 
 - **Viewmodel.**
-  - It runs at Camera + 2, after MovementCamera, and no longer writes the camera's CFrame or FOV. Recoil, ADS zoom and scopes go through MovementCamera.
-  - ADS FOV is `base × ADSFov / 70`, so zoom is the same at any FOV.
-  - New crouch and slide poses.
-  - At the hip, the gun's offset partly makes up for high FOV (`Config.ViewmodelFovCompensation`).
+    - It runs at Camera + 2, after MovementCamera, and no longer writes the camera's CFrame or FOV. Recoil, ADS zoom and scopes go through MovementCamera.
+    - ADS FOV is `base × ADSFov / 70`, so zoom is the same at any FOV.
+    - New crouch and slide poses.
+    - At the hip, the gun's offset partly makes up for high FOV (`Config.ViewmodelFovCompensation`).
 - **GunController.**
-  - Sprinting blocks firing and aiming. The trigger or aim ends a sprint and waits `SprintOutTime` (×2 after a tactical sprint).
-  - Spread uses the movement stance.
+    - Sprinting blocks firing and aiming. The trigger or aim ends a sprint and waits `SprintOutTime` (×2 after a tactical sprint).
+    - Spread uses the movement stance.
 - **GunService.**
-  - `tryShot` refuses a player's shot while sprinting or inside `SprintOutTime` (`MovementService.BlocksFire`).
-  - The minimum spread accepts the crouch cone while the player is crouched.
+    - `tryShot` refuses a player's shot while sprinting or inside `SprintOutTime` (`MovementService.BlocksFire`).
+    - The minimum spread accepts the crouch cone while the player is crouched.
 - **`PooledSound`.** Supports `Looped` (until the effect stops) and a per-play `Data.Volume`.
 - **`StarterPlayer.EnableMouseLockOption`.** Now off, since Left Shift is sprint.
 - **Default Running sound.** Muted on every character, since footsteps replace it.
@@ -135,11 +128,11 @@ Historical implementation notes, retained as written for search and context. Ver
 - **Kill sounds.** `Assets.Sounds.KillConfirm` (the headshot sound at 0.75 speed, lower with a longer tail) and `KillThump` (the body hit at 0.55, a heavy low thump). The `Hitmarker` effect gets `Kill` and `HeadshotKill` variants; `GunHud.Hitmarker` picks HeadshotKill, Kill, Headshot or body, one per hit.
 - **`Gun.Killed` extension point.** Fires `(who, victimHumanoid, gunId, headshot)` once per kill, for players and NPCs.
 - **NPCs.**
-  - Profiles: `Content.NPC.Profiles` (Soldier, Breacher, Grenadier), typed by `Content.NPC.Types`.
-  - Rig, tree and spawning: the rig is `ServerStorage.NPC.Templates.Soldier`. The behavior tree `ServerStorage.NPC.Trees.Soldier` is in the BTrees Editor format.
-  - Code: `Systems.NPC.NPCService` (spawning, respawns, round-robin scheduler, sleeping, aiming and shooting) and `Systems.NPC.Brain` (shared helpers and the `NPCWorld` blackboard).
-  - Tasks in `Systems.NPC.Tasks`: FindTarget, HasLineOfSight, InRange, LowHealth, NeedsReload, MoveToCover, Strafe, Chase, AimAndShoot, Reload and Patrol.
-  - NPCs on the same team don't hurt each other.
+    - Profiles: `Content.NPC.Profiles` (Soldier, Breacher, Grenadier), typed by `Content.NPC.Types`.
+    - Rig, tree and spawning: the rig is `ServerStorage.NPC.Templates.Soldier`. The behavior tree `ServerStorage.NPC.Trees.Soldier` is in the BTrees Editor format.
+    - Code: `Systems.NPC.NPCService` (spawning, respawns, round-robin scheduler, sleeping, aiming and shooting) and `Systems.NPC.Brain` (shared helpers and the `NPCWorld` blackboard).
+    - Tasks in `Systems.NPC.Tasks`: FindTarget, HasLineOfSight, InRange, LowHealth, NeedsReload, MoveToCover, Strafe, Chase, AimAndShoot, Reload and Patrol.
+    - NPCs on the same team don't hurt each other.
 - **Cmdr.** `spawnnpc <profile> [count]` and `clearnpcs`, with an `npcProfile` argument type.
 - **Test area.** `Workspace.NPCTestArea` (three NPCSpawn parts and cover crates) and `Workspace.Enemies`. The Enemies folder also fixes the existing `HealthBillboards` startup error.
 - **Docs.** `ADDING_NPCS.md`.
@@ -147,11 +140,11 @@ Historical implementation notes, retained as written for search and context. Ver
 ### Changed
 
 - **`GunService` serves players and NPCs.**
-  - Held guns are keyed by character, and a `Shooter` type is `{ Character, Player?, Id }`.
-  - New functions: `ShooterOf`, `GiveNPC`, `FireAs`, `ReloadAs` and `RemoveShooter`.
-  - Players' `Fire` packet handler is unchanged; both paths share the same shot checks.
-  - Extension points get the Player or the NPC model.
-  - Ability damage through `ctx.ApplyHit` now applies `Gun.DamageMultiplier`.
+    - Held guns are keyed by character, and a `Shooter` type is `{ Character, Player?, Id }`.
+    - New functions: `ShooterOf`, `GiveNPC`, `FireAs`, `ReloadAs` and `RemoveShooter`.
+    - Players' `Fire` packet handler is unchanged; both paths share the same shot checks.
+    - Extension points get the Player or the NPC model.
+    - Ability damage through `ctx.ApplyHit` now applies `Gun.DamageMultiplier`.
 - **Shot context.** `ShotContext` and `GunContext` have a `Character`, and `Player` can be nil for an NPC. `Ballistics.Filter` and `ExplosiveRounds` use the shooter's character.
 - **`Combat.ApplyHit` and `DamageLog`.** They accept a `Player` or an NPC `Model` as `Attacker`, and `DamageLog` records NPC victims too.
 - **`UnreliablePackets.GunFired`.** It carries a UserId or an NPC Id. `GunEffects` finds NPC shooters by their `NPC` tag and `NPCId` attribute.
@@ -206,19 +199,19 @@ Historical implementation notes, retained as written for search and context. Ver
 - **Extension points.** `Gun.PreventFire`, `Gun.DamageMultiplier`, `Gun.Hit` and `Gun.Reloaded`.
 - **States.** `Reloading` and `Firing` through `StateHandler`.
 - **Effects.**
-  - Registry entries: `GunFire_Rifle`, `GunFire_Pistol`, `GunFire_Shotgun`, `BulletImpact`, `Reload`, `DryFire`, `Hitmarker` and `Explosion`.
-  - Pooled effect kinds: `MuzzleFlash`, `PooledSound`, `Shell` and `Impact`.
+    - Registry entries: `GunFire_Rifle`, `GunFire_Pistol`, `GunFire_Shotgun`, `BulletImpact`, `Reload`, `DryFire`, `Hitmarker` and `Explosion`.
+    - Pooled effect kinds: `MuzzleFlash`, `PooledSound`, `Shell` and `Impact`.
 - **Assets.**
-  - Gun models (`Assets.Models.Guns`): Rifle, Pistol and Shotgun, each with `Handle`, `Muzzle`, `EjectionPort`, `Aim`, `RightGrip` and `LeftGrip`.
-  - Viewmodel rig: `Assets.Models.Viewmodel`.
-  - VFX: `MuzzleFlash`, `BulletImpact`, `BulletHole`, `ShellEject`, `Tracer`, `TracerRed` and `Explosion`.
-  - Sounds: `RifleFire`, `PistolFire`, `ShotgunFire`, `Reload`, `DryFire`, `Explosion` and `Hitmarker`.
-  - UI template: `ScopeOverlay`.
+    - Gun models (`Assets.Models.Guns`): Rifle, Pistol and Shotgun, each with `Handle`, `Muzzle`, `EjectionPort`, `Aim`, `RightGrip` and `LeftGrip`.
+    - Viewmodel rig: `Assets.Models.Viewmodel`.
+    - VFX: `MuzzleFlash`, `BulletImpact`, `BulletHole`, `ShellEject`, `Tracer`, `TracerRed` and `Explosion`.
+    - Sounds: `RifleFire`, `PistolFire`, `ShotgunFire`, `Reload`, `DryFire`, `Explosion` and `Hitmarker`.
+    - UI template: `ScopeOverlay`.
 - **UI.**
-  - `StarterGui.Main.Gun`: ammo, reserve, fire mode and reload bar.
-  - `Main.Crosshair`: the gap follows the spread.
-  - `Main.Hitmarker`.
-  - `Main.Mobile` buttons: `FireButton`, `AimButton` and `ReloadButton`.
+    - `StarterGui.Main.Gun`: ammo, reserve, fire mode and reload bar.
+    - `Main.Crosshair`: the gap follows the spread.
+    - `Main.Hitmarker`.
+    - `Main.Mobile` buttons: `FireButton`, `AimButton` and `ReloadButton`.
 - **Cmdr.** `givegun <player> <gunId>`, with a `gun` argument type.
 - **Docs.** `ADDING_GUNS.md` and `GUN_SYSTEM.md`.
 

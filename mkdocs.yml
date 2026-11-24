@@ -17,12 +17,15 @@ theme:
     - navigation.sections
     - navigation.indexes
     - navigation.top
+    - navigation.path
     - navigation.footer
-    - toc.integrate
+    - toc.follow
     - search.suggest
     - search.highlight
     - search.share
     - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
     - content.action.edit
     - content.action.view
   palette:
@@ -47,8 +50,11 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+      toc_depth: 3
   - pymdownx.details
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true

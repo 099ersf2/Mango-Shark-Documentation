@@ -1,8 +1,8 @@
-[Documentation home](index.md) / Gun Game
-
 # Historical verification backlog
 
-> Snapshot of the dated checklist as it stood when this page was archived. Unchecked items are not confirmed as still open, and checked items do not certify the current build. Re-validate against the current game before scheduling work.
+!!! note "Note"
+
+    Snapshot of the dated checklist as it stood when this page was archived. Unchecked items are not confirmed as still open, and checked items do not certify the current build. Re-validate against the current game before scheduling work.
 
 ## Retention pass (2026-11-18)
 
@@ -113,8 +113,8 @@
 ## Clear House (2026-11-14)
 
 - [ ] **A real fight:**
-  - kills on guards count for the player (end screen, Tab);
-  - guards re-board doors and windows in their room.
+    - kills on guards count for the player (end screen, Tab);
+    - guards re-board doors and windows in their room.
 - [ ] **Difficulty:** with 1 and with 5 players, tune `ROOM_SHARE`, `GUARDS_PER_PLAYER`, `MAX_PER_ROOM`, `PROFILES` and `ACTION_TIME` in `Content.Games.ClearHouse`.
 - [ ] **Map vote with several players:** the tie draw, and Bank played through to a win.
 - [ ] **A full squad of 5** on live servers: the match forms at once and everyone lands on the attacker side.
@@ -123,7 +123,7 @@
 
 ## Analytics (2026-11-14)
 
-- [ ] **Create the two journeys** on the Creator Hub (Analytics → Journeys), LobbyVisit and SiegeMatch, with the exact stages and nodes in [ANALYTICS.md](ANALYTICS.md).
+- [ ] **Create the two journeys** on the Creator Hub (Analytics → Journeys), LobbyVisit and SiegeMatch, with the exact stages and nodes in [Analytics](ANALYTICS.md).
 - [ ] **After publishing:** check the dashboards fill within a day (custom events, funnels, economy). Check the error report for rejected events.
 - [ ] **A full match:** PlayerKills, MatchFinished and the Match funnel's last step appear.
 - [ ] **Crate opening on a phone:** OPEN MORE and DONE are on screen, and the reel lands on the won skin.
@@ -149,10 +149,10 @@
 - [ ] **A 5v5:** five rounds at most, stopping at 3.
 - [ ] **Between rounds:** the map is whole again (broken boards and walls back) and the bombs are gone. Everyone picks a class, spawn or vote and loadout again.
 - [ ] **The match result screen:**
-  - the reveal plays in order;
-  - the MVP avatars load;
-  - the totals add up;
-  - WINNER is on the right column.
+    - the reveal plays in order;
+    - the MVP avatars load;
+    - the totals add up;
+    - WINNER is on the right column.
 - [ ] **Phone size:** the MatchResult columns and MVP cards fit at 844×390.
 - [ ] **Rewards:** paid once per match, to the side with more rounds.
 - [ ] **Prep drone:** the view stays when the lobby body spawns, and driving and scanning work.
@@ -163,15 +163,15 @@
 ## Store and Inventory redesign (2026-11-13, not run)
 
 - [ ] **Open the Store and the Inventory in a client that renders:**
-  - cards, ribbons, the glow sheen, the daily deal countdown;
-  - the detail page for a class, a crate and a skin;
-  - buy a crate with coins, see it in Inventory > Crates, OPEN, and watch the reel.
+    - cards, ribbons, the glow sheen, the daily deal countdown;
+    - the detail page for a class, a crate and a skin;
+    - buy a crate with coins, see it in Inventory > Crates, OPEN, and watch the reel.
 - [ ] **Decide which classes to sell** (`Content.Store.Store.CLASS_PRICES`; none locked now).
 - [ ] **Phone:** the Store cards are 4 per row; they may need 2 on a phone.
 
 ## Store and stats (2026-11-13)
 
-- [ ] **Replace the placeholder icons** of the 8 new products and the VIP pass on the Creator Dashboard (created 2026-11-13; ids in `Shared.ProductIds` and [STORE.md](STORE.md#limits)).
+- [ ] **Replace the placeholder icons** of the 8 new products and the VIP pass on the Creator Dashboard (created 2026-11-13; ids in `Shared.ProductIds` and [Store, currencies, crates, and stats](STORE.md#limits)).
 - [ ] **Buy one Robux item in a live server** to see the receipt give it.
 - [ ] **See the Store, the wallet bar, the reward toast and a coin-bought crate's reel** on screen.
 - [ ] **A real match:** the winners and losers get coins, a win or a loss, and the streak tag; back in the lobby, PLAY shows the last mode.
@@ -187,13 +187,13 @@
 ## Siege drones (2026-11-13)
 
 - [ ] **Prep, in a real match:**
-  - Each attacker sees their drone's view at once, with the map around it loaded.
-  - With the drone destroyed, NO SIGNAL stays until Action, then the body spawns.
+    - Each attacker sees their drone's view at once, with the map around it loaded.
+    - With the drone destroyed, NO SIGNAL stays until Action, then the body spawns.
 
 - [ ] **A real match, as an attacker:**
-  - In prep, held in the drone; if it is destroyed, NO SIGNAL stays until Action.
-  - At Action, the body spawns, the Drone key throws the second drone, and switching between the two works.
-  - Scans from either drone mark defenders and cameras.
+    - In prep, held in the drone; if it is destroyed, NO SIGNAL stays until Action.
+    - At Action, the body spawns, the Drone key throws the second drone, and switching between the two works.
+    - Scans from either drone mark defenders and cameras.
 - [ ] **Gamepad LB / RB and touch NEXT** switching.
 
 ## Prompts and reinforce (2026-11-13)
@@ -270,10 +270,12 @@ This list tracks verification not available in the solo Studio session.
 ## Siege, matchmaking, classes (2026-11-12)
 
 **Before Siege can be played at all**
-- [ ] Fix the map (`Workspace.CurrentMap`) so it passes the check in [SIEGE.md](SIEGE.md#the-map): add `AttackerSpawnLocations` (5 parts), add `Cameras`, rename the second `Bombs.MainFloor`, name each site's volumes `BombA` / `BombB`, give every site a folder in `Sites` and a spawn in `DefenseSpawnLocations` named after it. The four spawns in `DefenseSpawnLocations` today (BackPorch, PoolSide, RoofSide, Street) look like attacker spawns.
+
+- [ ] Fix the map (`Workspace.CurrentMap`) so it passes the check in [Siege](SIEGE.md#the-map): add `AttackerSpawnLocations` (5 parts), add `Cameras`, rename the second `Bombs.MainFloor`, name each site's volumes `BombA` / `BombB`, give every site a folder in `Sites` and a spawn in `DefenseSpawnLocations` named after it. The four spawns in `DefenseSpawnLocations` today (BackPorch, PoolSide, RoofSide, Street) look like attacker spawns.
 - [ ] Decide the lobby: it is off (its portals are gone), so on a lobby server players spawn on the map with guns while they queue. `LobbyService` has a marked line to require only `Lobby` and `LobbySpawnPoint` once that is wanted.
 
 **Live servers (nothing here has run)**
+
 - [ ] Publish to a test place and queue from two lobby servers: one matchmaker at a time; shut that server down and check another takes the lease within about 15 s.
 - [ ] A full reserved-server match: teleport in, teams from the match record, the round, the teleport back with parties intact.
 - [ ] A party with members on two lobby servers: invite, accept, kick, promote (ownership moves), leader leaves.
@@ -281,6 +283,7 @@ This list tracks verification not available in the solo Studio session.
 - [ ] Watch MemoryStore and MessagingService usage with many lobby servers.
 
 **Two or more players**
+
 - [ ] Two attackers pick the same spawn, and two teammates the same class, at the same moment: one gets it, the other sees it greyed out at once.
 - [ ] A tied site vote: only tied sites are ever chosen.
 - [ ] A second client is never sent the other team's picks, or a defender's class before a scan (read the packets on an attacker client).
@@ -288,14 +291,16 @@ This list tracks verification not available in the solo Studio session.
 - [ ] Site located once; red A and blue B marks for attackers.
 - [ ] Spectate teammates, then enemies when none is left; a dead attacker can't get into their drone.
 - [ ] Mid-match leaves: the last defender leaving gives the attackers the round; the last attacker leaving gives it to the defenders.
-- [ ] Every class ability in play ([CLASSES.md](CLASSES.md)).
+- [ ] Every class ability in play ([Siege classes](CLASSES.md)).
 
 **With Studio's window visible (render steps did not run in the tests)**
+
 - [ ] The drone, security-camera and spectate views; the mouse free on the selection screens.
 - [ ] Real clicks through the Play menu and the selection pages.
 - [ ] Gamepad and touch for every new control.
 
 **Assets**
+
 - [ ] Class icons (`Content.Classes.Classes`, `Icon` is empty) and real sounds for `GadgetPlace`, `GadgetDestroyed`, `Flashbang`, `AbilityPulse`.
 
 - [ ] Run a two-player test and verify balanced team assignment and team spawn sides.

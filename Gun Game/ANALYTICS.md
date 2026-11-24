@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Analytics
 
 *Added 2026-11-14.*
@@ -99,6 +97,7 @@ To track something new, add the name to `Content.Analytics.EVENTS` (there are 23
 ## Tested (2026-11-14, Studio playtest, one player, 1v1 as attacker)
 
 The Output showed, in order:
+
 - LobbyVisit ReturningPlayer;
 - MenuOpened Store, then LobbyVisit Store;
 - Queue funnel step 1 and QueueJoined `1v1, Siege, Solo`;
@@ -110,6 +109,7 @@ The Output showed, in order:
 - RoundWon `Defenders, AttackersDead, Bank` (3 s), then Match step 6 and SiegeMatch LostRound.
 
 **Not checked:**
+
 - The end of a whole match: PlayerKills, MatchFinished, the Match step MatchFinished, and the won/lost match nodes.
 - Economy events from a real purchase.
 - Robux purchase events.

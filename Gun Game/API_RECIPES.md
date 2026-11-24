@@ -1,8 +1,12 @@
-[Documentation home](index.md) / [API reference](API.md)
-
 # Common API recipes
 
-> **Scope:** General task recipes. Some match-mode examples describe historical APIs; use [current Siege APIs](API_SIEGE.md) for active game flow.
+!!! abstract "Scope"
+
+    General task recipes. Some match-mode examples describe historical APIs; use [current Siege APIs](API_SIEGE.md) for active game flow.
+
+!!! tip "Want the full code?"
+
+    Each recipe below is one line. For complete, commented versions (where the code goes, checks to add, and common mistakes), see [Task-based code examples](EXAMPLES.md).
 
 ## Recipes
 
@@ -44,8 +48,8 @@
 | Start, end or restart a match | `MatchService.StartNow()` / `EndNow()` / `Restart()`, or `match start\|end\|restart` |
 | Give a team or player points | `MatchService.AddScore("Red", 1)` / `MatchService.AddScore(player, 1)` |
 | A player's team / are two on the same team? | the `Team` attribute, `TeamService.TeamOf(player)` / `TeamService.AreAllies(a, b)` |
-| Add a mode | a ModuleScript in `Content.Match.Modes` ([MATCH.md](MATCH.md)) |
-| Throw a drone for a player / remove drones | `DroneService.Deploy(player, look)` / `DroneService.Clear(player?, refund?)` ([DRONES.md](DRONES.md)) |
+| Add a mode | a ModuleScript in `Content.Match.Modes` ([Matches, modes, and teams](MATCH.md)) |
+| Throw a drone for a player / remove drones | `DroneService.Deploy(player, look)` / `DroneService.Clear(player?, refund?)` ([Scout drones](DRONES.md)) |
 | Every living drone | `DroneService.All()` (models in `workspace.Drones`) |
 | Give grenades back / set the count | `ConsumableService.Refill(player)` / `ConsumableService.SetCount(player, 2)` |
 | Set off a grenade or smoke anywhere | `ConsumableService.Detonate("Grenade", position, player)` |

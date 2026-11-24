@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Consumables (grenade and smoke bomb)
 
 Every player carries one kind of consumable: a **frag grenade** or a **smoke bomb**. They get **2 per life**, and the count refills when they respawn. They pick the kind in the Loadout menu, and the pick is saved.
@@ -53,7 +51,7 @@ The projectile is server-made, so other players see the same throw, and the thro
 
 ## NPCs
 
-NPCs throw frag grenades too, and run from them (see [ADDING_NPCS.md](ADDING_NPCS.md), Tactics). An NPC throws through `ConsumableService.ThrowAs`, so its grenade is the same as a player's; the NPC model gets the kill credit. Each thrown part carries a `DetonateAt` attribute (server time) that NPCs read to see live grenades.
+NPCs throw frag grenades too, and run from them (see [Adding NPCs](ADDING_NPCS.md), Tactics). An NPC throws through `ConsumableService.ThrowAs`, so its grenade is the same as a player's; the NPC model gets the kill credit. Each thrown part carries a `DetonateAt` attribute (server time) that NPCs read to see live grenades.
 
 ## Count and death reset
 
