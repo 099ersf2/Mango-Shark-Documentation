@@ -1,10 +1,10 @@
-[Documentation home](index.md) / Gun Game
-
 # Music
 
 One song plays at a time, and every change is a crossfade: the old song's volume slides to 0 while the new one rises from 0 to its own volume. The client does it all (`Client.Core.Music`); the numbers are in `Content.Music`.
 
-> **Not run yet.** Written on 2026-11-12 with no playtest (by request). Both scripts compile and every folder was found with songs in it; nobody has heard a transition.
+!!! warning "Not run yet"
+
+    Written on 2026-11-12 with no playtest (by request). Both scripts compile and every folder was found with songs in it; nobody has heard a transition.
 
 ## When the music changes
 

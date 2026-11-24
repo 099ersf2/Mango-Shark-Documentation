@@ -1,12 +1,12 @@
-[Documentation home](index.md) / Gun Game
-
 # Death screen and spectating
 
 When you die you see who killed you and with what, and the camera follows your killer until you respawn. If your killer dies, you follow whoever killed them, and so on. If there is nobody left to watch, the camera stays on your body. When you respawn the camera goes back to you.
 
 Built 2026-11-11. It replaced the death screen that was part of the match HUD (`Main.MatchHUD.DeathScreen`, `Packets.Match.Death`), which only worked for player killers and followed them in first person.
 
-> **2026-11-12, Siege.** A dead player has one life, so after 4 s of the normal death camera `Systems.Games.Siege.SpectateService` takes over who the camera follows: living teammates, then living enemies ([SIEGE.md](SIEGE.md#spectating)). It uses this same camera (render priority Camera + 4) and the same `Death.Spectate` packet. Two additions to `DeathCamService`: the `Death.PreventSpectate(viewer)` extension point (Any: true and this service sends that viewer no new target) and `DeathCamService.Release(player)`.
+!!! note "Updated 2026-11-12, Siege"
+
+    A dead player has one life, so after 4 s of the normal death camera `Systems.Games.Siege.SpectateService` takes over who the camera follows: living teammates, then living enemies ([Siege](SIEGE.md#spectating)). It uses this same camera (render priority Camera + 4) and the same `Death.Spectate` packet. Two additions to `DeathCamService`: the `Death.PreventSpectate(viewer)` extension point (Any: true and this service sends that viewer no new target) and `DeathCamService.Release(player)`.
 
 ## How it plays
 

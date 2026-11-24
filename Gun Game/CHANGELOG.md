@@ -1,10 +1,10 @@
-[Documentation home](index.md) / Gun Game
-
 # Changelog
 
 Recent implementation notes are kept here. Older dated entries are grouped into [searchable archives](#archives) so the current page stays quick to scan.
 
-> Entries record what was changed and checked at the time. They are not a guarantee of current behavior; use the relevant system guide and its verification notes.
+!!! note "Note"
+
+    Entries record what was changed and checked at the time. They are not a guarantee of current behavior; use the relevant system guide and its verification notes.
 
 ## Archives
 

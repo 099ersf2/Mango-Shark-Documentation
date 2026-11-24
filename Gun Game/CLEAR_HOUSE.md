@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Clear House (Arcade)
 
 Added 2026-11-14. Up to five players against NPC guards in a house (Mansion or Bank, voted). Every door and window is boarded up. The players breach in and clear every room. No bombs, no defenders' cameras, one round.
@@ -19,16 +17,16 @@ Added 2026-11-14. Up to five players against NPC guards in a house (Mansion or B
 ## How a match goes
 
 1. **Queue.** A party of 1 to 5 queues for CLEAR HOUSE (ARCADE card in the Game Modes panel).
-   - A full squad of 5 starts at once.
-   - Otherwise, whoever is queued starts after `MaxWait` (20 s).
-   - Parties are never split. `Matchmaking.PartyLimit(mode)` allows 5 here, since the other side is empty.
+    - A full squad of 5 starts at once.
+    - Otherwise, whoever is queued starts after `MaxWait` (20 s).
+    - Parties are never split. `Matchmaking.PartyLimit(mode)` allows 5 here, since the other side is empty.
 2. **Selection** (Siege's 30 s):
-   - **Map vote** (the first page): every map of the mode's `Maps` that exists in `ReplicatedStorage.Maps`, with its votes (the `"Map"` pick). No map is loaded yet.
-   - **Class:** the attackers' classes only. The roster's enemy section reads HOUSE GUARDS.
+    - **Map vote** (the first page): every map of the mode's `Maps` that exists in `ReplicatedStorage.Maps`, with its votes (the `"Map"` pick). No map is loaded yet.
+    - **Class:** the attackers' classes only. The roster's enemy section reads HOUSE GUARDS.
 3. **Map load** (when Selection ends, `loadHouse` in SiegeService):
-   - The map with the most votes wins; a tie is drawn among the tied maps (no votes: all are tied). `record.Map` and `ActiveSiegeMap` are set to it.
-   - Each player gets a random free attacker spawn of that map.
-   - In its own thread, `ClearHouse.Prepare` puts every breakable back to whole (`BreakableService.Reset`, including Siege's empty `DoorBoardBuild` door frames) and finds the rooms (below); then `Populate` places the guards.
+    - The map with the most votes wins; a tie is drawn among the tied maps (no votes: all are tied). `record.Map` and `ActiveSiegeMap` are set to it.
+    - Each player gets a random free attacker spawn of that map.
+    - In its own thread, `ClearHouse.Prepare` puts every breakable back to whole (`BreakableService.Reset`, including Siege's empty `DoorBoardBuild` door frames) and finds the rooms (below); then `Populate` places the guards.
 4. **Reveal** (15 s): the spawn and the team. The guards are placed meanwhile.
 5. **No Prep.** Reveal goes straight to Action.
 6. **Action** (`ACTION_TIME`, 480 s): players spawn at their spawns, with their drones.
@@ -57,10 +55,10 @@ There are no hand-placed room parts. `ClearHouse.Prepare` finds them, with every
 2. **Floors.** Under each point, rays straight down find every floor, one storey after another (up to `FLOORS_PER_COLUMN`).
 3. **Standing points.** A floor point counts if nothing is within `HEAD` (5.5) studs above it, and it has a ceiling within `CEILING` (40) studs. That leaves out roofs, lawns and the street.
 4. **Joining neighbors.** Two neighbor points are joined when:
-   - their floors are within `STEP` (0.75) studs of each other, and
-   - a ray between them at waist height (`WAIST`, 3) hits nothing.
+    - their floors are within `STEP` (0.75) studs of each other, and
+    - a ray between them at waist height (`WAIST`, 3) hits nothing.
 
-   Walls and boards stop that ray. Stair steps are too far apart in height, so they're never joined.
+    Walls and boards stop that ray. Stair steps are too far apart in height, so they're never joined.
 5. **Rooms.** Each joined group (union-find) of `MIN_ROOM_CELLS` to `MAX_ROOM_CELLS` points is a room. It becomes an invisible box tagged `NPCRoom` in the map's `ClearHouseRooms` folder, covering its points from floor to ceiling.
 6. **Guard spots.** Points joined on all four sides are the room's spots, where guards stand away from the walls.
 
@@ -83,14 +81,14 @@ Rays only hit the map's collidable parts (`RespectCanCollide`), so room volumes,
 
 - **Room finder.** It ran on a copy of the Mansion in edit mode and found 26 rooms in 0.2 s. Every Siege bomb room (`Sites`) falls 90 to 100% inside one found room.
 - **Win:**
-  - Queued CLEAR HOUSE alone; the match formed after the short Studio wait.
-  - Selection showed 5 spawns and the attacker classes.
-  - All 32 doors and windows were fully boarded.
-  - 6 guards were placed in Guard mode, each inside its own room box.
-  - In Action the objective read "CLEAR THE HOUSE · 6 guards left", with no bomb chips.
-  - The guards were killed from a test script, one after another, and the count went down to "1 guard left".
-  - The last kill ended the match: VICTORY, "6 / 6 guards down · Every guard is down", YOUR TEAM "House cleared", and HOUSE GUARDS with 6 rows.
-  - The win was saved under `Mode:ClearHouse` and `Category:Arcade`.
+    - Queued CLEAR HOUSE alone; the match formed after the short Studio wait.
+    - Selection showed 5 spawns and the attacker classes.
+    - All 32 doors and windows were fully boarded.
+    - 6 guards were placed in Guard mode, each inside its own room box.
+    - In Action the objective read "CLEAR THE HOUSE · 6 guards left", with no bomb chips.
+    - The guards were killed from a test script, one after another, and the count went down to "1 guard left".
+    - The last kill ended the match: VICTORY, "6 / 6 guards down · Every guard is down", YOUR TEAM "House cleared", and HOUSE GUARDS with 6 rows.
+    - The win was saved under `Mode:ClearHouse` and `Category:Arcade`.
 - **Loss.** A second match: the player died in Action, giving DEFEAT, "0 / 6 guards down · Every attacker was eliminated".
 - **Test data undone.** Both test results were removed from the saved data: coins, wins, losses and both stats entries. `LastMode` was set to `5v5`, since the value before the test wasn't recorded.
 

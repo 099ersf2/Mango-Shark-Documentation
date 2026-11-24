@@ -1,8 +1,8 @@
-[Documentation home](index.md) / [API reference](API.md)
-
 # Server-side API reference
 
-> **Scope:** Server services across current and historical systems. For current Siege and matchmaking contracts, start with [API_SIEGE.md](API_SIEGE.md); the legacy match APIs are described in [MATCH.md](MATCH.md).
+!!! abstract "Scope"
+
+    Server services across current and historical systems. For current Siege and matchmaking contracts, start with [Current Siege APIs](API_SIEGE.md); the legacy match APIs are described in [Matches, modes, and teams](MATCH.md).
 
 ## Server: guns
 
@@ -21,6 +21,19 @@ The server side of every gun: gives guns, checks and simulates every shot, reloa
 | `GunService.FireAs(shooter, origin, direction, seed, spread)` | Fires for any shooter, skipping the client checks (NPCs) |
 | `GunService.Reload(player: Player)` / `GunService.ReloadAs(shooter)` | Starts a reload |
 | `GunService.CancelReload(who: Player \| Model): boolean` | Cancels a reload in progress; true if one was cancelled |
+
+!!! example "Give guns and read ammo"
+
+    ```lua
+    local GunService = require(game.ServerScriptService.Modules.Systems.Guns.GunService)
+    local LoadoutService = require(game.ServerScriptService.Modules.Systems.Guns.LoadoutService)
+
+    GunService.Give(player, "Rifle")                  -- add one gun, full ammo
+    LoadoutService.Arm(player, { "Rifle", "Pistol" }) -- exactly these guns (and the knife)
+    GunService.CancelReload(player)                   -- true if a reload was cancelled
+    ```
+
+    More: [Guns and loadouts](EXAMPLES.md#guns-and-loadouts).
 
 ### `Systems.Guns.LoadoutService`
 
@@ -65,6 +78,25 @@ Runs gun abilities (`Content.Guns.Abilities`) on the server. Abilities normally 
 
 `HitOptions`: `KnockbackDirection: Vector3?`, `KnockbackSpeed: number?`, `BypassShield: boolean?`, `Attacker: (Player | Model)?` (kill credit), `Item: string?` (the kill feed's weapon name).
 
+!!! example "Damage with and without credit"
+
+    ```lua
+    local Combat = require(game.ServerScriptService.Modules.Systems.Combat.Combat)
+
+    -- Credited: kill feed, damage log, shields, knockback.
+    Combat.ApplyHit(humanoid, 30, {
+    	Attacker = player,
+    	Item = "Trap",
+    	KnockbackDirection = look,
+    	KnockbackSpeed = 40,
+    })
+
+    -- Not credited (the world): fall damage, map hazards.
+    Combat.DealDamage(humanoid, 10)
+    ```
+
+    More: [Damage and combat](EXAMPLES.md#damage-and-combat), including a full trap module.
+
 ### `Systems.Combat.DamageLog`, `KillFeed`, `SwordCombat`
 
 | Function | What it does |
@@ -106,7 +138,7 @@ Runs gun abilities (`Content.Guns.Abilities`) on the server. Abilities normally 
 
 ### `Systems.Consumables.ConsumableService` (grenade, smoke)
 
-See [CONSUMABLES.md](CONSUMABLES.md).
+See [Consumables](CONSUMABLES.md).
 
 | Function | What it does |
 | --- | --- |
@@ -117,9 +149,20 @@ See [CONSUMABLES.md](CONSUMABLES.md).
 | `ConsumableService.Detonate(id, position, attacker?): boolean` | A grenade blast or a smoke cloud there, no throw. `attacker` is a Player or an NPC model |
 | `ConsumableService.ThrowAs(model, id, start, velocity): BasePart?` | A throw for a server-side thrower (NPCs), with an exact launch velocity and no player checks |
 
+!!! example "A blast anywhere"
+
+    ```lua
+    local ConsumableService = require(game.ServerScriptService.Modules.Systems.Consumables.ConsumableService)
+
+    ConsumableService.Detonate("Grenade", position, player) -- damage, boards, effects; player gets kills
+    ConsumableService.SetCount(player, 2)                    -- clamped to 0..PER_LIFE
+    ```
+
+    More: [World: boards, soft walls and explosions](EXAMPLES.md#world-boards-soft-walls-and-explosions).
+
 ### `Systems.Match.MatchService` and `Systems.Match.TeamService`
 
-See [MATCH.md](MATCH.md): modes, settings, teams, the match API for mode hooks.
+See [Matches, modes, and teams](MATCH.md): modes, settings, teams, the match API for mode hooks.
 
 | Function | What it does |
 | --- | --- |
@@ -135,7 +178,7 @@ See [MATCH.md](MATCH.md): modes, settings, teams, the match API for mode hooks.
 
 ### `Systems.Combat.DeathCamService`
 
-See [DEATH_SCREEN.md](DEATH_SCREEN.md).
+See [Death screen and spectating](DEATH_SCREEN.md).
 
 | Function | What it does |
 | --- | --- |
@@ -144,7 +187,7 @@ See [DEATH_SCREEN.md](DEATH_SCREEN.md).
 
 ### `Systems.Drones.DroneService`
 
-See [DRONES.md](DRONES.md).
+See [Scout drones](DRONES.md).
 
 | Function | What it does |
 | --- | --- |
@@ -171,10 +214,22 @@ See [DRONES.md](DRONES.md).
 | `NPCService.Clear()` | Removes every NPC |
 | `NPCService.Count()` / `NPCService.ProfileNames()` | How many are alive / the profile names |
 | `NPCService.Agents()` | The live agents (`Brain.Agent`), read only, for tests and debug tools |
-| `NPCService.SetMode(model, mode: string, room: BasePart?): boolean` | `"Guard"`: the NPC stays in the `NPCRoom` part (nil: the one it stands in), patrols it, repairs its doors and windows and fights first; `"Roam"`: normal ([ADDING_NPCS.md](ADDING_NPCS.md), Guard mode) |
-| `Tactics.Danger` / `Vault` / `Fortify` / `Pursue` / `Suspicion` / `Breach` / `TryGrenade(agent, now)`, `Tactics.OnHurt(agent, attacker)` | The reflexes around the tree (dodge grenades, climb windows, board up doors and windows, chase a target behind glass, shoot to test, break in or out, throw, turn toward a hit); see [ADDING_NPCS.md](ADDING_NPCS.md) |
+| `NPCService.SetMode(model, mode: string, room: BasePart?): boolean` | `"Guard"`: the NPC stays in the `NPCRoom` part (nil: the one it stands in), patrols it, repairs its doors and windows and fights first; `"Roam"`: normal ([Adding NPCs](ADDING_NPCS.md), Guard mode) |
+| `Tactics.Danger` / `Vault` / `Fortify` / `Pursue` / `Suspicion` / `Breach` / `TryGrenade(agent, now)`, `Tactics.OnHurt(agent, attacker)` | The reflexes around the tree (dodge grenades, climb windows, board up doors and windows, chase a target behind glass, shoot to test, break in or out, throw, turn toward a hit); see [Adding NPCs](ADDING_NPCS.md) |
 | `Brain.*` | Helpers behavior-tree tasks use: `CanSee` (sees through windows), `SeeThrough`, `Penetrable`, `ShootThrough`, `BreachPoint`, `FindEntry`, `Connected`, `Ground`, `FindExit`, `FindFortify`, `BlockedAhead`, `Blocked` (soft walls and boards aren't cover), `AimPoint`, `Eye`, `MoveTo`, `MoveDirect`, `Stop`, `IsMoving`, `Ammo`, `IsReloading`, `SetLastKnown`, `FlatDistance`, `NewPath`, `AdvancePath` |
-| Tasks (`Systems.NPC.Tasks.*`) | `FindTarget`, `HasLineOfSight`, `InRange`, `LowHealth`, `NeedsReload`, `MoveToCover`, `Reload`, `AimAndShoot`, `Strafe`, `Chase`, `Patrol`: each has `run(agent)`, some `start` / `finish`. See [ADDING_NPCS.md](ADDING_NPCS.md) |
+| Tasks (`Systems.NPC.Tasks.*`) | `FindTarget`, `HasLineOfSight`, `InRange`, `LowHealth`, `NeedsReload`, `MoveToCover`, `Reload`, `AimAndShoot`, `Strafe`, `Chase`, `Patrol`: each has `run(agent)`, some `start` / `finish`. See [Adding NPCs](ADDING_NPCS.md) |
+
+!!! example "Spawn and clear NPCs"
+
+    ```lua
+    local NPCService = require(game.ServerScriptService.Modules.Systems.NPC.NPCService)
+
+    NPCService.Spawn("Soldier", spawnPart.CFrame, spawnPart, true) -- true: ignore MAX_NPCS
+    print(NPCService.Count(), NPCService.ProfileNames())
+    NPCService.Clear()
+    ```
+
+    More: [NPCs](EXAMPLES.md#npcs) and [Adding NPCs](ADDING_NPCS.md).
 
 ### `Systems.Movement.MovementService`
 

@@ -1,10 +1,8 @@
-[Documentation home](index.md) / Gun Game
-
 # AI coding guide: Gun Game (FPS place)
 
 Give this file to any AI agent before it writes code for the Roblox place **"FPS"** (Mango Shark Studios, placeId `80699390327837`, universe `10775243847`). It explains how the game is built and how new code must be written. Follow it exactly. When this file and your habits disagree, this file wins.
 
-Use the [documentation home](index.md) to find system guides. In particular, see the [API overview](API.md) and its focused [current Siege](API_SIEGE.md), [server](API_SERVER.md), [shared](API_SHARED.md), and [client](API_CLIENT.md) references, plus [SIEGE.md](SIEGE.md) for the current game mode, [MATCHMAKING.md](MATCHMAKING.md) for queues and parties, and [DECISIONS.md](DECISIONS.md) for recorded design answers.
+Use the [documentation home](index.md) to find system guides. In particular, see the [API overview](API.md) and its focused [current Siege](API_SIEGE.md), [server](API_SERVER.md), [shared](API_SHARED.md), and [client](API_CLIENT.md) references, plus [Siege](SIEGE.md) for the current game mode, [Matchmaking and parties](MATCHMAKING.md) for queues and parties, and [Design decisions](DECISIONS.md) for recorded design answers.
 
 *Updated 2026-11-11.* Read the doc for the system you touch before changing it.
 
@@ -17,7 +15,7 @@ Break none of these.
 1. **Everything loads through `ReplicatedStorage.ModuleLoader`.** Never add a new `Script` or `LocalScript`. New code is a `ModuleScript` with `Init` and/or `Start` inside a loaded container (section 3).
 2. **Client modules get the `ClientOnly` attribute** set to `true`. Without it they also run on the server and error.
 3. **Never build UI in scripts.** UI is made in Studio under `StarterGui.Main` (or cloned from `ReplicatedStorage.Assets.UI.Templates`). Scripts only find existing UI with `WaitForChild` and change text, visibility and colors. Creating the UI once in Studio's Edit mode (by hand or with a Studio tool) counts as building it in Studio and is fine. A full-screen view that replaces the HUD may be its own ScreenGui in `StarterGui` (as `DroneFeed` does, with `Main.Enabled` turned off while it shows). Repeated items (rows, markers, highlights) are templates in `Assets.UI.Templates`, cloned at runtime.
-   - **`Main` uses Global ZIndex.** HUD elements are low, the death screen is 9 and 10, menus are 11, and anything drawn on a menu (template rows) must be **12 or higher**, or it hides behind the menu panel.
+    - **`Main` uses Global ZIndex.** HUD elements are low, the death screen is 9 and 10, menus are 11, and anything drawn on a menu (template rows) must be **12 or higher**, or it hides behind the menu panel.
 4. **HUD and menus use Scale**, so they fit phones. **Mobile touch buttons (`Main.Mobile`) do not**: they keep their original positioning, which has its own math. Copy a sibling button and place it the same way its siblings are placed (a row in `Client.Core.UI`'s `TOUCH_BUTTONS`). Buttons show an icon (`Icon.Glyph`), not a word (2026-11-13).
 5. **The server decides everything.** Clients send intent only (an action, an aim direction, a timestamp). The server checks every request: player alive, not in the lobby, not stunned, cooldowns, counts, timestamps, rate limits, types. Never trust a number from the client.
 6. **All network traffic goes through `Shared.Packets`** (reliable) or `Shared.UnreliablePackets` (cosmetic). No `RemoteEvent` or `RemoteFunction` instances.
@@ -222,17 +220,17 @@ Example = {
 This is how features change each other without editing each other's code.
 
 - **Kinds:**
-  - `Extensions.Any(point, ...)` is a veto: true if any handler returns true.
-  - `Extensions.Product(point, ...)` is a multiplier: the handlers' numbers multiplied together, 1 with no handlers.
-  - `Extensions.Fire(point, ...)` is a notification.
+    - `Extensions.Any(point, ...)` is a veto: true if any handler returns true.
+    - `Extensions.Product(point, ...)` is a multiplier: the handlers' numbers multiplied together, 1 with no handlers.
+    - `Extensions.Fire(point, ...)` is a notification.
 - **Adding a handler:** `Extensions.Add("Gun.DamageMultiplier", function(who, gunId, humanoid, hit) return 1.5 end)` returns a function that removes it.
 - **In a new system,** offer `Prevent…` (Any), `…Multiplier` (Product) and after-the-fact (Fire) points where other features would want to hook in, and list them in the header and in `API.md`.
 - **To change another system's behavior** (perks, team rules, modes), add a handler. Don't edit that system.
 - **Points added on 2026-11-11** (full list in `API.md`):
-  - matches and teams: `Combat.PreventFriendlyFire`, `Match.Started`, `Match.RoundStarted`, `Match.Scored`, `Match.Ended`, `Team.Changed`;
-  - deaths: `Combat.Death` (every death, with attacker and weapon);
-  - shots: `Gun.Fired`;
-  - drones: `Drone.PreventDeploy`, `Drone.Deployed`, `Drone.Destroyed`, `Drone.Noise`, `Drone.Spotted`.
+    - matches and teams: `Combat.PreventFriendlyFire`, `Match.Started`, `Match.RoundStarted`, `Match.Scored`, `Match.Ended`, `Team.Changed`;
+    - deaths: `Combat.Death` (every death, with attacker and weapon);
+    - shots: `Gun.Fired`;
+    - drones: `Drone.PreventDeploy`, `Drone.Deployed`, `Drone.Destroyed`, `Drone.Noise`, `Drone.Spotted`.
 
 ### Player data: Scribe (`Shared.Data`)
 
@@ -272,8 +270,8 @@ This is how features change each other without editing each other's code.
 - **Touch:** a button in `Main.Mobile` (rule 4).
 - **Every action must work on all three inputs**: keyboard and mouse, gamepad, and touch.
 - **Options** (toggles and sliders) go in `PlayerSettings.Options`, and the Settings menu shows them.
-  - Client: `Options.Get(name)`.
-  - Server: `SettingsService.GetOption(player, name)`.
+    - Client: `Options.Get(name)`.
+    - Server: `SettingsService.GetOption(player, name)`.
 - **Menus:** open and close them with `Client.Core.Menus`. While a menu is open, gameplay input must be ignored.
 
 ### Admin commands: Cmdr
@@ -283,7 +281,7 @@ This is how features change each other without editing each other's code.
 
 ### Products
 
-- Add the id to `Shared.ProductIds`, and handle the purchase through the existing Scribe receipt handling (see [SKINS.md](SKINS.md)).
+- Add the id to `Shared.ProductIds`, and handle the purchase through the existing Scribe receipt handling (see [Weapon skins](SKINS.md)).
 - `ProductIds.IsSet(id)` is false for the `0` placeholder, so the feature must hide or disable itself until a real id is set.
 
 ---
@@ -291,54 +289,54 @@ This is how features change each other without editing each other's code.
 ## 6. World conventions
 
 - **Characters:**
-  - NPC rigs are R15 with **AnimationConstraint** joints (kinematic); player avatars may use Motor6D. Joint code must handle both: read offsets from `C0`/`C1` or the constraint's `Attachment0`/`Attachment1`, and write `.Transform` (both have it), in `RunService.PreSimulation` so it lands after the Animator.
-  - Character parts are in the `Player` collision group.
+    - NPC rigs are R15 with **AnimationConstraint** joints (kinematic); player avatars may use Motor6D. Joint code must handle both: read offsets from `C0`/`C1` or the constraint's `Attachment0`/`Attachment1`, and write `.Transform` (both have it), in `RunService.PreSimulation` so it lands after the Animator.
+    - Character parts are in the `Player` collision group.
 - **Camera:** each system that drives the camera has a render-step priority, in this order: `MovementCamera` Camera+1, `Viewmodel` Camera+2, the drone camera Camera+3, the death camera Camera+4. A new camera mode binds after the ones it must override, and sets `Scriptable` only while it is active. `MovementCamera` sets the field of view every frame.
 - **Collision groups:** register new ones in your module's `Init` with `PhysicsService` (check `IsCollisionGroupRegistered` first) and list them in `API.md`. Existing groups: `Player`, `ProneBody`, `SoftWallDebris`, `Thrown`.
 - **Runtime objects:**
-  - Put them in a named folder in `workspace` (for example `workspace.Thrown`), never loose.
-  - Projectiles the server spawns get `SetNetworkOwner(nil)`.
-  - Clean up with `task.delay` + `Destroy`.
+    - Put them in a named folder in `workspace` (for example `workspace.Thrown`), never loose.
+    - Projectiles the server spawns get `SetNetworkOwner(nil)`.
+    - Clean up with `task.delay` + `Destroy`.
 - **NPCs:**
-  - Spawned NPCs live in `workspace.Enemies` and are tagged `NPC`. Aim assist and health bars only look in `workspace.Enemies`.
-  - `NPCService`'s `MAX_NPCS` is meant to be `10`. It was found at `0` on 2026-11-11, so check it if no NPCs appear.
-  - NPC reflexes (hearing, shooting to test through soft walls and boards, breaching, boarding up, grenades, dodging) live in `Systems.NPC.Tactics`.
-  - Modes: `NPCService.SetMode(npc, "Guard", room)` keeps an NPC in an `NPCRoom`, patrolling and repairing it; `"Roam"` is the default. See `ADDING_NPCS.md`.
-  - NPCs share where they aim through the `GunAiming` and `AimPitch` attributes. Players' drones are combatants NPCs see and shoot.
+    - Spawned NPCs live in `workspace.Enemies` and are tagged `NPC`. Aim assist and health bars only look in `workspace.Enemies`.
+    - `NPCService`'s `MAX_NPCS` is meant to be `10`. It was found at `0` on 2026-11-11, so check it if no NPCs appear.
+    - NPC reflexes (hearing, shooting to test through soft walls and boards, breaching, boarding up, grenades, dodging) live in `Systems.NPC.Tactics`.
+    - Modes: `NPCService.SetMode(npc, "Guard", room)` keeps an NPC in an `NPCRoom`, patrolling and repairing it; `"Roam"` is the default. See `ADDING_NPCS.md`.
+    - NPCs share where they aim through the `GunAiming` and `AimPitch` attributes. Players' drones are combatants NPCs see and shoot.
 - **Guns in third person** are posed in code (`Client.Guns.ThirdPersonGuns`), not by animation assets. So a **gun model** needs these attachments on its Handle:
-  - `Muzzle` (barrel along -Z);
-  - `Aim` (the rear sight);
-  - `RightGrip`;
-  - `LeftGrip` (the support hand);
-  - optionally a part named `Magazine`.
+    - `Muzzle` (barrel along -Z);
+    - `Aim` (the rear sight);
+    - `RightGrip`;
+    - `LeftGrip` (the support hand);
+    - optionally a part named `Magazine`.
 
-  The third-person Tool is scaled to fit a character (`ModelScale` attribute), and `Tool.Grip` is set from the holder's hand on equip. Check a new gun on the gun range (`range` command, `GUN_SHOWCASE.md`).
+    The third-person Tool is scaled to fit a character (`ModelScale` attribute), and `Tool.Grip` is set from the holder's hand on equip. Check a new gun on the gun range (`range` command, `GUN_SHOWCASE.md`).
 - **Tags:** use `CollectionService` tags for map objects: `Board`, `DoorBoard`, `SoftWall`, `NPCSpawn` (attributes `Profile`, `Mode`, `Room`), `NPCSecure`, `NPCRoom`, `GunShowcase`, `SkinShopPrompt`, `ScribeFragment`. Boards are set up (and their planks tagged) at runtime by `Systems.Breakables`, so in Edit mode most have no tags or `Intact` attributes yet. New tags go in `API.md`.
 - **Workspace folders made at runtime:** `Enemies`, `Drones`, `Thrown`. The gun range lives in `workspace.GunShowcase`.
 - **Lobby:** the `InLobby` player attribute is true in the lobby. Only a player's first spawn of a session is in the lobby. Weapons, consumables and abilities must be refused there.
 - **Teams:**
-  - Teams are our own system (`Systems.Match.TeamService`, `Content.Match.Teams`), not Roblox `Teams`: a player's team is the `Team` attribute. Code that targets enemies must skip players with the same `Team` attribute (see `Client.Guns.AimAssist`), and use `TeamService.AreAllies` on the server. The [match-system guide](MATCH.md) is historical; use [SIEGE.md](SIEGE.md) for the current flow.
-  - Friendly-fire rules go through `Combat.PreventFriendlyFire` (or a `…DamageMultiplier` point), not hardcoded checks.
+    - Teams are our own system (`Systems.Match.TeamService`, `Content.Match.Teams`), not Roblox `Teams`: a player's team is the `Team` attribute. Code that targets enemies must skip players with the same `Team` attribute (see `Client.Guns.AimAssist`), and use `TeamService.AreAllies` on the server. The [match-system guide](MATCH.md) is historical; use [Siege](SIEGE.md) for the current flow.
+    - Friendly-fire rules go through `Combat.PreventFriendlyFire` (or a `…DamageMultiplier` point), not hardcoded checks.
 - **Match flow:** `Systems.Match.MatchService` runs matches. A new mode is one ModuleScript in `Content.Match.Modes`. Systems that should reset between matches listen to `Match.Started` (drones do).
 
 ---
 
 ## 7. A typical feature, end to end
 
-Grenades and smoke bombs ([CONSUMABLES.md](CONSUMABLES.md)) are the reference example. Copy this shape:
+Grenades and smoke bombs ([Consumables](CONSUMABLES.md)) are the reference example. Copy this shape:
 
 1. **`Content.Consumables.Consumables`:** the definitions and every number, an exported type, `Get(id)`, `List`, and constants such as `PER_LIFE`. Tagged `ScribeFragment` to save the player's pick.
 2. **`Shared.Packets`:** a `Consumable` group with `Throw` (client → server: server time, look direction) and `Pick` (client → server: id).
 3. **`Systems.Consumables.ConsumableService` (server):**
-   - Holds the count in player attributes and refills it on `CharacterAdded`.
-   - Validates every throw, spawns the projectile, and applies damage through `Combat.ApplyHit`.
-   - Plays effects through `EffectService` and exposes extension points.
+    - Holds the count in player attributes and refills it on `CharacterAdded`.
+    - Validates every throw, spawns the projectile, and applies damage through `Combat.ApplyHit`.
+    - Plays effects through `EffectService` and exposes extension points.
 4. **`Client.Guns.Consumables` (client, `ClientOnly`):**
-   - Binds the key, gamepad button and touch button, and sends intent.
-   - Plays the local whoosh at once and updates the HUD from the attributes.
+    - Binds the key, gamepad button and touch button, and sends intent.
+    - Plays the local whoosh at once and updates the HUD from the attributes.
 5. **UI built in Studio:** a HUD frame in `Main` (Scale), a button in `Main.Mobile` (copied from a sibling), and a picker in the Loadout menu.
 6. **Effects** in `Content.Effects.Registry`, models in `Assets.Models.Consumables`, particles in `Assets.Vfx`.
-7. **Docs:** a new system guide in `Gun Game/`, plus updates to [API.md](API.md), the controls table in [ADDING_GUNS.md](ADDING_GUNS.md), the [documentation home](index.md), and [CHANGELOG.md](CHANGELOG.md).
+7. **Docs:** a new system guide in `Gun Game/`, plus updates to [Overview](API.md), the controls table in [Adding guns](ADDING_GUNS.md), the [documentation home](index.md), and [Recent changes](CHANGELOG.md).
 
 ---
 
@@ -346,20 +344,20 @@ Grenades and smoke bombs ([CONSUMABLES.md](CONSUMABLES.md)) are the reference ex
 
 - **Editing scripts:** only works in **Edit mode**. Stop any playtest first, but **if the user may be playing in it, ask before stopping it**. Signs the user is playing: ammo, weapon slot or position changing without you.
 - **Checks:**
-  - Prefer checks in Edit mode, such as compiling a script with `loadstring(source)`.
-  - Clean up any test copies you make; a timed-out tool call can leave a clone behind.
+    - Prefer checks in Edit mode, such as compiling a script with `loadstring(source)`.
+    - Clean up any test copies you make; a timed-out tool call can leave a clone behind.
 - **Playtests:**
-  - Gameplay input is ignored while a menu is open (`Menus.IsOpen()`). The Loadout menu no longer opens by itself on join (2026-11-12); if a test opens a menu, close it from a temporary LocalScript (`Menus.Close(name)`).
-  - The lobby is the first spawn, and most features are refused there. Use `LobbyService.SendToArena(player)` from a temporary server Script; the command-bar copy of the module has no state.
-  - NPCs shoot the test player and kill it. Give it high health, or move hostile NPCs aside for the test (put them back after).
-  - **Long tool calls time out** and can drop the Studio connection. Start long tests in a temporary Script that logs to a `workspace` attribute, return at once, then read the attribute in short follow-up calls.
-  - **Screenshots** show the play client's own camera. To frame a shot, pin the camera from a temporary LocalScript (`BindToRenderStep` at `Enum.RenderPriority.Last.Value + 50`, `Scriptable`). Unbind it and set `Custom` again afterwards, so you never leave the user's camera stuck.
-  - Studio's input tools may not deliver key presses to the game. Drive the live modules from a temporary script instead (section 3).
-  - Test server rules by firing a packet's `OnServerEvent:Fire(player, ...)` from a temporary server Script.
-  - Write results to a `workspace` attribute and read them after.
+    - Gameplay input is ignored while a menu is open (`Menus.IsOpen()`). The Loadout menu no longer opens by itself on join (2026-11-12); if a test opens a menu, close it from a temporary LocalScript (`Menus.Close(name)`).
+    - The lobby is the first spawn, and most features are refused there. Use `LobbyService.SendToArena(player)` from a temporary server Script; the command-bar copy of the module has no state.
+    - NPCs shoot the test player and kill it. Give it high health, or move hostile NPCs aside for the test (put them back after).
+    - **Long tool calls time out** and can drop the Studio connection. Start long tests in a temporary Script that logs to a `workspace` attribute, return at once, then read the attribute in short follow-up calls.
+    - **Screenshots** show the play client's own camera. To frame a shot, pin the camera from a temporary LocalScript (`BindToRenderStep` at `Enum.RenderPriority.Last.Value + 50`, `Scriptable`). Unbind it and set `Custom` again afterwards, so you never leave the user's camera stuck.
+    - Studio's input tools may not deliver key presses to the game. Drive the live modules from a temporary script instead (section 3).
+    - Test server rules by firing a packet's `OnServerEvent:Fire(player, ...)` from a temporary server Script.
+    - Write results to a `workspace` attribute and read them after.
 - **When done:**
-  - Read the console output: there should be no errors or warnings from your code.
-  - Stop the playtest and delete temporary scripts.
+    - Read the console output: there should be no errors or warnings from your code.
+    - Stop the playtest and delete temporary scripts.
 - **Publishing:** never publish the place unless the user asks. Publishing makes it live for every player.
 
 ---
@@ -396,18 +394,18 @@ Grenades and smoke bombs ([CONSUMABLES.md](CONSUMABLES.md)) are the reference ex
 
 The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-Shark-Documentation`; [index.md](index.md) is their home page.
 
-- **New system:** start from [DOC_TEMPLATE.md](DOC_TEMPLATE.md), then write `<SYSTEM>.md` in `Gun Game/` with the applicable sections:
-  - What it is and how it plays
-  - Controls
-  - Where things are
-  - How it works
-  - API and extension points
-  - How to add more
-  - Testing (what was checked, with numbers, and what wasn't)
-  - Limits
+- **New system:** start from [Documentation authoring](DOC_TEMPLATE.md), then write `<SYSTEM>.md` in `Gun Game/` with the applicable sections:
+    - What it is and how it plays
+    - Controls
+    - Where things are
+    - How it works
+    - API and extension points
+    - How to add more
+    - Testing (what was checked, with numbers, and what wasn't)
+    - Limits
 
-  Add a link for it to the [documentation home](index.md) and a navigation entry in `mkdocs.yml`.
-- **API references:** add every new public function, packet, extension point, data field, attribute, tag and collision group to the appropriate focused page; keep [API.md](API.md) as the overview and routing page.
+    Add a link for it to the [documentation home](index.md) and a navigation entry in `mkdocs.yml`.
+- **API references:** add every new public function, packet, extension point, data field, attribute, tag and collision group to the appropriate focused page; keep [Overview](API.md) as the overview and routing page.
 - **`CHANGELOG.md`:** add an entry at the top, `## YYYY-MM-DD: Title`, with **Added** / **Changed** / **Fixed** bullets. Keep older entries in the linked date-range archives.
 - **`NEXT_STEPS.md`:** list only actionable work confirmed to remain open. Record the last check and evidence; move stale or completed dated snapshots to an archive rather than carrying them forward as active.
 - **Status and verification:** label pages as current, historical, or mixed where needed. State what was tested, in which environment/device, and what remains unverified.

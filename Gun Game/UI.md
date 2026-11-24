@@ -1,10 +1,10 @@
-[Documentation home](index.md) / Gun Game
-
 # UI
 
 How the game's UI is structured, what conventions it follows, and how to verify UI changes.
 
-> **Status:** Mixed. This guide contains current implementation notes and dated design history. The latest recorded phone checks used Studio's device emulator; a physical phone or tablet is not verified here. Treat each dated **Checked** note as evidence for that test only.
+!!! info "Status"
+
+    Mixed. This guide contains current implementation notes and dated design history. The latest recorded phone checks used Studio's device emulator; a physical phone or tablet is not verified here. Treat each dated **Checked** note as evidence for that test only.
 
 ## At a glance
 
@@ -158,7 +158,13 @@ Checked on the emulated 750 x 382 touch screen in Recruit Training: the prep dro
 
 EXIT sat over SPOT in the drone feed (and over SCAN in the camera feed) on a 334-pixel phone, because one was placed from the top and the other from the bottom. On phones `Client.Core.UI` (FEED_TOUCH) now places the feeds' touch buttons: EXIT in the top-right corner beside the score bar (NEXT drone left of it), the drone's integrity bar under them, SPOT under that, HOP and BOOST at the bottom right; the camera feed's SCAN, PREV and NEXT stack up from the bottom right; the NoSignal screens use the same places. The decorative corner brackets are hidden on phones (they ran through EXIT).
 
-An overlap check (every visible button on screen, any pair overlapping) at 750 x 382 touch found none in the lobby, Shop, Inventory, Settings, Party, Game Modes, the drone feed, the camera feed's buttons and the match HUD. Then checked in play on the phone emulator: the drone feed in Recruit Training's attack round (corner brackets hidden, EXIT clear) and the camera feed in its defend round (reached with SiegeService.ForceEnd from a temporary server script). Fixed there: the feeds' text drawn straight over the 3D view (header, integrity, boost row, notices) has a dark outline (it was hard to read over light walls); the camera feed's PREV and NEXT use the chevron icons instead of typed < >; the training panel keeps its phone size inside a feed (it shrank against the match's left buttons, which are hidden while a feed is up). No errors on the client or the server. Not checked: a real phone. Not published.
+- **Overlap check:** every visible button on screen, any pair overlapping, at 750 x 382 touch. None found in the lobby, Shop, Inventory, Settings, Party, Game Modes, the drone feed, the camera feed's buttons and the match HUD.
+- **Checked in play** on the phone emulator: the drone feed in Recruit Training's attack round (corner brackets hidden, EXIT clear) and the camera feed in its defend round (reached with SiegeService.ForceEnd from a temporary server script).
+- **Fixed there:**
+    - The feeds' text drawn straight over the 3D view (header, integrity, boost row, notices) has a dark outline; it was hard to read over light walls.
+    - The camera feed's PREV and NEXT use the chevron icons instead of typed < >.
+    - The training panel keeps its phone size inside a feed (it shrank against the match's left buttons, which are hidden while a feed is up).
+- **Result:** no errors on the client or the server. Not checked: a real phone. Not published.
 
 ### Nothing to see or build from a camera, a drone or death (2026-11-17)
 
@@ -187,12 +193,14 @@ Checked in a private 5v5 with four bots on the phone emulator: died in prep and 
 The owner: the killer on the death screen overlapped the UI; remove every unnecessary piece of text. Every label in every screen was listed (Main, the menus, the templates, the feeds, the selection screen, training) and each one that repeated something already on screen, or told the player what the screen already shows, was removed. What a label says that nothing else says stays (timers, scores, AUTO, the objective, the round result, key hints on desktop).
 
 **Death screen (Client.Hud.DeathScreen, Client.Core.Spectate):**
+
 - The killed-by card at the top left (`Main.DeathScreen.Card`: ELIMINATED, "Killed by", "with", avatar) is deleted. The killer is in the bottom plate instead, so nothing sits over the score bar, the bomb sites or the kill feed.
 - The plate's caption says what the name under it is: **KILLED YOU · RIFLE** while the camera follows your killer, **KILLED BY · RIFLE** while nobody is watched, **SPECTATING** (or **SPECTATING ENEMY** once no teammate is left) for anyone else. The name is red (Theme.Danger) for your killer and for enemies, white for teammates.
 - With one life (Siege) there is no status line under the plate while you watch someone; alone in the plate it reads "Out this round". The countdown ("Respawning in 3") stays in modes with respawns.
 - The spectate hint no longer says WATCHING TEAMMATES / NO TEAMMATES LEFT; it is only the keys (Fire next · Aim previous, or R1 / L1), under the plate, and nothing on touch (the arrows say it). The bar keeps a `Mode` attribute ("Team", "Enemy" or "") that the caption reads. The unused `Spectate.Out` label is deleted.
 
 **In play:**
+
 - Ammo panel: no gun name (`Main.Gun.GunName` hidden); the picture beside the ammo shows the gun.
 - Health: the current number only ("100", not "100/100"). Client.Hud.PersonalHealth writes it; the bar still animates through Classes.HealthUI.
 - Bomb chips: only the letter until a defuser is planted (no "NO DEFUSER"), then the letter and PLANTED.
@@ -201,6 +209,7 @@ The owner: the killer on the death screen overlapped the UI; remove every unnece
 - The phase banner stays at the top centre while a feed is open on a phone (Content.Effects.Parts.Banner `topFor`): at 60% down it covered the feed's compass.
 
 **Lobby and menus:**
+
 - PLAY has no second line (the GAME MODE row names the mode; SEARCHING is the status line's). It keeps one for a party member ("YOUR LEADER QUEUES") and for PARTY TOO BIG. With no second line the label sits in the middle of the tile (Client.Core.Matchmaking `subLine`).
 - PLAY WITH PARTY: no "PRIVATE 1 V 1 · 3 PLAYERS" line (the tiles above show the mode and the party size); a member still reads "YOUR LEADER STARTS IT".
 - TRAINING: FREE CRATE or OPEN CRATE while there is something to get, otherwise no line (no PRACTICE).
@@ -417,7 +426,7 @@ Categories and modes have the same card fields in `Content.Matchmaking`:
 | `Status` | Above PLAY while searching: the status, the mode and the queue timer. "MATCH FOUND" pops in |
 | `PartyButton` | Opens the Party menu; shows the party's size |
 | ~~`LoadoutButton`~~ | Removed on 2026-11-12 (archived as `ServerStorage.Archive.OldUI.LobbyLoadoutButton`): loadouts are not picked in the lobby |
-| `PartyPlay` | **PLAY WITH PARTY**, above PLAY (in the status's place while not searching). Starts a private match of the picked mode (or the next one the party fits) with the party's own members ([MATCHMAKING.md](MATCHMAKING.md#play-with-party-2026-11-12)). Its line reads "PRIVATE 1 V 1 · 2 PLAYERS". Shown from 2 members (always in Studio); refuses for a member who is not the leader |
+| `PartyPlay` | **PLAY WITH PARTY**, above PLAY (in the status's place while not searching). Starts a private match of the picked mode (or the next one the party fits) with the party's own members ([Matchmaking and parties](MATCHMAKING.md#play-with-party-2026-11-12)). Its line reads "PRIVATE 1 V 1 · 2 PLAYERS". Shown from 2 members (always in Studio); refuses for a member who is not the leader |
 | `Message` | A line under the bar when the server refuses something |
 
 `Main.Tooltip` (2026-11-15): the hover tooltip (`Client.Core.Tooltip`). Give any element a `Tooltip` string attribute (in Studio, or `Tooltip.Set(object, text)` in code) and resting the mouse on it for 0.35 s shows the text by the pointer. Mouse only.
@@ -526,7 +535,7 @@ The feed and alert ScreenGuis are built in `ReplicatedFirst.UILoader` and moved 
 | `Feed.TopBar`, `Feed.Intel`, `Feed.Compass`, `Feed.Scanlines` (both feeds) | 2026-11-17: the team bar, objective and location, compass, scanlines. See [Siege UI pass](#siege-ui-pass-2026-11-17) |
 | `ScanAlert.Label` | Independent red `SCANNED` notice shown for `SCANNED_ALERT_TIME` after a camera or drone scan finds a player |
 
-Camera scan controls are Interact on keyboard, DPad Up on gamepad, and `SCAN` on touch. See [SIEGE.md](SIEGE.md#defender-cameras) for server validation and class reveal behavior.
+Camera scan controls are Interact on keyboard, DPad Up on gamepad, and `SCAN` on touch. See [Siege](SIEGE.md#defender-cameras) for server validation and class reveal behavior.
 
 ## Feel
 
@@ -552,6 +561,7 @@ Other moments, added by the modules that own them:
 | The reveal | Each card pops in 0.07 s after the last, with a tick |
 
 How it is wired:
+
 - The scale effects drive a `UIScale` named **`Feel`** inside the button or frame. It is built in Studio on every button and template (59 added). A button without one still gets its sounds.
 - Attributes: `FeelSilent = true` on a button or a frame around it means squash but no sound (the combat touch buttons, the weapon slots: a fire button must not click on every shot). `NoFeel = true` means nothing. `Menu = true` on a menu frame makes it pop when opened.
 - `UIFeel.Play(kind)`, `UIFeel.Pop(object)`, `UIFeel.Pulse(object)`.
@@ -602,6 +612,7 @@ Studio, one player, one full match as a defender.
 Two things found and fixed in that run: the bar still said MATCH FOUND after the match, and the old top-right Loadout button was shown again by another module.
 
 **Not verified:**
+
 - **How any of it looks.** No screenshot could be taken. Colors, spacing and text fit need a person's eye.
 - **The motion.** Tweens did not advance in the test (a popped card stayed at 92%), which fits Studio not rendering; it is not confirmed in a normal window.
 - **The sounds**, by ear.

@@ -1,6 +1,6 @@
 .md-typeset pre > code {
-	font-size: 0.95rem;
-	line-height: 1.6;
+	font-size: 0.7rem;
+	line-height: 1.55;
 }
 
 [data-md-color-scheme="default"] .highlight .k,
@@ -69,4 +69,73 @@
 [data-md-color-scheme="slate"] .highlight .cm,
 [data-md-color-scheme="slate"] .highlight .cp {
 	color: #a1aab8;
+}
+
+/* ---------- Layout ---------- */
+
+/* Use more of wide screens; the default grid is narrow for table-heavy pages. */
+.md-grid {
+	max-width: 76rem;
+}
+
+/* Tighter, bolder page titles with less empty space under them. */
+.md-typeset h1 {
+	font-weight: 600;
+	margin-bottom: 0.8em;
+	color: var(--md-default-fg-color);
+}
+
+.md-typeset h2 {
+	font-weight: 600;
+	margin-top: 1.8em;
+}
+
+.md-typeset h3 {
+	font-weight: 600;
+}
+
+/* ---------- Tables ---------- */
+
+/* Tables fill the column and wrap long cells instead of scrolling sideways. */
+.md-typeset__table {
+	display: block;
+	width: 100%;
+}
+
+.md-typeset__table table:not([class]) {
+	display: table;
+	width: 100%;
+	font-size: 0.7rem;
+}
+
+.md-typeset table:not([class]) td,
+.md-typeset table:not([class]) th {
+	padding: 0.6em 0.9em;
+	vertical-align: top;
+}
+
+/* Long identifiers in the first column may break at dots so the column stays narrow. */
+.md-typeset table:not([class]) td:first-child code {
+	word-break: break-word;
+}
+
+/* Zebra rows make wide reference tables easier to follow. */
+.md-typeset table:not([class]) tbody tr:nth-child(even) {
+	background-color: var(--md-default-fg-color--lightest);
+}
+
+/* ---------- Mobile ---------- */
+
+@media screen and (max-width: 44.9375em) {
+	.md-typeset h1 {
+		font-size: 1.6em;
+	}
+
+	.md-typeset pre > code {
+		font-size: 0.62rem;
+	}
+
+	.md-typeset__table table:not([class]) {
+		font-size: 0.65rem;
+	}
 }

@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Scout drones
 
 Small ground drones in the style of Rainbow Six Siege's. You throw one out and look through its camera at once. You drive it fast and low, hop over things, boost, and spot enemies for your team. Drones are fragile: a couple of bullets, one shot to the camera, or any grenade destroys one. A destroyed drone comes back after a 30 s cooldown. You have one drone out at a time: 5 takes you into it (or throws one) and out again; X only takes you out. NPCs see, hear and shoot drones.
@@ -22,19 +20,20 @@ Checked in Recruit Training: the prep drone is placed, the player is in it, it d
 
 ## Bot drones (2026-11-16)
 
-Siege attacker bots drive their own scout drones (`Systems.Games.Siege.BotDrones`, see [SIEGE_BOTS.md](SIEGE_BOTS.md#drones-2026-11-16)). They are copies of the same model in `workspace.Drones` with `DroneOwner` (the bot's negative id), `Team` and `SiegeBot`, but the server moves them (anchored, no collision). `DroneService.AddExternal(model)` lists one in `DroneService.All`, so NPCs see and shoot it; `DroneService.preventFriendlyFire` keeps its teammates off it (it reads `Team`). They are not in `DroneService.Of` and have no charges. They slip under door boards and go through wall vents (a `PathfindingLink` labelled `Vent` through each model named `Vent`, made by `BotDrones.Prepare`).
+Siege attacker bots drive their own scout drones (`Systems.Games.Siege.BotDrones`, see [Siege bots](SIEGE_BOTS.md#drones-2026-11-16)). They are copies of the same model in `workspace.Drones` with `DroneOwner` (the bot's negative id), `Team` and `SiegeBot`, but the server moves them (anchored, no collision). `DroneService.AddExternal(model)` lists one in `DroneService.All`, so NPCs see and shoot it; `DroneService.preventFriendlyFire` keeps its teammates off it (it reads `Team`). They are not in `DroneService.Of` and have no charges. They slip under door boards and go through wall vents (a `PathfindingLink` labelled `Vent` through each model named `Vent`, made by `BotDrones.Prepare`).
 
 ## Changed on 2026-11-12 (Siege)
 
 Where this section and the rest of the page disagree, this section is right.
 
 **Scanning replaced spotting.** Fire in a drone scans the enemy in the crosshair (same range, angle and clear view as before):
+
 - The team gets a **static mark** where the enemy stood at that moment (`Packets.Drone.Marked`: a key, a position, seconds). It does not follow them.
 - It lasts 30 s (`SPOT_TIME`). Scanning the same enemy again replaces it.
 - The cooldown is 5 s (`SPOT_COOLDOWN`), and the server enforces all of it (`Packets.Drone.Scan`).
 - The highlight and the following marker are gone (`SpotHighlight` is archived in `ServerStorage.Archive.OldDroneSpot`; `Packets.Drone.Spot` and `Spotted` no longer exist).
 
-**Controls for a game mode** (`DroneService`; Siege uses all of them, see [SIEGE.md](SIEGE.md#drones-in-siege)):
+**Controls for a game mode** (`DroneService`; Siege uses all of them, see [Siege](SIEGE.md#drones-in-siege)):
 
 | Call | What it does |
 | --- | --- |
@@ -46,6 +45,7 @@ Where this section and the rest of the page disagree, this section is right.
 | `Mark(players, key, position, seconds)` | Shows these players a static mark |
 
 **In Siege:**
+
 - One drone per attacker per match, placed by the server at their spawn. Throwing is refused (`Drone.PreventDeploy`).
 - **A destroyed drone never comes back** (`Drone.PreventRespawn`). The player's `DroneLost` attribute is set and the client shows the **NO SIGNAL** screen (`StarterGui.DroneFeed.NoSignal`): at once if they are in the drone, and for 2.5 s (`NO_SIGNAL_TIME`) whenever they try the drone later.
 - **A dead attacker cannot use their drone.** It is locked on death: it remains in the world, can still be destroyed, and cannot be viewed or controlled.
@@ -57,7 +57,9 @@ Where this section and the rest of the page disagree, this section is right.
 
 ## Changed on 2026-11-12 (fixes)
 
-> **Not run.** Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
+!!! warning "Not run"
+
+    Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
 
 | Problem | Cause | Now |
 | --- | --- | --- |
@@ -73,7 +75,7 @@ Where this section and earlier scan descriptions disagree, this section is curre
 - A drone scan still prioritizes the player or NPC in its crosshair. If none is selected, it can instead find a live enemy security camera within the drone scan's angle and range, with clear line of sight. The server sends the normal `Drone.Marked` packet to the team using key `Camera:<CameraId>` and the camera's current position. This is a static mark, not a tracking highlight; it lasts `SPOT_TIME`. The client uses `CAMERA_MARK_COLOR`.
 - A successful drone player scan still sends `Packets.Scan.Alert` to the scanned player. The camera service sends the same alert packet for a successful camera scan. `ScanAlert.Label` shows the red `SCANNED` notice for `SCANNED_ALERT_TIME` (2.5 s).
 - Both `DroneFeed.Feed.Timer` and `DroneFeed.NoSignal.Timer` mirror `Main.SiegeHUD.Timer`, so the game timer stays visible in live and NO SIGNAL views. Camera feeds have the same pair of timer labels.
-- The camera feed's touch `SCAN` button and Interact/DPad Up inputs are documented in [SIEGE.md](SIEGE.md#defender-cameras). A camera can be cycled away from immediately after it is destroyed.
+- The camera feed's touch `SCAN` button and Interact/DPad Up inputs are documented in [Siege](SIEGE.md#defender-cameras). A camera can be cycled away from immediately after it is destroyed.
 
 The feed and alert ScreenGuis are built under `ReplicatedFirst.UILoader` and moved into `PlayerGui` by `UILoader`.
 
@@ -192,4 +194,4 @@ Extension points: `Drone.PreventDeploy(player)` (Any), `Drone.Deployed(player, d
 
 **Tested after the earlier key changes** (NPCs held out of the test, since any hit on your body drops you out): 5 threw and went in, with your body fully visible (0 of 34 parts hidden). 5 left, even with the same press reaching the on-foot key again. 5 went back into the same drone without throwing a new one, and X did the same both ways. A destroyed drone was removed and the next was ready in 29 s.
 
-Not yet checked by hand: how driving, hop and boost feel with real keys, and spotting a real enemy. Also gamepad and touch, and two players (team marks, friendly fire on drones). Studio's input injection doesn't reach the game, so the keys were tested through the controller's own functions. See [NEXT_STEPS.md](NEXT_STEPS.md).
+Not yet checked by hand: how driving, hop and boost feel with real keys, and spotting a real enemy. Also gamepad and touch, and two players (team marks, friendly fire on drones). Studio's input injection doesn't reach the game, so the keys were tested through the controller's own functions. See [Next steps](NEXT_STEPS.md).

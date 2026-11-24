@@ -1,10 +1,3 @@
----
-hide:
-  - toc
----
-
-[Documentation home](index.md) / [Changelog](CHANGELOG.md)
-
 # Changelog archive: 2026-11-12 to 14
 
 Historical implementation notes, retained as written for search and context. Verify behavior against current system guides before using these details.
@@ -16,8 +9,8 @@ Tested in Studio with one player: map vote, Reveal straight to Action, 15 guards
 ### Changed
 
 - **Map vote:** Clear House's Selection starts with a vote between the mode's maps, now Mansion and Bank.
-  - The map with the most votes is played; a tie is drawn among the tied maps.
-  - The map loads when Selection ends. Each player is then given a random free attacker spawn, since spawns belong to a map.
+    - The map with the most votes is played; a tie is drawn among the tied maps.
+    - The map loads when Selection ends. Each player is then given a random free attacker spawn, since spawns belong to a map.
 - **Classes:** the attackers' classes, as before.
 - **No prep phase:** Reveal goes straight to Action. The doors and windows are boarded, the rooms found and the guards placed while Reveal runs.
 - **Guards:** half the map's rooms, rounded up (`ROOM_SHARE` 0.5), plus 2 for each player after the first. No upper limit besides 3 a room. Mansion (26 rooms): 13 to 21. Bank (29 rooms): 15 to 23.
@@ -27,23 +20,23 @@ Tested in Studio with one player: map vote, Reveal straight to Action, 15 guards
 
 ## 2026-11-14: Arcade category, Clear House mode
 
-Tested in Studio with one player: a win (guards killed from a test script) and a loss. See [CLEAR_HOUSE.md](CLEAR_HOUSE.md). Both test results were removed from the saved data afterwards.
+Tested in Studio with one player: a win (guards killed from a test script) and a loss. See [Clear House](CLEAR_HOUSE.md). Both test results were removed from the saved data afterwards.
 
 ### Added
 
 - **ARCADE category** in the Game Modes panel, with one mode, **CLEAR HOUSE**:
-  - up to 5 players against NPC guards in the Mansion;
-  - every door and window boarded up;
-  - no bombs, one round.
+    - up to 5 players against NPC guards in the Mansion;
+    - every door and window boarded up;
+    - no bombs, one round.
 - **The match:** Selection (spawn and class), Reveal, a 30 s drone Prep while the guards take their rooms, then Action.
-  - The players win when every guard is dead.
-  - They lose when every player is dead or has left, or after 8 minutes.
+    - The players win when every guard is dead.
+    - They lose when every player is dead or has left, or after 8 minutes.
 - **Room finder** (`Systems.Siege.ClearHouse`): a grid flood fill over the map's floors, with walls, doors and windows as dividers, builds an `NPCRoom` box per room. A map may give hand-drawn rooms in a `Rooms` folder instead.
 - **Guards:**
-  - 6 for one player, plus 2 for each other player, up to 16, spread over random rooms (big rooms more often, at most 3 a room);
-  - Soldier, Breacher or Grenadier;
-  - in Guard mode, so each one stays in, patrols and re-boards its room;
-  - no respawns.
+    - 6 for one player, plus 2 for each other player, up to 16, spread over random rooms (big rooms more often, at most 3 a room);
+    - Soldier, Breacher or Grenadier;
+    - in Guard mode, so each one stays in, patrols and re-boards its room;
+    - no respawns.
 - **Wins** are saved under `Mode:ClearHouse` and `Category:Arcade`, apart from Siege's stats. The overall Wins/Losses totals still count them.
 - `Content.ClearHouse`; `Content.Matchmaking.PartyLimit(mode)`; the mode fields `Kind` and `Maps`; `Content.Siege.ROUNDS.ClearHouse = 1` and the reasons `HouseCleared` / `HouseHeld`.
 
@@ -53,9 +46,9 @@ Tested in Studio with one player: a win (guards killed from a test script) and a
 - **Maps:** a mode with `Maps` only uses those maps.
 - `NPCService.Spawn(profileId, where, spawnPart?, ignoreCap?)`: the new `ignoreCap` passes the `MAX_NPCS` cap, which is 0 today.
 - **Siege screens in Clear House:**
-  - the roster's enemy section reads HOUSE GUARDS;
-  - the HUD objective counts the guards left, and the bomb chips are hidden;
-  - the result screen shows "x / y guards down" and a HOUSE GUARDS column.
+    - the roster's enemy section reads HOUSE GUARDS;
+    - the HUD objective counts the guards left, and the bomb chips are hidden;
+    - the result screen shows "x / y guards down" and a HOUSE GUARDS column.
 
 
 ## 2026-11-14: Shotgun loadouts use PumpShotgun
@@ -65,34 +58,34 @@ Studio playtest: `GunService.Give(player, "PumpShotgun")` gave the gun with no w
 ### Fixed
 
 - **The shotgun was never given.** The pump shotgun's definition id is `PumpShotgun`, but loadouts still asked for the old id `Shotgun`, so `GunService.Give` warned "no gun named Shotgun" and the player got nothing. Now `PumpShotgun` in:
-  - `Content.Classes` loadouts: Breacher (Mason), Hacker (Caleb), and the two other classes that carried it;
-  - `Content.Guns.Loadouts`: Breacher, Arsenal, Sprayer;
-  - `Content.NPC.Profiles.Breacher`;
-  - the per-gun settings in `Content.Guns.Melee` and `Content.Destruction.SoftWallConfig`, so its melee and wall holes apply again.
+    - `Content.Classes` loadouts: Breacher (Mason), Hacker (Caleb), and the two other classes that carried it;
+    - `Content.Guns.Loadouts`: Breacher, Arsenal, Sprayer;
+    - `Content.NPC.Profiles.Breacher`;
+    - the per-gun settings in `Content.Guns.Melee` and `Content.Destruction.SoftWallConfig`, so its melee and wall holes apply again.
 - The `"Shotgun"` entries in class `Categories` are the category name and stay as they are.
 
 
 ## 2026-11-14: Analytics, crate opening on phones
 
-Studio playtest of a 1v1 up to the end of round 1. Every event logged up to there was printed with the right fields (see [ANALYTICS.md](ANALYTICS.md)). The crate opening screen was not seen on a phone.
+Studio playtest of a 1v1 up to the end of round 1. Every event logged up to there was printed with the right fields (see [Analytics](ANALYTICS.md)). The crate opening screen was not seen on a phone.
 
 ### Added
 
 - **Analytics** (`Systems.Analytics.AnalyticsService`, `Content.Analytics`, `Client.Core.AnalyticsClient`, `Packets.Analytics.MenuOpened`):
-  - economy events for Coins and Tokens;
-  - Queue and Match funnels, and an onboarding funnel;
-  - LobbyVisit and SiegeMatch journeys, which must be created on the Creator Hub;
-  - 23 custom events, covering:
-    - queue drop-offs and waits;
-    - top modes, classes, sites and spawns;
-    - which side wins rounds and how long rounds last;
-    - kills, deaths, damage and builds per player per match, by mode, category and result;
-    - leaving early, weapons, abilities, menus and purchases.
+    - economy events for Coins and Tokens;
+    - Queue and Match funnels, and an onboarding funnel;
+    - LobbyVisit and SiegeMatch journeys, which must be created on the Creator Hub;
+    - 23 custom events, covering:
+        - queue drop-offs and waits;
+        - top modes, classes, sites and spawns;
+        - which side wins rounds and how long rounds last;
+        - kills, deaths, damage and builds per player per match, by mode, category and result;
+        - leaving early, weapons, abilities, menus and purchases.
 - **New extension points for analytics:**
-  - `Siege.SelectionEnded(summary)`: every player's final picks each round, with `Random` set when the class was filled in;
-  - `Siege.RoundEnded` gets a 4th argument: mode, map, site and `Final`. At the end of a match it now also fires for the last round;
-  - `Siege.Ended` gets a 3rd argument: the match summary, with every player's kills, deaths, damage, builds, side and result;
-  - `Store.Bought` gets a 5th argument: the price paid.
+    - `Siege.SelectionEnded(summary)`: every player's final picks each round, with `Random` set when the class was filled in;
+    - `Siege.RoundEnded` gets a 4th argument: mode, map, site and `Final`. At the end of a match it now also fires for the last round;
+    - `Siege.Ended` gets a 3rd argument: the match summary, with every player's kills, deaths, damage, builds, side and result;
+    - `Store.Bought` gets a 5th argument: the price paid.
 
 ### Fixed
 
@@ -107,12 +100,12 @@ Compile-checked. Desktop checked in a playtest: the Store is unchanged (1180×70
 ### Changed
 
 - **The Store, Inventory and Details panels are fitted menus.**
-  - Each has a `Fit` UIScale tagged `FitScale`, with `DesignHeight` 640 and `WidthShare` 0.95. On a phone they shrink as a whole instead of cutting cards off.
-  - The `Feel` UIScale on these panels was removed (only one UIScale works per frame), so they no longer pop when opened.
+    - Each has a `Fit` UIScale tagged `FitScale`, with `DesignHeight` 640 and `WidthShare` 0.95. On a phone they shrink as a whole instead of cutting cards off.
+    - The `Feel` UIScale on these panels was removed (only one UIScale works per frame), so they no longer pop when opened.
 - **FitScale changes** (`Client.Core.UI`):
-  - a `MinScale` attribute;
-  - `FitMode = "Dialog"`: a box built in pixels keeps its size and place and is scaled down to fit the screen both ways.
-  - The gift picker and the match result's `Body` (now a 1150×680 pixel box) use it.
+    - a `MinScale` attribute;
+    - `FitMode = "Dialog"`: a box built in pixels keeps its size and place and is scaled down to fit the screen both ways.
+    - The gift picker and the match result's `Body` (now a 1150×680 pixel box) use it.
 - **Cards per row** in the Store (2 to 5) and Inventory (2 to 6) come from the page's width, so cards keep their shape on any screen.
 - **Inventory filter chips:** the row scrolls sideways when they don't fit, and gun names are spaced (PUMP SHOTGUN).
 - **Lobby wallet panel:** on screens 600 px tall or less it is scaled to 0.72 and sits in the top-left corner, clear of PARTY, PLAY and MODE.
@@ -127,14 +120,15 @@ Compile-checked. Desktop checked in a playtest: the Store is unchanged (1180×70
 ## 2026-11-13: Prep drone frozen by streaming (found in a playtest)
 
 Playtested in Studio, one player, a 1v1 as the attacker:
+
 - **Before the fix:** in Prep the drone view showed, but the drone didn't move. Its velocity read -37 down while its position never changed, only 1 map part had loaded near it on the client, and the server had the player's `ReplicationFocus` at nil.
 - **After the fix:** 36 parts had loaded around the drone at once, holding W drove it 30 studs during Prep (clock at 00:23), no viewmodel was drawn, and there were no new errors.
 
 ### Fixed
 
 - **The prep drone was frozen.** The place uses `StreamingIntegrityMode.PauseOutsideLoadedArea`, so a client-owned part outside the loaded area has its physics paused. In Prep the body waits in the lobby, so the area around the drone is only loaded if the player's `ReplicationFocus` is on the drone. It was set when the drone was placed but found cleared later (respawning the body was tested and is not what clears it). This is why drones worked in Action, with the body nearby, and not in Prep.
-  - `DroneService` now sets the focus again every check (0.25 s) for every held player, and after their body spawns.
-  - `focusOn` only writes the focus when it changes.
+    - `DroneService` now sets the focus again every check (0.25 s) for every held player, and after their body spawns.
+    - `focusOn` only writes the focus when it changes.
 
 
 ## 2026-11-13: Owned Store cards show an OWNED button
@@ -155,8 +149,8 @@ Compile-checked only (not playtested).
 
 - **The gun viewmodel showed over the drone view in Prep.** The server arms the attacker's lobby body when it spawns, after the drone view has opened, and equipping a gun resets the viewmodel's hidden flag. While in a drone, `DroneController` now hides it again on every frame.
 - **The prep drone didn't move.**
-  - The drive input came only from the default controls, which give no movement while the body is parked (and its controls are off) in the lobby. When they report nothing, the keyboard (WASD) and the gamepad's left stick are now read directly.
-  - When a player starts looking through a drone (`Packets.Drone.View`), the server gives them network ownership of their landed drones again, so a body spawning or a short take-back can't leave the drone stuck under server physics.
+    - The drive input came only from the default controls, which give no movement while the body is parked (and its controls are off) in the lobby. When they report nothing, the keyboard (WASD) and the gamepad's left stick are now read directly.
+    - When a player starts looking through a drone (`Packets.Drone.View`), the server gives them network ownership of their landed drones again, so a body spawning or a short take-back can't leave the drone stuck under server physics.
 
 
 ## 2026-11-13: OWNED for passes and bundles, greyed prices on the detail page
@@ -166,11 +160,11 @@ Compile-checked only.
 ### Added
 
 - **`OwnedItems`** (saved, in `Content.Store`): once-only store items bought, by item Id.
-  - `StoreGrants.ApplyItem(data, item)` gives an item's grants and records it. Robux receipts (`Shared.Data`) and Coins/Tokens purchases (`StoreService`) both use it.
-  - Bundles bought before this are found in the purchase log when the player joins (`backfillOwned` in `StoreService`), or on their next purchase try, and recorded.
+    - `StoreGrants.ApplyItem(data, item)` gives an item's grants and records it. Robux receipts (`Shared.Data`) and Coins/Tokens purchases (`StoreService`) both use it.
+    - Bundles bought before this are found in the purchase log when the player joins (`backfillOwned` in `StoreService`), or on their next purchase try, and recorded.
 - `StoreViews.Owns(data, "Item", id)` tells whether a store item is owned:
-  - a game pass, from Scribe's client pass mirror (`Data.Owns`);
-  - a once-only item, from `OwnedItems`, or when everything it grants is owned.
+    - a game pass, from Scribe's client pass mirror (`Data.Owns`);
+    - a once-only item, from `OwnedItems`, or when everything it grants is owned.
 
 ### Changed
 
@@ -186,20 +180,20 @@ Compile-checked only. In Edit mode `Skins.Apply` was run on the Rifle, Pistol an
 ### Added
 
 - **Developer pack:** `DevRifle`, `DevPistol` and `DevSMG` in `Content.Guns.Skins`:
-  - black guns;
-  - neon rainbow parts (magazine, sights, rifle handguard);
-  - rainbow lines down both sides, cut into 0.2-stud pieces;
-  - the colors run along the gun as a moving gradient.
-  - **Not for sale:** never in a crate or the Store, and hidden in the Inventory from players who don't own them.
+    - black guns;
+    - neon rainbow parts (magazine, sights, rifle handguard);
+    - rainbow lines down both sides, cut into 0.2-stud pieces;
+    - the colors run along the gun as a moving gradient.
+    - **Not for sale:** never in a crate or the Store, and hidden in the Inventory from players who don't own them.
 - **Rainbow skins** (any skin can use them):
-  - a skin's `Rainbow` list of part-name patterns, and `Rainbow = true` on a Detail, make those parts Neon and tag them `SkinRainbow`, with a `RainbowOffset`;
-  - `Client.Guns.SkinRainbow` turns their colors every frame;
-  - the settings are in `Skins.RAINBOW`: Speed, Length, Saturation, Value, Piece.
+    - a skin's `Rainbow` list of part-name patterns, and `Rainbow = true` on a Detail, make those parts Neon and tag them `SkinRainbow`, with a `RainbowOffset`;
+    - `Client.Guns.SkinRainbow` turns their colors every frame;
+    - the settings are in `Skins.RAINBOW`: Speed, Length, Saturation, Value, Piece.
 - **Skin cards:** a skin's `Card` sets its Inventory card: background colors and a `BORDERS` preset. The Developer skins have black cards with the moving Rainbow border.
 - **Commands (admins only, Cmdr):**
-  - `givedevskins <players>` (alias `devskins`) gives the pack for good (saved in `WeaponSkins`);
-  - `takedevskins <players>` takes it back and unequips it.
-  - Both go through `StoreService.GiveSkins(player, skinIds, take?)` and `StoreService.DeveloperSkins()`.
+    - `givedevskins <players>` (alias `devskins`) gives the pack for good (saved in `WeaponSkins`);
+    - `takedevskins <players>` takes it back and unequips it.
+    - Both go through `StoreService.GiveSkins(player, skinIds, take?)` and `StoreService.DeveloperSkins()`.
 - **SMG skin family:** `SMG` and `SiegeSMG` share one (`SMGSkin` saved field), so the Inventory gets an SMG tab.
 
 
@@ -210,13 +204,13 @@ Compile-checked only (a playtest was not allowed this time).
 ### Fixed
 
 - **The prep drone still wasn't viewable.** The earlier streaming fix had been lost from `DroneService`, and the drone template was back to `ModelStreamingMode.Default`, so the drone at the attacker spawn never reached a client whose body waits in the lobby. Restored and made sturdier:
-  - every placed drone is `Persistent`, and so is the template;
-  - while a player is held in their drone, `focusOn` points their `ReplicationFocus` at it, and clears it when the hold ends or the drone is cleared;
-  - the client goes into the drone as soon as one of its drones is there, without needing a body.
+    - every placed drone is `Persistent`, and so is the template;
+    - while a player is held in their drone, `focusOn` points their `ReplicationFocus` at it, and clears it when the hold ends or the drone is cleared;
+    - the client goes into the drone as soon as one of its drones is there, without needing a body.
 - **End screen outlines were cut off.**
-  - A player's row outline was clipped by the rows list; it now has 3 px padding.
-  - The team columns and MVP cards have room for their edges.
-  - The totals now read KILLS, DAMAGE, BUILT in that order.
+    - A player's row outline was clipped by the rows list; it now has 3 px padding.
+    - The team columns and MVP cards have room for their edges.
+    - The totals now read KILLS, DAMAGE, BUILT in that order.
 - **Reinforce was silent for others.** Its sound part now sits in a `Persistent` model, so with streaming on it reaches everyone before the short sound ends. The player who reinforces also hears a local lock-in sound (`BoardPlace` and `FootstepMetal`, in `SiegeHud`).
 - **Daily deal text was covered.** The struck-through old price and the detail line now sit just above the price buttons (anchored to the bottom), with a slightly smaller picture.
 
@@ -245,23 +239,23 @@ Compile-checked only (not playtested, as asked).
 ### Added
 
 - **Siege matches have several rounds**, and the sides swap every round:
-  - `1v1` and private matches: best of 3.
-  - `5v5`: best of 5.
-  - Set in `Content.Siege.ROUNDS` (`DEFAULT_ROUNDS` 3).
+    - `1v1` and private matches: best of 3.
+    - `5v5`: best of 5.
+    - Set in `Content.Siege.ROUNDS` (`DEFAULT_ROUNDS` 3).
 - **Between rounds** (new phase `RoundEnd`, `ROUND_END_TIME` 8 s), the next round starts like this:
-  - The map is rebuilt from a fresh copy, so boards, walls and broken pieces are whole again.
-  - Bombs, defusers, drones and cameras are cleared.
-  - Every player is put on their new side and goes through Selection again: class, spawn or site vote, and loadout.
+    - The map is rebuilt from a fresh copy, so boards, walls and broken pieces are whole again.
+    - Bombs, defusers, drones and cameras are cleared.
+    - Every player is put on their new side and goes through Selection again: class, spawn or site vote, and loadout.
 - **The match winner** is the side that won the most rounds, not the side that won the last one:
-  - The match stops early once one side has a majority.
-  - It also stops early when a side has left (`MATCH_ENDING_REASONS`).
-  - Rewards and stats are recorded once, at the end of the match.
+    - The match stops early once one side has a majority.
+    - It also stops early when a side has left (`MATCH_ENDING_REASONS`).
+    - Rewards and stats are recorded once, at the end of the match.
 - **Round result banner** (`Main.RoundResult`): ROUND WON / LOST / DRAW, the reason, the score (you vs them), a pip per round, and the next round.
 - **Match result screen** (`Main.MatchResult`), revealed in stages with count-ups:
-  - VICTORY / DEFEAT / DRAW over a green or red tint, with the round score.
-  - MVP cards with avatars: TOP FRAGGER (kills), MOST DAMAGE, MASTER BUILDER (pieces repaired).
-  - Both teams side by side, each with its totals and every player's K, D, damage and builds. Your row is outlined, and the winning column gets a gold edge and a WINNER tag.
-  - Templates: `RoundPip`, `MvpCard`, `TeamColumn`, `ResultRow`.
+    - VICTORY / DEFEAT / DRAW over a green or red tint, with the round score.
+    - MVP cards with avatars: TOP FRAGGER (kills), MOST DAMAGE, MASTER BUILDER (pieces repaired).
+    - Both teams side by side, each with its totals and every player's K, D, damage and builds. Your row is outlined, and the winning column gets a gold edge and a WINNER tag.
+    - Templates: `RoundPip`, `MvpCard`, `TeamColumn`, `ResultRow`.
 - **Per-match stats** on the server: kills, deaths, damage dealt to the other side (Prep and Action) and pieces built (`Breakable.Repaired`).
 - **Lobby leaderboard:** in the lobby, Tab (the Scoreboard key) shows everyone on the server ranked by total wins, highest first, with rank (#1 gold, #2 silver, #3 bronze) and win streak. The wins come from the new `TotalWins` player attribute, set by `StatsService`.
 - **Per-map background music:** a folder in `Assets.Music` (or `Assets.Music.Primary`) named like the active Siege map is played instead of the normal background songs during that match.
@@ -275,8 +269,8 @@ Compile-checked only (not playtested, as asked).
 ### Fixed
 
 - **The prep drone view was lost when the body spawned.**
-  - In Prep the attacker's body loads in the lobby a moment after the drone view opens, and the client left the drone whenever a new body arrived.
-  - A player held in their drone now stays in it: the new body is anchored where it is, and drone control is asked for again (the server drops it when a body spawns).
+    - In Prep the attacker's body loads in the lobby a moment after the drone view opens, and the client left the drone whenever a new body arrived.
+    - A player held in their drone now stays in it: the new body is anchored where it is, and drone control is asked for again (the server drops it when a body spawns).
 - `SiegeService` called `ownsClass` before it was defined (nil at runtime) at the end of Selection.
 
 
@@ -287,11 +281,11 @@ Compile-checked only.
 ### Added
 
 - **Gifting Robux crates and items** to another player in the server: a gift button on the card and GIFT on the detail page open the picker (`Main.GiftPicker`, `Client.Core.GiftPicker`). It lists every other player with their avatar.
-  - `Packets.Store.Gift` → `StoreService.Gift` checks the recipient can get it, then opens Scribe's gift prompt (`Data.PromptGift`).
-  - Scribe records the gift before money moves and delivers it to the recipient's data, even if they leave.
-  - Game passes, and Coins or Tokens prices, can't be gifted.
+    - `Packets.Store.Gift` → `StoreService.Gift` checks the recipient can get it, then opens Scribe's gift prompt (`Data.PromptGift`).
+    - Scribe records the gift before money moves and delivers it to the recipient's data, even if they leave.
+    - Game passes, and Coins or Tokens prices, can't be gifted.
 - **Border styles** (`Content.Store.BORDERS`, an item's `Border`): the glowing outline's colors turn around the card. Gold is the default; there are also Rainbow and Obsidian.
-  - The Obsidian skin has the Obsidian border (black and violet, turning) with the glow.
+    - The Obsidian skin has the Obsidian border (black and violet, turning) with the glow.
 - **The coin icon:** "Glossy Gold Coin Icon" from the Creator Store (`Content.Store.COIN_ICON`). It is on every coin price and both wallets.
 - **Class pictures:** a class's `Icon`, or its first initial when it has none, on its card and big page.
 - **A dimmed blocker** under the detail page (`Main.DetailsBlocker`): nothing behind it can be pressed while it is open.
@@ -330,21 +324,21 @@ Compile-checked only (no playtest, as asked).
 ### Added
 
 - **The Store** (`Main.Store`, `Client.Core.Store`), redesigned:
-  - **Layout:** an icon rail (Featured, Crates, Currency, Passes, Bundles, Skins, Classes), balances with "+" buttons, and section headers.
-  - **Big cards:** double-width cards for featured and big items.
-  - **Labels and badges:** ribbons (POPULAR, BEST VALUE, 🔥 HOT DEAL, NEW), "% OFF" with the old price struck through, and "% EXTRA" on bigger packs.
-  - **Glow:** glowing outlines with a sweeping sheen.
-  - **Daily deal:** one item a day at 30% off its Coins and Tokens price, with a countdown. The server charges the same price (`Content.Store.PriceOf`).
+    - **Layout:** an icon rail (Featured, Crates, Currency, Passes, Bundles, Skins, Classes), balances with "+" buttons, and section headers.
+    - **Big cards:** double-width cards for featured and big items.
+    - **Labels and badges:** ribbons (POPULAR, BEST VALUE, 🔥 HOT DEAL, NEW), "% OFF" with the old price struck through, and "% EXTRA" on bigger packs.
+    - **Glow:** glowing outlines with a sweeping sheen.
+    - **Daily deal:** one item a day at 30% off its Coins and Tokens price, with a countdown. The server charges the same price (`Content.Store.PriceOf`).
 - **The Inventory** (`Main.Inventory`, `Client.Core.Inventory`; INVENTORY on the lobby bar, and the old Backpack button):
-  - **Classes:** yours, then "CLASSES TO BE UNLOCKED", filtered by team.
-  - **Skins:** owned, then locked; equip from the skin's page.
-  - **Crates:** the crates you own, with a count.
+    - **Classes:** yours, then "CLASSES TO BE UNLOCKED", filtered by team.
+    - **Skins:** owned, then locked; equip from the skin's page.
+    - **Crates:** the crates you own, with a count.
 - **A big detail page** (`Main.Details`, `Client.Core.ItemDetails`), like a character select screen:
-  - the name, team or rarity, description and a large 3D preview;
-  - starter items with gun previews;
-  - the ability in depth (cooldown, charges, description);
-  - a crate's contents with each chance and what you own;
-  - prices or OPEN / EQUIP, and BACK / EXIT.
+    - the name, team or rarity, description and a large 3D preview;
+    - starter items with gun previews;
+    - the ability in depth (cooldown, charges, description);
+    - a crate's contents with each chance and what you own;
+    - prices or OPEN / EQUIP, and BACK / EXIT.
 - **Shared view builders:** `Client.Core.StoreViews`, so a crate or class looks the same in both screens.
 - **Classes for sale:** `Content.Store.CLASS_PRICES` (Coins and/or Tokens). A class listed there is locked until bought (`Class:<id>`). None is listed yet.
 - **Crate rarity and ribbon:** each crate has a `Rarity` (card colors) and a `Tag`.
@@ -360,12 +354,12 @@ Compile-checked only (no playtest, as asked).
 
 ## 2026-11-13: Store products created
 
-- The 8 new developer products and the VIP game pass are created on Roblox (through Open Cloud), at the prices the Store shows, and their ids are in `Shared.ProductIds`. Every Robux price in the Store is now live instead of SOON. The icons are placeholders. See [STORE.md](STORE.md#limits).
+- The 8 new developer products and the VIP game pass are created on Roblox (through Open Cloud), at the prices the Store shows, and their ids are in `Shared.ProductIds`. Every Robux price in the Store is now live instead of SOON. The icons are placeholders. See [Store, currencies, crates, and stats](STORE.md#limits).
 
 
 ## 2026-11-13: Store, Siege Tokens, your own crates, wins and streaks
 
-Server side checked in a Studio playtest. The screens weren't seen (no playtest asked). See [STORE.md](STORE.md#testing).
+Server side checked in a Studio playtest. The screens weren't seen (no playtest asked). See [Store, currencies, crates, and stats](STORE.md#testing).
 
 ### Added
 
@@ -373,9 +367,9 @@ Server side checked in a Studio playtest. The screens weren't seen (no playtest 
 - **Siege Tokens:** a premium currency, 5 to start. Bought with Robux, or given by `StoreService.Give` (battle pass, quests).
 - **Coins for playing:** 100 for a win, 30 for a loss, 50 for a draw (at least 60 s), and 15 every 5 minutes of play. The VIP pass doubles them.
 - **The Store** (`Main.Store`, STORE on the lobby wallet bar):
-  - tabs for crates, currency packs, game passes, bundles, special skins and classes, all from `Content.Store`;
-  - Robux items show SOON until their id is set.
-  - New: the special skin Obsidian, the Starter Bundle and the VIP pass.
+    - tabs for crates, currency packs, game passes, bundles, special skins and classes, all from `Content.Store`;
+    - Robux items show SOON until their id is set.
+    - New: the special skin Obsidian, the Starter Bundle and the VIP pass.
 - **Wins and losses:** totals, and per mode and category. A win streak per mode, with a 🔥 tag above the head from 2.
 - **The last mode played** is saved, and PLAY starts on it.
 - `Systems.Store.StoreService`, `Systems.Store.StatsService`, `Shared.StoreGrants`, `Client.Core.Store`; packets `Store.Buy` and `Store.Reward`.
@@ -394,22 +388,22 @@ Compile-checked; the shop opened in a playtest and its cards, tabs and crate lis
 ### Added
 
 - **The shop is now the ARMORY** (`Main.SkinShop`, built in Studio):
-  - Tabs (All / Pistol / Rifle).
-  - A grid of skin cards, each with a 3D preview of the gun wearing the skin, its color stripe, and Equip / Equipped / In crate.
-  - A crate panel with the price, OPEN CRATE, every skin still in the crate with its chance, and a status line.
-  - New templates: `SkinCard`, `SkinTab`, `CrateItem`, `ReelCard`.
+    - Tabs (All / Pistol / Rifle).
+    - A grid of skin cards, each with a 3D preview of the gun wearing the skin, its color stripe, and Equip / Equipped / In crate.
+    - A crate panel with the price, OPEN CRATE, every skin still in the crate with its chance, and a status line.
+    - New templates: `SkinCard`, `SkinTab`, `CrateItem`, `ReelCard`.
 - **Crate opening reel:**
-  - After a crate is bought, the won skin arrives in the player's data and the reel spins: a strip of skin cards slows down over 6 s onto the skin won, ticking as each card passes the gold marker.
-  - YOU GOT then shows the skin, with EQUIP / DONE.
-  - It is a show only: the server picks and grants the skin before the reel starts.
-  - `SkinShop.Preview(skinId)` plays it without buying, for testing.
+    - After a crate is bought, the won skin arrives in the player's data and the reel spins: a strip of skin cards slows down over 6 s onto the skin won, ticking as each card passes the gold marker.
+    - YOU GOT then shows the skin, with EQUIP / DONE.
+    - It is a show only: the server picks and grants the skin before the reel starts.
+    - `SkinShop.Preview(skinId)` plays it without buying, for testing.
 
 ### Fixed
 
 - **Skins did nothing in matches.** A skin was for one gun Id (`Rifle`, `Pistol`), but Siege hands out other guns. Skins now belong to a family:
-  - Rifle skins show on the Rifle, BurstRifle, SiegeCarbine and Tactical bullpup.
-  - Pistol skins show on the Pistol, SiegePistol and Revolver.
-  - (`Content.Guns.Skins` `FAMILIES`, `Skins.FamilyOf`; `EquipField` uses the family.)
+    - Rifle skins show on the Rifle, BurstRifle, SiegeCarbine and Tactical bullpup.
+    - Pistol skins show on the Pistol, SiegePistol and Revolver.
+    - (`Content.Guns.Skins` `FAMILIES`, `Skins.FamilyOf`; `EquipField` uses the family.)
 - A gun that is one textured mesh shows the skin's color: its texture comes off while the skin is on, and comes back with "None". Checked on copies: the SiegePistol, BurstRifle, SiegeCarbine and Revolver recolor, and go back exactly on "None".
 
 
@@ -536,7 +530,7 @@ Not playtested (it needs live servers and two players).
 
 ### Fixed
 
-- **Back from a match, the screen showed no party** although the server still had it (inviting the same players was refused as "already in your party"). The party message could be sent before the returning client was listening. The client now asks for its party when it starts, a few times in the first seconds, when a match ends, and when the Party menu opens (`Party.Request` action `Sync`, [MATCHMAKING.md](MATCHMAKING.md#party-sync-2026-11-12-not-run)).
+- **Back from a match, the screen showed no party** although the server still had it (inviting the same players was refused as "already in your party"). The party message could be sent before the returning client was listening. The client now asks for its party when it starts, a few times in the first seconds, when a match ends, and when the Party menu opens (`Party.Request` action `Sync`, [Matchmaking and parties](MATCHMAKING.md#party-sync-2026-11-12-not-run)).
 
 
 ## 2026-11-12: The other team in the ready list; Reinforce works again
@@ -545,7 +539,7 @@ Not playtested. The Reinforce swap was checked in Edit mode on copies of a board
 
 ### Added
 
-- **The ready list shows the other team too,** in its own section under a red ENEMY TEAM heading with the side's name, red names and dark red rows. Only who they are and whether they are ready is sent; never their picks ([SIEGE.md](SIEGE.md)).
+- **The ready list shows the other team too,** in its own section under a red ENEMY TEAM heading with the side's name, red names and dark red rows. Only who they are and whether they are ready is sent; never their picks ([Siege](SIEGE.md)).
 
 ### Fixed
 
@@ -559,7 +553,7 @@ Not playtested (by request): compile-checked, and the touch layout worked out by
 
 ### Added
 
-- **PLAY WITH PARTY** in the lobby: a match of the party's own members only, dealt into two even teams (`QueueService.JoinPrivate`, [MATCHMAKING.md](MATCHMAKING.md#play-with-party-2026-11-12)).
+- **PLAY WITH PARTY** in the lobby: a match of the party's own members only, dealt into two even teams (`QueueService.JoinPrivate`, [Matchmaking and parties](MATCHMAKING.md#play-with-party-2026-11-12)).
 - **Selection:** a team list down the right side with each teammate's picture, name and READY or PICKING; when everyone in the match is ready the clock is skipped. A Consumable row on the Class page.
 - **`Client.Hud.Nameplates`:** enemies show no name and no health bar; teammates show both.
 - The drone feed's own touch stick, and control hints and touch buttons on the NO SIGNAL screens.
@@ -572,8 +566,8 @@ Not playtested (by request): compile-checked, and the touch layout worked out by
 - **NO SIGNAL could not be closed** with the drone keys.
 - **A destroyed camera was 4% see-through;** it is opaque now.
 - **A player who left a queued party kept seeing the search.**
-- **Sliding was inconsistent:** a crouch press is judged by sprint intent and waits up to 0.3 s for a slide to be possible ([MOVEMENT.md](MOVEMENT.md)).
-- **Touch buttons:** the left ones were placed from the right corner and slid off narrow phones; the right ones ran up the whole edge. All are now laid out from one table ([UI.md](UI.md)).
+- **Sliding was inconsistent:** a crouch press is judged by sprint intent and waits up to 0.3 s for a slide to be possible ([Movement and camera](MOVEMENT.md)).
+- **Touch buttons:** the left ones were placed from the right corner and slid off narrow phones; the right ones ran up the whole edge. All are now laid out from one table ([UI](UI.md)).
 
 ### Changed
 
@@ -583,7 +577,7 @@ Not playtested (by request): compile-checked, and the touch layout worked out by
 
 ## 2026-11-12: Match music (start, panic, end)
 
-See [MUSIC.md](MUSIC.md). Not playtested (by request): compile-checked only.
+See [Music](MUSIC.md). Not playtested (by request): compile-checked only.
 
 ### Added
 
@@ -604,7 +598,7 @@ Not playtested (by request): compile-checked only.
 
 - **`Image` on categories and modes** (`Content.Matchmaking`): a picture that fills the card, under a dark fade so the name stays readable. `Assets.UI.Templates.ModeCard` has new `Art` and `Shade` parts.
 - **`Tag`, `TagColor` and `Color` on modes.** A mode's card used its category's; now each mode has its own (1 V 1: red, DUEL; 5 V 5: blue, TEAM).
-- **`Icon` on categories and modes:** the big faded text on the card. `""` keeps the automatic text (none over an image); anything else is shown as written ([UI.md](UI.md#what-a-card-shows)).
+- **`Icon` on categories and modes:** the big faded text on the card. `""` keeps the automatic text (none over an image); anything else is shown as written ([UI](UI.md#what-a-card-shows)).
 
 
 ## 2026-11-12: Game Modes panel; no loadout picking in the lobby
@@ -613,7 +607,7 @@ Not playtested (by request): compile-checked, and the panel measured at phone an
 
 ### Added
 
-- **The Game Modes panel** (`Main.Modes`, `Client.Core.ModeMenu`): a full-screen game-select screen with one card per mode category (DUELS, SQUADS), a description box, and EXIT ([UI.md](UI.md#the-game-modes-panel)). Pressing a category shows its modes; a category with one mode picks it at once.
+- **The Game Modes panel** (`Main.Modes`, `Client.Core.ModeMenu`): a full-screen game-select screen with one card per mode category (DUELS, SQUADS), a description box, and EXIT ([UI](UI.md#the-game-modes-panel)). Pressing a category shows its modes; a category with one mode picks it at once.
 - `Content.Matchmaking.CATEGORIES`; each mode has a `Category` and a `Description`; `Content.Matchmaking.ModesIn(categoryId)`.
 - `ModeMenu.Selected()` / `Pick(id)` / `Open()` / `Changed`; `Client.Core.Matchmaking.OpenModes()`.
 
@@ -633,7 +627,7 @@ Not playtested (by request): compile-checked, and the panel measured at phone an
 
 ### Added
 
-- **Queue modes.** A party queues for one mode and is only matched with tickets of that mode ([MATCHMAKING.md](MATCHMAKING.md#queue-modes)). Modes are rows in `Content.Matchmaking.MODES`: **1 V 1** (the default, so two players are enough) and **5 V 5**. The ticket carries the mode (`G`), the match record too (`Mode`).
+- **Queue modes.** A party queues for one mode and is only matched with tickets of that mode ([Matchmaking and parties](MATCHMAKING.md#queue-modes)). Modes are rows in `Content.Matchmaking.MODES`: **1 V 1** (the default, so two players are enough) and **5 V 5**. The ticket carries the mode (`G`), the match record too (`Mode`).
 - **A mode button above PLAY** (`Main.Lobby.ModeButton`) and a key, **GameMode (M)**: each press moves to the next mode. The search status shows the mode.
 - `QueueService.Join(player, modeId)`, `Content.Matchmaking.GetMode` / `NextMode`, `Client.Core.Matchmaking.NextMode()`.
 
@@ -658,7 +652,7 @@ Not playtested (by request): compile-checked, and the panel measured at phone an
 
 ## 2026-11-12: UI revamp (MVP pass)
 
-See [UI.md](UI.md). Laid out and checked by measurement only: nobody has seen it rendered yet.
+See [UI](UI.md). Laid out and checked by measurement only: nobody has seen it rendered yet.
 
 ### Added
 
@@ -682,7 +676,7 @@ See [UI.md](UI.md). Laid out and checked by measurement only: nobody has seen it
 
 ## 2026-11-12: Siege bombs are in place from the prep phase
 
-See [SIEGE.md](SIEGE.md#the-bombs).
+See [Siege](SIEGE.md#the-bombs).
 
 ### Added
 
@@ -700,7 +694,7 @@ See [SIEGE.md](SIEGE.md#the-bombs).
 
 ## 2026-11-12: Siege, global matchmaking, parties and classes
 
-See [SIEGE.md](SIEGE.md), [MATCHMAKING.md](MATCHMAKING.md) and [CLASSES.md](CLASSES.md). Tested in Studio with one player only; nothing cross-server has run live.
+See [Siege](SIEGE.md), [Matchmaking and parties](MATCHMAKING.md) and [Siege classes](CLASSES.md). Tested in Studio with one player only; nothing cross-server has run live.
 
 ### Added
 
@@ -714,7 +708,7 @@ See [SIEGE.md](SIEGE.md), [MATCHMAKING.md](MATCHMAKING.md) and [CLASSES.md](CLAS
 - **Client modules:** `Client.Core.Matchmaking`, `Client.Core.SiegeSelect`, `Client.Core.Spectate`, `Client.Hud.SiegeHud`, `Client.Hud.Scoreboard`, `Client.Gadgets.CameraController`.
 - **Packets:** groups `Party`, `Queue`, `Siege`, `Class`, `Camera`, `Spectate`; `Drone.Scan`, `Drone.Marked`.
 - **Keys:** Play (K), Class ability (T). Teams `Attackers` and `Defenders`. Effects `GadgetPlace`, `GadgetDestroyed`, `Flashbang`, `AbilityPulse`.
-- **Extension points:** `Siege.*`, `Party.*`, `Queue.*`, `Matchmaking.*`, `Classes.*`, `Camera.*`, `Spectate.Changed`, `Drone.PreventRespawn`, `Drone.PreventView`, `Lobby.PreventFirstSpawn`, `Loadout.PreventApply`, `Death.PreventSpectate` (all in [API.md](API.md)).
+- **Extension points:** `Siege.*`, `Party.*`, `Queue.*`, `Matchmaking.*`, `Classes.*`, `Camera.*`, `Spectate.Changed`, `Drone.PreventRespawn`, `Drone.PreventView`, `Lobby.PreventFirstSpawn`, `Loadout.PreventApply`, `Death.PreventSpectate` (all in [Overview](API.md)).
 
 ### Changed
 

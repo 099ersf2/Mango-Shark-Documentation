@@ -1,8 +1,6 @@
-[Documentation home](index.md) / Gun Game
-
 # Classes
 
-In Siege every player picks a class: a default loadout, the guns they may swap to, and one ability. A class can be held by one player per team, so each team has five. Built 2026-11-11. See [SIEGE.md](SIEGE.md) for the mode.
+In Siege every player picks a class: a default loadout, the guns they may swap to, and one ability. A class can be held by one player per team, so each team has five. Built 2026-11-11. See [Siege](SIEGE.md) for the mode.
 
 ## Where things are
 
@@ -49,7 +47,7 @@ The spec asked for four classes a side. Each side has five, because a team has u
 
 - **One player per class per team**, first come, first served. `ClassService.Assign` refuses a class a teammate holds.
 - **Loadout:** each slot starts as the class's default and may be swapped to any gun in that slot's categories (`Classes.Allows`). Categories are in `Content.Classes.Classes.GunCategories`. `ClassService.Arm` gives the guns and the knife; the normal loadout is not given during a match (`Loadout.PreventApply`).
-- **A class is never a replicated attribute.** Only its owner is sent `Packets.Class.State`. Other players learn classes through the Siege snapshots their team is allowed ([SIEGE.md](SIEGE.md#scoreboard)).
+- **A class is never a replicated attribute.** Only its owner is sent `Packets.Class.State`. Other players learn classes through the Siege snapshots their team is allowed ([Siege](SIEGE.md#scoreboard)).
 - **Charges** are per match. **Cooldown** starts after each use.
 
 ## Using an ability
@@ -143,7 +141,10 @@ return MyAbility
 
 ## Limits
 
-- Reinforce (changed 2026-11-12, not run): it no longer cuts the damage the original board takes; the reinforced model's own piece health (120 a plank, 630 in all) is what makes it tougher, and the class's `DamageMultiplier` / `ExplosionMultiplier` tuning is no longer read. A normal board breaks after 8 bullets (a door after 10) whatever the gun; a reinforced one is not in that count and takes each bullet's damage instead. **Door frames whose boards are not built yet** (16 of the map's 20 door boards start empty) have nothing for a look to hit, so the ability takes the board nearest the line of sight (within 4 studs of it, and within Range) and stands a whole reinforced door there. Checked in Edit mode on a copy: the reinforced board and door stand exactly on the original's root (0.000 studs off, no rescale needed) and each has its 5 planks and spray paint.
+- Reinforce (changed 2026-11-12, not run): it no longer cuts the damage the original board takes; the reinforced model's own piece health (120 a plank, 630 in all) is what makes it tougher, and the class's `DamageMultiplier` / `ExplosionMultiplier` tuning is no longer read.
+    - A normal board breaks after 8 bullets (a door after 10) whatever the gun; a reinforced one is not in that count and takes each bullet's damage instead.
+    - **Door frames whose boards are not built yet** (16 of the map's 20 door boards start empty) have nothing for a look to hit, so the ability takes the board nearest the line of sight (within 4 studs of it, and within Range) and stands a whole reinforced door there.
+    - Checked in Edit mode on a copy: the reinforced board and door stand exactly on the original's root (0.000 studs off, no rescale needed) and each has its 5 planks and spray paint.
 - "Facing" a flashbang uses the character's head direction.
-- A class's guns can be seen by other clients (see [SIEGE.md](SIEGE.md#limits)).
+- A class's guns can be seen by other clients (see [Siege](SIEGE.md#limits)).
 - Sounds are placeholders made from existing sounds.

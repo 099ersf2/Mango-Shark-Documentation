@@ -1,9 +1,7 @@
-[Documentation home](index.md) / Gun Game
-
 # CLAUDE.md: Gun Game (Roblox place "FPS")
 
 Context for Claude working on this project. Read it before doing anything. For the full coding rules, read
-[AI_CODING_GUIDE.md](AI_CODING_GUIDE.md); for the system you touch, use its guide linked from the
+[AI coding guide](AI_CODING_GUIDE.md); for the system you touch, use its guide linked from the
 [documentation home](index.md).
 
 ## The project
@@ -23,9 +21,9 @@ Context for Claude working on this project. Read it before doing anything. For t
 6. **Tuning numbers** live in `ReplicatedStorage.Content`.
 7. **Inputs:** every feature works on keyboard and mouse, gamepad and touch.
 8. **Off limits:**
-   - sword combat;
-   - `ModuleLoader`, the `Start` scripts, `Packages/` and `Utilities/`;
-   - systems archived in `ServerStorage.Archive`.
+    - sword combat;
+    - `ModuleLoader`, the `Start` scripts, `Packages/` and `Utilities/`;
+    - systems archived in `ServerStorage.Archive`.
 9. **Publishing:** never publish without the user asking. To publish, run `publish-studio.ps1` (it sends Alt+P to Studio).
 10. **Docs, every change:**
     - write the system doc, plus `API.md`, `CHANGELOG.md` and `NEXT_STEPS.md`;
@@ -57,9 +55,9 @@ Context for Claude working on this project. Read it before doing anything. For t
 - **Damage:** goes through `Combat.ApplyHit(humanoid, dmg, { Attacker, Item })`, which checks `Combat.PreventFriendlyFire` first. Every death fires `Combat.Death`.
 - **Teams:** our own system: the player's `Team` attribute (`TeamService`), not Roblox Teams.
 - **NPCs:**
-  - They live in `workspace.Enemies` and are tagged `NPC`. `NPCService.MAX_NPCS` should be 10; it was found at 0 on 2026-11-11.
-  - Room guards: `NPCService.SetMode(npc, "Guard", room)` with a part tagged `NPCRoom`.
-  - Joints are AnimationConstraint (kinematic). Write `.Transform` in PreSimulation, and handle Motor6D too.
+    - They live in `workspace.Enemies` and are tagged `NPC`. `NPCService.MAX_NPCS` should be 10; it was found at 0 on 2026-11-11.
+    - Room guards: `NPCService.SetMode(npc, "Guard", room)` with a part tagged `NPCRoom`.
+    - Joints are AnimationConstraint (kinematic). Write `.Transform` in PreSimulation, and handle Motor6D too.
 - **Guns in third person** are posed in code (`ThirdPersonGuns`). A gun model's Handle needs `Muzzle`, `Aim`, `RightGrip` and `LeftGrip` attachments. The third-person tool is scaled to fit (`ModelScale`). Check guns on the gun range with the `range` command.
 - **Camera render priority:** MovementCamera Camera+1, Viewmodel +2, drone camera +3, death camera +4.
 - **Lobby:** the first spawn is in the lobby (`InLobby`), where most actions are refused. In tests, use `LobbyService.SendToArena`.
@@ -69,8 +67,8 @@ Context for Claude working on this project. Read it before doing anything. For t
 - **Live modules:** command-bar and execute-Luau code gets its own copy of every module. To reach the live ones, use a temporary Script in ServerScriptService, or a LocalScript in PlayerGui, and delete it after.
 - **Long tests:** have the temporary script log to a `workspace` attribute, return at once, and read the attribute in short calls. Long tool calls time out and can drop the Studio connection.
 - **Before testing:**
-  - close the Loadout menu (`Menus.Close`);
-  - leave the lobby;
-  - give the test player high health (NPCs shoot it).
+    - close the Loadout menu (`Menus.Close`);
+    - leave the lobby;
+    - give the test player high health (NPCs shoot it).
 - **Screenshots:** they use the play client's camera. Pin it from a temporary LocalScript at `RenderPriority.Last + 50`, then always restore it.
 - **Studio's key-press tool** doesn't reach the game. Call the module's functions instead.

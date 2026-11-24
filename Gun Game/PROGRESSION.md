@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Progression and retention
 
 *Added 2026-11-18.* What brings players back: daily and weekly goals, the Flame streak, the Weekly Goal, account level, Ranked, career stats, leaderboards, badges, reminders, and bot-filled matches so nobody waits alone. Tuning is in `ReplicatedStorage.Content.Progress` (a ScribeFragment: it also declares the saved fields under `Progress`).

@@ -1,8 +1,8 @@
-[Documentation home](index.md) / [API reference](API.md)
-
 # Shared API reference
 
-> **Scope:** Shared modules, data, extension points and packets. Some packet entries support historical match modes; current Siege packet contracts are in [API_SIEGE.md](API_SIEGE.md).
+!!! abstract "Scope"
+
+    Shared modules, data, extension points and packets. Some packet entries support historical match modes; current Siege packet contracts are in [Current Siege APIs](API_SIEGE.md).
 
 ## Shared
 
@@ -18,6 +18,30 @@ Content changes core behavior by adding handlers. With no handlers, `Any` is fal
 | `Extensions.Product(point, ...): number` | Multiplies every handler's number (a multiplier) |
 
 Handlers are global: check that the player has the thing before acting. Errors are caught and warned. A new point needs no registration; just call it by a new name.
+
+!!! example "The three kinds of extension point"
+
+    ```lua
+    local Extensions = require(game.ReplicatedStorage.Modules.Shared.Extensions)
+
+    -- Any (veto): return true to stop it.
+    Extensions.Add("Gun.PreventFire", function(who, gunId, tool)
+    	return who:GetAttribute("Frozen") == true
+    end)
+
+    -- Product (multiplier): always return 1 when your rule doesn't apply.
+    Extensions.Add("Movement.SpeedMultiplier", function(player, gunId)
+    	return if gunId == "SniperRifle" then 0.85 else 1
+    end)
+
+    -- Fire (notification): react, return nothing.
+    local remove = Extensions.Add("Gun.Reloaded", function(who, tool, gunId)
+    	print(who.Name, "reloaded", gunId)
+    end)
+    remove() -- Add returns a function that removes the handler
+    ```
+
+    More: [Block shooting under a rule](EXAMPLES.md#block-shooting-under-a-rule), [Spawn protection](EXAMPLES.md#spawn-protection-full-module), [React to kills and deaths](EXAMPLES.md#react-to-kills-and-deaths).
 
 **Every point in the game:**
 
@@ -138,6 +162,24 @@ Server: `packet.OnServerEvent:Connect(function(player, ...) end)`, `packet:FireC
 | `Example.Ping` / `Example.Pong` | Example only | text |
 | `UnreliablePackets.GunFired` | Server → nearby | UserId, gunId, origin, direction, seed, spread (cosmetic tracers) |
 | `UnreliablePackets.GunAim` / `GunAimRelay` | Client → server / server → others | aim pitch (third-person arms) |
+
+!!! example "Send and receive"
+
+    ```lua
+    local Packets = require(game.ReplicatedStorage.Modules.Shared.Packets)
+
+    -- Server: listen, then answer one player or everyone.
+    Packets.Gun.Loadout.OnServerEvent:Connect(function(player, loadoutId)
+    	if type(loadoutId) ~= "string" then return end -- always check types
+    	-- ...
+    end)
+    Packets.Gun.HitConfirm:FireClient(player, false, false) -- one client: headshot, killed
+
+    -- Client: send intent only.
+    Packets.Gun.Reload:Fire()
+    ```
+
+    A full request/answer round trip, from declaring the packet to the client call: [Networking: a new client request](EXAMPLES.md#networking-a-new-client-request).
 
 ### Gun math (`Shared.Guns.*`)
 

@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Adding NPCs
 
 NPCs pick up the same guns as players and fight like them. Every NPC shot goes through `GunService.FireAs`, so damage, headshots, abilities, effects and sounds are the players' own, and a new gun works on NPCs with no extra code. Their decisions come from a behavior tree built with **BehaviorTreeCreator** (BTrees V5), which you can open and edit in the **BTrees Editor** plugin.
@@ -62,26 +60,26 @@ Workspace
 
 1. Add a `ModuleScript` to `ReplicatedStorage.Content.NPC.Profiles`. Only the fields you change are needed; the rest take the defaults below.
 
-   ```lua
-   --!strict
-   --[[
-   	Sniper: stays far back and lands most shots once it has settled on you.
-   ]]
+    ```lua
+    --!strict
+    --[[
+    	Sniper: stays far back and lands most shots once it has settled on you.
+    ]]
 
-   return {
-   	Id = "Sniper",
-   	DisplayName = "Sniper",
-   	Guns = { "Rifle" },
-   	SightRange = 300,
-   	FOV = 70,
-   	PreferredRange = 120,
-   	Difficulty = { ReactionTime = 0.9, AimError = 4, MinAimError = 0.4, AccuracyRamp = 2, LongRangeMiss = 0.1 },
-   }
-   ```
+    return {
+    	Id = "Sniper",
+    	DisplayName = "Sniper",
+    	Guns = { "Rifle" },
+    	SightRange = 300,
+    	FOV = 70,
+    	PreferredRange = 120,
+    	Difficulty = { ReactionTime = 0.9, AimError = 4, MinAimError = 0.4, AccuracyRamp = 2, LongRangeMiss = 0.1 },
+    }
+    ```
 
 2. Spawn it:
-   - **In game:** run `spawnnpc Sniper 3` in Cmdr. It spawns 40 studs in front of you, and these don't respawn.
-   - **From a spawn point:** tag a part `NPCSpawn` and give it a `Profile` attribute of `Sniper`. Its NPC spawns when the server starts and comes back `RespawnDelay` seconds after dying.
+    - **In game:** run `spawnnpc Sniper 3` in Cmdr. It spawns 40 studs in front of you, and these don't respawn.
+    - **From a spawn point:** tag a part `NPCSpawn` and give it a `Profile` attribute of `Sniper`. Its NPC spawns when the server starts and comes back `RespawnDelay` seconds after dying.
 3. Remove every NPC with `clearnpcs`.
 
 | Field | Default | Meaning |
@@ -113,20 +111,20 @@ Fire mode comes from the gun. Semi guns tap every 0.25–0.55 s, Auto guns fire 
 
 ## A game mode's own NPCs (2026-11-16)
 
-Siege bots ([SIEGE_BOTS.md](SIEGE_BOTS.md)) use these; any mode can.
+Siege bots ([Siege bots](SIEGE_BOTS.md)) use these; any mode can.
 
 - `NPCService.Spawn(profileId, cframe, nil, true, { Team, Name, Gun, AlwaysAwake })`:
-  - **Team:** the NPC's side, read everywhere as `agent.Profile.Team`. It gets its own copy of the profile.
-  - **Name:** the model's name.
-  - **Gun:** a gun Id, instead of a random one of the profile's.
-  - **AlwaysAwake:** never sleeps far from players.
+    - **Team:** the NPC's side, read everywhere as `agent.Profile.Team`. It gets its own copy of the profile.
+    - **Name:** the model's name.
+    - **Gun:** a gun Id, instead of a random one of the profile's.
+    - **AlwaysAwake:** never sleeps far from players.
 - `NPCService.AgentOf(model)` returns the live agent, or nil.
 - **Objectives**, read by `Tasks.Patrol` when there is nothing to fight:
-  - `agent.Objective`: a point to go to; it waits there once it arrives on that floor (within 6 studs up or down).
-  - `ObjectivePart`: a room part, so `Tactics.Breach` breaks a way in toward it.
-  - `ObjectiveShoot`: once there, it shoots this point (a hatch under its feet).
-  - `ObjectiveDirect`: walks straight at the objective with no path (into an opened hatch).
-  - An NPC with an objective ignores gunshots on another floor (`Tactics` hearing).
+    - `agent.Objective`: a point to go to; it waits there once it arrives on that floor (within 6 studs up or down).
+    - `ObjectivePart`: a room part, so `Tactics.Breach` breaks a way in toward it.
+    - `ObjectiveShoot`: once there, it shoots this point (a hatch under its feet).
+    - `ObjectiveDirect`: walks straight at the objective with no path (into an opened hatch).
+    - An NPC with an objective ignores gunshots on another floor (`Tactics` hearing).
 - **Profiles** may set `AimErrorScale` (default `AIM_ERROR_SCALE`, 3) and `AimErrorFloor` (default `MIN_AIM_ERROR`, 4). The `SiegeBot` profile uses 1.6 and 2.
 - **`BreachRange`** (2026-11-16, optional): studs within which it shoots a board open from where it stands, with a clear shot at an intact piece, instead of walking up and bashing it; with it set it never bashes. It also looks ahead along its path for a board within range (`Brain.BoardOnPath`). The `SiegeBot` profile uses 30.
 - **A game mode's switches on an agent:** `Brain.SetBreakThrough(agent, on)` (its paths go through intact boards or not; both Paths are kept), `agent.NoBreach` (`Tactics.Breach` does nothing), `agent.WatchHint` (Guard mode watches this entrance 60% of the time).
@@ -143,18 +141,26 @@ Around the tree, every decision tick runs the reflexes in `Systems.NPC.Tactics` 
 | **Pursue** | Before the tree. It sees its target but a bullet can't reach it (glass) | Skips the tree and paths to the target; breaks in if there's no way |
 | **Break out** | Before breaching. 3 paths in a row found no way at all (shut in a room, upstairs) | Breaks out through the nearest board, soft wall or window on its own side (`Brain.FindExit`), climbing out of windows and dropping from upper floors |
 | **Shoot to test** | It just lost sight of its target (1.5 s), heard a shot, or was hit from out of sight | After 0.6 s it fires at the spot, and keeps firing while it keeps hearing shots there (up to 1.2 s after the last). Only when the shot goes **through a soft wall or floor, a board, or smoke** (`Brain.ShootThrough`); never into open air or a solid wall |
-| **Breach** | Going somewhere worth breaking in for (an enemy it hunts, or a room it secures), when there's no path (a sealed room), it got stuck, or the path is a long way round (more than 1.8× the straight line + 20 studs) | Decides how to get in (`Brain.FindEntry`): the intact door-height board, soft wall or window within 30 studs of the goal that opens onto it, on the shortest trip. A door round a corner from the goal (no straight line) is checked by pathfinding from just inside it to the goal (`Brain.Connected`, the nearest 5, in a thread). Walks to a spot in front of it (lobbing a grenade at it on the way when it has one and the arc is clear), then breaks it until a person fits through: **bash** a board in reach, otherwise **shoot** it. Then it walks in, or **climbs through** a window (walks at it and hops, `Tactics.Vault`). A board or soft wall right ahead on its path (`Brain.BlockedAhead`) is broken on the spot. An entrance it can't reach is skipped for 20 s; after 15 s on one breach it gives up for 10 s |
+| **Breach** | Going somewhere worth breaking in for (an enemy it hunts, or a room it secures), when there's no path (a sealed room), it got stuck, or the path is a long way round (more than 1.8× the straight line + 20 studs) | Decides how to get in (`Brain.FindEntry`): the intact door-height board, soft wall or window within 30 studs of the goal that opens onto it, on the shortest trip.<br><br>A door round a corner from the goal (no straight line) is checked by pathfinding from just inside it to the goal (`Brain.Connected`, the nearest 5, in a thread).<br><br>Walks to a spot in front of it (lobbing a grenade at it on the way when it has one and the arc is clear), then breaks it until a person fits through: **bash** a board in reach, otherwise **shoot** it. Then it walks in, or **climbs through** a window (walks at it and hops, `Tactics.Vault`). A board or soft wall right ahead on its path (`Brain.BlockedAhead`) is broken on the spot.<br><br>An entrance it can't reach is skipped for 20 s; after 15 s on one breach it gives up for 10 s |
 | **Board up** | Before the tree. Its health is under its `LowHealth` + 0.15 and it knows where a threat is, or it was hit by someone it can't see in the last 6 s, or it is holding a room it secured | Rebuilds a broken door or window board on its own floor within 25 studs (`Brain.FindFortify`): one between it and the threat, or near the room it holds. Walks to the board's inside, faces it, and puts a piece back every 0.6 s (`BreakableService.Repair`) until it is whole. Stops at once to fight an enemy it can see and shoot; gives up after 12 s |
 | **Wander** | Nothing to fight and no room to secure |
 
-**Drones** (2026-11-11, [DRONES.md](DRONES.md)): players' scout drones are in `Brain.World` as combatants (`Combatant.Drone`). `FindTarget` notices one only within `Content.Drones.SIGHT_RANGE` and ranks it as `TARGET_BIAS` times farther, so a player in view comes first. A driving drone makes noise (`Drone.Noise`) NPCs hear like a gunshot, at `NOISE_HEARING` of their range. Drones also wake sleeping NPCs.
+**Drones** (2026-11-11, [Scout drones](DRONES.md)): players' scout drones are in `Brain.World` as combatants (`Combatant.Drone`). `FindTarget` notices one only within `Content.Drones.SIGHT_RANGE` and ranks it as `TARGET_BIAS` times farther, so a player in view comes first. A driving drone makes noise (`Drone.Noise`) NPCs hear like a gunshot, at `NOISE_HEARING` of their range. Drones also wake sleeping NPCs.
  A random floor point 20–90 studs away on its own floor level (around its spawn once it strays past 200), a 0.5–2 s pause, the next; a point it can't reach is replaced at once |
 | **Secure rooms** | Nothing to fight, and the map has parts tagged `NPCSecure` | Goes to the nearest room point within 250 studs it hasn't cleared in 60 s (breaking in if it must), holds it 3–6 s, then the next. A fight interrupts it; it heads back after |
 | **Grenades** | It has grenades left (`Grenades` per life), its cooldown passed, and the target has hidden for 1–8 s or shown only its head over cover for 2.5 s | Throws a frag grenade at that spot when the spot is past its own blast (16 + 3 studs) and within 55, no teammate is within 19 studs of it, and an arc clears every wall (it tries a flat, a medium and a high arc). 35% chance per tick once all of that holds. It's the players' grenade (`ConsumableService.ThrowAs`): same blast, kill feed credit to the NPC |
 
 **Turning.** NPCs turn with an `AlignOrientation` on the root (`agent.Align`), so they can face a target and walk at the same time. (Until 2026-11-10 they set the root's CFrame every frame, which stopped them walking whenever they saw a target.)
 
-**Pathfinding.** Paths start from the floor under the NPC and go to the floor under a goal (`Brain.Ground`), never inside a character, which pathfinding refuses. A waypoint counts as reached within 2.5 studs across and 3.5 studs of the NPC's feet up or down, so stairs, jumps and floors above or below are followed, not skipped. NPCs climb trusses, visible or not (`AgentCanClimb`; the top of a climb is a waypoint labelled `Climb`), and walk round water (a `PathfindingModifier` labelled `Water`, cost 8). Intact door and window boards carry a `Breakable` label (`Systems.Breakables`): they block most NPCs, but an NPC spawned with `BreakThrough` (Siege attacker bots) paths through them and breaks them on the way. Paths fit corridors and doorways about 3 studs wide (`AgentRadius` 1.5). With no full way to a goal it walks the closest path Roblox finds (`ClosestNoPath`) instead of freezing, and breaks in from there. A walk that makes no progress for 2.5 s re-paths (a hop at 1.2 s).
+**Pathfinding.**
+
+- **Start and end:** paths start from the floor under the NPC and go to the floor under a goal (`Brain.Ground`), never inside a character, which pathfinding refuses.
+- **Waypoints:** a waypoint counts as reached within 2.5 studs across and 3.5 studs of the NPC's feet up or down, so stairs, jumps and floors above or below are followed, not skipped.
+- **Climbing and water:** NPCs climb trusses, visible or not (`AgentCanClimb`; the top of a climb is a waypoint labelled `Climb`), and walk round water (a `PathfindingModifier` labelled `Water`, cost 8).
+- **Boards:** intact door and window boards carry a `Breakable` label (`Systems.Breakables`). They block most NPCs, but an NPC spawned with `BreakThrough` (Siege attacker bots) paths through them and breaks them on the way.
+- **Size:** paths fit corridors and doorways about 3 studs wide (`AgentRadius` 1.5).
+- **No full path:** it walks the closest path Roblox finds (`ClosestNoPath`) instead of freezing, and breaks in from there.
+- **Stuck:** a walk that makes no progress for 2.5 s re-paths (a hop at 1.2 s).
 
 **Shooting through walls.** NPC bullets only pass soft walls and boards, the same as players' (checked 2026-11-10: 0 of 14 NPC hits went through anything solid). They only fire at a spot they can't see as a short test (above). At a person they see, they only fire when the bullet would reach that person (`Brain.ShootThrough` with the target's model): glass right in front of you no longer counts as reaching you.
 
@@ -179,6 +185,7 @@ Tune the numbers at the top of `Systems.NPC.Tactics` (`SUSPECT_*`, `BREACH_*`, `
 ## Guard mode (room defenders)
 
 Added 2026-11-11 for a future game mode. Any NPC can be put in **Guard** mode. It then:
+
 - **stays in one room;**
 - **patrols it;**
 - **keeps its doors and windows boarded up,** so the room can't be sieged;
@@ -189,6 +196,7 @@ The default mode, **Roam**, is the normal behavior: hunting, chasing and securin
 **Mark a room:** cover it with a part tagged **`NPCRoom`**: anchored, invisible, no collision, no query, no touch. Size it to the room, floor to just under the ceiling. Its doors and windows are the board models (Systems.Breakables) on or within 3 studs outside its box.
 
 **Make a guard:**
+
 - **On a spawn point:** give an `NPCSpawn` part `Mode = "Guard"`. The NPC guards the `NPCRoom` the spawn point is in, or the one named by its `Room` attribute (the room part's name). It is a guard again every respawn.
 - **From code (a game mode):**
 
@@ -211,6 +219,7 @@ NPCService.SetMode(npcModel, "Roam")              -- back to normal
 Tuning: `GUARD_WAIT`, `GUARD_ARRIVED` (Tasks.Patrol), `GUARD_FIGHT_TIME`, `GUARD_RETRY`, `GUARD_SCAN` (Tactics), `ROOM_MARGIN`, `ROOM_BOARD_REACH` (Brain).
 
 **Tested (2026-11-11, Studio playtest, partly).** I used a test room over the hall at about x -38, z -500 in the NPC test area: 9.4 × 42.2 studs, with two windows, two buildable doors and a boarded door. It was made at runtime only; there is no `NPCRoom` saved in the place.
+
 - **Patrol:** the Breacher, set to Guard mode, patrolled it and stayed inside: 0 of 16 position samples were outside, and it walked between spots along the hall.
 - **Repair:** when a window was broken, it went to the window. It rebuilt only 1 of 6 pieces in 12 s, because the test player stood outside in view through the open window, and it fought (shot at the player) instead. That is the fight-first rule working, but it kept the repair itself from being checked properly.
 - **Not tested:** a later run with the player out of view didn't happen, because the place's NPC cap was 0. So these are still to check: a full repair with no enemy in view, a repair stopped by a hit and then finished, and `NPCSpawn` `Mode`.
@@ -218,6 +227,7 @@ Tuning: `GUARD_WAIT`, `GUARD_ARRIVED` (Tasks.Patrol), `GUARD_FIGHT_TIME`, `GUARD
 ## Write a task module
 
 A task is a `ModuleScript` with `start`, `run` and `finish`. Only `run` is required. `run` gets the NPC's agent and returns one of:
+
 - `Brain.SUCCESS`
 - `Brain.FAIL`
 - `Brain.RUNNING`, which pauses the tree on this task until a later tick.
@@ -225,6 +235,7 @@ A task is a `ModuleScript` with `start`, `run` and `finish`. Only `run` is requi
 Put it in `ServerScriptService.Modules.Systems.NPC.Tasks`.
 
 Rules for tasks that run every tick:
+
 - **No new tables per tick.** Keep state on the agent, and use `Brain` for raycasts: its `RaycastParams` and filter tables are made once and reused.
 - **Move through `Brain.MoveTo` or `Brain.MoveDirect`.** `MoveTo` re-paths at most every 0.5 s, and a stalled walk is retried, then re-pathed.
 - **Shoot by setting `agent.WantFire`.** `NPCService` fires on its own clock, through `GunService.FireAs`.
@@ -342,19 +353,19 @@ The server reports a kill only on the hit that takes a humanoid from above 0 hea
 
 - **NPC cap:** `MAX_NPCS` (10) in `NPCService` limits live NPCs. Spawns past it are refused with a warning.
 - **One Heartbeat:**
-  - Decisions run round-robin, at most 10 NPCs per frame, each about 7 times a second.
-  - Turning and path following run every frame for NPCs within 200 studs of a player. NPCs farther out snap on their decision tick.
+    - Decisions run round-robin, at most 10 NPCs per frame, each about 7 times a second.
+    - Turning and path following run every frame for NPCs within 200 studs of a player. NPCs farther out snap on their decision tick.
 - **Sleep:** NPCs more than 350 studs from every player sleep. They don't think, move or shoot.
 - **Pathfinding:**
-  - Each NPC has one `Path` for its whole life.
-  - A new path is computed at most every 0.5 s, in its own thread, so the scheduler never waits on it.
+    - Each NPC has one `Path` for its whole life.
+    - A new path is computed at most every 0.5 s, in its own thread, so the scheduler never waits on it.
 - **No per-tick allocation in hot tasks:**
-  - Raycast params and filter tables are cached in `Brain`.
-  - The combatant list (`Brain.World`) reuses one entry per character.
+    - Raycast params and filter tables are cached in `Brain`.
+    - The combatant list (`Brain.World`) reuses one entry per character.
 - **Shots:**
-  - NPC shots use the same pooled FastCast2 casters and registry effects as players.
-  - Gunfire uses `Nearby` replication, and tracers reach clients through `UnreliablePackets.GunFired` with the NPC's Id.
-  - Clients do nothing extra per NPC.
+    - NPC shots use the same pooled FastCast2 casters and registry effects as players.
+    - Gunfire uses `Nearby` replication, and tracers reach clients through `UnreliablePackets.GunFired` with the NPC's Id.
+    - Clients do nothing extra per NPC.
 - **Measured in Studio:** with 20 NPCs fighting, the server held 60 fps. `Stats.HeartbeatTimeMs` averaged 0.55 ms (max 0.95 ms), and 5 of 603 frames went over 20 ms.
 
 ## Troubleshooting

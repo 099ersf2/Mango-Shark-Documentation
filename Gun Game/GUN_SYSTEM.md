@@ -1,8 +1,6 @@
-[Documentation home](index.md) / Gun Game
-
 # Gun system architecture
 
-A short map of how guns work. For adding guns and abilities, see [ADDING_GUNS.md](ADDING_GUNS.md); for NPCs, [ADDING_NPCS.md](ADDING_NPCS.md).
+A short map of how guns work. For adding guns and abilities, see [Adding guns](ADDING_GUNS.md); for NPCs, [Adding NPCs](ADDING_NPCS.md).
 
 ## Principles
 
@@ -22,13 +20,13 @@ A short map of how guns work. For adding guns and abilities, see [ADDING_GUNS.md
 | 4 | `Systems.Guns.GunService` | Checks the held Tool, state (`Stunned`, `CantDoAnything`, `Reloading`), movement (`MovementService.BlocksFire`: no shots while sprinting or inside `SprintOutTime`), `Gun.PreventFire`, the minimum interval and `TokenBucket`, the timestamp and ammo |
 | 5 | `GunService` | Clamps the origin to 4 studs from the head, with line of sight from the HumanoidRootPart (a blocked origin moves in front of the wall; NPC shots get this wall check too), and the spread to `[Spread.MinAngle, Spread.Max]` |
 | 6 | `GunService` + `Ballistics` | Rebuilds the pellets. Hitscan: `Ballistics.Trace` with the same pierce rule. Projectile: the gun's server FastCast2 caster |
-| 6a | `Ballistics` (`decidePierce`) | After each surface: falling soft wall debris is skipped; a soft wall lets the bullet through (`MaxWallsPerBullet`, damage × the gun's `PenetrationMultiplier` per wall) and, on the server, cuts a hole through `GunService`'s `punchSoftWall` → `Systems.Destruction.SoftWalls.Punch`; then ability `CanPierce` (bounces), then `Projectile.Pierce`. See [SOFTWALLS.md](SOFTWALLS.md) |
+| 6a | `Ballistics` (`decidePierce`) | After each surface: falling soft wall debris is skipped; a soft wall lets the bullet through (`MaxWallsPerBullet`, damage × the gun's `PenetrationMultiplier` per wall) and, on the server, cuts a hole through `GunService`'s `punchSoftWall` → `Systems.Destruction.SoftWalls.Punch`; then ability `CanPierce` (bounces), then `Projectile.Pierce`. See [Soft walls](SOFTWALLS.md) |
 | 7 | `Systems.Guns.AbilityRunner` | Per bullet: falloff, headshot, the soft walls it passed (`bullet.Data.SoftWallMultiplier`), `Gun.DamageMultiplier`, `OnHit`, then `Combat.ApplyHit` (shotgun pellets on one humanoid are added up into one hit), then `Gun.Hit` and `Packets.Gun.HitConfirm` |
 | 8 | `GunService` | `EffectService.Play(GunFire_<Id>)` to nearby players except the shooter; `UnreliablePackets.GunFired` so they draw the tracers |
 
 ## Loadouts and switching
 
-1. On every spawn `Systems.Guns.LoadoutService` reads the player's saved `Loadout`, removes their old gun Tools, gives the loadout's guns through `GunService.Give` with `Slot` 1–3, and equips slot 1. Each gun is styled with the player's equipped skin (`SkinShopService.StyleTool`, see [SKINS.md](SKINS.md)). While the player's `InLobby` attribute is true they get no guns ([LOBBY.md](LOBBY.md)). Kills are shown in the kill feed ([KILL_FEED.md](KILL_FEED.md)).
+1. On every spawn `Systems.Guns.LoadoutService` reads the player's saved `Loadout`, removes their old gun Tools, gives the loadout's guns through `GunService.Give` with `Slot` 1–3, and equips slot 1. Each gun is styled with the player's equipped skin (`SkinShopService.StyleTool`, see [Weapon skins](SKINS.md)). While the player's `InLobby` attribute is true they get no guns ([Lobby](LOBBY.md)). Kills are shown in the kill feed ([Kill feed](KILL_FEED.md)).
 2. `Client.Guns.WeaponSlots` turns off Roblox's hotbar and equips Tools itself (`Humanoid:EquipTool` on the client) from the Slot keys, the mouse wheel, gamepad L1/R1 and the slot strip in `Main.Weapons`. `GunController` and `GunService` react to the equip as before.
 3. Picking a loadout in `Client.Guns.LoadoutMenu` sends `Packets.Gun.Loadout`. The server saves it and gives it at once unless the player is firing or reloading; a `TokenBucket` stops it being used to refill ammo.
 
@@ -70,19 +68,19 @@ Keybinds and volumes live in the player's Scribe data under `Settings` (declared
 
 ## Client frame
 
-- **RenderStep at Camera + 1** (`Client.Movement.MovementCamera`): owns the camera's offsets and FOV. The gun's camera recoil (a `Recoil.Camera`), aim zoom (`base FOV × ADSFov / 70`) and a scope's FOV live here, in one spring stack with the movement height, tilt, landing dip and bob. See [MOVEMENT.md](MOVEMENT.md).
+- **RenderStep at Camera + 1** (`Client.Movement.MovementCamera`): owns the camera's offsets and FOV. The gun's camera recoil (a `Recoil.Camera`), aim zoom (`base FOV × ADSFov / 70`) and a scope's FOV live here, in one spring stack with the movement height, tilt, landing dip and bob. See [Movement and camera](MOVEMENT.md).
 - **RenderStep at Camera + 2** (`Viewmodel`): tells MovementCamera how far it is aimed in, then places the 32%-scale rig, in this order:
-  1. hip/ADS blend, walk bob, sway from camera turn speed, and the gun's own recoil (`Recoil.View`: push-back, flip, twist, roll, pivoting on the sight line as it aims in);
-  2. sprint, crouch, slide and prone poses, the wall tuck at the hip (lifts the muzzle when a wall or the floor is closer than it), the equip raise, and the procedural reload, inspect, knife swing or gun bash (`Viewmodel.Actions`);
-  3. FOV compensation at the hip;
-  4. a near guard that pushes the gun along the view axis so no part reaches the camera's 0.1-stud near clip plane (sights stay centered; see [MOVEMENT.md](MOVEMENT.md#keeping-the-gun-whole-near-clip-and-walls));
-  5. the left hand and magazine for a running reload or inspect.
+    1. hip/ADS blend, walk bob, sway from camera turn speed, and the gun's own recoil (`Recoil.View`: push-back, flip, twist, roll, pivoting on the sight line as it aims in);
+    2. sprint, crouch, slide and prone poses, the wall tuck at the hip (lifts the muzzle when a wall or the floor is closer than it), the equip raise, and the procedural reload, inspect, knife swing or gun bash (`Viewmodel.Actions`);
+    3. FOV compensation at the hip;
+    4. a near guard that pushes the gun along the view axis so no part reaches the camera's 0.1-stud near clip plane (sights stay centered; see [Movement and camera](MOVEMENT.md#keeping-the-gun-whole-near-clip-and-walls));
+    5. the left hand and magazine for a running reload or inspect.
 
-  In first person it hides the character's arms and the third-person Tool locally. The viewmodel's gun copies are made once per model (`Viewmodel.GunModel`) and wear the player's skin, applied at full size and scaled down.
+    In first person it hides the character's arms and the third-person Tool locally. The viewmodel's gun copies are made once per model (`Viewmodel.GunModel`) and wear the player's skin, applied at full size and scaled down.
 
 ### Recoil
 
-Recoil is the shooter's aim feel only; the server never sees it. All of it is driven by the gun's `Recoil` fields ([ADDING_GUNS.md](ADDING_GUNS.md#recoil-fields)), and the math is in `Client.Guns.Recoil`, which needs no player or camera, so it can be tested in Edit mode.
+Recoil is the shooter's aim feel only; the server never sees it. All of it is driven by the gun's `Recoil` fields ([Adding guns](ADDING_GUNS.md#recoil-fields)), and the math is in `Client.Guns.Recoil`, which needs no player or camera, so it can be tested in Edit mode.
 
 ```mermaid
 flowchart LR
@@ -101,6 +99,7 @@ flowchart LR
 5. The recoil offset is applied as a per-frame change in the same stack as dip, tilt and bob, so nothing fights over the camera. Switching guns reconfigures the springs; recoil already on the camera keeps recovering.
 
 Nothing in this path makes tables per shot or per frame: the three recoil objects are made once and configured on equip.
+
 - **Heartbeat** (`GunController`): fire loop, bloom recovery, reload tracking, aim pitch, crosshair gap, and hiding the crosshair while aiming.
 
 Aiming lines each gun's `Aim` attachment up with the camera, so you look down its iron sights; only a gun with the `Scope` ability gets a scope overlay.

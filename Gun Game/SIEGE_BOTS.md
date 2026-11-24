@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Siege bots
 
 Added 2026-11-16. Bots play Siege beside and against players: they pick classes their teammates aren't using, pick spawns or vote a site, defend the two bombs, and break in to plant defusers. For now only **admins** (`Modules.Classes.Admins`) can add them.
@@ -9,8 +7,8 @@ Added 2026-11-16. Bots play Siege beside and against players: they pick classes 
 1. Open **PARTY** (L). An admin sees a third tab, **BOTS**, beside THIS SERVER and FRIENDS.
 2. Press **ADD** next to a bot (Nova, Echo, Rook...). It joins the party at once and its slot says **BOT**.
 3. Play as usual:
-   - **PLAY WITH PARTY** deals the party into two teams. A party of 1 player and 3 bots plays 2 v 2.
-   - **PLAY** queues the party with its bots for a public match. Bots count toward team sizes like players.
+    - **PLAY WITH PARTY** deals the party into two teams. A party of 1 player and 3 bots plays 2 v 2.
+    - **PLAY** queues the party with its bots for a public match. Bots count toward team sizes like players.
 4. **KICK** removes a bot. A bot can't be made leader. When the last player leaves, the party ends.
 
 After a match the party comes back with its bots.
@@ -64,6 +62,7 @@ After a match the party comes back with its bots.
 Fighting always comes first: the NPC tree only follows the plan when there is nothing to shoot or hunt.
 
 **Defenders**
+
 - They guard a bomb room in NPC Guard mode: stay inside, patrol, rebuild its doors and windows, fight first.
 - Each has a **home bomb** (2026-11-17): the team split evenly between the bombs still without a defuser. A bomb whose guards died takes one from a bomb with two or more.
 - A threat (an attacker planting, or an enemy seen or heard in a bomb room) pulls in the defenders of other bombs, **but never a bomb's last guard**, not even for a plant on the other bomb. When it is over each goes home. Until 2026-11-17 every defender went to the threatened room and stayed there, leaving the other bomb open.
@@ -71,6 +70,7 @@ Fighting always comes first: the NPC tree only follows the plan when there is no
 - A defender outside its room (it spawned elsewhere, or fell through a floor) walks back first, then guards it.
 
 **Attackers**
+
 - **Finding the site:** their drones (below), a player's drone, or a bot walking into the real site finds it for every bot. Failing that, they learn it after `SITE_INTEL_TIME` (45 s) of Action. Until then they check the sites nearest them that no teammate has checked.
 - **Choosing a bomb (squad, 2026-11-17):** once the site is known the attackers share one target bomb: the room a teammate is already in, else the bomb with the fewest defender sightings in the last `THREAT_WINDOW` (20 s), plus a random 0 to 0.4 and a 0.5 penalty for last round's bomb. A new plan is made when that bomb gets its defuser or the map changes. Until 2026-11-17 each bot took its own bomb, so they arrived one at a time.
 - **Rally and push:** the squad picks a random entrance of the target room (a door or window board within `RALLY_REACH`, 32 studs, not the one used last round) and a rally point `RALLY_BACK` (9 studs) outside it on the floor. Each bot walks there and waits facing the room. A bot within `RALLY_ARRIVED` (9 studs) has arrived; one already closer to the room than to the rally point counts as arrived and goes in. The push starts when all have arrived, `GATHER_WAIT` (6 s) after the first arrival, or `GATHER_MAX` (20 s) after the plan; then each goes in `PUSH_STAGGER` (0.7 s) after the one before. Debug: `workspace.BotSquad` (attribute) names the target, entrance and state.
@@ -154,6 +154,7 @@ Until later on 2026-11-17 these were callouts shown in the players' chat (packet
 | Output | No errors or warnings |
 
 **Not tested:**
+
 - Bots in a public queue against other players.
 - Bots on a live reserved server (teleport, `Bots` read back from MemoryStore).
 - A remote member's view of a party's bots.
@@ -190,6 +191,7 @@ Until later on 2026-11-17 these were callouts shown in the players' chat (packet
 | Bank Basement B | Backside | 25 to 31 s |
 
 A bot dropped in the Mansion pool climbed out by the ladder and was in the house within 5 s.
+
 - **Health bars:** bots stand in `workspace.Enemies`, so `HealthBillboards` gives every bot a health bar, teammates and enemies alike.
 - **Fair-play shortcut:** attacker bots learn the site after 45 s of Action if nothing found it.
 

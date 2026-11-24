@@ -1,10 +1,10 @@
-[Documentation home](index.md) / Gun Game
-
 # API reference
 
 A searchable reference for internal developers working on the Gun Game Roblox place. It covers functions, packets, content modules, commands, attributes, tags and collision groups.
 
-> **Current-game note:** Siege is the active mode. The pages below distinguish current APIs from mixed or historical references; when behavior matters, follow the linked system guide and its verification notes.
+!!! info "Current game"
+
+    Siege is the active mode. The pages below distinguish current APIs from mixed or historical references; when behavior matters, follow the linked system guide and its verification notes.
 
 ## Choose a reference
 

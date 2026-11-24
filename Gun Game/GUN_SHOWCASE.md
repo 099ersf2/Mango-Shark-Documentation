@@ -1,10 +1,10 @@
-[Documentation home](index.md) / Gun Game
-
 # Gun animation range
 
-> **Stored away (2026-11-18):** the range had been parked in `Teams`, where it replicated to every player (20,807 instances) and its 72 rig scripts ran on every client while nothing used it. It now sits unchanged in `ServerStorage.GunShowcase`. To use it, move it into Workspace (named `GunShowcase`) before starting a playtest. See PERFORMANCE.md.
+!!! note "Stored away (2026-11-18)"
 
-A range east of the map (`workspace.GunShowcase`, around x 200 to 310, z -140 to -30) with **one rig per gun and animation, 72 in all**: 12 guns × idle, walk, sprint, aim, shoot and reload. Each rig does only its one animation, for real, so you can compare every gun's third-person animation ([THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md)) side by side.
+    the range had been parked in `Teams`, where it replicated to every player (20,807 instances) and its 72 rig scripts ran on every client while nothing used it. It now sits unchanged in `ServerStorage.GunShowcase`. To use it, move it into Workspace (named `GunShowcase`) before starting a playtest. See PERFORMANCE.md.
+
+A range east of the map (`workspace.GunShowcase`, around x 200 to 310, z -140 to -30) with **one rig per gun and animation, 72 in all**: 12 guns × idle, walk, sprint, aim, shoot and reload. Each rig does only its one animation, for real, so you can compare every gun's third-person animation ([Third-person gun animation](THIRD_PERSON_GUNS.md)) side by side.
 
 Get there with the Cmdr command **`range`** (or `showcase`). It puts you on the blue viewing spot at the left of the rows.
 

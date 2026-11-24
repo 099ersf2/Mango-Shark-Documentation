@@ -1,12 +1,10 @@
-[Documentation home](index.md) / Gun Game
-
 # Siege
 
 Siege is the game's only mode since 2026-11-11. Two teams of up to five. The **defenders'** two bombs are already in place at one site; the **attackers** must plant a defuser on both. The defenders only have to keep them away from the bombs until the clock runs out. Nobody plants a bomb: only defusers are planted. One match is one round, and everyone has one life.
 
-Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): every match is played on its own reserved server. Classes and their abilities are in [CLASSES.md](CLASSES.md). Team Deathmatch, Free-for-All and Elimination are archived (`ServerStorage.Archive.OldMatchModes`).
+Players reach a match through matchmaking ([Matchmaking and parties](MATCHMAKING.md)): every match is played on its own reserved server. Classes and their abilities are in [Siege classes](CLASSES.md). Team Deathmatch, Free-for-All and Elimination are archived (`ServerStorage.Archive.OldMatchModes`).
 
-**Bots (2026-11-16):** admins can add bots to their party; they pick, defend and attack like players. See [SIEGE_BOTS.md](SIEGE_BOTS.md).
+**Bots (2026-11-16):** admins can add bots to their party; they pick, defend and attack like players. See [Siege bots](SIEGE_BOTS.md).
 
 ## The rules that are easy to get wrong
 
@@ -30,12 +28,12 @@ Players reach a match through matchmaking ([MATCHMAKING.md](MATCHMAKING.md)): ev
 | Finding and checking the map | `Systems.Games.Siege.SiegeMap` |
 | Spectating after death | `Systems.Games.Siege.SpectateService`, `Client.Core.Spectate` |
 | Defender cameras | `Systems.Cameras.CameraService`, `Client.Gadgets.CameraController`, `Content.Cameras` |
-| Drones (reworked) | `Systems.Drones.DroneService`, `Client.Gadgets.DroneController` ([DRONES.md](DRONES.md)) |
+| Drones (reworked) | `Systems.Drones.DroneService`, `Client.Gadgets.DroneController` ([Scout drones](DRONES.md)) |
 | Selection screens | `Client.Core.SiegeSelect` → `StarterGui.SiegeSelect` |
 | HUD | `Client.Hud.SiegeHud` → `StarterGui.Main.SiegeHUD` |
 | Scoreboard | `Client.Hud.Scoreboard` → `StarterGui.Main.SiegeScoreboard` |
 | Camera feed, drone feed, scan alert | `ReplicatedFirst.UILoader.CameraFeed`, `DroneFeed`, `ScanAlert` |
-| Templates | Selection (2026-11-17): `SelOption`, `MapPin`, `ClassTile`, `Pip`, `PlayerCard`, `ReadyDot`. HUD: `TopBarSlot`, `BombMarker`. Board: `SiegeBoardRow`, `SiegeBoardTeam`, `SiegeKillRow`. All in `Assets.UI.Templates` ([UI.md](UI.md#siege-ui-pass-2026-11-17)) |
+| Templates | Selection (2026-11-17): `SelOption`, `MapPin`, `ClassTile`, `Pip`, `PlayerCard`, `ReadyDot`. HUD: `TopBarSlot`, `BombMarker`. Board: `SiegeBoardRow`, `SiegeBoardTeam`, `SiegeKillRow`. All in `Assets.UI.Templates` ([UI](UI.md#siege-ui-pass-2026-11-17)) |
 | Top bar, 3 VS 4 | `Client.Hud.SiegeTopBar` → `Main.SiegeHUD.TopBar`, `Main.SiegeHUD.Versus` |
 | Packets | `Packets.Siege` (`State`, `Pick`, `Plant`, `Board`, `RequestState`), `Packets.Camera.View`, `Packets.Camera.Scan`, `Packets.Scan.Alert`, `Packets.Spectate` (`Next`, `Mode`) |
 | Teams | `Attackers` and `Defenders` in `Content.Match.Teams` |
@@ -70,7 +68,7 @@ The map must hold:
 
 When a match starts the map is checked, and every problem is warned in plain words, for example `Site "MainFloor": missing site volume Workspace.CurrentMap.Sites.MainFloor.BombA`. **A map with any problem cannot host a match**: the round ends at once with "The map is not set up for Siege".
 
-**The map in the place does not pass yet.** The folders and names are now right (four sites: Basement, MainFloor, UpstairsBedroom, UpstairsStage). On the last check (2026-11-12) 13 things were still empty: seven of the eight bomb-room folders in `Sites` have no parts (only `UpstairsBedroom.BombA` has), the four `DefenseSpawnLocations/<site>` folders have no parts, `AttackerSpawnLocations` has 4 parts and needs 5, and there are no cameras. See [NEXT_STEPS.md](NEXT_STEPS.md).
+**The map in the place does not pass yet.** The folders and names are now right (four sites: Basement, MainFloor, UpstairsBedroom, UpstairsStage). On the last check (2026-11-12) 13 things were still empty: seven of the eight bomb-room folders in `Sites` have no parts (only `UpstairsBedroom.BombA` has), the four `DefenseSpawnLocations/<site>` folders have no parts, `AttackerSpawnLocations` has 4 parts and needs 5, and there are no cameras. See [Next steps](NEXT_STEPS.md).
 
 ## Phases
 
@@ -87,6 +85,7 @@ All times are in `Content.Games.Siege`.
 | **End** | 18 s | The match result screen. Then everyone goes back to a lobby server, each party together |
 
 **When the Selection clock runs out:**
+
 - An attacker without a spawn gets a random free one.
 - A player without a class gets a random free class of their team.
 - The site with the most votes wins. A tie is drawn at random among the tied sites only.
@@ -95,9 +94,13 @@ All times are in `Content.Games.Siege`.
 
 ## Selection: ready, the team list, the consumable (2026-11-12)
 
-> **Screens replaced on 2026-11-17** (see [UI.md](UI.md#siege-ui-pass-2026-11-17)): READY is now CONFIRM LOADOUT, Change picks is CHANGE PICKS on the Ready page, the ready list is the footer's dot counts, and the consumable is the Loadout page's GADGET row. The rules below are unchanged.
+!!! note "Screens replaced on 2026-11-17"
 
-> **Not run.** Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
+    (see [UI](UI.md#siege-ui-pass-2026-11-17)): READY is now CONFIRM LOADOUT, Change picks is CHANGE PICKS on the Ready page, the ready list is the footer's dot counts, and the consumable is the Loadout page's GADGET row. The rules below are unchanged.
+
+!!! warning "Not run"
+
+    Written on 2026-11-12 with no playtest (by request). The scripts compile and the UI parts the code waits for exist; none of it has been seen working.
 
 - **Ready.** The Class page's READY button sends the pick `Ready` = `"1"`; "Change picks" on the Waiting page sends `"0"`. Being ready does not lock anything: what is still unpicked when Selection ends is filled in at random, as before.
 - **The clock is skipped** when every player still in the match, on both teams, is ready (`everyoneReady` in the match tick). Alone in Studio, your own READY ends Selection.
@@ -109,31 +112,31 @@ Since another developer's change, attackers get a body during Prep while they dr
 ## Rounds (2026-11-13)
 
 - **How many rounds:**
-  - `Content.Games.Siege.ROUNDS` per matchmaking mode: `1v1` 3, `5v5` 5, `Private` 3.
-  - Any other mode uses `DEFAULT_ROUNDS` (3).
+    - `Content.Games.Siege.ROUNDS` per matchmaking mode: `1v1` 3, `5v5` 5, `Private` 3.
+    - Any other mode uses `DEFAULT_ROUNDS` (3).
 - **Groups:** players are split into group A (attackers in round 1) and B. A attacks in odd rounds and B in even ones (`teamOfGroup`). Each player's `Team` and team are set again every round.
 - **Score:** each round's winning group scores 1. A draw scores nothing.
 - **When the match ends:** after the last round, as soon as one group has a majority, or at once for a match-ending reason (`MATCH_ENDING_REASONS`: a side left, too few players, no map).
-  - The winner is the group with more rounds, and `MatchService.Finish` is called once, with that group's current team.
-  - Equal rounds give no winner.
+    - The winner is the group with more rounds, and `MatchService.Finish` is called once, with that group's current team.
+    - Equal rounds give no winner.
 - **Between rounds** (`nextRound`):
-  - Spectating, classes, cameras and drones (refunded) are cleared, along with the defusers, the bombs and the reveals.
-  - The map is destroyed and loaded again from `ReplicatedStorage.Maps`.
-  - Everyone's picks are reset, they are alive again, and their body is removed until Prep.
+    - Spectating, classes, cameras and drones (refunded) are cleared, along with the defusers, the bombs and the reveals.
+    - The map is destroyed and loaded again from `ReplicatedStorage.Maps`.
+    - Everyone's picks are reset, they are alive again, and their body is removed until Prep.
 - **Stats per match** (`stats`):
-  - Kills and Deaths come from deaths in the match.
-  - Damage is dealt to the other side in Prep or Action (`Combat.Hit`).
-  - Built counts doors and windows rebuilt to whole (the `Breakable.Repaired` that completes a board, 2026-11-15; planks alone don't count), and reinforced walls.
-  - The snapshot's `Result.Players` holds every player's line, and `Result.Mvp` the best in each stat.
+    - Kills and Deaths come from deaths in the match.
+    - Damage is dealt to the other side in Prep or Action (`Combat.Hit`).
+    - Built counts doors and windows rebuilt to whole (the `Breakable.Repaired` that completes a board, 2026-11-15; planks alone don't count), and reinforced walls.
+    - The snapshot's `Result.Players` holds every player's line, and `Result.Mvp` the best in each stat.
 - **The snapshot** also carries `Round`, `Rounds` and `Score = { Mine, Theirs }` for the viewer's group. `Result` holds:
-  - `RoundWon`, `RoundDraw`;
-  - `Final`, `MatchWon`, `MatchDraw`;
-  - `Players`;
-  - `Mvp`.
+    - `RoundWon`, `RoundDraw`;
+    - `Final`, `MatchWon`, `MatchDraw`;
+    - `Players`;
+    - `Mvp`.
 
 ## Recruit Training (2026-11-17)
 
-SiegeService also plays the tutorial, a match whose mode has `Kind = "Tutorial"`: one player against an easy bot, two rounds (attack, then defend), with every pick given. See [TUTORIAL.md](TUTORIAL.md).
+SiegeService also plays the tutorial, a match whose mode has `Kind = "Tutorial"`: one player against an easy bot, two rounds (attack, then defend), with every pick given. See [Recruit Training](TUTORIAL.md).
 
 ## Clear House (2026-11-14)
 
@@ -184,13 +187,13 @@ The only thing that is planted is a **defuser**, and only attackers plant it. An
 
 ## Drones in Siege
 
-See [DRONES.md](DRONES.md) for the drone itself.
+See [Scout drones](DRONES.md) for the drone itself.
 
 - Each attacker gets one drone, placed by the server at their spawn when Prep starts. Defenders get none.
 - In Prep the attacker is held in the drone's view. In Action they go in and out with the Drone key (5), DPad Left, or the touch DRONE button.
 - A destroyed drone is gone for the match: the NO SIGNAL screen shows at once, and again for 2.5 s whenever the attacker tries the drone later.
 - **Scan** (Fire in the drone, every 5 s): marks where the defender in the crosshair stands, for all attackers, for 30 s. The mark does not follow the defender; a new scan of the same defender replaces it. The first scan of a defender also reveals their class to the attackers for the rest of the match.
-- If no player or NPC is selected, a drone scan can instead mark a live enemy security camera for the team. See [DRONES.md](DRONES.md#camera-scans-and-feed-ui-2026-11-12).
+- If no player or NPC is selected, a drone scan can instead mark a live enemy security camera for the team. See [Scout drones](DRONES.md#camera-scans-and-feed-ui-2026-11-12).
 - **Site located**: the first time any attacker's drone is inside any part of `Sites/<site>`, the attackers are told "Site located" and get a red A and a blue B mark on the bombs. Once per match.
 - A dead attacker's drone is locked: the server takes its physics back and refuses every view and scan.
 
@@ -217,10 +220,10 @@ A destroyed camera shows nothing of the world: its NO SIGNAL screen is fully opa
 
 - **`Main.RoundResult`** shows in RoundEnd: a colored band (green won, red lost, grey draw) that snaps open, the reason, the score, round pips (`RoundPip`), and the next round.
 - **`Main.MatchResult`** shows in End, revealed in stages:
-  1. VICTORY / DEFEAT / DRAW.
-  2. The MVP cards (`MvpCard`: avatar, award, name, a count-up value; the ring is green for your side, red for theirs).
-  3. Two `TeamColumn`s (yours first) with count-up totals and `ResultRow`s.
-  4. The WINNER tag on the winning column.
+    1. VICTORY / DEFEAT / DRAW.
+    2. The MVP cards (`MvpCard`: avatar, award, name, a count-up value; the ring is green for your side, red for theirs).
+    3. Two `TeamColumn`s (yours first) with count-up totals and `ResultRow`s.
+    4. The WINNER tag on the winning column.
 - The old `SiegeHUD.End` panel is no longer shown.
 
 Built from common ideas for satisfying result screens: a clear outcome word first, a staged reveal, numbers that count up, a spotlight on standout players, then the full comparison.
@@ -282,7 +285,7 @@ SiegeService changes other systems only through their extension points: `Loadout
 
 ## Testing in Studio
 
-Studio has no reserved servers, so a match forms on the Studio server itself ([MATCHMAKING.md](MATCHMAKING.md#studio)). One tester can start a match alone:
+Studio has no reserved servers, so a match forms on the Studio server itself ([Matchmaking and parties](MATCHMAKING.md#studio)). One tester can start a match alone:
 
 1. Set the workspace attribute `SiegeTestTeam` to `Attackers` or `Defenders` to choose a side.
 2. Open the Play menu (K) and press Find match. The match forms after about 5 s.
@@ -310,6 +313,7 @@ The map in the place fails the check, so for these tests a temporary script adde
 | Output | No errors or warnings from this code, server or client |
 
 **Not verified:**
+
 - Anything with two or more players: spawn and class conflicts between teammates, vote ties, team-only visibility as seen by a second client, drone scans and class reveal, spectating teammates then enemies, mid-match leaves.
 - The camera views (drone, security camera, spectate) and the free mouse on the selection screens: Studio was not rendering frames during the tests (`RenderStepped` fired 0 times), so nothing driven by a render step could be observed.
 - Real clicks, keys, gamepad and touch.

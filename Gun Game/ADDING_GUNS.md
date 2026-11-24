@@ -1,8 +1,6 @@
-[Documentation home](index.md) / Gun Game
-
 # Adding guns
 
-This guide covers the gun system in the FPS place: how it fits together, how to add a gun, how to write an ability, and what to check when something goes wrong. For the architecture alone, see [GUN_SYSTEM.md](GUN_SYSTEM.md).
+This guide covers the gun system in the FPS place: how it fits together, how to add a gun, how to write an ability, and what to check when something goes wrong. For the architecture alone, see [Gun system](GUN_SYSTEM.md).
 
 ## At a glance
 
@@ -18,7 +16,7 @@ This guide covers the gun system in the FPS place: how it fits together, how to 
 
 A gun is **one definition file + one model**. Everything else (input, networking, server checks, damage, viewmodel, effects, UI) is shared code that reads the definition.
 
-**NPCs use guns automatically.** A profile in `Content.NPC.Profiles` names gun Ids, and NPCs fire them through `GunService.FireAs` with the same rules, damage, abilities, effects and sounds as players. A new gun needs no NPC code; see [ADDING_NPCS.md](ADDING_NPCS.md).
+**NPCs use guns automatically.** A profile in `Content.NPC.Profiles` names gun Ids, and NPCs fire them through `GunService.FireAs` with the same rules, damage, abilities, effects and sounds as players. A new gun needs no NPC code; see [Adding NPCs](ADDING_NPCS.md).
 
 ```mermaid
 flowchart LR
@@ -148,7 +146,15 @@ The model is drawn at full size in third person (as the Tool), and at 32% in fir
 
 To place `Aim` on a mesh with no separate sight parts, find the tops of the rear sight and the front bead (raycast down onto a clone in Edit mode) and put `Aim` just above the line between them. Then check by script that the model has `Handle.Muzzle`, `Handle.Aim`, `Handle.RightGrip` and `Handle.LeftGrip`.
 
-**One-piece meshes were split (2026-11-22).** PumpShotgun, Revolver, SMG, SawedOffShotgun, SiegeCarbine, SiegePistol, SiegeSMG, SiegeShotgun and Tactical_Bullpup_1 were each one MeshPart, which the procedural reload and inspect couldn't move part by part. Each mesh was split into the separate pieces it was built from (8 to 36 per gun), uploaded to the group as a Model, and placed back exactly where the mesh was: every piece is its own MeshPart welded to the Handle, with the old color and material. The Handle and its attachments did not move. Key pieces are named like the part-built guns (`Magazine`, `Barrel`, `Body`, `Grip`, `Trigger`, `TriggerGuard`, `Stock`, `Pump`, `Slide`, `Cylinder`, `Hammer`, sights); rail teeth are `RailTooth01...` and the rest `Detail01...`. The originals are in `ServerStorage.GunModelsBackup_20261122`. Guns with a real magazine piece: SiegeCarbine, SiegeSMG, SMG, Tactical_Bullpup_1 (the SMG's old invisible stand-in magazine was removed). Tested in a playtest: reloading the split SiegeCarbine hides its `Magazine` and the left hand carries a copy out and back, the same as on the part-built Rifle. The reload finds a visible part named `Magazine` directly under the gun model, so a gun without one (the shotguns, Revolver and SiegePistol, whose magazine is part of its grip mesh) gets the hand-only reload.
+!!! note "One-piece meshes were split (2026-11-22)"
+
+    PumpShotgun, Revolver, SMG, SawedOffShotgun, SiegeCarbine, SiegePistol, SiegeSMG, SiegeShotgun and Tactical_Bullpup_1 were each one MeshPart, which the procedural reload and inspect couldn't move part by part.
+
+    - **What changed:** each mesh was split into the separate pieces it was built from (8 to 36 per gun), uploaded to the group as a Model, and placed back exactly where the mesh was. Every piece is its own MeshPart welded to the Handle, with the old color and material. The Handle and its attachments did not move.
+    - **Piece names:** key pieces are named like the part-built guns (`Magazine`, `Barrel`, `Body`, `Grip`, `Trigger`, `TriggerGuard`, `Stock`, `Pump`, `Slide`, `Cylinder`, `Hammer`, sights); rail teeth are `RailTooth01...` and the rest `Detail01...`.
+    - **Backup:** the originals are in `ServerStorage.GunModelsBackup_20261122`.
+    - **Magazines:** guns with a real magazine piece are SiegeCarbine, SiegeSMG, SMG and Tactical_Bullpup_1 (the SMG's old invisible stand-in magazine was removed). The reload looks for a visible part named `Magazine` directly under the gun model, so a gun without one (the shotguns, Revolver and SiegePistol, whose magazine is part of its grip mesh) gets the hand-only reload.
+    - **Tested** in a playtest: reloading the split SiegeCarbine hides its `Magazine` and the left hand carries a copy out and back, the same as on the part-built Rifle.
 
 To split another one-piece mesh the same way: read it with `AssetService:CreateEditableMeshAsync`, merge vertices at the same position, take connected pieces, export them to a .glb (one node per piece, centred on its own bounds), upload it with Open Cloud as a Model with the **group** as creator (the game is group-owned), and place each piece at `oldMesh.CFrame * CFrame.new(center * scale) * CFrame.Angles(0, math.pi, 0)` (the importer turns models 180 degrees about Y) with `Size = pieceSize * scale`, where scale is the old MeshPart's size over the mesh's own bounds.
 
@@ -223,7 +229,7 @@ The Settings menu (`P`) rebinds keys, sets volumes, FOV and camera bob, and swit
 | Gun ability | F | Y |
 | Inspect | V | |
 | Melee (gun bash) | Q, and middle mouse (pressing the wheel, fixed) | R3 (right stick click); touch: the BASH button |
-| Throw grenade / smoke ([CONSUMABLES.md](CONSUMABLES.md)) | G | DPad Right; touch: the NADE / SMOKE button |
+| Throw grenade / smoke ([Consumables](CONSUMABLES.md)) | G | DPad Right; touch: the NADE / SMOKE button |
 | Weapon 1, 2, 3, 4 | 1, 2, 3, 4 | L1 / R1 cycle |
 | Next / previous weapon | Mouse wheel | L1 / R1 |
 | Loadout menu | B | |
@@ -233,7 +239,7 @@ The Settings menu (`P`) rebinds keys, sets volumes, FOV and camera bob, and swit
 | Prone | C | Hold B |
 | Interact (repair boards, any prompt) | E | DPad Up |
 
-Movement, the FOV slider and the movement toggles are covered in [MOVEMENT.md](MOVEMENT.md). For guns, the parts that matter are `SprintOutTime`, `MoveSpeedMultiplier`, the `Spread.Crouch` / `Spread.Slide` fields and the `Recoil.ADS` / `Recoil.Crouch` / `Recoil.Prone` multipliers below.
+Movement, the FOV slider and the movement toggles are covered in [Movement and camera](MOVEMENT.md). For guns, the parts that matter are `SprintOutTime`, `MoveSpeedMultiplier`, the `Spread.Crouch` / `Spread.Slide` fields and the `Recoil.ADS` / `Recoil.Crouch` / `Recoil.Prone` multipliers below.
 
 To add a rebindable action, add it to `ACTIONS` in `Shared.PlayerSettings` (a saved field and a menu row come with it), then read its key with `Keybinds.Get("Name")` and rebind on `Keybinds.Changed`. Volume sliders come from `VOLUME_GROUPS` there and drive `Client.Audio.AudioSettings`.
 
@@ -253,7 +259,7 @@ While a menu is open, `Client.Core.Menus` frees the mouse and the gun takes no i
 - **Camera:** `MovementCamera` calls `AimAssist.Update` inside its own camera step and applies the result there, so the assist, recoil and the player's turn never fight over the camera.
 - **Equip:** `GunController` calls `AimAssist.SetGun` on equip and unequip.
 - **Server:** it never reads aim assist; bullets still go where the camera points.
-- **Tuning:** the numbers are constants at the top of the module. Full details: [AIM_ASSIST.md](AIM_ASSIST.md).
+- **Tuning:** the numbers are constants at the top of the module. Full details: [Aim assist](AIM_ASSIST.md).
 
 ## Melee (gun punch)
 
@@ -264,7 +270,7 @@ Any held gun can bash: **Q** (the rebindable `Melee` action), **pressing the mid
 | 1 | `Client.Guns.GunController` | Refused while a menu is open, while raising the gun, while stunned, or inside the cooldown. A bash mid-reload cancels the reload (`finishReload`). Otherwise it ends aiming (and a scope), a sprint and an inspect, holds fire for 0.3 s, sends `Packets.Melee.Swing(serverTime, lookDirection)`, plays the bash (`Viewmodel.Bash`) and the `MeleeSwing` whoosh |
 | 2 | `Systems.Combat.GunMelee` | Checks the timestamp (±2 s), that the look points within 100° of where the body faces, a held gun past 75% of its `EquipTime`, alive, not `Stunned` or `CantDoAnything` (a reload in progress is cancelled with `GunService.CancelReload`), `Gun.PreventMelee`, and 80% of the cooldown since the last bash |
 | 3 | `GunMelee.Query` | From the head: humanoids (players and NPCs) whose nearest point is within `Range` and `ConeAngle` of the look, with a clear line, are found by an overlap; the one nearest the cone's center wins. With none, a sphere cast (`Radius`) finds the first wall, board or soft wall straight ahead (falling soft wall debris is skipped). One target per bash |
-| 4 | `GunMelee` | **Humanoid:** `Combat.ApplyHit` with `Attacker` and `Item = "<DisplayName> bash"` (kill feed, `DamageLog`), a small knockback, `Packets.Gun.HitConfirm` (the hitmarker) and `Gun.Killed` on the killing hit, like bullets. Damage goes through `Gun.DamageMultiplier` (hit is nil). **Breakable:** `BreakableService.Damage(part, amount, attacker, "Melee")`; by default the top piece's health, so each bash knocks off the spray paint or one plank (no hole is cut in the board). **Soft wall:** `SoftWalls.Punch(part, position, direction, nil, attacker, "Melee")`, so the hole radius is `SoftWallConfig.Sources.Melee` (0.45); called through `pcall`. Then `Gun.MeleeHit` fires and `MeleeImpact` plays nearby |
+| 4 | `GunMelee` | **Humanoid:** `Combat.ApplyHit` with `Attacker` and `Item = "<DisplayName> bash"` (kill feed, `DamageLog`), a small knockback, `Packets.Gun.HitConfirm` (the hitmarker) and `Gun.Killed` on the killing hit, like bullets. Damage goes through `Gun.DamageMultiplier` (hit is nil).<br><br>**Breakable:** `BreakableService.Damage(part, amount, attacker, "Melee")`; by default the top piece's health, so each bash knocks off the spray paint or one plank (no hole is cut in the board).<br><br>**Soft wall:** `SoftWalls.Punch(part, position, direction, nil, attacker, "Melee")`, so the hole radius is `SoftWallConfig.Sources.Melee` (0.45); called through `pcall`. Then `Gun.MeleeHit` fires and `MeleeImpact` plays nearby |
 
 ### Numbers
 
@@ -498,6 +504,8 @@ Every point gets `who`: the Player, or the NPC's model.
 - Don't `require` anything in `ServerScriptService`: the file also loads on clients.
 
 ### Example: Lifesteal
+
+Two more small abilities, [ExtendedMag (`ModifyStats`) and CriticalRounds (`OnFire`)](EXAMPLES.md#gun-abilities), are on the examples page.
 
 Heals the shooter for a share of the damage each bullet deals.
 

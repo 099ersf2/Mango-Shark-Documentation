@@ -1,8 +1,8 @@
-[Documentation home](index.md) / [API reference](API.md)
-
 # Client API reference
 
-> **Scope:** Client modules and UI-facing APIs. For the current Siege selection and HUD flow, see [API_SIEGE.md](API_SIEGE.md) and [UI.md](UI.md).
+!!! abstract "Scope"
+
+    Client modules and UI-facing APIs. For the current Siege selection and HUD flow, see [Current Siege APIs](API_SIEGE.md) and [UI](UI.md).
 
 ## Client
 
@@ -18,6 +18,18 @@
 
 Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation`, `Banner`, `ColorFade`, `Debris`, `Dust`, `Highlight`, `Impact`, `JointSwing`, `MuzzleFlash`, `Particles`, `PooledSound`, `Shards`, `Shell`, `Sound`, `Template`. Inside a part, `context` has `Add(instance, lifetime?)`, `Delay(seconds, fn)`, `Hold()`, `Keep(seconds)`, `OnStop(fn)`, `Anchor()`, `Group()`, `Stop(data?)` and `context.Data`.
 
+!!! example "Local effect and shake"
+
+    ```lua
+    local Effects = require(game.ReplicatedStorage.Modules.Client.Effects)
+    local MovementCamera = require(game.ReplicatedStorage.Modules.Client.Movement.MovementCamera)
+
+    Effects.Play("Hitmarker", { Target = part }) -- only this player sees it
+    MovementCamera.Shake(3, 10, 0.1, 0.6)
+    ```
+
+    To play an effect for everyone, use `EffectService.Play` on the server: [Effects and camera shake](EXAMPLES.md#effects-and-camera-shake).
+
 ### Guns (client)
 
 | Function | What it does |
@@ -32,8 +44,8 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `WeaponSlots.Equip(index)` / `Cycle(step)` | Switch weapons |
 | `LoadoutMenu.Pick(id)` | Picks a loadout |
 | `Client.Guns.Consumables.Throw()` / `Pick(id)` | Throws one (G) / picks grenade or smoke |
-| `AimAssist.SetGun(gun?)` / `Update(dt, camera, turnPitch, turnYaw, aimAlpha)` | See [AIM_ASSIST.md](AIM_ASSIST.md) |
-| `Recoil.ShotKick` / `Scale`, and `Recoil.Pattern` / `Camera` / `View` classes | Recoil math (see [ADDING_GUNS.md](ADDING_GUNS.md#recoil-fields)) |
+| `AimAssist.SetGun(gun?)` / `Update(dt, camera, turnPitch, turnYaw, aimAlpha)` | See [Aim assist](AIM_ASSIST.md) |
+| `Recoil.ShotKick` / `Scale`, and `Recoil.Pattern` / `Camera` / `View` classes | Recoil math (see [Adding guns](ADDING_GUNS.md#recoil-fields)) |
 
 ### Movement and camera (client)
 
@@ -53,8 +65,8 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | --- | --- |
 | `Menus.Register(name, frame)` / `Open(name)` / `Close(name?)` / `Toggle(name)` / `IsOpen()` / `SetMouseIconAfterClose(bool)` | One menu at a time, frees the mouse. Names: `Loadout`, `Settings`, `Match`, `SkinShop`, `Career`, `Backpack`, `MapSelection` |
 | `Client.Hud.MatchHud` | No API: the match HUD, scoreboard (Tab), result banner, teammate outlines |
-| `Client.Hud.DeathScreen` | No API: the death screen and spectate camera ([DEATH_SCREEN.md](DEATH_SCREEN.md)) |
-| `Client.Guns.ThirdPersonGuns` | Third-person gun poses for every character holding a gun ([THIRD_PERSON_GUNS.md](THIRD_PERSON_GUNS.md)). `Report()`: each posed character's gun kind and fit, for checking |
+| `Client.Hud.DeathScreen` | No API: the death screen and spectate camera ([Death screen and spectating](DEATH_SCREEN.md)) |
+| `Client.Guns.ThirdPersonGuns` | Third-person gun poses for every character holding a gun ([Third-person gun animation](THIRD_PERSON_GUNS.md)). `Report()`: each posed character's gun kind and fit, for checking |
 | `Client.Core.MatchMenu` | No API: the admin Match menu (M) |
 | `Keybinds.Get(action)` / `KeyName(action)` / `Label(action)` / `Set(action, keyName)` / `Reset()` | Key bindings |
 | `Options.Get(name)` / `IsOn(name)` / `Set(name, value, previewOnly?)` / `Save(name)` | Options |
@@ -63,5 +75,22 @@ Effect parts (`Content.Effects.Parts.*`), each `Play(spec, context)`: `Animation
 | `HealthBillboards.SetupBillboard(humanoid)` | Shows a health billboard |
 | `Client.Core.UI` | No API: fits the HUD to the screen and the touch layout |
 | `Client.Core.CmdrClient` | No API: F2 opens Cmdr; on touch, admins (`Classes.Admins`) get a CMD button (`Main.Mobile.CmdrButton`) |
+
+!!! example "Menus, options and keys"
+
+    ```lua
+    local Client = game.ReplicatedStorage.Modules.Client
+    local Menus = require(Client.Core.Menus)
+    local Options = require(Client.Settings.Options)
+    local Keybinds = require(Client.Settings.Keybinds)
+
+    Menus.Open("Settings")
+    Options.Set("Fov", 90)
+    Options.Save("Fov")                -- sends it to the server to save
+    Keybinds.Set("Prone", "C")
+    print(Keybinds.Label("Prone"))     -- text for a key hint
+    ```
+
+    More: [Client: settings, menus and feedback](EXAMPLES.md#client-settings-menus-and-feedback).
 
 ---

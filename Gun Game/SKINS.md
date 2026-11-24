@@ -1,5 +1,3 @@
-[Documentation home](index.md) / Gun Game
-
 # Weapon skins and the skin shop
 
 A skin restyles one gun's model: new colors and materials, a few resized parts, and a few small detail parts welded on. Stats never change. Players get skins from a Robux **skin crate** in the lobby shop and equip them there.
@@ -10,34 +8,34 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 ## The Armory and skin families (2026-11-13)
 
 - **The shop** (`Main.SkinShop`, title ARMORY):
-  - Tabs per skin family.
-  - Cards with a 3D preview (the family's gun model in `Assets.Models.Guns`, wearing the skin).
-  - A crate panel listing what is left in the crate and the chance of each.
-  - Opening a crate plays a reel that lands on the skin the server gave (`Client.Core.SkinShop`).
+    - Tabs per skin family.
+    - Cards with a 3D preview (the family's gun model in `Assets.Models.Guns`, wearing the skin).
+    - A crate panel listing what is left in the crate and the chance of each.
+    - Opening a crate plays a reel that lands on the skin the server gave (`Client.Core.SkinShop`).
 - **Families:** a skin's `WeaponId` is a family. It shows on every gun in `FAMILIES` (`Content.Guns.Skins.Skins`):
-  - Rifle: Rifle, BurstRifle, SiegeCarbine, Tactical_Bullpup_1.
-  - Pistol: Pistol, SiegePistol, Revolver.
-  - A single-mesh gun takes the skin's `Swatch` color.
+    - Rifle: Rifle, BurstRifle, SiegeCarbine, Tactical_Bullpup_1.
+    - Pistol: Pistol, SiegePistol, Revolver.
+    - A single-mesh gun takes the skin's `Swatch` color.
 
 ## Developer pack and rainbow skins (2026-11-13)
 
 - `DevRifle`, `DevPistol` and `DevSMG` (`Developer = true`) are black with a moving rainbow.
-  - Admins give them with `givedevskins <players>` and take them with `takedevskins`; owned for good once given.
-  - They are never sold or in a crate, and are hidden from players who don't own them.
+    - Admins give them with `givedevskins <players>` and take them with `takedevskins`; owned for good once given.
+    - They are never sold or in a crate, and are hidden from players who don't own them.
 - **Rainbow parts:**
-  - Parts matching `Rainbow` patterns, and Details with `Rainbow = true`, become Neon and are tagged `SkinRainbow`, with `RainbowOffset` set to their place along the gun ÷ `RAINBOW.Length`.
-  - Long rainbow Details are cut into `RAINBOW.Piece`-stud pieces.
-  - `Client.Guns.SkinRainbow` sets every tagged part's color to `hue = time × Speed + offset` each frame, on Tools and viewmodels alike.
+    - Parts matching `Rainbow` patterns, and Details with `Rainbow = true`, become Neon and are tagged `SkinRainbow`, with `RainbowOffset` set to their place along the gun ÷ `RAINBOW.Length`.
+    - Long rainbow Details are cut into `RAINBOW.Piece`-stud pieces.
+    - `Client.Guns.SkinRainbow` sets every tagged part's color to `hue = time × Speed + offset` each frame, on Tools and viewmodels alike.
 - **`Card`:** `{ Background = { top, bottom }, Border = "Rainbow" }` sets how the skin's Inventory card looks.
 - **SMG family:** `SMG` and `SiegeSMG`.
 
 ## Battle pass collections (2026-11-16)
 
-`Content.Guns.Skins.SeasonSkins` makes a season's exclusive set by recoloring a crate collection (every color moved to the palette's dark, paint, metal or accent by brightness and saturation). Season 1: **Breach Point**, 10 skins from the Afterburn set and the Rocket charm, olive and gunmetal with a neon-lime accent; `SkinFinish` has a `BreachPoint` profile. They are in no crate or store item: only the battle pass gives them ([BATTLE_PASS.md](BATTLE_PASS.md)). Each has `BattlePass = true`.
+`Content.Guns.Skins.SeasonSkins` makes a season's exclusive set by recoloring a crate collection (every color moved to the palette's dark, paint, metal or accent by brightness and saturation). Season 1: **Breach Point**, 10 skins from the Afterburn set and the Rocket charm, olive and gunmetal with a neon-lime accent; `SkinFinish` has a `BreachPoint` profile. They are in no crate or store item: only the battle pass gives them ([Battle pass and quests](BATTLE_PASS.md)). Each has `BattlePass = true`.
 
 **Source-only skins (2026-11-17):** `SeasonSkins.Sources` holds skin modules that are no longer in the game but a set still copies. `AfterburnShield` is there because the Shield Crate was removed: Breach Point's shield (level 30 of the pass) is made from it.
 
-**Removed 2026-11-17:** the Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins (see [STORE.md](STORE.md)). A data migration takes them out of every player's data and puts an equipped one back to None. Every shield skin was in the Shield Crate, so only Breach Point's shield is left.
+**Removed 2026-11-17:** the Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins (see [Store, currencies, crates, and stats](STORE.md)). A data migration takes them out of every player's data and puts an equipped one back to None. Every shield skin was in the Shield Crate, so only Breach Point's shield is left.
 
 ## Where things are
 
@@ -64,7 +62,7 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 
 Every `Packets.Skins` request is refused unless:
 
-- the player is in the lobby (`InLobby`, see [LOBBY.md](LOBBY.md));
+- the player is in the lobby (`InLobby`, see [Lobby](LOBBY.md));
 - their data has loaded;
 - they are under the rate limit (4 requests per 2 seconds, `TokenBucket`).
 
