@@ -18,7 +18,9 @@ Much of the game's state is **attributes** the server sets and clients read with
 | `DronesEnabled`, `DroneLockedIn`, `DroneLost` | No drone at all (false) / held in the drone's view / drone gone for good |
 | `CameraViewing` | The CameraId they look through |
 | `Reloading`, `Stunned`, `CantDoAnything`, other states | From `Handlers.StateHandler` |
-| `MoveState`, `MoveSpeedMultiplier`, `MoveViolations` | The server's checked movement |
+| `MoveState`, `MoveSpeedMultiplier`, `MoveViolations`, `MoveCorrections` | The server's checked movement; speed violations; moves undone by the position check |
+| `LeoSpottedUntil`, `LeoSpottedMessageUntil` | Caught moving by Leo's Motion Scanner (server time) |
+| `DeadCallActive` | Being hacked by Caleb's Dead Call |
 | `AimAssistPC` | Aim assist on mouse and keyboard (the `aimassistpc` command) |
 | `<Gun>Skin` | Equipped skin per gun |
 | `SelectedMap` | Lobby map pick |
@@ -52,6 +54,10 @@ Much of the game's state is **attributes** the server sets and clients read with
 | `CameraId`, `CameraName`, `Destroyed`, `Bulletproof`, `Team` | Camera in `workspace.SiegeCameras` | Camera state |
 | `Gadget`, `GadgetOwner`, `Armed`, `Team` | Gadget in `workspace.SiegeGadgets` | Kind, owner UserId, a live mine |
 | `Planted` | A bomb | A defuser is on it |
+| `Detecting` | Proximity sensor | Someone is inside its volume |
+| `LaserEmitter`, `LaserArmedAt`, `LaserDamage`, `LaserAlarmCooldown`, `LaserMarkTime` | Laser emitter | Laser gadget state and tuning |
+| `ShieldRaised`, `ShieldDisabledUntil`, `ShieldPose`, `ShieldBashUntil`, `BallisticShieldOperator` | Character | The Shield class's ballistic shield |
+| `LeoMotionScanStartsAt`, `LeoMotionScanEndsAt`, `LeoMotionScanWarningTextEndsAt` | Workspace | A Motion Scanner scan is running (server times) |
 | `SiegeTestTeam` | Workspace (*you set*, Studio) | Puts everyone queued on that side |
 
 ## World

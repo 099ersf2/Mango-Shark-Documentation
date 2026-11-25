@@ -1,6 +1,6 @@
 # API guide
 
-This is the developer guide to the code in the **SiegeBlox** place (the Gun Game codebase). Every page explains what a system does, how its pieces fit together, and shows the real code that runs it, so you can change things with confidence.
+This is the developer guide to the code in the **SiegeBlox** place (the Gun Game codebase). Every page explains what a system does, how its pieces fit together, and shows the real code that runs it. **Every public function has its own entry with what it returns and a code example**, so you can copy the call and adapt it.
 
 !!! tip "New to the codebase? Read these three pages first"
 
@@ -54,6 +54,7 @@ The game follows four rules. Once you know them, most of the code reads the same
 | [Networking with Packets](foundations/packets.md) | need the client to ask the server for something, or the server to tell clients |
 | [Player data and content](foundations/data-and-content.md) | save something per player, or add a gun, class, crate or mode as data |
 | [Effects and sound](foundations/effects.md) | need a sound or visual to play for one player or everyone |
+| [Handlers and helpers](foundations/helpers.md) | need player states, animations, rate limits, retries, loot rolls, product ids |
 
 ### Game systems
 
@@ -62,13 +63,18 @@ The game follows four rules. Once you know them, most of the code reads the same
 | [Siege match](systems/siege.md) | `ServerRole`, `SiegeService` phases and win rules, rounds, spectating, Recruit Training, Clear House |
 | [Matchmaking and parties](systems/matchmaking.md) | `PartyService`, `QueueService`, `MatchHost`, queue modes, how a match is formed |
 | [Classes and abilities](systems/classes.md) | `ClassService`, the ability context, `Gadgets`, writing a new ability |
+| [Class abilities](systems/abilities.md) | All 18 shipped abilities: what each does, its tuning and hooks |
 | [Drones and cameras](systems/drones-cameras.md) | `DroneService`, `CameraService`, scans and marks |
 | [Guns](systems/guns.md) | `GunService` shot pipeline, loadouts, gun abilities, gun bash, gun definitions |
+| [Movement and camera](systems/movement.md) | `MovementService` checks, movement states, `MovementController`, `MovementCamera` |
 | [Combat and damage](systems/combat.md) | `Combat.ApplyHit`, shields, kill credit, kill feed, death camera |
 | [World: boards, soft walls, grenades](systems/world.md) | `BreakableService`, `SoftWalls`, `ConsumableService`, smoke |
 | [NPCs and bots](systems/npcs.md) | `NPCService`, behavior trees, guard mode, Siege bots |
+| [Lobby, teleporters and gun range](systems/lobby.md) | `LobbyService`, teleport pads, the gun animation range |
 | [Progression and economy](systems/progression.md) | Store, currencies, crates, skins, stats, battle pass, quests |
-| [Client modules](systems/client.md) | Menus, HUD, settings, movement, gun client, UI helpers |
+| [Progress, leaderboards, analytics](systems/progress-analytics.md) | Flame streak, weekly goal, levels, badges, leaderboards, reminders, `AnalyticsService` |
+| [Settings and keybinds](systems/settings.md) | `PlayerSettings`, `SettingsService`, `Keybinds`, `Options` |
+| [Client: menus, HUD, screens](systems/client.md) | `Menus`, notices, tooltips, UI feel, screens, HUD, theme |
 
 ### Reference
 

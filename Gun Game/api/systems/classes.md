@@ -27,14 +27,76 @@ SiegeService ──Assign/Arm──▶ ClassService ── holds class, charges,
 
 ## `ClassService` API
 
-| Function | Returns / does |
-| --- | --- |
-| `ClassService.Assign(player, classId, guns?)` | `true` if assigned. Refused if the class isn't their team's or a teammate has it. Each gun in `guns` must be allowed in its slot, else the default is used |
-| `ClassService.ClassOf(player)` | The `Content.Classes` class, or `nil` |
-| `ClassService.Arm(player)` | Gives the class's guns and the knife (`LoadoutService.Arm`); `true` if armed |
-| `ClassService.Charges(player)` | `(charges, readyAt)`: charges left (`-1` = unlimited, `0` with no class) and the server time the cooldown ends |
-| `ClassService.Use(player, timestamp, origin, look)` | Every check, then the ability: `(ok, message)` |
-| `ClassService.Clear(player)` / `Reset()` | One player / everyone and every gadget |
+```lua
+local ClassService = require(game.ServerScriptService.Modules.Systems.Classes.ClassService)
+```
+
+### `ClassService.Assign(player, classId, guns?) → boolean`
+
+Gives a player a class. Refused if it isn't their team's (their `Team` attribute must be set) or a teammate already has it. Each gun in `guns` (by slot) must be one the class allows there, else the class default is used. Fires `Classes.Assigned`.
+
+```lua
+ClassService.Assign(player, "Breacher")                          -- default guns
+ClassService.Assign(player, "Flash", { "AssaultRifle", "SMG" })  -- slot 2 swapped to an allowed SMG
+```
+
+```lua title="ClassService.Assign (one per team, allowed guns)"
+for other, theirs in held do
+	if other ~= player and theirs.Class.Id == classId and TeamService.TeamOf(other) == team then
+		return false -- One per team
+	end
+end
+local carried = {}
+for slot, default in class.Loadout do
+	local wanted = guns and guns[slot]
+	carried[slot] = if type(wanted) == "string" and Classes.Allows(class, slot, wanted) then wanted else default
+end
+```
+
+### `ClassService.ClassOf(player) → Class?`
+
+The `Content.Classes` class table, or `nil`. **The only way to read a class**: it's never an attribute.
+
+```lua
+local class = ClassService.ClassOf(player)
+if class then print(class.Name, class.Ability.Id) end
+```
+
+### `ClassService.Arm(player) → boolean`
+
+Gives a living player their class's guns and the knife (`LoadoutService.Arm`), and equips the Shield class's shield.
+
+```lua
+player.CharacterAdded:Connect(function()
+	task.defer(ClassService.Arm, player)
+end)
+```
+
+### `ClassService.Charges(player) → (charges, readyAt)`
+
+Charges left (`-1` unlimited, `0` with no class) and the server time the cooldown ends.
+
+```lua
+local charges, readyAt = ClassService.Charges(player)
+local ready = charges ~= 0 and workspace:GetServerTimeNow() >= readyAt
+```
+
+### `ClassService.Use(player, timestamp, origin, look) → (ok, message)`
+
+Every check, then the ability (below). What `Packets.Class.Use` calls.
+
+```lua
+local head = player.Character.Head
+local ok, message = ClassService.Use(player, workspace:GetServerTimeNow(), head.Position, head.CFrame.LookVector)
+```
+
+### `ClassService.Clear(player)` / `ClassService.Reset()`
+
+Take one player's class away / everyone's, and remove every gadget (each ability module's `Reset` runs too).
+
+```lua
+ClassService.Reset() -- new match
+```
 
 ### What `Use` checks, in order
 
@@ -89,7 +151,7 @@ export type Context = {
 
 ## Writing an ability: the Flashbang, walked through
 
-An ability is a ModuleScript in `Systems.Classes.Abilities`, **named exactly the class's `Ability.Id`**, with `Use(context)` returning `(ok, message?)`. `ClassService` finds and requires it by name the first time it's used.
+Every shipped ability is described in [Class abilities](abilities.md). An ability is a ModuleScript in `Systems.Classes.Abilities`, **named exactly the class's `Ability.Id`**, with `Use(context)` returning `(ok, message?)`. `ClassService` finds and requires it by name the first time it's used.
 
 **1. The data** lives in the class file (see [the full Flash class](../foundations/data-and-content.md#the-one-file-per-thing-pattern)): `Ability = { Id = "Flashbang", Cooldown = 8, Charges = 3, Phases = { "Action" }, Tuning = { Fuse = 1.4, Radius = 30, ... } }`.
 
@@ -172,15 +234,81 @@ end
 
 A placed gadget is a model in `workspace.SiegeGadgets` with attributes `Gadget` (kind), `GadgetOwner` (UserId) and `Team`. A gadget with a Humanoid is damaged by every weapon through `Combat.ApplyHit`; its own team can't hurt it.
 
-| Function | Returns / does |
-| --- | --- |
-| `Gadgets.Aim(context, range)` | The surface the player looks at within range, or `nil` |
-| `Gadgets.Place(kind, context, hit, health?)` | The placed model (front facing out of the surface) |
-| `Gadgets.OnDestroyed(model, function(killer?) end)` | When its health reaches 0 (removed after) |
-| `Gadgets.Remove(model)` / `IsLive(model)` | Remove without the destroyed effect / still standing |
-| `Gadgets.Blast(position, radius, damage, attacker, item)` | Hurts every humanoid in the radius (25% at the edge) |
-| `Gadgets.Enemies(team)` / `Allies(team)` | Living players `{ Player, Character, Root, Humanoid }` |
-| `Gadgets.Clear()` | Removes every gadget |
+```lua
+local Gadgets = require(game.ServerScriptService.Modules.Systems.Classes.Gadgets)
+```
+
+### `Gadgets.Aim(context, range) → RaycastResult?`
+
+The surface the player looks at within `range`, or `nil`. Drones, thrown things and other gadgets are never a surface.
+
+```lua
+local hit = Gadgets.Aim(context, context.Tuning.Range)
+if not hit then return false, "Aim at a surface in reach." end
+```
+
+### `Gadgets.Place(kind, context, hit, health?) → Model?`
+
+Clones `Assets.Models.Siege.<kind>` onto the surface (front facing out), in `workspace.SiegeGadgets`, with `Gadget`, `GadgetOwner` and `Team`. With `health` it gets a Humanoid and can be shot. Fires `Classes.GadgetPlaced`.
+
+```lua title="Systems.Classes.Abilities.Laser.Use"
+local hit = Gadgets.Aim(context, tuning.Range or 9)
+if not hit then return false, "Aim at a wall or other surface within reach." end
+local model = Gadgets.Place("Laser", context, hit, tuning.Health or 30)
+if not model or not model.PrimaryPart then return false, "Laser model is not ready." end
+```
+
+### `Gadgets.SurfaceCFrame(hit, thickness) → CFrame`
+
+The CFrame that sits a part of that thickness flat on the hit surface (Laser and Proximity Sensor use it to re-orient flat models).
+
+```lua
+model:PivotTo(Gadgets.SurfaceCFrame(hit, base.Size.Y) * CFrame.Angles(-math.pi / 2, 0, 0) * offset)
+```
+
+### `Gadgets.OnDestroyed(model, function(killer?) end)`
+
+Runs when its health reaches 0 (the model is removed right after). `killer` from the damage log.
+
+```lua
+Gadgets.OnDestroyed(model, function(killer)
+	print(model.Name, "destroyed by", killer and killer.Name or "nobody")
+end)
+```
+
+### `Gadgets.Remove(model)` / `Gadgets.IsLive(model) → boolean`
+
+Remove without the destroyed effect / still standing.
+
+```lua
+while Gadgets.IsLive(model) do
+	task.wait(tuning.Check)
+end
+```
+
+### `Gadgets.Blast(position, radius, damage, attacker, item)`
+
+Hurts every humanoid in the radius (falling to 25% at the edge) through `Combat.ApplyHit`.
+
+```lua
+Gadgets.Blast(model:GetPivot().Position, tuning.BlastRadius, tuning.BlastDamage, owner, "Trap Mine")
+```
+
+### `Gadgets.Enemies(team) → { Target }` / `Gadgets.Allies(team) → { Target }`
+
+Living players not on / on that team, each `{ Player, Character, Root, Humanoid }`.
+
+```lua
+for _, enemy in Gadgets.Enemies(context.Team) do
+	if (enemy.Root.Position - origin).Magnitude < tuning.Radius then
+		DroneService.Mark({ context.Player }, tostring(enemy.Player.UserId), enemy.Root.Position, tuning.MarkTime)
+	end
+end
+```
+
+### `Gadgets.Clear()`
+
+Removes every gadget (`ClassService.Reset` calls it).
 
 ## Extension points
 
@@ -192,7 +320,23 @@ A placed gadget is a model in `workspace.SiegeGadgets` with attributes `Gadget` 
 | `Classes.AbilityUsed` / `Classes.Assigned` | Fire | player, classId, abilityId / player, classId |
 | `Classes.GadgetPlaced` / `Classes.GadgetDestroyed` | Fire | player, kind, model / owner?, kind, model, killer? |
 | `Classes.PreventFlash` / `Classes.FlashTimeMultiplier` / `Classes.Flashed` | Any / Product / Fire | thrower, victim (, seconds) |
-| Other ability points | | `Classes.BreachDetonated`, `PreventPulseMark`, `Pulsed`, `PreventMineTrigger`, `MineDetonated`, `HealMultiplier`, `Healed`, `Reinforced`: see each module's header |
+| Other ability points | | `Classes.BreachDetonated`, `PreventPulseMark`, `Pulsed`, `PreventMineTrigger`, `MineDetonated`, `HealMultiplier`, `Healed`, `Reinforced`: see [Class abilities](abilities.md) |
+
+```lua
+-- Abilities can't be used in the first 5 seconds of Action
+local actionStarted = 0
+Extensions.Add("Siege.PhaseChanged", function(phase)
+	if phase == "Action" then actionStarted = workspace:GetServerTimeNow() end
+end)
+Extensions.Add("Classes.PreventAbility", function(player, classId, ability)
+	return SiegeService.Phase() == "Action" and workspace:GetServerTimeNow() - actionStarted < 5
+end)
+
+-- Medics recharge 20% faster
+Extensions.Add("Classes.CooldownMultiplier", function(player, classId, abilityId)
+	return if classId == "Medic" then 0.8 else 1
+end)
+```
 
 ## Packets
 

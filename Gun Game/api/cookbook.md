@@ -69,6 +69,20 @@ One line for each common task. All server-side unless marked **(client)**. Follo
 | Make an NPC guard a room | `NPCService.SetMode(npc, "Guard", roomPart)` (a part tagged `NPCRoom`) |
 | Remove every NPC | `NPCService.Clear()`, or `clearnpcs` |
 
+## Lobby, movement, state
+
+| I want to… | Do this |
+| --- | --- |
+| Take a test player out of the lobby | `LobbyService.SendToArena(player)` ([Lobby](systems/lobby.md)) |
+| Spawn a player outside the lobby next time | `LobbyService.Release(player)` |
+| Stop a player acting for a while | `StateHandler.SetState(player, "CantDoAnything", true, 2)` ([Helpers](foundations/helpers.md)) |
+| Stun a player or NPC | `StateHandler.SetStun(playerOrModel, true, 2)` |
+| Read the server's movement state | `MovementService.GetState(player)` ([Movement](systems/movement.md)) |
+| Block sprinting | `Extensions.Add("Movement.PreventSprint", function(player, state) return ... end)` |
+| Rate-limit a packet | `local bucket = TokenBucket.new(5, 2)`; `if not bucket:allow(player.UserId) then return end` |
+| Retry a MemoryStore/DataStore call | `Retry.Call("Label", function() return store:GetAsync(key) end)` |
+| A teleport pad | Tag a part `Teleporter`, set its `TeleportTo` attribute to the destination part's name |
+
 ## Data, economy, progression
 
 | I want to… | Do this |
@@ -79,6 +93,8 @@ One line for each common task. All server-side unless marked **(client)**. Follo
 | Test without saving | Workspace attribute `ScribeNoSave = true` in Edit mode |
 | Count toward quests | `QuestService.Add(player, "Kills", 1)` |
 | Battle pass XP | `BattlePassService.AddXP(player, 50, "Event")` |
+| Account XP / weekly points | `ProgressService.AddXP(player, 100, "Event")` / `ProgressService.AddPoints(player, 20, "Event")` ([Progress](systems/progress-analytics.md)) |
+| Log an analytics event | `AnalyticsService.Custom(player, "ClassPicked", 1, classId, side, mode)` (name must be in `Content.Analytics.EVENTS`) |
 | Use a product id | `ProductIds.Products.<Name>`; never type an id anywhere else |
 
 ## Effects and client
@@ -91,7 +107,7 @@ One line for each common task. All server-side unless marked **(client)**. Follo
 | Shake the camera **(client)** | `MovementCamera.Shake(3, 10, 0.1, 0.6)` |
 | Open a menu **(client)** | `Menus.Open("Settings")` |
 | Show a popup **(client)** | `Notice.Show("TITLE", "Text")` |
-| Change and save a setting **(client)** | `Options.Set("Fov", 90)` then `Options.Save("Fov")` |
+| Change and save a setting **(client)** | `Options.Set("Fov", 90)` (saves too; pass `true` as a third argument to preview only) |
 | Rebind a key **(client)** | `Keybinds.Set("Prone", "C")` |
-| Read a setting on the server | `SettingsService.GetOption(player, "AimAssist")` |
+| Read a setting on the server | `SettingsService.GetOption(player, "AimAssist")` ([Settings](systems/settings.md)) |
 | Change move speed | `Extensions.Add("Movement.SpeedMultiplier", function(player, gunId) return 0.8 end)` |
