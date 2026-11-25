@@ -17,6 +17,16 @@ Recent implementation notes are kept here. Older dated entries are grouped into 
 
 ## Recent changes
 
+## 2026-11-24: Bigger gun animations, the hand pumps the shotgun, the Sawed-Off breaks open
+
+- The owner: the pistol slide was hard to see; "the pump shotgun had no animation. The lever in the back also has no animation. Also move the hand on top to prepare for the next shot and do an animation showing you're pumping it", plus the Sawed-Off break-open.
+- **Pistol.** The slide travels further (0.42 studs) and slower (back in 0.05 s, a beat, home in 0.2 s); the hammer swings 40 degrees. SiegePistol too.
+- **Pump shotgun.** The pump did move, but the first-person left hand sat on it and covered it. Now the left hand rides the pump (first and third person): 0.2 s after each shot it pulls the pump back 0.5 studs, holds, and pushes it forward, with the gun canting 8 degrees toward the pull. The exposed hammer behind the receiver (the "lever in the back", named `RearSight` on this model) falls on the shot and is cocked again by the pump. SiegeShotgun's pump the same.
+- **Sawed-Off.** On reload the top lever swings and the barrels tip open on their hinge, then close.
+- `Content.Guns.Mechanics` now describes each mechanism by Motion (Slide, Tilt, Turn, Spin) and Profile (Kick, Rack, Cock, Open); `GunMechanics.Reload` added; the Viewmodel and ThirdPersonGuns move the left hand by the mechanics' `Hand`. Details in ADDING_GUNS.md.
+
+Checked in a playtest (no saving): first person, one pump-shotgun shot moved the pump its full travel and back, the left hand with it, and the hammer 32 degrees. A recording of two shots and a reload shows the pistol slide back, the pump racking and the Sawed-Off opening and closing. No errors. Not checked: the left hand on video (the lobby draws the first-person view wrong), third person on video, a real match, other players.
+
 ## 2026-11-24: Skin trim stays on the gun; the Revolver's turn shows
 
 - The owner: "Some skins still go off the edge or have floating parts like on the pistol and smg. The revolver does not have the spinning cylinder or it was not clear."
