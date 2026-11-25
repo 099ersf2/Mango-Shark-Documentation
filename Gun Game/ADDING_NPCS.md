@@ -69,7 +69,7 @@ Workspace
     return {
     	Id = "Sniper",
     	DisplayName = "Sniper",
-    	Guns = { "Rifle" },
+    	Guns = { "AssaultRifle" },
     	SightRange = 300,
     	FOV = 70,
     	PreferredRange = 120,
@@ -89,7 +89,7 @@ Workspace
 | `Template` | `Soldier` | Rig in `ServerStorage.NPC.Templates` |
 | `Tree` | `Soldier` | Tree folder in `ServerStorage.NPC.Trees` |
 | `Team` | `Hostile` | NPCs fight anyone not on their team; players are on `Players` (or their Roblox `Team`). NPC bullets never hurt their own team |
-| `Guns` | `{ "Rifle" }` | Gun Ids; one is picked at random each spawn |
+| `Guns` | `{ "AssaultRifle" }` | Gun Ids; one is picked at random each spawn |
 | `Health` | `100` | |
 | `WalkSpeed` | `14` | |
 | `SightRange` | `180` | Studs |

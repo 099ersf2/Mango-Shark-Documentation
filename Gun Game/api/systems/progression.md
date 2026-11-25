@@ -43,7 +43,7 @@ Other functions: `GiveSkins(player, skinIds, take?)` and `DeveloperSkins()` (the
 
 ## Skins
 
-`Content.Guns.Skins.Skins`: `List`, `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)`. `Skins.FamilyOf(gunId)` gives the family a gun wears (`"Rifle"`, `"Pistol"`, else its own Id). `SkinShopService.StyleTool(player, tool)` applies the equipped skin to a gun Tool (`LoadoutService.Arm` calls it). Parts tagged `SkinRainbow` are animated by `Client.Guns.SkinRainbow`.
+`Content.Guns.Skins.Skins`: `List`, `Get(id)`, `ForWeapon`, `Weapons`, `Choices`, `EquipField`, `Apply(model, skinId?, weaponId?)`. `Skins.FamilyOf(gunId)` gives the family a gun wears (`"AssaultRifle"`, `"Pistol"`, else its own Id). `SkinShopService.StyleTool(player, tool)` applies the equipped skin to a gun Tool (`LoadoutService.Arm` calls it). Parts tagged `SkinRainbow` are animated by `Client.Guns.SkinRainbow`.
 
 ## Battle pass and quests
 

@@ -156,6 +156,10 @@ To place `Aim` on a mesh with no separate sight parts, find the tops of the rear
     - **Magazines:** guns with a real magazine piece are SiegeCarbine, SiegeSMG, SMG and Tactical_Bullpup_1 (the SMG's old invisible stand-in magazine was removed). The reload looks for a visible part named `Magazine` directly under the gun model, so a gun without one (the shotguns, Revolver and SiegePistol, whose magazine is part of its grip mesh) gets the hand-only reload.
     - **Tested** in a playtest: reloading the split SiegeCarbine hides its `Magazine` and the left hand carries a copy out and back, the same as on the part-built Rifle.
 
+**Assault Rifle and Pistol (2026-11-24).** The Rifle (gun Id `Rifle`, shown as "Ak-47", on the old part-built model) was replaced by the Assault Rifle: gun Id `AssaultRifle`, shown as "Assault Rifle", with the stats of the Assault Rifle definition (15 damage, 550 rounds a minute). Its one-piece mesh was split into 18 pieces (asset 72081744528566): `Stock`, `Handguard`, `RearBlock`, `Body`, `RearSight`, `FrontSight`, `Lower`, `Grip`, `Magazine`, `Trigger`, `RailTooth01`...`08`. The Burst Rifle uses the same model. The Pistol has a new model from the gun pack in `Workspace.Assets.Guns` (`Pistol_3`, split into 19 pieces, asset 124198947340469): `Slide`, `Frame`, `Barrel`, `GripPanelL`/`R`, `TriggerGuard`, `Trigger`, `Hammer`, `FrontSight`, `RearSightL`/`R`, `SlideRib01`...`05`, `RailTooth01`...`03`. It sits on the SiegePistol's Handle and scale, with its Muzzle and Aim placed from the new barrel and sights. It has no separate magazine (the magazine is part of the frame), so it keeps the hand-only reload. The old Rifle, Pistol and one-piece Assault Rifle are backed up in `ServerStorage.GunModelsBackup_20261124`, and the old Rifle and Pistol are kept in `Assets.Models.SkinReference` because the skins were drawn on them (see SKINS.md).
+
+Everything that named the gun now says `AssaultRifle`: class loadouts, the Assault and Arsenal loadouts, the NPC profiles and the Siege bots' fallback, soft walls, skin families and `Content.Classes` categories (the category itself is still called "Rifle"). The equipped-skin field `RifleSkin` became `AssaultRifleSkin`, moved over by data migration 3. Skin Ids (`GlacierRifle`, `ObsidianRifle`...) and store item Ids did not change, because they are saved and sold; their names now say "Assault Rifle". Not renamed: the "Rifle" third-person pose type, the `GunFire_Rifle` sound used by most guns, and the Rifle Charm.
+
 To split another one-piece mesh the same way: read it with `AssetService:CreateEditableMeshAsync`, merge vertices at the same position, take connected pieces, export them to a .glb (one node per piece, centred on its own bounds), upload it with Open Cloud as a Model with the **group** as creator (the game is group-owned), and place each piece at `oldMesh.CFrame * CFrame.new(center * scale) * CFrame.Angles(0, math.pi, 0)` (the importer turns models 180 degrees about Y) with `Size = pieceSize * scale`, where scale is the old MeshPart's size over the mesh's own bounds.
 
 ### 2. Write the definition
@@ -212,7 +216,7 @@ It gets a card in the menu with no other change. Gun names are Ids in `Content.G
 | Assault (default) | Rifle | Pistol | Knife |
 | Breacher | Shotgun | Pistol | Knife |
 | Grenadier | Burst Rifle | Pistol | Knife |
-| Arsenal | Rifle | Shotgun | Pistol (Knife in slot 4) |
+| Arsenal | AssaultRifle | Shotgun | Pistol (Knife in slot 4) |
 | SMG (Id `Sprayer`) | SMG | Shotgun | Knife |
 | Support | LMG | Pistol | Knife |
 | Gunslinger | Revolver | Pistol | Knife |
@@ -433,7 +437,7 @@ To see a pattern without playing, run this in the Studio command bar:
 
 ```lua
 local Recoil = require(game.ReplicatedStorage.Modules.Client.Guns.Recoil)
-local gun = require(game.ReplicatedStorage.Content.Guns.Registry).Rifle
+local gun = require(game.ReplicatedStorage.Content.Guns.Registry).AssaultRifle
 local up, side = 0, 0
 for shot = 1, 30 do
 	local pitch, yaw = Recoil.ShotKick(gun.Recoil, shot)

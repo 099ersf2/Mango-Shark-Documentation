@@ -42,9 +42,9 @@ One line for each common task. All server-side unless marked **(client)**. Follo
 
 | I want to… | Do this |
 | --- | --- |
-| Give one gun | `GunService.Give(player, "Rifle")`, or `givegun <player> <gunId>` |
-| Set exactly these guns | `LoadoutService.Arm(player, { "Rifle", "Pistol" })` (plus the knife) |
-| Give an NPC a gun | `GunService.GiveNPC(model, "Rifle")` |
+| Give one gun | `GunService.Give(player, "AssaultRifle")`, or `givegun <player> <gunId>` |
+| Set exactly these guns | `LoadoutService.Arm(player, { "AssaultRifle", "Pistol" })` (plus the knife) |
+| Give an NPC a gun | `GunService.GiveNPC(model, "AssaultRifle")` |
 | Cancel a reload | `GunService.CancelReload(player)` → `true` if one was running |
 | Scale gun damage | `Extensions.Add("Gun.DamageMultiplier", function(who, gunId, humanoid, hit) return 1 end)` |
 | Block shooting | `Extensions.Add("Gun.PreventFire", function(who, gunId, tool) return ... end)` |

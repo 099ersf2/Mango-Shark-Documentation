@@ -38,7 +38,7 @@ return {
 	Group = "Admin",
 	Args = {
 		{ Type = "player", Name = "player", Description = "Who gets the gun" },
-		{ Type = "gun", Name = "gunId", Description = "An Id in Content.Guns.Registry, like Rifle" },
+		{ Type = "gun", Name = "gunId", Description = "An Id in Content.Guns.Registry, like AssaultRifle" },
 	},
 }
 ```

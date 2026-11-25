@@ -30,7 +30,7 @@ Data.Client.Coins.Observe(function(coins) end)  -- client reads (wrap in Shared.
 | `Coins` | Int, min 0 | Soft currency |
 | `Kills`, `Deaths` | Int | Career stats |
 | `WeaponSkins` | Set of skin Ids | Owned skins |
-| `<Gun>Skin` (`RifleSkin`, …) | Enum | The equipped skin per gun, or `"None"`; mirrored to the Player attribute of the same name |
+| `<Gun>Skin` (`AssaultRifleSkin`, …) | Enum | The equipped skin per gun, or `"None"`; mirrored to the Player attribute of the same name |
 | `CrateInventory` | `[crateId].Count` | Crates bought and not opened |
 | `Settings.Keybinds.<Action>` / `Volumes.<Group>` / `Options.<Option>` | String / 0–1 / Number | Saved settings (`Shared.PlayerSettings`) |
 | `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | | Declared by `Content.Store.Store` (a ScribeFragment) |
@@ -83,8 +83,8 @@ return {
 	Role = "Support",
 	Difficulty = 1,
 	Description = "Blinds a room before the push.",
-	Loadout = { "Rifle", "Pistol" },
-	Categories = { { "Rifle" }, { "Revolver", "SMG" } },
+	Loadout = { "AssaultRifle", "Pistol" },
+	Categories = { { "Rifle" }, { "Revolver", "SMG" } },   -- categories, not gun Ids
 	Ability = {
 		Id = "Flashbang",          -- the module Systems.Classes.Abilities.Flashbang
 		Name = "Flashbang",
@@ -112,7 +112,7 @@ The loader then gives you a small API:
 Classes.List                       -- every class, in menu order
 Classes.Get("Breacher")            -- a class by Id, or nil
 Classes.ForTeam("Attackers")       -- the classes of a team, in order
-Classes.CategoryOf("Rifle")        -- a gun's category, or nil
+Classes.CategoryOf("AssaultRifle") -- a gun's category ("Rifle"), or nil
 Classes.Allows(class, slot, gunId) -- may this class carry this gun in this loadout slot
 ```
 
@@ -141,6 +141,6 @@ A file that fails to load, has no `Id`, or repeats an `Id` is warned about at st
 ```lua title="Reading content anywhere"
 local Content = game.ReplicatedStorage.Content
 local Registry = require(Content.Guns.Registry)
-local rifle = Registry.Rifle                -- defaults filled in
+local rifle = Registry.AssaultRifle         -- defaults filled in
 print(rifle.DisplayName, rifle.Damage, rifle.MagSize)
 ```
