@@ -33,16 +33,76 @@ Key design choices, from the `QueueService` header:
 
 A party is up to `Content.Matchmaking.MAX_PARTY_SIZE` players, possibly on **different lobby servers**. The server the leader is on **owns** the real party; others hold a mirror and only show it. Changes travel over MessagingService (`PARTY_TOPIC`).
 
-| Function | Returns / does |
-| --- | --- |
-| `PartyService.Of(player)` | Their party (owned or mirrored), or `nil` |
-| `PartyService.Ensure(player)` | Their party, making a party of one if they have none |
-| `PartyService.Get(partyId)` | A party by Id |
-| `PartyService.IsLeader(player)` | `true` if they lead it |
-| `PartyService.Owns(party)` | `true` if this server owns it |
-| `PartyService.UserIds(party)` | Its members' UserIds |
-| `PartyService.Park(party)` / `Restore(player, partyId)` | Keep a party in MemoryStore during a match / rebuild it on return |
-| `PartyService.SetTravelling(userId, on)` | A player leaving for a match is not leaving their party |
+```lua
+local Matchmaking = game.ServerScriptService.Modules.Systems.Matchmaking
+local PartyService = require(Matchmaking.PartyService)
+local QueueService = require(Matchmaking.QueueService)
+```
+
+A party table has `Id`, `L` (leader UserId) and `M` (member UserIds).
+
+### `PartyService.Of(player) → Party?`
+
+Their party (owned or mirrored), or `nil`.
+
+```lua
+local party = PartyService.Of(player)
+print(party and #party.M or 1, "in party")
+```
+
+### `PartyService.Ensure(player) → Party`
+
+Their party, making a party of one if they have none. `QueueService.Join` starts with this.
+
+```lua
+local party = PartyService.Ensure(player)
+```
+
+### `PartyService.Get(partyId) → Party?`
+
+```lua
+local party = PartyService.Get(ticket.P)
+```
+
+### `PartyService.IsLeader(player) → boolean`
+
+```lua
+if not PartyService.IsLeader(player) then
+	return false, "Only the party leader can do that."
+end
+```
+
+### `PartyService.Owns(party) → boolean`
+
+`true` if this server owns it (the leader's server decides every change).
+
+```lua
+if not PartyService.Owns(party) then return end -- a mirror: show only
+```
+
+### `PartyService.UserIds(party) → { number }`
+
+Its members' UserIds (bots are negative).
+
+```lua
+for _, userId in PartyService.UserIds(party) do print(userId) end
+```
+
+### `PartyService.Park(party)` / `PartyService.Restore(player, partyId)`
+
+Keep a party in MemoryStore while its members play / put it back together when one returns (the first server to see a returning member owns it).
+
+```lua
+PartyService.Park(party) -- before teleporting its members
+```
+
+### `PartyService.SetTravelling(userId, on)`
+
+A player leaving for a match is not leaving their party.
+
+```lua
+PartyService.SetTravelling(player.UserId, true)
+```
 
 If the leader leaves, the oldest member leads. Admins may add **bots** (negative UserIds) from the BOTS tab; a bot never leads.
 
@@ -81,35 +141,129 @@ end
 
 Every function returns **`(ok, message)`**: the message is ready to show the player.
 
-| Function | What it does |
-| --- | --- |
-| `QueueService.Join(player, modeId?)` | Leader only. `nil`/`""` → `DEFAULT_MODE` |
-| `QueueService.JoinPrivate(player, modeId?)` | "Play with party": a match of only the party's members, formed **at once** (no ticket). Needs `PRIVATE_MIN_PLAYERS` (1 in Studio) and at most `PrivateLimit(mode)` |
-| `QueueService.JoinTutorial(player)` | Recruit Training, alone, against the training bot |
-| `QueueService.Leave(player)` | Leader only |
-| `QueueService.IsQueued(player)` | As far as this server knows |
+### `QueueService.Join(player, modeId?) → (ok, message)`
+
+Queues the leader's party for one mode (`nil`/`""` → `DEFAULT_MODE`, `"5v5"`). Lobby servers only.
+
+```lua
+local ok, message = QueueService.Join(player, "1v1")
+if not ok then warn(message) end -- e.g. "Your party is too big for 1V1. Pick a different mode."
+```
+
+### `QueueService.JoinPrivate(player, modeId?) → (ok, message)`
+
+"Play with party": a match of only the party's members, formed **at once** (no ticket, no wait). Members are dealt into two even teams. Needs `PRIVATE_MIN_PLAYERS` (2; `STUDIO_MIN_PLAYERS` = 1 in Studio) and at most `PrivateLimit(mode)`. Results count under `PRIVATE_MODE`, not the mode.
+
+```lua
+QueueService.JoinPrivate(player, "5v5")
+```
+
+### `QueueService.JoinTutorial(player) → (ok, message)`
+
+Recruit Training, alone, against the training bot.
+
+```lua
+QueueService.JoinTutorial(player)
+```
+
+### `QueueService.Leave(player) → (ok, message)`
+
+Leader only.
+
+```lua
+QueueService.Leave(player) -- "Left the queue."
+```
+
+### `QueueService.IsQueued(player) → boolean`
+
+As far as this server knows.
+
+```lua
+if QueueService.IsQueued(player) then return false, "Leave the queue first." end
+```
 
 A party change (join, leave, kick, disconnect) takes the party out of the queue. Once the match is found, a leave changes nothing.
 
 ## Queue modes: `Content.Matchmaking`
 
-Add a mode (2v2, 3v3…) by adding a row to `Content.Matchmaking.MODES`. Helpers:
+Add a mode (2v2, 3v3…) by adding a row to `Content.Matchmaking.MODES`. A real row:
 
-| Function | Returns |
+```lua title="Content.Matchmaking.MODES (Clear House)"
+{ Id = "ClearHouse", Name = "CLEAR HOUSE", Category = "Arcade", Kind = "ClearHouse", Maps = { "Mansion", "Bank" },
+  Tag = "NEW", Color = Color3.fromRGB(56, 40, 88), TagColor = Color3.fromRGB(52, 224, 176), Image = "", Icon = "PvE",
+  Description = "Up to five players against NPC guards. Every door and window is boarded: breach in and clear every room. No bombs.",
+  TeamSize = { Attackers = 5, Defenders = 0 }, MinTeamSize = { Attackers = 1, Defenders = 0 }, MaxWait = 20 },
+```
+
+| Field | Meaning |
 | --- | --- |
-| `GetMode(id)` / `ModesIn(categoryId)` | A mode by Id (or `nil`) / the modes of one category |
-| `PartyLimit(mode)` | The biggest party a mode allows (the smaller side, or the only side) |
-| `PrivateLimit(mode)` / `FitMode(modeId, size, private)` | Biggest private party / the mode a party of that size plays |
+| `Id`, `Name`, `Category` | Its Id (in tickets and records), display name, a `CATEGORIES` Id for the Game Modes panel |
+| `TeamSize` / `MinTeamSize` | Full and smallest team sizes |
+| `MaxWait` | Seconds the oldest ticket waits for a full match before a smaller one may start |
+| `Kind` | `nil` for Siege, `"ClearHouse"`, `"Tutorial"` |
+| `Maps` | Maps it may be played on (`nil`: `Content.Games.Siege.MAP_POOL`) |
+| `BotFill` | Seconds of waiting after which bots fill the empty spots (`nil`: never) |
+| `MinLevel` | Account level needed to queue |
+| `Tag`, `Color`, `TagColor`, `Image`, `Icon`, `Description` | How its card looks |
 
-A mode with `Kind = "ClearHouse"` or `"Tutorial"` starts those match kinds; `MinLevel` gates by account level.
+### `Matchmaking.GetMode(id) → Mode?`
+
+```lua
+local MatchmakingContent = require(game.ReplicatedStorage.Content.Matchmaking)
+local mode = MatchmakingContent.GetMode("5v5")
+print(mode.Name, mode.TeamSize.Attackers)
+```
+
+### `Matchmaking.ModesIn(categoryId) → { Mode }`
+
+```lua
+for _, mode in MatchmakingContent.ModesIn("Arcade") do print(mode.Id) end
+```
+
+### `Matchmaking.PartyLimit(mode) → number`
+
+The biggest party a mode allows: the smaller side, or the only side when the other is 0.
+
+```lua
+print(MatchmakingContent.PartyLimit(MatchmakingContent.GetMode("5v5"))) -- 5
+```
+
+### `Matchmaking.PrivateLimit(mode) → number` / `Matchmaking.FitMode(modeId, size, private) → Mode?`
+
+Biggest party for a private match / the mode a party of that size plays (the picked one, or the next of its category that fits).
+
+```lua
+local mode = MatchmakingContent.FitMode("1v1", 3, false) -- a mode a party of 3 fits
+```
 
 ## Helpers you can reuse
 
-| Function | What it does |
-| --- | --- |
-| `Store.Sorted(name)` / `Hash(name)` / `Publish(topic, msg)` / `Subscribe(topic, fn)` / `Now()` | MemoryStore and MessagingService **with retries**, and local stand-ins in Studio |
-| `Helpers.Retry.Call(label, fn, attempts?)` | `pcall` with retries and exponential backoff |
-| `TeamPacker.Pack(tickets, now, limits)` | The next match's two sides, or `nil` |
+### `Store.Sorted(name)` / `Store.Hash(name)`
+
+A MemoryStore SortedMap / HashMap wrapper whose calls retry with backoff (`Helpers.Retry`). In Studio (`ServerRole.IsLocal()`) they're local stand-ins, so the queue works offline. Methods used in the code: `Set(key, value, ttl, sortKey?)`, `Remove(key)`, and reads.
+
+```lua
+local Store = require(Matchmaking.Store)
+local queue = Store.Sorted(MatchmakingContent.QUEUE_MAP)
+queue.Set(party.Id, ticket, MatchmakingContent.TICKET_TTL, ticket.T)
+```
+
+### `Store.Publish(topic, message)` / `Store.Subscribe(topic, handler)` / `Store.Now()`
+
+MessagingService with retries; `Now()` is the shared clock tickets are sorted by.
+
+```lua
+Store.Subscribe(MatchmakingContent.MATCH_TOPIC, function(message) print(message.K, message.I) end)
+Store.Publish(MatchmakingContent.MATCH_TOPIC, { K = "Match", I = matchId, U = userIds })
+```
+
+### `TeamPacker.Pack(tickets, now, limits) → sides?`
+
+The next match's two sides from the oldest tickets, or `nil`.
+
+### `Helpers.Retry.Call(label, fn, attempts?)`
+
+See [Handlers and helpers](../foundations/helpers.md#helpersretry-server).
 
 ## Extension points
 
@@ -134,7 +288,21 @@ A mode with `Kind = "ClearHouse"` or `"Tutorial"` starts those match kinds; `Min
 
 ## Client
 
-| Function | What it does |
-| --- | --- |
-| `Client.Core.Matchmaking.Play()` / `PlayWithParty()` / `OpenModes()` / `OpenParty()` | The lobby's PLAY / PLAY WITH PARTY buttons; the Game Modes and Party panels |
-| `Client.Core.ModeMenu.Selected()` / `Pick(modeId)` / `Open()` / `.Changed` / `SetPartySize(size)` | The picked mode (client-only; the server re-checks it) |
+```lua
+local Core = game.ReplicatedStorage.Modules.Client.Core
+local Matchmaking = require(Core.Matchmaking)
+local ModeMenu = require(Core.ModeMenu)
+```
+
+| Function | Does | Example |
+| --- | --- | --- |
+| `Matchmaking.Play()` | The PLAY button (K): queue for the picked mode, or cancel | `Matchmaking.Play()` |
+| `Matchmaking.PlayWithParty()` | PLAY WITH PARTY | `Matchmaking.PlayWithParty()` |
+| `Matchmaking.Queued()` | Searching right now | `if Matchmaking.Queued() then button.Text = "CANCEL" end` |
+| `Matchmaking.OpenModes()` | The Game Modes panel (leader only, not while searching) | `Matchmaking.OpenModes()` |
+| `Matchmaking.OpenParty()` | The Party menu (L) | `Matchmaking.OpenParty()` |
+| `ModeMenu.Selected()` | The picked mode's Id (this client only; the server re-checks) | `print(ModeMenu.Selected())` |
+| `ModeMenu.Pick(modeId)` | Pick one | `ModeMenu.Pick("ClearHouse")` |
+| `ModeMenu.Open()` | Open the panel | `ModeMenu.Open()` |
+| `ModeMenu.SetPartySize(size)` | Grey out modes the party is too big for | `ModeMenu.SetPartySize(#party.Members)` |
+| `ModeMenu.Changed` | Signal: the new Id | `ModeMenu.Changed:Connect(print)` |

@@ -124,17 +124,23 @@ nav:
           - Networking with Packets: api/foundations/packets.md
           - Player data and content: api/foundations/data-and-content.md
           - Effects and sound: api/foundations/effects.md
+          - Handlers and helpers: api/foundations/helpers.md
       - Game systems:
           - Siege match: api/systems/siege.md
           - Matchmaking and parties: api/systems/matchmaking.md
           - Classes and abilities: api/systems/classes.md
+          - Class abilities: api/systems/abilities.md
           - Drones and cameras: api/systems/drones-cameras.md
           - Guns: api/systems/guns.md
+          - Movement and camera: api/systems/movement.md
           - Combat and damage: api/systems/combat.md
           - "World: boards, soft walls, grenades": api/systems/world.md
           - NPCs and bots: api/systems/npcs.md
+          - Lobby, teleporters and gun range: api/systems/lobby.md
           - Progression and economy: api/systems/progression.md
-          - Client modules: api/systems/client.md
+          - Progress, leaderboards, analytics: api/systems/progress-analytics.md
+          - Settings and keybinds: api/systems/settings.md
+          - "Client: menus, HUD, screens": api/systems/client.md
       - Reference:
           - All extension points: api/reference/extension-points.md
           - All packets: api/reference/packets.md

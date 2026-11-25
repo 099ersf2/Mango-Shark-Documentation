@@ -4,99 +4,215 @@ Attackers scout with **drones**; defenders watch with **security cameras**. Both
 
 !!! abstract "Source"
 
-    `Systems.Drones.DroneService`, `Systems.Cameras.CameraService`; client `Client.Gadgets.DroneController`, `Client.Gadgets.CameraController`, `Client.Gadgets.FeedInfo`. Data: `Content.Drones`, `Content.Cameras`. Design guide: [Scout drones](../../DRONES.md).
+    `Systems.Drones.DroneService`, `Systems.Cameras.CameraService`; client `Client.Gadgets.DroneController`, `Client.Gadgets.CameraController`, `Client.Gadgets.FeedInfo`. Data: `Content.Drones`, `Content.Cameras`. Guide: [Scout drones](../../DRONES.md).
 
-## Drones
+```lua
+local Systems = game.ServerScriptService.Modules.Systems
+local DroneService = require(Systems.Drones.DroneService)
+local CameraService = require(Systems.Cameras.CameraService)
+```
 
-### Who owns what
+## Drones: how they work
 
 | | Owner |
 | --- | --- |
 | Throwing, health, charges, speed checks, scans | **Server** |
 | Driving (physics) | The **owner's client**, after the drone lands |
 
-A throw, step by step (from the `DroneService` header):
+1. **Checks:** alive, not in the lobby, not Stunned or CantDoAnything, a charge ready, a free slot, past `THROW_COOLDOWN`, not stopped by `Drone.PreventDeploy`.
+2. **Throw:** clones `Assets.Models.Gadgets.Drone` ahead of the head (never through a wall) into `workspace.Drones` with `DroneOwner`, `Team` and `DroneSlot`. The server flies it; when it stops, it hands the physics to the owner's client.
+3. **Health:** the drone's Humanoid takes damage from every weapon through `Combat.ApplyHit`; its team can't hurt it. At 0 it's destroyed and its charge comes back after `RESPAWN_COOLDOWN`.
+4. **Anti-cheat:** every 0.25 s, a drone below the world dies; one going faster than `BOOST_SPEED × SPEED_SLACK` three checks in a row is stopped and the server takes its physics back.
+5. **Scanning** (once per `SPOT_COOLDOWN`): the enemy nearest the crosshair within `SPOT_ANGLE`° and `SPOT_RANGE` studs, in clear view, gets a **static** mark for the team for `SPOT_TIME` s. Room volumes, triggers and other characters don't block a scan.
 
-1. **Checks:** alive, not in the lobby, not Stunned or CantDoAnything, a charge ready, a free slot, past `THROW_COOLDOWN`, and not stopped by `Drone.PreventDeploy`.
-2. **Throw:** clones `Assets.Models.Gadgets.Drone` just ahead of the head (never through a wall) into `workspace.Drones` with `DroneOwner`, `Team` and `DroneSlot`. The server flies it; when it skids to a stop, the server hands its physics to the owner's client.
-3. **Health:** the drone's Humanoid takes damage from every weapon through `Combat.ApplyHit`. Its team can't hurt it. At 0 it's destroyed and its charge starts coming back after `RESPAWN_COOLDOWN`.
-4. **Anti-cheat:** every 0.25 s, a drone below the world dies; one faster than `BOOST_SPEED * SPEED_SLACK` three checks in a row is stopped and the server takes its physics back.
+!!! note "Why `Died` never fires"
 
-!!! note "Why the Humanoid never fires `Died`"
+    Drones, cameras and gadgets have Humanoids with the state machine off (it would fight their physics). Destruction is `HealthChanged` reaching 0.
 
-    Drones, cameras and gadgets have Humanoids with the state machine off (it would fight their physics), so `Died` never fires. Destruction is `HealthChanged` reaching 0.
+Charges show on the Player as `DronesReady`, `DroneNextReady` (server time) and `DronesMax`. A new match clears every drone and refills everyone; drones stay when their owner dies.
 
-### Scanning
+---
 
-`Packets.Drone.Scan` (at most once every `SPOT_COOLDOWN` s): from the drone's camera along the look, the enemy nearest the crosshair within `SPOT_ANGLE`° and `SPOT_RANGE` studs, in clear view. Invisible or non-collidable parts (room volumes, triggers) and other characters don't block a scan. The team gets `Packets.Drone.Marked`: a **static** mark where the enemy stood, for `SPOT_TIME` s. It never follows them; scanning again replaces it.
+## `DroneService`
 
-### `DroneService` API
+### `DroneService.Deploy(player, look) → Model?`
 
-| Function | What it does |
-| --- | --- |
-| `DroneService.Deploy(player, look)` | Every check, then throws one; returns the drone or `nil` |
-| `DroneService.Place(player, cframe)` | Puts their drone down there, no throw (a game mode's drone) |
-| `DroneService.Spot(player, drone, look)` | Scans the enemy the drone looks at; `true` if anyone was marked |
-| `DroneService.Mark(players, key, position, seconds)` | Shows these players a static mark (one per key) |
-| `DroneService.SetEnabled(player, on)` | `false`: no drone at all (Siege defenders) |
-| `DroneService.SetLockedIn(player, on)` | `true`: held in the drone's view with no body (Siege Prep) |
-| `DroneService.Lock(player)` | Their drones stay but nobody views or drives them again (a dead attacker) |
-| `DroneService.CanView(player)` | May they look through their drone now |
-| `DroneService.AddCharge(player)` | One more drone (slot and charge) until the next refund; Siege gives attackers a second one in Action |
-| `DroneService.Clear(player?, refund?)` | Removes a player's drones (`nil`: everyone's); `refund` gives charges back now |
-| `DroneService.Of(player)` / `All()` | A player's living drones / every living drone (NPCs read it) |
-| `DroneService.AddExternal(model)` | A drone the server drives itself (a bot's); only listed in `All` |
+Every check, then throws one along the unit look. What `Packets.Drone.Deploy` calls.
 
-Charges show on the Player as `DronesReady`, `DroneNextReady` (server time) and `DronesMax`. A new match (`Match.Started`) clears every drone and refills everyone; drones stay when their owner dies.
+```lua
+local drone = DroneService.Deploy(player, player.Character.Head.CFrame.LookVector)
+```
 
-### Extension points
+### `DroneService.Place(player, cframe)`
+
+Puts the player's drone down there with no throw (Siege gives each attacker one at their spawn in Prep).
+
+```lua
+DroneService.Place(player, spawnPart.CFrame + Vector3.new(0, 1, 0))
+```
+
+### `DroneService.Spot(player, drone, look) → boolean`
+
+Scans from that drone along the look; `true` if an enemy was marked. What `Packets.Drone.Scan` calls.
+
+```lua
+local scanned = DroneService.Spot(player, drone, look)
+```
+
+### `DroneService.Mark(players, key, position, seconds)`
+
+Shows these players a static mark. One mark per `key`; a new one replaces it. Recon Pulse, the proximity sensor and Leo's scan all use this.
+
+```lua
+DroneService.Mark(SiegeService.Players("Attackers"), "Intel", Vector3.new(10, 3, 40), 10)
+```
+
+### `DroneService.SetEnabled(player, on)`
+
+`false`: no drone at all (Siege defenders).
+
+```lua
+DroneService.SetEnabled(defender, false)
+```
+
+### `DroneService.SetLockedIn(player, on)`
+
+`true`: held in the drone's view with no body (Siege Prep). The client refuses to leave unless forced.
+
+```lua
+DroneService.SetLockedIn(attacker, true)
+```
+
+### `DroneService.Lock(player)`
+
+Their drones stay in the world but nobody views or drives them again (a dead attacker).
+
+```lua
+DroneService.Lock(deadAttacker)
+```
+
+### `DroneService.CanView(player) → boolean`
+
+May they look through their drone now.
+
+```lua
+if not DroneService.CanView(player) then return false end
+```
+
+### `DroneService.AddCharge(player)`
+
+One more drone (a slot and a charge) until the next refund. Siege gives attackers a second one in Action.
+
+```lua
+DroneService.AddCharge(player)
+```
+
+### `DroneService.Clear(player?, refund?)`
+
+Removes a player's drones (`nil`: everyone's). `refund` gives the charges back now instead of starting their cooldown.
+
+```lua
+DroneService.Clear(nil, true) -- new round: everyone's drones gone, charges back
+```
+
+### `DroneService.Of(player) → { [slot]: Model }` / `DroneService.All() → { Model }`
+
+A player's living drones / every living drone, external ones included (NPCs read it to shoot drones).
+
+```lua
+for slot, drone in DroneService.Of(player) do print(slot, drone:GetPivot().Position) end
+print(#DroneService.All(), "drones out")
+```
+
+### `DroneService.AddExternal(model)`
+
+A drone the server drives itself (a Siege bot's, `BotDrones`). Only listed in `All`.
+
+```lua
+DroneService.AddExternal(botDrone)
+```
 
 | Point | Kind | Arguments |
 | --- | --- | --- |
 | `Drone.PreventDeploy` | Any | player |
-| `Drone.PreventRespawn` / `Drone.PreventView` | Any | player |
+| `Drone.PreventRespawn` | Any | player (then `DroneLost` is set: NO SIGNAL) |
+| `Drone.PreventView` | Any | player |
 | `Drone.Deployed` | Fire | player, drone |
 | `Drone.Destroyed` | Fire | player, drone, killer? |
 | `Drone.Noise` | Fire | drone, position, share (of an NPC's hearing range) |
 | `Drone.Spotted` | Fire | player, target, position |
 
+```lua
+-- Only one drone throw per Prep phase
+Extensions.Add("Drone.PreventDeploy", function(player)
+	return SiegeService.Phase() == "Prep" and #DroneService.Of(player) > 0
+end)
+```
+
 ---
 
-## Security cameras
+## Security cameras: `CameraService`
 
-A game mode hands `CameraService` the map's cameras when a match starts. Each becomes a model in `workspace.SiegeCameras`: an invisible hit box with a Humanoid, pivoted exactly on the source, so **its pivot is where the camera looks**. Because it has a Humanoid, every gun, bash and explosion damages it with no gun-code changes.
+A game mode hands it the map's cameras when a match starts. Each becomes a model in `workspace.SiegeCameras`: an invisible hit box with a Humanoid, **pivoted exactly where the camera looks**. Because it has a Humanoid, every gun, bash and explosion damages it with no gun-code changes. State is attributes: `CameraId`, `CameraName`, `Team`, `Destroyed`, `Bulletproof`.
 
-### Damage rules, all through extension points
+Damage rules, all through extension points: `Combat.PreventFriendlyFire` (its own team can't hurt it), `Camera.PreventDamage` (anything else may refuse), `Gun.DamageMultiplier` (bullets do 0 to a `Bulletproof` camera). At 0 health it stays listed but is `Destroyed`: looking through shows NO SIGNAL.
 
-| Point | Rule |
-| --- | --- |
-| `Combat.PreventFriendlyFire` | The camera's own team can't hurt it |
-| `Camera.PreventDamage` | Anything else may refuse a hit |
-| `Gun.DamageMultiplier` | Bullets do 0 to a `Bulletproof` camera (a bash or explosion still hurts it) |
+### `CameraService.Setup(sources, team)`
 
-At 0 health it stays listed but is `Destroyed`: looking through it shows NO SIGNAL.
+`sources`: parts or models (the map's Cameras folder, things tagged `Camera`).
 
-### `CameraService` API
+```lua
+CameraService.Setup(map.Cameras:GetChildren(), "Defenders")
+```
 
-| Function | What it does |
-| --- | --- |
-| `CameraService.Setup(sources, team)` | `sources`: parts or models (the map's Cameras folder, things tagged `Camera`) |
-| `CameraService.Add(model, name, team, bulletproof)` | A camera placed during the match (a class gadget) |
-| `CameraService.List()` | Every camera model, in order |
-| `CameraService.Stop(player)` | They stop looking through a camera |
-| `CameraService.Clear()` | Removes every camera (match end) |
+### `CameraService.Add(model, name, team, bulletproof)`
 
-Viewing (`Packets.Camera.View`) checks the cooldown, that the camera exists, that the player is alive and on its team, and `Camera.PreventView`, then sets the player's `CameraViewing` attribute. The client moves its own camera.
+A camera placed during the match (the Warden's gadget).
 
-### Extension points
+```lua
+CameraService.Add(model, `{player.Name}'s camera`, "Defenders", true)
+```
+
+### `CameraService.List() → { Model }`
+
+Every camera model, in order.
+
+```lua
+for _, camera in CameraService.List() do
+	print(camera:GetAttribute("CameraName"), camera:GetAttribute("Destroyed"))
+end
+```
+
+### `CameraService.Stop(player)`
+
+They stop looking through a camera.
+
+```lua
+CameraService.Stop(player)
+```
+
+### `CameraService.Clear()`
+
+Removes every camera (end of a match).
+
+```lua
+CameraService.Clear()
+```
 
 | Point | Kind | Arguments |
 | --- | --- | --- |
 | `Camera.PreventView` | Any | player, model (also gates scans) |
 | `Camera.PreventDamage` | Any | attacker, model |
 | `Camera.Viewed` | Fire | player, model? (`nil`: stopped) |
-| `Camera.Scanned` | Fire | spotter, target (Siege uses it to reveal classes) |
+| `Camera.Scanned` | Fire | spotter, target (Siege reveals classes with it) |
 | `Camera.Destroyed` | Fire | model, killer? |
+
+```lua
+-- Cameras can't be used during Selection
+Extensions.Add("Camera.PreventView", function(player, model)
+	return SiegeService.Phase() == "Selection"
+end)
+```
 
 ## Packets
 
@@ -111,28 +227,28 @@ Viewing (`Packets.Camera.View`) checks the cooldown, that the camera exists, tha
 | `Camera.Look` | Client → server | CameraId, yaw, pitch |
 | `Scan.Alert` | Server → the scanned player | — |
 
+---
+
 ## Client
 
-| Function | What it does |
-| --- | --- |
-| `DroneController.Exit(force?)` | Leave the drone; refused while `DroneLockedIn` unless forced |
-| `DroneController.Cycle(direction)` | Next (1) / previous (-1) living drone |
-| `CameraController.Use()` / `View(model)` / `Cycle(direction)` / `Scan()` / `Exit(tellServer?)` | Security cameras |
-
-## Example
-
 ```lua
-local DroneService = require(game.ServerScriptService.Modules.Systems.Drones.DroneService)
-local Extensions = require(game.ReplicatedStorage.Modules.Shared.Extensions)
-
--- Give a player a drone at a spot, no throw
-DroneService.Place(player, CFrame.new(0, 5, 0))
-
--- Show two teammates a mark for 10 seconds
-DroneService.Mark({ a, b }, "Intel", Vector3.new(10, 3, 40), 10)
-
--- React to scans
-Extensions.Add("Drone.Spotted", function(player, target, position)
-	print(player.Name, "scanned", target.Name, "at", position)
-end)
+local Gadgets = game.ReplicatedStorage.Modules.Client.Gadgets
+local DroneController = require(Gadgets.DroneController)
+local CameraController = require(Gadgets.CameraController)
 ```
+
+| Function | Does | Example |
+| --- | --- | --- |
+| `DroneController.Use()` | The Drone key (5): into your drone, or throw one if none is out | `DroneController.Use()` |
+| `DroneController.Throw()` | Throw a drone | `DroneController.Throw()` |
+| `DroneController.View(drone)` | Look through one drone | `DroneController.View(myDrone)` |
+| `DroneController.Exit(force?)` | Leave the drone; refused while `DroneLockedIn` unless forced | `DroneController.Exit(true)` |
+| `DroneController.Cycle(direction)` | Next (1) / previous (-1) living drone | `DroneController.Cycle(1)` |
+| `DroneController.Hop()` / `Spot()` | Hop (Space) / scan (Fire) | `DroneController.Spot()` |
+| `DroneController.BindDriving()` | (Re)bind the driving controls | |
+| `CameraController.Use()` | Open the cameras (a defender's Drone key) | `CameraController.Use()` |
+| `CameraController.View(model)` / `Cycle(direction)` | Look through / switch camera | `CameraController.Cycle(-1)` |
+| `CameraController.Scan()` | Scan the player in the crosshair | `CameraController.Scan()` |
+| `CameraController.Exit(tellServer?)` | Leave the cameras | `CameraController.Exit(true)` |
+
+`Client.Gadgets.FeedInfo` (no API) draws the objective, location and compass on both feeds.

@@ -17,6 +17,17 @@ local kind: Kind = if RunService:IsStudio()
 	else "Lobby"
 ```
 
+```lua
+local ServerRole = require(game.ServerScriptService.Modules.Systems.Matchmaking.ServerRole)
+if ServerRole.IsLobby() then
+	-- parties, queue, shop
+end
+if ServerRole.IsMatch() then
+	-- Siege hooks
+end
+print(ServerRole.Kind(), ServerRole.JobId())
+```
+
 | Function | Lobby | Match | Studio |
 | --- | :-: | :-: | :-: |
 | `ServerRole.Kind()` | `"Lobby"` | `"Match"` | `"Studio"` |
@@ -86,19 +97,107 @@ function SiegeService.Players(team: string?, aliveOnly: boolean?): { Player }
 end
 ```
 
-| Function | Returns |
-| --- | --- |
-| `SiegeService.Phase()` | The phase name (above) |
-| `SiegeService.IsPlaying(player)` | `true` if they're in the running match |
-| `SiegeService.TeamOf(player)` | `"Attackers"`, `"Defenders"` or `nil` |
-| `SiegeService.IsAlive(player)` | In the match and not dead |
-| `SiegeService.Players(team?, aliveOnly?)` | Human players in the match (bots left out) |
-| `SiegeService.Site()` | The chosen site's name, `nil` before the vote ends |
-| `SiegeService.Round()` | The round being played (1..), `0` before the first |
-| `SiegeService.IsTutorial()` | `true` while the running match is Recruit Training |
-| `SiegeService.Reveal(defender)` | Shows that defender's class to attackers from now on |
-| `SiegeService.ForceEnd(winner?, reasonKey)` | Ends the round now (admins, tests). `reasonKey` is a `Content.Games.Siege.REASONS` key or any text |
-| `SiegeMap.Find()` / `Check(map)` / `Load()` | The Workspace map; `Load()` returns its info or `nil` and warns **every** problem |
+```lua
+local Siege = game.ServerScriptService.Modules.Systems.Games.Siege
+local SiegeService = require(Siege.SiegeService)
+```
+
+### `SiegeService.Phase() → string`
+
+`Idle`, `WaitingForPlayers`, `Selection`, `Reveal`, `Prep`, `Action`, `RoundEnd` or `End`.
+
+```lua
+if SiegeService.Phase() ~= "Action" then
+	return false, "Only during Action."
+end
+```
+
+### `SiegeService.IsPlaying(player) → boolean`
+
+In the running match.
+
+```lua
+if not SiegeService.IsPlaying(player) then return end
+```
+
+### `SiegeService.TeamOf(player) → string?`
+
+`"Attackers"`, `"Defenders"` or `nil`. (In most code you can also read the `Team` attribute.)
+
+```lua
+local side = SiegeService.TeamOf(player)
+```
+
+### `SiegeService.IsAlive(player) → boolean`
+
+In the match and not dead this round.
+
+```lua
+local alive = SiegeService.IsAlive(player)
+```
+
+### `SiegeService.Players(team?, aliveOnly?) → { Player }`
+
+Human players in the match (bots are left out). `team` nil: both sides.
+
+```lua
+local livingDefenders = SiegeService.Players("Defenders", true)
+print(#livingDefenders, "defenders left")
+```
+
+### `SiegeService.Site() → string?`
+
+The chosen site's name, `nil` before the vote ends.
+
+```lua
+print("Defending", SiegeService.Site() or "(not chosen yet)")
+```
+
+### `SiegeService.Round() → number`
+
+The round being played (1..), `0` before the first.
+
+```lua
+if SiegeService.Round() == 1 then showTutorialHints() end
+```
+
+### `SiegeService.IsTutorial() → boolean`
+
+`true` while the running match is Recruit Training.
+
+```lua
+if SiegeService.IsTutorial() then return end -- no stats from training
+```
+
+### `SiegeService.Reveal(defender)`
+
+Shows that defender's class to the attackers from now on (what a drone scan does). Only then is it ever sent to them.
+
+```lua
+-- (Siege already does this for drone and camera scans; shown as the pattern)
+Extensions.Add("Drone.Spotted", function(player, target, position)
+	local victim = Players:GetPlayerFromCharacter(target)
+	if victim then SiegeService.Reveal(victim) end
+end)
+```
+
+### `SiegeService.ForceEnd(winner?, reasonKey)`
+
+Ends the round now, for admins and tests. `winner` is `"Attackers"`, `"Defenders"` or `nil`; `reasonKey` a `Content.Games.Siege.REASONS` key or any text.
+
+```lua
+SiegeService.ForceEnd("Attackers", "BombsPlanted")
+```
+
+### `SiegeMap.Find()` / `SiegeMap.Check(map)` / `SiegeMap.Load()`
+
+The Workspace map / its problems / its info, or `nil` after warning **every** problem (missing sites, bombs, spawns…). Run `Load()` after building a map.
+
+```lua
+local SiegeMap = require(Siege.SiegeMap)
+local info = SiegeMap.Load()
+if info then print("Map OK") end
+```
 
 ## Extension points
 
@@ -149,12 +248,74 @@ end
 
 ## Spectating, the host, other match kinds
 
-| Function | What it does |
+### `SpectateService.Begin(player, delay, choices)`
+
+Starts spectating after the death camera, after `delay` seconds. `choices(player)` returns `({ Choice }, mode)`: who they may watch and `"Team"` or `"Enemy"`.
+
+```lua
+local SpectateService = require(Siege.SpectateService)
+SpectateService.Begin(player, 3, function(viewer)
+	return teammatesAlive(viewer), "Team"
+end)
+```
+
+### `SpectateService.Stop(player)` / `StopAll()` / `Watching(player)`
+
+Stop one / everyone; who they watch now.
+
+```lua
+SpectateService.StopAll() -- round over
+```
+
+### `MatchHost.Record() → MatchRecord?`
+
+The match server's record `{ Id, Mode, Teams, Map, Private?, Expected, Parties, … }`. **Teams come from here, never from the client.**
+
+```lua
+local MatchHost = require(game.ServerScriptService.Modules.Systems.Matchmaking.MatchHost)
+local record = MatchHost.Record()
+if record and record.Private then return end -- private matches count for nothing
+```
+
+### `MatchHost.TeamOf(userId) → string?`
+
+```lua
+print(MatchHost.TeamOf(player.UserId)) -- "Attackers"
+```
+
+### `MatchHost.ReturnAll()` / `MatchHost.Clear()`
+
+Send everyone back to the lobby (end of match) / forget the record.
+
+```lua
+MatchHost.ReturnAll()
+```
+
+### `TutorialService.Progress(player) → Progress?`
+
+The recruit's training progress `{ Round, Phase, Done, Missed, Counts }` (tests). Fires `Tutorial.Finished(player, rewarded)` at the end.
+
+```lua
+local TutorialService = require(Siege.TutorialService)
+print(TutorialService.Progress(player))
+```
+
+### Clear House
+
+`Systems.Games.ClearHouse.ClearHouse`: attackers vs NPC guards, one round, no bombs. See [Clear House](../../CLEAR_HOUSE.md).
+
+| Function | Does |
 | --- | --- |
-| `SpectateService.Begin(player, delay, choices)` / `Stop(player)` / `StopAll()` / `Watching(player)` | Spectating after the death camera. `choices(player)` returns `({ Choice }, mode)` |
-| `MatchHost.Record()` / `TeamOf(userId)` / `ReturnAll()` / `Clear()` | The match server's record (teams come from here, never from the client) and the return to the lobby |
-| `TutorialService.Progress(player)` | Recruit Training progress (tests). Fires `Tutorial.Finished(player, rewarded)` |
-| `ClearHouse.Prepare(map)` / `Populate(players)` / `Left()` / `Total()` / `GuardOf(model)` / `Rooms()` / `Clear()` | Clear House (attackers vs NPC guards, one round, no bombs). See [Clear House](../../CLEAR_HOUSE.md) |
+| `ClearHouse.Prepare(map)` | Boards every door and window, finds the rooms |
+| `ClearHouse.Populate(players)` | Places the guards (counts from `Content.Games.ClearHouse`) |
+| `ClearHouse.Left()` / `Total()` | Guards alive / placed |
+| `ClearHouse.GuardOf(model)` / `Rows()` / `Rooms()` | Guard records / room list |
+| `ClearHouse.Clear()` | Removes it all |
+
+```lua
+local ClearHouse = require(game.ServerScriptService.Modules.Systems.Games.ClearHouse.ClearHouse)
+print(ClearHouse.Left(), "/", ClearHouse.Total(), "guards left")
+```
 
 **Recruit Training** (mode Kind `Tutorial`): one player vs one easy bot, two rounds (attack, then defend). Selection is auto-filled and ends at once; the snapshot carries `Tutorial = true`. See [Recruit Training](../../TUTORIAL.md).
 

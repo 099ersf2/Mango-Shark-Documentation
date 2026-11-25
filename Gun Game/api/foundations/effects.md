@@ -16,11 +16,32 @@ EffectService.Stop("Hit", character)
 EffectService.Play("GunFire_Rifle", { Parent = muzzle }, shooter) -- everyone but the shooter, who played it already
 ```
 
-| Function | What it does |
-| --- | --- |
-| `EffectService.Play(name, options?, except?)` | Sends the effect to the clients its `Replicate` setting names, skipping `except` |
-| `EffectService.Stop(name, target?, data?)` | Stops a held effect on every client (`data` like `{ Instant = true }` is passed to its parts) |
-| `Client.Effects.Play(name, options?)` / `Stop(...)` | Plays an effect **only on this client** |
+### `EffectService.Play(name, options?, except?)` (server)
+
+Sends the effect to the clients its `Replicate` setting names, skipping `except`. Warns once for a name not in the registry, or a `Local` effect.
+
+```lua
+local EffectService = require(game.ServerScriptService.Modules.Systems.Effects.EffectService)
+EffectService.Play("Explosion", { Position = position })
+EffectService.Play("ConsumableThrow", { Target = character }, player) -- everyone but the thrower
+```
+
+### `EffectService.Stop(name, target?, data?)` (server)
+
+Stops a held effect on every client. `data` (like `{ Instant = true }`) is passed to its parts.
+
+```lua
+EffectService.Stop(gun.Effects.Reload, character) -- what GunService does when a reload is cancelled
+```
+
+### `Effects.Play(name, options?)` / `Effects.Stop(name, target?, data?)` (client)
+
+Plays an effect **only on this client** (any `Replicate`, including `Local`).
+
+```lua
+local Effects = require(game.ReplicatedStorage.Modules.Client.Effects)
+Effects.Play("Hitmarker", { Target = part })
+```
 
 ## Who receives it
 
@@ -63,13 +84,15 @@ Inside a part, `context` offers `Add(instance, lifetime?)`, `Delay(seconds, fn)`
 
 ## Other client feedback
 
-| Function | What it does |
-| --- | --- |
-| `Client.Movement.MovementCamera.Shake(magnitude, roughness, fadeIn, fadeOut)` | Camera shake |
-| `Client.Guns.GunEffects.Play(name, options?)` / `LocalShot(ctx, directions, muzzle?)` | Gun effects; your own shot's tracers and flash |
-| `Client.Guns.Quality.Scale()` / `Count(n)` | The effect quality factor; a particle count scaled by it |
-| `Client.Audio.AudioSettings.Get(group)` / `GetAll()` / `Set(group, volume)` | Volumes |
-| `Client.Audio.SoundGroups.Get(name?)` / `Assign(sound, name?)` / `Master()` | Sound groups |
-| `Client.Core.UIFeel.Play(kind)` | UI sounds: `Hover`, `Press`, `Open`, `Close`, `Confirm`, `Error`, `Tick`, `Notify` |
+| Function | What it does | Example |
+| --- | --- | --- |
+| `MovementCamera.Shake(magnitude, roughness, fadeIn, fadeOut)` | Camera shake | `MovementCamera.Shake(3, 10, 0.1, 0.6)` |
+| `GunEffects.Play(name, options?)` / `LocalShot(ctx, directions, muzzle?)` | Gun effects; your own shot's tracers and flash | `GunEffects.Play("GunFire_Rifle", { Parent = muzzle })` |
+| `Quality.Scale()` / `Count(n)` | The effect quality factor; a particle count scaled by it | `emitter:Emit(Quality.Count(30))` |
+| `AudioSettings.Get(group)` / `GetAll()` / `Set(group, volume)` | Volumes 0–1 | `AudioSettings.Set(group, 0.5)` (a `PlayerSettings.VolumeGroups` name) |
+| `SoundGroups.Get(name?)` / `Assign(sound, name?)` / `Master()` | Sound groups | `SoundGroups.Assign(sound, groupName)` |
+| `UIFeel.Play(kind)` | UI sounds: `Hover`, `Press`, `Open`, `Close`, `Confirm`, `Error`, `Tick`, `Notify` | `UIFeel.Play("Error")` |
+
+(`MovementCamera` is `Client.Movement`, `GunEffects`/`Quality` are `Client.Guns`, `AudioSettings`/`SoundGroups` are `Client.Audio`, `UIFeel` is `Client.Core`.)
 
 More: [Effects and camera shake](../../EXAMPLES.md#client-settings-menus-and-feedback).

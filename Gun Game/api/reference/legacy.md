@@ -29,14 +29,7 @@ These systems are from the game before Siege (Team Deathmatch, Free-for-All, Eli
 
 Content: `Content.Match.Modes.*`, `Content.Match.Settings`, `Content.Match.Teams`. Extension points: `Match.Started`, `Match.RoundStarted`, `Match.Scored`, `Match.Ended`, `Team.Changed`. Client: `Client.Hud.MatchHud`, `Client.Core.MatchMenu` (no API).
 
-## Old lobby flow: `LobbyService`
-
-| Function | What it does |
-| --- | --- |
-| `LobbyService.IsInLobby(player)` | Same as the `InLobby` attribute |
-| `LobbyService.SendToArena(player)` / `SendToLobby(player)` | Moves the player and gives/takes guns. Still handy in tests |
-| `LobbyService.Readmit(player)` / `Release(player)` | Next spawn in the lobby / out of the lobby without moving |
-| `LobbyService.SelectMap(player, mapId)` | Lobby hub map pick |
+`LobbyService` is **current**: see [Lobby, teleporters and the gun range](../systems/lobby.md).
 
 ## Removed
 
