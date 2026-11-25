@@ -423,7 +423,7 @@ See [Consumables](CONSUMABLES.md).
 
 ### Added
 
-- **[Overview](API.md)**: one page covering every public function, extension point, packet, Cmdr command, attribute, tag, data field and collision group, with recipes for common jobs.
+- **Overview (`API.md`, since replaced by the [API guide](api/index.md))**: one page covering every public function, extension point, packet, Cmdr command, attribute, tag, data field and collision group, with recipes for common jobs.
 
 
 ## 2026-11-09: Decisions round (shop stand, keys, recoil, bash, debris, Revolver)

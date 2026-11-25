@@ -100,7 +100,7 @@ Extensions.Add("Gun.PreventFire", function(who, gunId, tool)
 end)
 ```
 
-The same pattern stops other actions: `Gun.PreventMelee` (gun bash), `Movement.PreventSprint`, `Consumable.PreventThrow`, `Drone.PreventDeploy`. See [extension points](API_SHARED.md#sharedextensions-extension-points).
+The same pattern stops other actions: `Gun.PreventMelee` (gun bash), `Movement.PreventSprint`, `Consumable.PreventThrow`, `Drone.PreventDeploy`. See [extension points](api/foundations/extensions.md).
 
 ---
 

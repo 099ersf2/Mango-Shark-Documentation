@@ -77,7 +77,7 @@ The site is built with MkDocs (Python-Markdown), which is stricter than GitHub's
 - Write for developers changing and testing the game, not players.
 - Put current implementation guidance before history.
 - Give every common task a code example, either on the page or in [Task-based code examples](EXAMPLES.md).
-- Link to the focused API page and related system guides; use [Overview](API.md) as the API entry point.
+- Link to the focused API page and related system guides; use the [API guide](api/index.md) as the API entry point.
 - Keep detailed dated change records in [Recent changes](CHANGELOG.md). Keep [Next steps](NEXT_STEPS.md) limited to actionable work still confirmed to be open.
 - Add each published page to the navigation in `mkdocs.yml` and the relevant section of [index.md](index.md).
 - Run `mkdocs build --strict` before submitting. It validates navigation, local links, and anchors.

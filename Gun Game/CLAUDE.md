@@ -26,7 +26,7 @@ Context for Claude working on this project. Read it before doing anything. For t
     - systems archived in `ServerStorage.Archive`.
 9. **Publishing:** never publish without the user asking. To publish, run `publish-studio.ps1` (it sends Alt+P to Studio).
 10. **Docs, every change:**
-    - write the system doc, plus `API.md`, `CHANGELOG.md` and `NEXT_STEPS.md`;
+    - write the system doc, plus its page under `api/` (and `api/reference/*` for new points, packets, attributes), `CHANGELOG.md` and `NEXT_STEPS.md`;
     - add new guides to `index.md` and `mkdocs.yml`, then run `mkdocs build --strict`;
     - push them to the docs repo: `git pull`, diff against the repo copy, merge, then copy and commit;
     - check `git show --stat HEAD` for deletions you didn't mean.
