@@ -17,6 +17,11 @@ Recent implementation notes are kept here. Older dated entries are grouped into 
 
 ## Recent changes
 
+## 2026-11-25: Code map page
+
+- New [Code map](CODE_MAP.md): every server, shared, client and content module by area, the lobby/match server split, and how a shot, an ability, a round, a death and a purchase cross the modules.
+- Built from these docs, not a live Studio session; check it against the place next time Studio is connected.
+
 ## 2026-11-24: Bigger gun animations, the hand pumps the shotgun, the Sawed-Off breaks open
 
 - The owner: the pistol slide was hard to see; "the pump shotgun had no animation. The lever in the back also has no animation. Also move the hand on top to prepare for the next shot and do an animation showing you're pumping it", plus the Sawed-Off break-open.

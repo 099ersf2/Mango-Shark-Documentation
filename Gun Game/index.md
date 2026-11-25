@@ -62,6 +62,7 @@ Internal developer documentation for the Roblox FPS place **Gun Game**. Use the 
 | [Task-based code examples](EXAMPLES.md) | Copyable snippets for common server and client tasks |
 | [AI coding guide](AI_CODING_GUIDE.md) | Project architecture, implementation rules, and testing |
 | [Claude project context](CLAUDE.md) | Condensed project-specific instructions for Claude |
+| [Code map](CODE_MAP.md) | Where every module lives, what it does, and how the main flows cross the code |
 | [Performance](PERFORMANCE.md) | Performance measurements and optimizations |
 | [Security](SECURITY.md) | Server validation and security review notes |
 | [Design decisions](DECISIONS.md) | Recorded decisions that guide implementation |

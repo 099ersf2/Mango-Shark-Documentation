@@ -81,6 +81,7 @@ nav:
   - Get started:
       - AI coding guide: AI_CODING_GUIDE.md
       - Claude project context: CLAUDE.md
+      - Code map: CODE_MAP.md
       - Documentation authoring: DOC_TEMPLATE.md
       - Next steps: NEXT_STEPS.md
   - Game:
