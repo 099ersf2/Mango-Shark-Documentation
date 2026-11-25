@@ -17,6 +17,16 @@ Recent implementation notes are kept here. Older dated entries are grouped into 
 
 ## Recent changes
 
+## 2026-11-24: Guns move their parts when they fire
+
+- The owner: "Can you give the guns animations make the pistol have the slide back when shot on the top part. Give the revolver a barrel spin to the next slot to make it cool."
+- **Pistol slide.** On each shot the Pistol's slide (with its sights, ribs and any skin trim on it) snaps back 0.32 studs and returns in about 0.12 s, so the barrel shows; the hammer flicks. At 0 rounds the slide stays locked back until the gun is loaded. The SiegePistol does the same.
+- **Revolver cylinder.** Each shot turns the cylinder one chamber (60 degrees, its six facets line up again) over 0.14 s, and the hammer falls.
+- **Also:** the PumpShotgun and SiegeShotgun rack their pump after each shot, and every gun's trigger pulls.
+- New: `Content.Guns.Mechanics` (what moves, by model) and `Client.Guns.GunMechanics` (plays it), used by `Client.Guns.Viewmodel` and `Client.Guns.ThirdPersonGuns`. Details in ADDING_GUNS.md.
+
+Checked in a playtest with no saving: three pistol shots in first person moved the slide its full travel and back to rest each time, with the 18 trim parts of the Obsidian skin riding on it; at 0 Ammo the slide sat locked back. Three revolver shots turned the cylinder 60, 120 and 180 degrees with no drift. In third person (your own body from the side) one shot turned the Revolver's cylinder 60 degrees. No errors. Not checked: how it looks to the eye in motion (the lobby's training popup covered the view; the poses were checked in Edit instead), the pump in play, and other players on a live server. Not saved or published.
+
 ## 2026-11-24: Assault Rifle replaces the Rifle, new Pistol model, skins fit every model
 
 - The owner: "Make the AssaultRifle split", "make the skins actually work on all the models and attach properly", "give the pistol a new model", "replace the old Rifle with the Assault Rifle model and rename all references to rifle to Assault Rifle". The owner chose a full Id rename, the Assault Rifle model for the Burst Rifle too, and a pistol from the gun pack.

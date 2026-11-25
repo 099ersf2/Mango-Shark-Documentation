@@ -116,3 +116,7 @@ Clipping was 0.02 studs at most, the right hand always reached, and the left han
 - **Shoot (Breacher, shotgun):** its two shots kicked the barrel up to 10.9 degrees, then it reloaded.
 
 Not yet checked: two real players watching each other (aim pitch relay, `GunAiming`, sprint), and how it looks from every angle. The numbers above are from measurements; tune `POSES` by eye if a hold looks off.
+
+## Moving parts (2026-11-24)
+
+When ThirdPersonGuns reads a shot from the tool's Ammo (a drop of at most SHOT_DROP rounds), it also plays the gun's moving parts on the held Tool through `Client.Guns.GunMechanics` (`Content.Guns.Mechanics`): a pistol's slide, a revolver's cylinder and hammer, a pump, the trigger. A pistol at 0 Ammo shows its slide locked back. Only on this client: the part's WeldConstraint to the Handle is switched off locally and a Weld takes its place. Checked: your own Revolver seen from the side turned its cylinder 60 degrees on one shot. See ADDING_GUNS.md.
