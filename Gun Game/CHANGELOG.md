@@ -17,6 +17,14 @@ Recent implementation notes are kept here. Older dated entries are grouped into 
 
 ## Recent changes
 
+## 2026-11-24: Skin trim stays on the gun; the Revolver's turn shows
+
+- The owner: "Some skins still go off the edge or have floating parts like on the pistol and smg. The revolver does not have the spinning cylinder or it was not clear."
+- **Skins.** Every piece of skin trim on a firearm now sits flat on a real part of that gun and inside its edges (details in SKINS.md). The SMG's own trim had never been moved onto its split model; now it is. Trim no longer goes on parts that move or hide (magazine, cylinder, trigger, hammer, pump), and the Revolver's side plaque, which covered the cylinder, is gone.
+- **Revolver.** The cylinder did turn, but it is nearly round (its surface is 0.147 to 0.153 studs from the middle all the way around), so a turn looked like nothing. Six dark flutes now run along it (made on the client, welded to it) and the turn is slower with a small overshoot (0.3 s, 15% of a chamber), so each shot clearly clicks to the next chamber.
+
+Checked: lineups in Studio (side and angled) of every Pistol and SMG skin and one skin on each other gun; a recording in a playtest of five revolver shots shows the flutes moving one chamber each time with the hammer cocking. No errors. Not checked: the first-person view in a real match (in the lobby the first-person gun draws small and far, and the training popup covers it). Not saved or published.
+
 ## 2026-11-24: Guns move their parts when they fire
 
 - The owner: "Can you give the guns animations make the pistol have the slide back when shot on the top part. Give the revolver a barrel spin to the next slot to make it cool."
