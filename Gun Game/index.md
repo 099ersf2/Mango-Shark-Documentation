@@ -5,7 +5,7 @@ Internal developer documentation for the Roblox FPS place **Gun Game**. Use the 
 ## Start here
 
 - **New to the project or changing code?** Read the [AI coding guide](AI_CODING_GUIDE.md) first.
-- **Looking for a function, packet, command, or data field?** Start with the [API reference](API.md).
+- **Looking for a function, packet, command, or data field?** Start with the [API guide](api/index.md) or the [Cookbook](api/cookbook.md).
 - **Writing or updating a guide?** Follow the [documentation authoring template](DOC_TEMPLATE.md).
 - **Need a code sample for a specific task?** Browse the [task-based examples](EXAMPLES.md).
 - **Learning the current game flow?** Read [Siege](SIEGE.md), then [matchmaking and parties](MATCHMAKING.md).
@@ -57,7 +57,7 @@ Internal developer documentation for the Roblox FPS place **Gun Game**. Use the 
 
 | Guide | Covers |
 | --- | --- |
-| [API reference](API.md) | Public functions, packets, commands, tags, and data |
+| [API guide](api/index.md) | How each system works, its public functions and real code; plus reference pages for every extension point, packet, attribute and command |
 | [Documentation authoring](DOC_TEMPLATE.md) | Page structure, status labels, and verification notes |
 | [Task-based code examples](EXAMPLES.md) | Copyable snippets for common server and client tasks |
 | [AI coding guide](AI_CODING_GUIDE.md) | Project architecture, implementation rules, and testing |
@@ -75,4 +75,4 @@ These pages describe systems that have been replaced or are no longer the curren
 - [Matches, modes, and teams](MATCH.md) — older modular match-system documentation; Siege is now the active mode.
 - [Team deathmatch rounds](ROUND_SYSTEM.md) — replaced by the current Siege flow.
 
-Treat the system guide and focused [API references](API.md) as the primary technical references. The [changelog](CHANGELOG.md) and [historical backlog](NEXT_STEPS_ARCHIVE.md) preserve context; neither is a guarantee of current behavior. Check each guide's status and testing notes before relying on an unverified feature.
+Treat the system guide and [API guide](api/index.md) as the primary technical references. The [changelog](CHANGELOG.md) and [historical backlog](NEXT_STEPS_ARCHIVE.md) preserve context; neither is a guarantee of current behavior. Check each guide's status and testing notes before relying on an unverified feature.

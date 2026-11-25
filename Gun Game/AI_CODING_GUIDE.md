@@ -2,7 +2,7 @@
 
 Give this file to any AI agent before it writes code for the Roblox place **"FPS"** (Mango Shark Studios, placeId `80699390327837`, universe `10775243847`). It explains how the game is built and how new code must be written. Follow it exactly. When this file and your habits disagree, this file wins.
 
-Use the [documentation home](index.md) to find system guides. In particular, see the [API overview](API.md) and its focused [current Siege](API_SIEGE.md), [server](API_SERVER.md), [shared](API_SHARED.md), and [client](API_CLIENT.md) references, plus [Siege](SIEGE.md) for the current game mode, [Matchmaking and parties](MATCHMAKING.md) for queues and parties, and [Design decisions](DECISIONS.md) for recorded design answers.
+Use the [documentation home](index.md) to find system guides. In particular, see the [API guide](api/index.md) (start with its foundations pages: modules, extension points and packets), plus [Siege](SIEGE.md) for the current game mode, [Matchmaking and parties](MATCHMAKING.md) for queues and parties, and [Design decisions](DECISIONS.md) for recorded design answers.
 
 *Updated 2026-11-11.* Read the doc for the system you touch before changing it.
 
@@ -224,9 +224,9 @@ This is how features change each other without editing each other's code.
     - `Extensions.Product(point, ...)` is a multiplier: the handlers' numbers multiplied together, 1 with no handlers.
     - `Extensions.Fire(point, ...)` is a notification.
 - **Adding a handler:** `Extensions.Add("Gun.DamageMultiplier", function(who, gunId, humanoid, hit) return 1.5 end)` returns a function that removes it.
-- **In a new system,** offer `Prevent…` (Any), `…Multiplier` (Product) and after-the-fact (Fire) points where other features would want to hook in, and list them in the header and in `API.md`.
+- **In a new system,** offer `Prevent…` (Any), `…Multiplier` (Product) and after-the-fact (Fire) points where other features would want to hook in, and list them in the header and in [All extension points](api/reference/extension-points.md).
 - **To change another system's behavior** (perks, team rules, modes), add a handler. Don't edit that system.
-- **Points added on 2026-11-11** (full list in `API.md`):
+- **Points added on 2026-11-11** (full list in [All extension points](api/reference/extension-points.md)):
     - matches and teams: `Combat.PreventFriendlyFire`, `Match.Started`, `Match.RoundStarted`, `Match.Scored`, `Match.Ended`, `Team.Changed`;
     - deaths: `Combat.Death` (every death, with attacker and weapon);
     - shots: `Gun.Fired`;
@@ -292,7 +292,7 @@ This is how features change each other without editing each other's code.
     - NPC rigs are R15 with **AnimationConstraint** joints (kinematic); player avatars may use Motor6D. Joint code must handle both: read offsets from `C0`/`C1` or the constraint's `Attachment0`/`Attachment1`, and write `.Transform` (both have it), in `RunService.PreSimulation` so it lands after the Animator.
     - Character parts are in the `Player` collision group.
 - **Camera:** each system that drives the camera has a render-step priority, in this order: `MovementCamera` Camera+1, `Viewmodel` Camera+2, the drone camera Camera+3, the death camera Camera+4. A new camera mode binds after the ones it must override, and sets `Scriptable` only while it is active. `MovementCamera` sets the field of view every frame.
-- **Collision groups:** register new ones in your module's `Init` with `PhysicsService` (check `IsCollisionGroupRegistered` first) and list them in `API.md`. Existing groups: `Player`, `ProneBody`, `SoftWallDebris`, `Thrown`.
+- **Collision groups:** register new ones in your module's `Init` with `PhysicsService` (check `IsCollisionGroupRegistered` first) and list them in [Attributes, tags and collision groups](api/reference/attributes.md). Existing groups: `Player`, `ProneBody`, `SoftWallDebris`, `Thrown`.
 - **Runtime objects:**
     - Put them in a named folder in `workspace` (for example `workspace.Thrown`), never loose.
     - Projectiles the server spawns get `SetNetworkOwner(nil)`.
@@ -311,7 +311,7 @@ This is how features change each other without editing each other's code.
     - optionally a part named `Magazine`.
 
     The third-person Tool is scaled to fit a character (`ModelScale` attribute), and `Tool.Grip` is set from the holder's hand on equip. Check a new gun on the gun range (`range` command, `GUN_SHOWCASE.md`).
-- **Tags:** use `CollectionService` tags for map objects: `Board`, `DoorBoard`, `SoftWall`, `NPCSpawn` (attributes `Profile`, `Mode`, `Room`), `NPCSecure`, `NPCRoom`, `GunShowcase`, `SkinShopPrompt`, `ScribeFragment`. Boards are set up (and their planks tagged) at runtime by `Systems.Breakables`, so in Edit mode most have no tags or `Intact` attributes yet. New tags go in `API.md`.
+- **Tags:** use `CollectionService` tags for map objects: `Board`, `DoorBoard`, `SoftWall`, `NPCSpawn` (attributes `Profile`, `Mode`, `Room`), `NPCSecure`, `NPCRoom`, `GunShowcase`, `SkinShopPrompt`, `ScribeFragment`. Boards are set up (and their planks tagged) at runtime by `Systems.Breakables`, so in Edit mode most have no tags or `Intact` attributes yet. New tags go in [Attributes, tags and collision groups](api/reference/attributes.md).
 - **Workspace folders made at runtime:** `Enemies`, `Drones`, `Thrown`. The gun range lives in `workspace.GunShowcase`.
 - **Lobby:** the `InLobby` player attribute is true in the lobby. Only a player's first spawn of a session is in the lobby. Weapons, consumables and abilities must be refused there.
 - **Teams:**
@@ -336,7 +336,7 @@ Grenades and smoke bombs ([Consumables](CONSUMABLES.md)) are the reference examp
     - Plays the local whoosh at once and updates the HUD from the attributes.
 5. **UI built in Studio:** a HUD frame in `Main` (Scale), a button in `Main.Mobile` (copied from a sibling), and a picker in the Loadout menu.
 6. **Effects** in `Content.Effects.Registry`, models in `Assets.Models.Consumables`, particles in `Assets.Vfx`.
-7. **Docs:** a new system guide in `Gun Game/`, plus updates to [Overview](API.md), the controls table in [Adding guns](ADDING_GUNS.md), the [documentation home](index.md), and [Recent changes](CHANGELOG.md).
+7. **Docs:** a new system guide in `Gun Game/`, plus updates to the system's page under [API guide](api/index.md), the controls table in [Adding guns](ADDING_GUNS.md), the [documentation home](index.md), and [Recent changes](CHANGELOG.md).
 
 ---
 
@@ -405,7 +405,7 @@ The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-
     - Limits
 
     Add a link for it to the [documentation home](index.md) and a navigation entry in `mkdocs.yml`.
-- **API references:** add every new public function, packet, extension point, data field, attribute, tag and collision group to the appropriate focused page; keep [Overview](API.md) as the overview and routing page.
+- **API references:** add every new public function, packet, extension point, data field, attribute, tag and collision group to the system's page in [api/systems](api/index.md#game-systems) and the matching page in `api/reference` (extension points, packets, attributes, commands).
 - **`CHANGELOG.md`:** add an entry at the top, `## YYYY-MM-DD: Title`, with **Added** / **Changed** / **Fixed** bullets. Keep older entries in the linked date-range archives.
 - **`NEXT_STEPS.md`:** list only actionable work confirmed to remain open. Record the last check and evidence; move stale or completed dated snapshots to an archive rather than carrying them forward as active.
 - **Status and verification:** label pages as current, historical, or mixed where needed. State what was tested, in which environment/device, and what remains unverified.
@@ -424,5 +424,5 @@ The Markdown guides are maintained in the `Gun Game/` folder of `099ersf2/Mango-
 - [ ] Works on keyboard, gamepad and touch; refused in the lobby, while stunned and while dead.
 - [ ] Per-player state cleaned up on leave; runtime instances cleaned up.
 - [ ] Console clean in a playtest; temporary scripts and test copies deleted.
-- [ ] Docs, `API.md` and `CHANGELOG.md` updated.
+- [ ] Docs, the system's `api/` page and `CHANGELOG.md` updated.
 - [ ] Report: what changed (scripts and instances), what you tested with results, what you couldn't verify, and any decision the user must make.

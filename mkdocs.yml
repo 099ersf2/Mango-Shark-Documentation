@@ -115,16 +115,34 @@ nav:
       - Store, currencies, crates, and stats: STORE.md
       - Weapon skins: SKINS.md
       - Analytics: ANALYTICS.md
-  - Reference:
+  - API:
+      - api/index.md
+      - Cookbook: api/cookbook.md
+      - Foundations:
+          - Modules and loading: api/foundations/modules.md
+          - Extension points: api/foundations/extensions.md
+          - Networking with Packets: api/foundations/packets.md
+          - Player data and content: api/foundations/data-and-content.md
+          - Effects and sound: api/foundations/effects.md
+      - Game systems:
+          - Siege match: api/systems/siege.md
+          - Matchmaking and parties: api/systems/matchmaking.md
+          - Classes and abilities: api/systems/classes.md
+          - Drones and cameras: api/systems/drones-cameras.md
+          - Guns: api/systems/guns.md
+          - Combat and damage: api/systems/combat.md
+          - "World: boards, soft walls, grenades": api/systems/world.md
+          - NPCs and bots: api/systems/npcs.md
+          - Progression and economy: api/systems/progression.md
+          - Client modules: api/systems/client.md
+      - Reference:
+          - All extension points: api/reference/extension-points.md
+          - All packets: api/reference/packets.md
+          - Attributes, tags and collision groups: api/reference/attributes.md
+          - Admin commands (Cmdr): api/reference/commands.md
+          - Legacy APIs: api/reference/legacy.md
       - Task-based code examples: EXAMPLES.md
-      - API reference:
-          - Overview: API.md
-          - Current Siege APIs: API_SIEGE.md
-          - Common recipes: API_RECIPES.md
-          - Server-side APIs: API_SERVER.md
-          - Shared APIs: API_SHARED.md
-          - Client APIs: API_CLIENT.md
-          - Content and metadata: API_CONTENT.md
+  - Reference:
       - Design decisions: DECISIONS.md
       - Performance: PERFORMANCE.md
       - Security: SECURITY.md
