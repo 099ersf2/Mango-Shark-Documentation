@@ -47,6 +47,10 @@ A family's skins were drawn on one model, but they show on every gun of the fami
 
 Checked in Studio: twelve guns side by side with Glacier, Afterburn, Neon Circuit, Obsidian and Developer skins. Plaques sit on the receiver sides and inlays on the grips of the Assault Rifle, SiegeCarbine, Bullpup, Pistol and SiegePistol; the SiegeSMG's Developer strip runs along its receiver (it used to hang below the gun). The SiegeSMG's receiver pieces were renamed to match (`Body` is the upper receiver, `Lower` the lower one). In a playtest the first-person Assault Rifle wore Glacier with its 28 trim parts and the Pistol wore Obsidian with 30.
 
+## Trim sits flat on every gun (2026-11-24, second pass)
+
+Fitting trim to the matching part was not enough: on guns that are their own reference (the SMG, shotguns, Revolver) the trim was never moved, and its offsets had been written for a visible Handle-as-grip, so on split guns (invisible Handle, grip elsewhere) inlays and strips floated or ran off the end. Now every piece of trim on a firearm (not the Knife, Shield, Phone or charms) is snapped onto a part: the part it was fitted to, else the nearest part big enough to hold it (over `MIN_ANCHOR_VOLUME`; never a moving or hiding part: `Magazine`, `Cylinder`, `Trigger`, `Hammer`, `Pump`). Across its thinnest side it sits on that part's face, set in by `TRIM_SINK` of its thickness so it never shows a gap; along the face it is shortened and moved to stay within `TRIM_FILL` (90%) of the part's edges. The Revolver lost its side plaque (it covered the turning cylinder). Checked in Studio from the side and at an angle: every Pistol and SMG skin on the Pistol, SiegePistol, SMG and SiegeSMG, and a skin each on the Assault Rifle, SiegeCarbine, Bullpup, LMG, PumpShotgun, SawedOff and Revolver.
+
 ## Where things are
 
 | What | Where |
