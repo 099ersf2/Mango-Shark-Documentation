@@ -100,7 +100,7 @@ data.WeaponSkins.Has("Rifle_Gold")
 | `Coins` | Int, min 0 | Currency; the crate refund adds 500 |
 | `Kills`, `Deaths` | Int, min 0 | Career stats (lobby hub) |
 | `WeaponSkins` | Set of skin Ids | Owned skins; only the crate grants them |
-| `<Gun>Skin` (`RifleSkin`, …) | Enum | Equipped skin per gun, or `"None"` |
+| `<Gun>Skin` (`AssaultRifleSkin`, …) | Enum | Equipped skin per gun, or `"None"` |
 | `Settings.Keybinds.<Action>` | String | Saved key names (`Shared.PlayerSettings`) |
 | `Settings.Volumes.<Group>` | Number 0–1 | Sound volumes |
 | `Settings.Options.<Option>` | Number | Options (toggles are 0 / 1) |

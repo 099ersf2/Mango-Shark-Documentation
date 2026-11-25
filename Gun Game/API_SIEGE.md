@@ -20,7 +20,7 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | End the round now | `SiegeService.ForceEnd("Attackers", "BombsPlanted")` |
 | Check the map | `SiegeMap.Load()` returns the map's info, or nil and warns every problem |
 | Give a class / arm a player | `ClassService.Assign(player, "Breacher", guns?)` / `ClassService.Arm(player)` |
-| Give guns that are not the saved loadout | `LoadoutService.Arm(player, { "Rifle", "Pistol" })` |
+| Give guns that are not the saved loadout | `LoadoutService.Arm(player, { "AssaultRifle", "Pistol" })` |
 | Give a drone without a throw | `DroneService.Place(player, cframe)` |
 | Show players a static mark | `DroneService.Mark(players, key, position, seconds)` |
 | Add a security camera | `CameraService.Add(model, name, team, bulletproof)` |
@@ -222,7 +222,7 @@ Current Siege, matchmaking, class, camera and drone APIs are summarized here. Fo
 | `Store.PreventBuy`, `Store.Bought`, `Store.Given`, `Stats.Recorded` | Extension points | See [Store, currencies, crates, and stats](STORE.md) |
 | `Tokens`, `OwnedClasses`, `Wins`, `Losses`, `Stats`, `LastMode` | Saved data | From `Content.Store.Store` (ScribeFragment). `Tokens` is unused since 2026-11-15 |
 | `WinStreak` | Player attribute | The win streak shown above the head |
-| `Skins.FamilyOf(gunId)` | Shared | The skin family a gun wears ("Rifle", "Pistol", else its own Id). `Skins.EquipField(gunId)` returns the family's field |
+| `Skins.FamilyOf(gunId)` | Shared | The skin family a gun wears ("AssaultRifle", "Pistol", else its own Id). `Skins.EquipField(gunId)` returns the family's field |
 | `Client.Core.SkinShop.Preview(skinId)` | Client | Plays the crate reel landing on a skin, granting nothing (testing) |
 | `Assets.UI.Templates.SkinCard` / `SkinTab` / `CrateItem` / `ReelCard` | Templates | The ARMORY shop's cards, tabs, crate rows and reel cards |
 | `Client.Gadgets.DroneController.Cycle(direction)` | Client | Switch to the next (1) or previous (-1) living drone while in one |

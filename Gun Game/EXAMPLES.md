@@ -56,7 +56,7 @@ return MyFeatureService
 ```lua
 local GunService = require(game.ServerScriptService.Modules.Systems.Guns.GunService)
 
-GunService.Give(player, "Rifle") -- full magazine and reserve
+GunService.Give(player, "AssaultRifle") -- full magazine and reserve
 ```
 
 To give **exactly** a set of guns (plus the knife) instead of adding one, use `LoadoutService.Arm`. To restore the player's saved loadout, use `LoadoutService.Apply`.
@@ -64,7 +64,7 @@ To give **exactly** a set of guns (plus the knife) instead of adding one, use `L
 ```lua
 local LoadoutService = require(game.ServerScriptService.Modules.Systems.Guns.LoadoutService)
 
-LoadoutService.Arm(player, { "Rifle", "Pistol" }) -- replaces whatever they held
+LoadoutService.Arm(player, { "AssaultRifle", "Pistol" }) -- replaces whatever they held
 LoadoutService.Apply(player)                       -- back to their saved loadout
 ```
 
@@ -201,7 +201,7 @@ local Extensions = require(game.ReplicatedStorage.Modules.Shared.Extensions)
 -- Rifles hit NPCs 25% harder.
 Extensions.Add("Gun.DamageMultiplier", function(who, gunId, humanoid, hit)
 	local target = humanoid.Parent
-	if gunId == "Rifle" and target and target:GetAttribute("NPCId") ~= nil then
+	if gunId == "AssaultRifle" and target and target:GetAttribute("NPCId") ~= nil then
 		return 1.25
 	end
 	return 1

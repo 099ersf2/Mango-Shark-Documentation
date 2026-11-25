@@ -37,6 +37,16 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 
 **Removed 2026-11-17:** the Gilded, Eclipse, Verdant, Field and Shield crates and their 65 skins (see [Store, currencies, crates, and stats](STORE.md)). A data migration takes them out of every player's data and puts an equipped one back to None. Every shield skin was in the Shield Crate, so only Breach Point's shield is left.
 
+## Skins on every model of a family (2026-11-24)
+
+A family's skins were drawn on one model, but they show on every gun of the family, and most of those are now split meshes with different shapes. Three rules in `Skins.Apply` make them fit:
+
+- **Trim is fitted, not copied.** Each family has a reference model: `Assets.Models.SkinReference.<family>` if there is one (the old part-built Rifle as `AssaultRifle`, the old part-built Pistol as `Pistol`), else the gun model named after the family. On the reference, `Details` (and SkinFinish's plaques and grip inlays) go where they are written. On any other model each detail is moved from the reference part it sits on to the same part of that model, by role: the grip (`Grip`, else the grip panels; the reference's visible `Handle` is its grip), `Body`, `Slide`, `Frame`, `Barrel`, `Handguard`, `Stock`, `Magazine` (the `ROLES` table lists the names each role accepts). The detail keeps its place on the part's surface and stretches with the part, but is never longer than the part. A detail far from every part this model has is left off. The fitted list is cached per skin and model.
+- **Colors find the nearest part.** A part whose name matches no `Parts` entry tries its `ALIASES` (Upper, Lower, Frame and RearBlock take Body's color; Grip and GripPanel take Handle's; ButtPad and StockPad take Stock's; Pump and ForeEnd take Handguard's...), and a mesh piece then takes the `default` entry the one-piece meshes wore. Before this, most pieces of a split gun took only the dark Base color.
+- **Sizes only on the reference.** A `Parts` or `Base` `Size` is written for the reference's parts; on other models only the color and material apply.
+
+Checked in Studio: twelve guns side by side with Glacier, Afterburn, Neon Circuit, Obsidian and Developer skins. Plaques sit on the receiver sides and inlays on the grips of the Assault Rifle, SiegeCarbine, Bullpup, Pistol and SiegePistol; the SiegeSMG's Developer strip runs along its receiver (it used to hang below the gun). The SiegeSMG's receiver pieces were renamed to match (`Body` is the upper receiver, `Lower` the lower one). In a playtest the first-person Assault Rifle wore Glacier with its 28 trim parts and the Pistol wore Obsidian with 30.
+
 ## Where things are
 
 | What | Where |
@@ -45,15 +55,15 @@ The server owns every skin. The shop only asks; `SkinShopService` checks and wri
 | Server | `ServerScriptService.Modules.Systems.SkinShopService` |
 | Shop (client) | `ReplicatedStorage.Modules.Client.Core.SkinShop` (`ClientOnly`) |
 | Packets | `Shared.Packets.Skins.Equip`, `Shared.Packets.Skins.BuyCrate` |
-| Saved data | `Shared.Data`: `WeaponSkins`, `RifleSkin`, `PistolSkin`, and the `SkinCrate` product |
+| Saved data | `Shared.Data`: `WeaponSkins`, `AssaultRifleSkin`, `PistolSkin`, and the `SkinCrate` product |
 | UI | `StarterGui.Main.SkinShop` (the panel), `Main.SkinShopButton`, `Assets.UI.Templates.SkinRow` (one row per skin) |
 | Spawn styling | `Systems.Guns.LoadoutService` calls `SkinShopService.StyleTool` for each gun it gives |
-| First-person styling | `Client.Guns.Viewmodel` (reads the `RifleSkin` / `PistolSkin` Player attributes) |
+| First-person styling | `Client.Guns.Viewmodel` (reads the `AssaultRifleSkin` / `PistolSkin` Player attributes) |
 
 ## How it works
 
 1. **Owning.** `WeaponSkins` (a saved set of skin Ids) is what the player owns. Only the `SkinCrate` product's `Grant` adds to it.
-2. **Equipping.** Each gun with a skin has a saved field `<Gun>Skin` (`RifleSkin`, `PistolSkin`): `"None"` or a skin Id. `Shared.Data` builds these fields from `Content.Guns.Skins.Skins`, so the allowed values always match the list.
+2. **Equipping.** Each gun with a skin has a saved field `<Gun>Skin` (`AssaultRifleSkin`, `PistolSkin`): `"None"` or a skin Id. `Shared.Data` builds these fields from `Content.Guns.Skins.Skins`, so the allowed values always match the list.
 3. **Showing it.** `SkinShopService` copies each `<Gun>Skin` field to the Player attribute of the same name, and restyles the player's gun Tools whenever a field changes. Other players see the styled Tool. The player's own first-person viewmodel is styled by `Viewmodel` from the attribute.
 4. **The shop.** Walk up to the shop stand in the lobby (`Workspace.Lobby.SkinShopStand`) and use its prompt (Interact, E). Any `ProximityPrompt` tagged `SkinShopPrompt` opens the shop, only while in the lobby; leaving the lobby closes it. There is no key. Each row shows **Equip** / **Equipped** for an owned skin, or **In crate**. Clicking **Equip** on the equipped skin takes it off.
 5. **The crate.** One random skin the player doesn't own yet, equipped at once. The odds line shows the chance for each skin left (equal odds; owned skins are never rolled). Once every skin is owned, the Buy button is off and the server refuses the prompt. If every skin is already owned when a purchase is granted anyway, the player gets `Skins.CRATE_REFUND_COINS` (500) coins instead.
@@ -107,10 +117,10 @@ Add a ModuleScript to `Content.Guns.Skins.Definitions`, in the folder named afte
 ```lua
 local Skins = require(ReplicatedStorage.Content.Guns.Skins.Skins)
 Skins.Get(id)              -- the skin, or nil
-Skins.ForWeapon("Rifle")   -- skins for one gun
+Skins.ForWeapon("AssaultRifle")   -- skins for one gun
 Skins.Weapons()            -- gun Ids that have skins
-Skins.Choices("Rifle")     -- { "None", "AK47" }
-Skins.EquipField("Rifle")  -- "RifleSkin"
+Skins.Choices("AssaultRifle")     -- { "None", "AK47" }
+Skins.EquipField("AssaultRifle")  -- "AssaultRifleSkin"
 Skins.Apply(model, id, gunId)  -- style a model; "None" puts it back
 
 -- Server

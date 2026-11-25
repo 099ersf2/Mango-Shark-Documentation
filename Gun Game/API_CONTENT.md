@@ -32,7 +32,7 @@
     local Registry = require(Content.Guns.Registry)
     local Consumables = require(Content.Consumables.Consumables)
 
-    local rifle = Registry.Rifle            -- defaults filled in
+    local rifle = Registry.AssaultRifle            -- defaults filled in
     print(rifle.DisplayName, rifle.Damage, rifle.MagSize)
 
     local grenade = Consumables.Get("Grenade")

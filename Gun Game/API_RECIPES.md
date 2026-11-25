@@ -12,9 +12,9 @@
 
 | I want to… | Do this (server unless noted) |
 | --- | --- |
-| Give a player a gun | `GunService.Give(player, "Rifle")`, or the command `givegun <player> <gunId>` |
+| Give a player a gun | `GunService.Give(player, "AssaultRifle")`, or the command `givegun <player> <gunId>` |
 | Give a player their loadout again | `LoadoutService.Apply(player)` |
-| Give an NPC a gun | `GunService.GiveNPC(model, "Rifle")` |
+| Give an NPC a gun | `GunService.GiveNPC(model, "AssaultRifle")` |
 | Fire a gun from code | `GunService.FireAs(GunService.ShooterOf(who), origin, direction, seed, spread)` |
 | Cancel a reload | `GunService.CancelReload(player)` |
 | Damage someone with kill credit | `Combat.ApplyHit(humanoid, 30, { Attacker = player, Item = "Trap" })` |

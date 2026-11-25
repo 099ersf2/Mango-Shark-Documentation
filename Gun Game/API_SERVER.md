@@ -28,8 +28,8 @@ The server side of every gun: gives guns, checks and simulates every shot, reloa
     local GunService = require(game.ServerScriptService.Modules.Systems.Guns.GunService)
     local LoadoutService = require(game.ServerScriptService.Modules.Systems.Guns.LoadoutService)
 
-    GunService.Give(player, "Rifle")                  -- add one gun, full ammo
-    LoadoutService.Arm(player, { "Rifle", "Pistol" }) -- exactly these guns (and the knife)
+    GunService.Give(player, "AssaultRifle")                  -- add one gun, full ammo
+    LoadoutService.Arm(player, { "AssaultRifle", "Pistol" }) -- exactly these guns (and the knife)
     GunService.CancelReload(player)                   -- true if a reload was cancelled
     ```
 

@@ -76,7 +76,7 @@ A piece that falls is unanchored, put in `workspace.SoftWallDebris`, tagged `Sof
 | --- | --- | --- |
 | Pistol, SiegePistol | 0.15 | 0.5 |
 | Tactical_Revolver_1 | 0.2 | 0.6 |
-| Rifle, SiegeCarbine, Tactical_Bullpup_1 | default | 0.65 |
+| AssaultRifle, SiegeCarbine, Tactical_Bullpup_1 | default | 0.65 |
 | LMG | 0.25 | 0.75 |
 | SMG, SiegeSMG | 0.18 | 0.5 |
 | Shotgun, SiegeShotgun (per pellet) | 0.15 | 0.4 |
@@ -90,7 +90,7 @@ A piece that falls is unanchored, put in `workspace.SoftWallDebris`, tagged `Sof
 2. A hit on a soft wall or a piece of one runs `OnHit` as usual (so boards count it), then, on the server, punches the hole. If the gun penetrates (`Guns[Id].Penetrates` is not false) and the bullet has passed fewer than `MaxWallsPerBullet` (4) walls, it carries on and keeps `PenetrationMultiplier` of its damage (the gun's own, else the default). The multipliers stack per wall, in `bullet.Data.SoftWallMultiplier`. A soft wall does not use up the gun's `Projectile.Pierce`.
 3. Otherwise the usual rule: an ability's `CanPierce` (Ricochet bounces), then `Projectile.Pierce`.
 
-After a soft wall the bullet ignores the whole wall (the tagged part and all its pieces), so it cannot hit the same wall twice on the way out. `AbilityRunner.Hit` multiplies humanoid and breakable damage by `SoftWallMultiplier`. With the Rifle (0.65), a 30-damage bullet does 19.5 through one wall and 12.7 through two.
+After a soft wall the bullet ignores the whole wall (the tagged part and all its pieces), so it cannot hit the same wall twice on the way out. `AbilityRunner.Hit` multiplies humanoid and breakable damage by `SoftWallMultiplier`. With the Assault Rifle (0.65), a 30-damage bullet does 19.5 through one wall and 12.7 through two.
 
 Client cosmetic bullets run the same rule, so tracers go through the wall where the real bullet did, even before the hole has replicated. Soft walls get no impact effect or bullet-hole decal on clients: the hole itself is the impact.
 

@@ -24,18 +24,18 @@ In Siege every player picks a class: a default loadout, the guns they may swap t
 | Class | Guns (default; may swap to) | Ability | Charges, cooldown | What it does |
 | --- | --- | --- | --- | --- |
 | **Breacher** | Shotgun, Pistol (Shotgun or SMG) | Breach Charge | 2, 6 s | Sticks to the surface you look at (9 studs). After 2.5 s it blows: boards within 9 studs take 400, a soft wall gets a 4.5 stud hole, humanoids within 7 studs take up to 70. A defender can shoot it off first (15 health) |
-| **Flash Specialist** | SMG, Pistol (SMG or Rifle) | Flashbang | 3, 8 s | Thrown; pops after 1.4 s. Anyone within 30 studs with a clear line is blinded: 3.5 s close and facing it, 0.6 s at the edge or facing away. Your own team gets half |
-| **Recon** | Rifle, Pistol (Rifle or SMG) | Recon Pulse | 2, 20 s | Marks where every defender within 45 studs stands, for the team, for 10 s. The marks don't follow, and don't reveal classes |
+| **Flash Specialist** | SMG, Pistol (SMG or Assault Rifle) | Flashbang | 3, 8 s | Thrown; pops after 1.4 s. Anyone within 30 studs with a clear line is blinded: 3.5 s close and facing it, 0.6 s at the edge or facing away. Your own team gets half |
+| **Recon** | Assault Rifle, Pistol (Assault Rifle or SMG) | Recon Pulse | 2, 20 s | Marks where every defender within 45 studs stands, for the team, for 10 s. The marks don't follow, and don't reveal classes |
 | **Drone Operator** | BurstRifle, Pistol (Rifle or LMG) | Drone Shield | 2, 25 s | Your drone takes no damage for 8 s. Usable in Prep, from the drone |
-| **Smoker** | LMG, Pistol (LMG or Rifle) | Smoke Screen | 3, 12 s | A smoke cloud where you look, up to 40 studs |
+| **Smoker** | LMG, Pistol (LMG or Assault Rifle) | Smoke Screen | 3, 12 s | A smoke cloud where you look, up to 40 studs |
 
 ### Defenders
 
 | Class | Guns (default; may swap to) | Ability | Charges, cooldown | What it does |
 | --- | --- | --- | --- | --- |
-| **Warden** | Rifle, Pistol (Rifle or SMG) | Bulletproof Camera | 1, 3 s | A camera on the surface you look at. Every defender can use it. Bullets do nothing to it; a bash or an explosion breaks it (60 health) |
+| **Warden** | Assault Rifle, Pistol (Assault Rifle or SMG) | Bulletproof Camera | 1, 3 s | A camera on the surface you look at. Every defender can use it. Bullets do nothing to it; a bash or an explosion breaks it (60 health) |
 | **Trapper** | Shotgun, Pistol (Shotgun or SMG) | Trap Mine | 2, 4 s | A mine on the surface you look at. Live after 1.5 s; blows when an attacker is within 6 studs: up to 80 within 10 studs. Attackers can shoot it (10 health) |
-| **Reinforcement Expert** | LMG, Pistol (LMG or Rifle) | Reinforce | 3, 4 s | Replaces the board or door board you look at with its reinforced model for the rest of the match (metal plates, tougher pieces). The original comes back when the match ends |
+| **Reinforcement Expert** | LMG, Pistol (LMG or Assault Rifle) | Reinforce | 3, 4 s | Replaces the board or door board you look at with its reinforced model for the rest of the match (metal plates, tougher pieces). The original comes back when the match ends |
 | **Medic** | SMG, Pistol (SMG or Shotgun) | Healing Station | 1, 30 s | A station that heals defenders within 12 studs by 8 a second for 25 s. Attackers can destroy it (60 health) |
 | **Anchor** | BurstRifle, Revolver (Rifle or LMG) | Stim | 2, 15 s | Heals you 50 at once. Refused at full health |
 
