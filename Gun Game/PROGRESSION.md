@@ -136,9 +136,23 @@ THIS WEEK (weekly points, a store per week), FLAME (days now), LEVEL (total XP),
 - Open Cloud API key with `user-notification` write for this experience, IPs `0.0.0.0/0`, stored as the experience secret `NotifyKey` (domain `apis.roblox.com`). The key itself is never written anywhere else.
 - HTTP requests are on. The reminder goes out when the player's next 8 PM window opens (`NotifyService`), only to players 13+ who opted in, at most one a day. It never sends from Studio (secrets work only in live servers and Team Test).
 
-### To switch badges on
+### Badges made (2026-11-25)
 
-Create the badges on the Creator Hub (the first ones each day are free) and put their ids in `Content.Progress.BADGES`.
+Five badges exist (created over Open Cloud, free, active) and their ids are in `Content.Progress.BADGES`:
+
+| Key | Badge | Id | Awarded when |
+| --- | --- | --- | --- |
+| `Welcome` | Welcome to SiegeBlox | 1375974401256691 | First visit |
+| `FirstMatch` | First Match | 2141352358185841 | First public match finished |
+| `FirstWin` | First Win | 1372734456937687 | First public match won |
+| `Flame3` | 3-Day Flame | 2420513631721929 | Flame reaches 3 days |
+| `Level10` | Level 10 | 3115111068395013 | Account level 10 |
+
+`Flame7`, `Flame30`, `Level25`, `Level50`, `RankedPlaced` and `WeeklyDone` are still 0 (skipped).
+
+### To switch more badges on
+
+Create the badge on the Creator Hub (about 5 a day are free) and put its id in `Content.Progress.BADGES`.
 
 ## Tested (2026-11-18, Studio playtests, one player, `ScribeNoSave`)
 

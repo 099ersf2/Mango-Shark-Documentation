@@ -17,6 +17,11 @@ Recent implementation notes are kept here. Older dated entries are grouped into 
 
 ## Recent changes
 
+## 2026-11-25: First five badges
+
+- Created five active badges on SiegeBlox (Open Cloud, no Robux): Welcome to SiegeBlox, First Match, First Win, 3-Day Flame, Level 10, with the owner's icons. Their ids are in `Content.Progress.BADGES`; `ProgressService.Award` already gives them. The other six keys stay 0. See [Progression](PROGRESSION.md#badges-made-2026-11-25).
+- Checked in Edit mode: `Content.Progress` compiles and the five ids read back. Awarding was **not** tested (badges only award in a live server or Team Test).
+
 ## 2026-11-25: Shorter Siege rounds
 
 - The owner wants matches to feel faster for casual players. Siege phase times in `Content.Games.Siege`: Selection 30 to **40 s**, Prep 40 to **30 s**, Reveal 15 to **10 s** (the docs already said 10 s; the code had 15), Action 5:00 to **3:00** (`ACTION_TIME` 180), so a player who dies early waits less.

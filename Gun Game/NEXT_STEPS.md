@@ -8,6 +8,8 @@ This page keeps a short list of high-value checks for the current game. The date
 
 ## Progression and analytics
 
+- [ ] Confirm the five badges award (Welcome, First Match, First Win, 3-Day Flame, Level 10) in Team Test or a live server. Ids set 2026-11-25, never awarded yet; see [Progression](PROGRESSION.md#badges-made-2026-11-25).
+
 - [ ] Confirm the Flame reminder arrives on a published test with an opted-in account. The notification and secret were configured, but delivery was not checked on 2026-11-20. See the [retention backlog](NEXT_STEPS_ARCHIVE.md#retention-pass-2026-11-18) and [Progression](PROGRESSION.md).
 - [ ] Confirm badge setup and Creator Hub journeys, then verify events and the funnel on a published test. These remain unchecked in the archived backlog (2026-11-14); see [Analytics](ANALYTICS.md).
 
