@@ -20,7 +20,7 @@ Added 2026-11-14. Up to five players against NPC guards in a house (Mansion or B
     - A full squad of 5 starts at once.
     - Otherwise, whoever is queued starts after `MaxWait` (20 s).
     - Parties are never split. `Matchmaking.PartyLimit(mode)` allows 5 here, since the other side is empty.
-2. **Selection** (Siege's 30 s):
+2. **Selection** (its own `SELECTION_TIME`, 30 s, in `Content.Games.ClearHouse`; Siege's is 40 s since 2026-11-25):
     - **Map vote** (the first page): every map of the mode's `Maps` that exists in `ReplicatedStorage.Maps`, with its votes (the `"Map"` pick). No map is loaded yet.
     - **Class:** the attackers' classes only. The roster's enemy section reads HOUSE GUARDS.
 3. **Map load** (when Selection ends, `loadHouse` in SiegeService):

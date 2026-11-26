@@ -2,6 +2,10 @@
 
 This page keeps a short list of high-value checks for the current game. The dated checklist is preserved in the [historical backlog](NEXT_STEPS_ARCHIVE.md). Items below have no later verification recorded in the docs; re-check the current build and guides before scheduling them.
 
+## Siege timers
+
+- [ ] Play one Siege match and one Clear House match and confirm the clocks: Siege Selection 40 s, Reveal 15 s, Prep 30 s, Action 3:00; Clear House Selection 30 s. Changed 2026-11-25 with no playtest; see [Siege](SIEGE.md#phases).
+
 ## Progression and analytics
 
 - [ ] Confirm the Flame reminder arrives on a published test with an opted-in account. The notification and secret were configured, but delivery was not checked on 2026-11-20. See the [retention backlog](NEXT_STEPS_ARCHIVE.md#retention-pass-2026-11-18) and [Progression](PROGRESSION.md).
