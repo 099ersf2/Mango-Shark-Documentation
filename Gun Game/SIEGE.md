@@ -72,13 +72,13 @@ When a match starts the map is checked, and every problem is warned in plain wor
 
 ## Phases
 
-All times are in `Content.Games.Siege` (changed 2026-11-25: Selection 30 to 40 s, Prep 40 to 30 s, Action 5:00 to 3:00; Reveal was already 15 s, not the 10 s this page said). Recruit Training and Clear House use their own times.
+All times are in `Content.Games.Siege` (changed 2026-11-25: Selection 30 to 40 s, Prep 40 to 30 s, Reveal 15 to 10 s, Action 5:00 to 3:00). Recruit Training and Clear House use their own times.
 
 | Phase | Time | What happens |
 | --- | --- | --- |
 | **WaitingForPlayers** | up to 45 s | The server reads its match record and waits for everyone in it. It starts as soon as all have arrived, or when the time is up with whoever is there. Players who never arrive are not in the match. Too few players (a side below its minimum) ends it: "Not enough players arrived" |
 | **Selection** | 40 s, one timer | Defenders vote a site. Attackers pick a spawn: one each, first come, first served. Everyone picks a class: one per team, first come, first served, and may swap guns the class allows. Picks can be changed until the clock runs out |
-| **Reveal** | 15 s | Defenders see the site. Attackers see their spawn and their team's spawns and classes |
+| **Reveal** | 10 s | Defenders see the site. Attackers see their spawn and their team's spawns and classes |
 | **Prep** | 30 s | Defenders spawn at one random spawn of the site and prepare (boards, class gadgets). Attackers have no body: each gets a drone at their spawn and is held in its view |
 | **Action** | 3:00 | Attackers spawn at their spawns. Drones stay where they were left |
 | **RoundEnd** | 8 s | Between rounds (2026-11-13): the round result banner. Then the map is rebuilt and the next round's Selection starts with the sides swapped |

@@ -4,7 +4,7 @@ This page keeps a short list of high-value checks for the current game. The date
 
 ## Siege timers
 
-- [ ] Play one Siege match and one Clear House match and confirm the clocks: Siege Selection 40 s, Reveal 15 s, Prep 30 s, Action 3:00; Clear House Selection 30 s. Changed 2026-11-25 with no playtest; see [Siege](SIEGE.md#phases).
+- [ ] Play one Siege match and one Clear House match and confirm the clocks: Siege Selection 40 s, Reveal 10 s, Prep 30 s, Action 3:00; Clear House Selection 30 s. Changed 2026-11-25 with no playtest; see [Siege](SIEGE.md#phases).
 
 ## Progression and analytics
 

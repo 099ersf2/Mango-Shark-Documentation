@@ -19,10 +19,10 @@ Recent implementation notes are kept here. Older dated entries are grouped into 
 
 ## 2026-11-25: Shorter Siege rounds
 
-- The owner wants matches to feel faster for casual players. Siege phase times in `Content.Games.Siege`: Selection 30 to **40 s**, Prep 40 to **30 s**, Action 5:00 to **3:00** (`ACTION_TIME` 180), so a player who dies early waits less. Reveal stays **15 s** (the docs said 10 s; the code was already 15).
+- The owner wants matches to feel faster for casual players. Siege phase times in `Content.Games.Siege`: Selection 30 to **40 s**, Prep 40 to **30 s**, Reveal 15 to **10 s** (the docs already said 10 s; the code had 15), Action 5:00 to **3:00** (`ACTION_TIME` 180), so a player who dies early waits less.
 - Applies to every Siege match (1v1, 5v5, Ranked, Private). Recruit Training keeps its own times (`Content.Games.Tutorial`).
 - Clear House used Siege's Selection time; it now has its own `Content.Games.ClearHouse.SELECTION_TIME` (30 s, unchanged), read by both `setPhase("Selection", …)` calls in `SiegeService`.
-- Checked in Edit mode: the three modules compile, and the values read back as 40 / 15 / 30 / 180 (Clear House 30 / 480). **Not playtested** (by request).
+- Checked in Edit mode: the three modules compile, and the values read back as 40 / 10 / 30 / 180 (Clear House 30 / 480). **Not playtested** (by request).
 
 ## 2026-11-25: Code map page
 
