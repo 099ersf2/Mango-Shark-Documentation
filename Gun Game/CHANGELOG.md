@@ -17,6 +17,15 @@ Recent implementation notes are kept here. Older dated entries are grouped into 
 
 ## Recent changes
 
+## 2026-11-27: Game Template and Gun System assets
+
+- New folder `ServerStorage.MangoShark` with two assets to put into other games, each with an `Install` module (run from the command bar) and a `README`. Nothing in the running game changed: these are copies.
+    - `GameTemplate`: the shared framework (ModuleLoader, Start scripts, Scribe data, Packets, Extensions, effects, settings, combat, the Main UI basics). Its `Shared.Data` is reduced to coins, kills, deaths and fragments; `Packets`, `UnreliablePackets` and `Content.Effects.Registry` merge child modules so systems can add to them. See [Game Template asset](../game-templates/game-template.md).
+    - `GunSystem`: guns, loadouts, weapon slots, knife and bash, recoil, aim assist, third-person arms, movement and camera, **without skins**. Boards, soft walls and the Shield are optional in it. See [Gun System asset](../systems/gun-system/index.md).
+- CollectionService tags on the copies are parked in a `MangoSharkTags` attribute, so this game's `Shared.Data` never picks up the copied `ScribeFragment` modules (it would add `Settings` and `Loadout` twice and stop).
+- Checked in Edit mode: all 343 scripts in the two assets compile; the template and gun effect lists together match the live registry entry for entry (28 Siege and skin effects removed); a dry-run install of both into a sandbox added 86 items (334 scripts) with every `require` resolved. **Not played** in an empty place yet.
+- The docs site is now **Mango Shark Documentation**: a home page, Gun Game as one game section, and new **Game templates** and **Separate systems** sections (built from several folders by `hooks/multi_root.py`).
+
 ## 2026-11-25: First five badges
 
 - Created five active badges on SiegeBlox (Open Cloud, no Robux): Welcome to SiegeBlox, First Match, First Win, 3-Day Flame, Level 10, with the owner's icons. Their ids are in `Content.Progress.BADGES`; `ProgressService.Award` already gives them. The other six keys stay 0. See [Progression](PROGRESSION.md#badges-made-2026-11-25).

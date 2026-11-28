@@ -2,6 +2,10 @@
 
 This page keeps a short list of high-value checks for the current game. The dated checklist is preserved in the [historical backlog](NEXT_STEPS_ARCHIVE.md). Items below have no later verification recorded in the docs; re-check the current build and guides before scheduling them.
 
+## Template and Gun System assets
+
+- [ ] Install `GameTemplate.rbxm` and then `GunSystem.rbxm` in an empty Baseplate and press Play: no errors in Output, you spawn with the default loadout, firing, reloading, aiming, switching slots, the knife and the loadout menu all work on keyboard and mouse, gamepad and touch. See [Gun System asset](../systems/gun-system/index.md#verification).
+
 ## Siege timers
 
 - [ ] Play one Siege match and one Clear House match and confirm the clocks: Siege Selection 40 s, Reveal 10 s, Prep 30 s, Action 3:00; Clear House Selection 30 s. Changed 2026-11-25 with no playtest; see [Siege](SIEGE.md#phases).

@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - "Gun Game/**"
+      - "home/**"
+      - "game-templates/**"
+      - "systems/**"
+      - "hooks/**"
       - "README.md"
       - "mkdocs.yml"
       - "requirements-docs.txt"
@@ -13,6 +17,10 @@ on:
       - main
     paths:
       - "Gun Game/**"
+      - "home/**"
+      - "game-templates/**"
+      - "systems/**"
+      - "hooks/**"
       - "README.md"
       - "mkdocs.yml"
       - "requirements-docs.txt"

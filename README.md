@@ -1,10 +1,15 @@
-# Gun Game documentation
+# Mango Shark Documentation
 
-Internal developer documentation for the Roblox FPS place **Gun Game**.
+Internal developer documentation for Mango Shark Studio's Roblox games, game templates and drop-in systems.
 
 - **Published site:** [099ersf2.github.io/Mango-Shark-Documentation](https://099ersf2.github.io/Mango-Shark-Documentation/)
-- **Start with the documentation index:** [Gun Game/index.md](Gun%20Game/index.md)
-- **Browse the API:** [Gun Game/api/index.md](Gun%20Game/api/index.md)
+- **Home page:** [home/index.md](home/index.md)
+- **Games:** [Gun Game](Gun%20Game/index.md) ([API](Gun%20Game/api/index.md))
+- **Game templates:** [game-templates/](game-templates/index.md) — the Game Template asset (`GameTemplate.rbxm`)
+- **Separate systems:** [systems/](systems/index.md) — the Gun System asset (`GunSystem.rbxm`)
+
+The site is built from the folders `home/`, `Gun Game/`, `game-templates/` and `systems/` by the MkDocs hook
+`hooks/multi_root.py`. A new game gets its own top-level folder: see `game-templates/new-game-docs.md`.
 
 ## For maintainers
 

@@ -1,11 +1,11 @@
-site_name: Gun Game Documentation
-site_description: Guides and API reference for the Gun Game Roblox FPS.
+site_name: Mango Shark Documentation
+site_description: Mango Shark Studio's games, game templates and drop-in systems for Roblox.
 site_url: https://099ersf2.github.io/Mango-Shark-Documentation/
 repo_url: https://github.com/099ersf2/Mango-Shark-Documentation
 repo_name: 099ersf2/Mango-Shark-Documentation
-edit_uri: edit/main/Gun%20Game/
+edit_uri: edit/main/
 
-docs_dir: Gun Game
+docs_dir: home
 site_dir: site
 
 theme:
@@ -70,97 +70,109 @@ validation:
     anchors: warn
 
 extra_css:
-  - stylesheets/extra.css
+  - Gun Game/stylesheets/extra.css
 
 plugins:
   - search:
       lang: en
 
+hooks:
+  - hooks/multi_root.py
+
 nav:
   - Home: index.md
-  - Get started:
-      - AI coding guide: AI_CODING_GUIDE.md
-      - Claude project context: CLAUDE.md
-      - Code map: CODE_MAP.md
-      - Documentation authoring: DOC_TEMPLATE.md
-      - Next steps: NEXT_STEPS.md
-  - Game:
-      - Siege: SIEGE.md
-      - Matchmaking and parties: MATCHMAKING.md
-      - Recruit Training: TUTORIAL.md
-      - Lobby: LOBBY.md
-      - Clear House: CLEAR_HOUSE.md
-      - UI: UI.md
-      - Movement and camera: MOVEMENT.md
-      - Music: MUSIC.md
-      - Death screen and spectating: DEATH_SCREEN.md
-      - Kill feed: KILL_FEED.md
-  - Combat systems:
-      - Guns:
-          - Gun system: GUN_SYSTEM.md
-          - Adding guns: ADDING_GUNS.md
-          - Third-person gun animation: THIRD_PERSON_GUNS.md
-          - Gun animation range: GUN_SHOWCASE.md
-          - Aim assist: AIM_ASSIST.md
-      - Siege classes: CLASSES.md
-      - Scout drones: DRONES.md
-      - Breakables: BREAKABLES.md
-      - Soft walls: SOFTWALLS.md
-      - Consumables: CONSUMABLES.md
-      - NPCs:
-          - Adding NPCs: ADDING_NPCS.md
-          - Siege bots: SIEGE_BOTS.md
-  - Progression and economy:
-      - Progression and retention: PROGRESSION.md
-      - Battle pass and quests: BATTLE_PASS.md
-      - Store, currencies, crates, and stats: STORE.md
-      - Weapon skins: SKINS.md
-      - Analytics: ANALYTICS.md
-  - API:
-      - api/index.md
-      - Cookbook: api/cookbook.md
-      - Foundations:
-          - Modules and loading: api/foundations/modules.md
-          - Extension points: api/foundations/extensions.md
-          - Networking with Packets: api/foundations/packets.md
-          - Player data and content: api/foundations/data-and-content.md
-          - Effects and sound: api/foundations/effects.md
-          - Handlers and helpers: api/foundations/helpers.md
-      - Game systems:
-          - Siege match: api/systems/siege.md
-          - Matchmaking and parties: api/systems/matchmaking.md
-          - Classes and abilities: api/systems/classes.md
-          - Class abilities: api/systems/abilities.md
-          - Drones and cameras: api/systems/drones-cameras.md
-          - Guns: api/systems/guns.md
-          - Movement and camera: api/systems/movement.md
-          - Combat and damage: api/systems/combat.md
-          - "World: boards, soft walls, grenades": api/systems/world.md
-          - NPCs and bots: api/systems/npcs.md
-          - Lobby, teleporters and gun range: api/systems/lobby.md
-          - Progression and economy: api/systems/progression.md
-          - Progress, leaderboards, analytics: api/systems/progress-analytics.md
-          - Settings and keybinds: api/systems/settings.md
-          - "Client: menus, HUD, screens": api/systems/client.md
+  - Gun Game:
+      - Overview: Gun Game/index.md
+      - Get started:
+          - AI coding guide: Gun Game/AI_CODING_GUIDE.md
+          - Claude project context: Gun Game/CLAUDE.md
+          - Code map: Gun Game/CODE_MAP.md
+          - Documentation authoring: Gun Game/DOC_TEMPLATE.md
+          - Next steps: Gun Game/NEXT_STEPS.md
+      - Game:
+          - Siege: Gun Game/SIEGE.md
+          - Matchmaking and parties: Gun Game/MATCHMAKING.md
+          - Recruit Training: Gun Game/TUTORIAL.md
+          - Lobby: Gun Game/LOBBY.md
+          - Clear House: Gun Game/CLEAR_HOUSE.md
+          - UI: Gun Game/UI.md
+          - Movement and camera: Gun Game/MOVEMENT.md
+          - Music: Gun Game/MUSIC.md
+          - Death screen and spectating: Gun Game/DEATH_SCREEN.md
+          - Kill feed: Gun Game/KILL_FEED.md
+      - Combat systems:
+          - Guns:
+              - Gun system: Gun Game/GUN_SYSTEM.md
+              - Adding guns: Gun Game/ADDING_GUNS.md
+              - Third-person gun animation: Gun Game/THIRD_PERSON_GUNS.md
+              - Gun animation range: Gun Game/GUN_SHOWCASE.md
+              - Aim assist: Gun Game/AIM_ASSIST.md
+          - Siege classes: Gun Game/CLASSES.md
+          - Scout drones: Gun Game/DRONES.md
+          - Breakables: Gun Game/BREAKABLES.md
+          - Soft walls: Gun Game/SOFTWALLS.md
+          - Consumables: Gun Game/CONSUMABLES.md
+          - NPCs:
+              - Adding NPCs: Gun Game/ADDING_NPCS.md
+              - Siege bots: Gun Game/SIEGE_BOTS.md
+      - Progression and economy:
+          - Progression and retention: Gun Game/PROGRESSION.md
+          - Battle pass and quests: Gun Game/BATTLE_PASS.md
+          - Store, currencies, crates, and stats: Gun Game/STORE.md
+          - Weapon skins: Gun Game/SKINS.md
+          - Analytics: Gun Game/ANALYTICS.md
+      - API:
+          - Gun Game/api/index.md
+          - Cookbook: Gun Game/api/cookbook.md
+          - Foundations:
+              - Modules and loading: Gun Game/api/foundations/modules.md
+              - Extension points: Gun Game/api/foundations/extensions.md
+              - Networking with Packets: Gun Game/api/foundations/packets.md
+              - Player data and content: Gun Game/api/foundations/data-and-content.md
+              - Effects and sound: Gun Game/api/foundations/effects.md
+              - Handlers and helpers: Gun Game/api/foundations/helpers.md
+          - Game systems:
+              - Siege match: Gun Game/api/systems/siege.md
+              - Matchmaking and parties: Gun Game/api/systems/matchmaking.md
+              - Classes and abilities: Gun Game/api/systems/classes.md
+              - Class abilities: Gun Game/api/systems/abilities.md
+              - Drones and cameras: Gun Game/api/systems/drones-cameras.md
+              - Guns: Gun Game/api/systems/guns.md
+              - Movement and camera: Gun Game/api/systems/movement.md
+              - Combat and damage: Gun Game/api/systems/combat.md
+              - "World: boards, soft walls, grenades": Gun Game/api/systems/world.md
+              - NPCs and bots: Gun Game/api/systems/npcs.md
+              - Lobby, teleporters and gun range: Gun Game/api/systems/lobby.md
+              - Progression and economy: Gun Game/api/systems/progression.md
+              - Progress, leaderboards, analytics: Gun Game/api/systems/progress-analytics.md
+              - Settings and keybinds: Gun Game/api/systems/settings.md
+              - "Client: menus, HUD, screens": Gun Game/api/systems/client.md
+          - Reference:
+              - All extension points: Gun Game/api/reference/extension-points.md
+              - All packets: Gun Game/api/reference/packets.md
+              - Attributes, tags and collision groups: Gun Game/api/reference/attributes.md
+              - Admin commands (Cmdr): Gun Game/api/reference/commands.md
+              - Legacy APIs: Gun Game/api/reference/legacy.md
+          - Task-based code examples: Gun Game/EXAMPLES.md
       - Reference:
-          - All extension points: api/reference/extension-points.md
-          - All packets: api/reference/packets.md
-          - Attributes, tags and collision groups: api/reference/attributes.md
-          - Admin commands (Cmdr): api/reference/commands.md
-          - Legacy APIs: api/reference/legacy.md
-      - Task-based code examples: EXAMPLES.md
-  - Reference:
-      - Design decisions: DECISIONS.md
-      - Performance: PERFORMANCE.md
-      - Security: SECURITY.md
-      - Changelog:
-          - Recent changes: CHANGELOG.md
-          - Archive:
-              - Nov 15–17: CHANGELOG_2026-11-15_to_17.md
-              - Nov 12–14: CHANGELOG_2026-11-12_to_14.md
-              - Nov 9–11: CHANGELOG_2026-11-09_to_11.md
-              - Nov 7–8: CHANGELOG_2026-11-07_to_08.md
-      - Historical:
-          - Matches, modes, and teams: MATCH.md
-          - Team deathmatch rounds: ROUND_SYSTEM.md
-          - Verification backlog: NEXT_STEPS_ARCHIVE.md
+          - Design decisions: Gun Game/DECISIONS.md
+          - Performance: Gun Game/PERFORMANCE.md
+          - Security: Gun Game/SECURITY.md
+          - Changelog:
+              - Recent changes: Gun Game/CHANGELOG.md
+              - Archive:
+                  - Nov 15–17: Gun Game/CHANGELOG_2026-11-15_to_17.md
+                  - Nov 12–14: Gun Game/CHANGELOG_2026-11-12_to_14.md
+                  - Nov 9–11: Gun Game/CHANGELOG_2026-11-09_to_11.md
+                  - Nov 7–8: Gun Game/CHANGELOG_2026-11-07_to_08.md
+          - Historical:
+              - Matches, modes, and teams: Gun Game/MATCH.md
+              - Team deathmatch rounds: Gun Game/ROUND_SYSTEM.md
+              - Verification backlog: Gun Game/NEXT_STEPS_ARCHIVE.md
+  - Game templates:
+      - game-templates/index.md
+      - Game Template asset: game-templates/game-template.md
+      - New game docs: game-templates/new-game-docs.md
+  - Separate systems:
+      - systems/index.md
+      - Gun System asset: systems/gun-system/index.md
