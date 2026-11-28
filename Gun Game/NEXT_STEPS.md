@@ -4,7 +4,8 @@ This page keeps a short list of high-value checks for the current game. The date
 
 ## Template and Gun System assets
 
-- [ ] Install `GameTemplate.rbxm` and then `GunSystem.rbxm` in an empty Baseplate and press Play: no errors in Output, you spawn with the default loadout, firing, reloading, aiming, switching slots, the knife and the loadout menu all work on keyboard and mouse, gamepad and touch. See [Gun System asset](../systems/gun-system/index.md#verification).
+- [x] Install `GameTemplate.rbxm` and then `GunSystem.rbxm` in an empty Baseplate and press Play: no errors, default loadout, firing hits and kills, reload, slot switch (2026-11-27, keyboard and mouse).
+- [ ] Same place: aiming down sights, the knife and gun bash, the loadout menu, other guns, and gamepad and touch. See [Gun System asset](../systems/gun-system/index.md#verification).
 
 ## Siege timers
 

@@ -89,7 +89,9 @@ Every field is explained on [Adding guns](../../Gun%20Game/ADDING_GUNS.md).
 | Every script compiles | 75 of 75 |
 | No skin code left | No reference to `Skins`, `SkinShotVfx`, `SkinShopService`, `WeaponCharms` or `ItemDetails` |
 | Dry-run install of the template and this asset into a sandbox | 86 items added, 0 conflicts, 334 scripts installed, every `require` resolves and compiles |
-| Played in an empty place | **Not done yet.** See [Next steps](../../Gun%20Game/NEXT_STEPS.md) |
+| Installed from the two `.rbxm` files into an empty Baseplate | 86 items added, 0 kept, 334 scripts |
+| Played there (keyboard and mouse) | No errors or warnings in Output. Spawned holding the Assault Rifle (30/150), Pistol in slot 2, Knife in slot 3. Viewmodel, crosshair, gun HUD and slot pictures show. A held click fired 8 rounds: the server's ammo went 30 to 22 and a test dummy went 100 to 0 health. R reloaded to 30/142; key 2 switched to the Pistol |
+| Not tested yet | Gamepad, touch, aiming down sights, the knife and gun bash, the loadout menu, other guns |
 
 ## Changes
 

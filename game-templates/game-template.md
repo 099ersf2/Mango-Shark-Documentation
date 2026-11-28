@@ -17,8 +17,9 @@ rules: no rounds, maps, guns, store or progression. Those come from the game its
     ```
 
 4. Open `ReplicatedStorage.Modules.Shared.Data` and change `ProfileStoreIndex` to the new game's own DataStore name.
-5. Save the place, then press Play. The Output shows the loader starting every module; the Settings menu opens from
-   the menu buttons.
+5. Save the place, then press Play. Output shows Scribe starting on the server and client with no errors. Don't set
+   the workspace attribute `ScribeNoSave` in a place that was never published: with no saved data to read, that
+   mode kicks the player.
 
 The installer prints `added N items, kept M of yours`. Items the place already has are **never overwritten**: they
 are listed as "kept yours" and the template's copy stays in `ServerStorage.MangoShark.GameTemplate` to compare by
@@ -103,4 +104,4 @@ The template was taken from Gun Game on 2026-11-27 and lives in that place at
 
 | Date | Change |
 | --- | --- |
-| 2026-11-27 | First version, taken from Gun Game. 268 scripts; every one compiles; a dry-run install into a sandbox resolves every `require` |
+| 2026-11-27 | First version, taken from Gun Game. 268 scripts; every one compiles. Installed from `GameTemplate.rbxm` into an empty Baseplate with the Gun System and played: player data loads, no errors in Output |
